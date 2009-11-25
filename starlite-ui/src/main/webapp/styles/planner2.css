@@ -1,0 +1,240 @@
+strong {
+	font-weight: bold;
+}
+
+.clearLeft {
+	display:none;
+	clear:left;
+}
+
+.active {
+	background-color: #ffaaaa;
+}
+
+.timebox {
+	padding: 0;
+	margin: 0;
+	width: 20px;
+	height: 20px;
+	vertical-align:middle;
+}
+
+.odd {
+  background-color: #eaeaea;
+}
+
+.even {
+  background-color: #e0e0e0;
+}
+
+.weekRow td{
+	padding: 3px;
+}
+
+.detailRow {
+	height: 30px;
+}
+
+table.planner  {
+	border: 1px solid #aaa;
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+}
+
+.firstCol {
+	border-right: 1px solid #aaa;
+	padding: 4px;
+}
+
+th.weekStart {
+	border-left: 1px solid #dedede;
+}
+
+th.weekStart {
+	padding: 2px;
+	border-bottom: 1px solid #aaa;
+}
+
+.barSegment {
+	background-repeat: repeat-x;
+	background-image: url('../images/bars/blue-bar.png');
+	height:20px;
+	margin:0;
+	padding:0;
+}
+
+.leftHandle {
+	background-repeat: no-repeat;
+	background-image: url('../images/bars/blue-left.png');
+	height:20px;
+	width:10px;
+	margin:0;
+	padding:0;
+}
+
+.rightHandle {
+	background-repeat: no-repeat;
+	background-position: center right;
+	background-image: url('../images/bars/blue-right.png');
+	height:20px;
+	width:10px;
+	margin:0;
+	padding:0;
+}
+
+.col {
+	width: 20px;
+	height: 10px;
+	text-align: center;
+	border-bottom: 1px solid #aaa;
+}
+
+.today {
+	background-color: #54F6FF;
+	font-weight: bold;
+}
+
+.detail20 {
+	background-image: url('../images/bars/tablebg.png');
+	height: 20px;
+}
+
+.detail70 {
+	background-image: url('../images/bars/tablebg70.png');
+	height: 20px;
+}
+
+.detail140 {
+	background-image: url('../images/bars/tablebg140.png');
+	height: 20px;
+}
+
+.black .barSegment {
+	background-image: url('../images/bars/black-bar.png');
+}
+.black .leftHandle {
+	background-image: url('../images/bars/black-left.png');
+}
+.black .rightHandle {
+	background-image: url('../images/bars/black-right.png');
+}
+
+
+.yellow .barSegment {
+	background-image: url('../images/bars/yellow-bar.png');
+}
+.yellow .leftHandle {
+	background-image: url('../images/bars/yellow-left.png');
+}
+.yellow .rightHandle {
+	background-image: url('../images/bars/yellow-right.png');
+}
+
+
+.red .barSegment {
+	background-image: url('../images/bars/red-bar.png');
+}
+.red .leftHandle {
+	background-image: url('../images/bars/red-left.png');
+}
+.red .rightHandle {
+	background-image: url('../images/bars/red-right.png');
+}
+
+.lime .barSegment {
+	background-image: url('../images/bars/lime-bar.png');
+}
+.lime .leftHandle {
+	background-image: url('../images/bars/lime-left.png');
+}
+.lime .rightHandle {
+	background-image: url('../images/bars/lime-right.png');
+}
+
+.navy .barSegment {
+	background-image: url('../images/bars/navy-bar.png');
+}
+.navy .leftHandle {
+	background-image: url('../images/bars/navy-left.png');
+}
+.navy .rightHandle {
+	background-image: url('../images/bars/navy-right.png');
+}
+
+.orange .barSegment {
+	background-image: url('../images/bars/orange-bar.png');
+}
+.orange .leftHandle {
+	background-image: url('../images/bars/orange-left.png');
+}
+.orange .rightHandle {
+	background-image: url('../images/bars/orange-right.png');
+}
+
+.pink .barSegment {
+	background-image: url('../images/bars/pink-bar.png');
+}
+.pink .leftHandle {
+	background-image: url('../images/bars/pink-left.png');
+}
+.pink .rightHandle {
+	background-image: url('../images/bars/pink-right.png');
+}
+
+.purple .barSegment {
+	background-image: url('../images/bars/purple-bar.png');
+}
+.purple .leftHandle {
+	background-image: url('../images/bars/purple-left.png');
+}
+.purple .rightHandle {
+	background-image: url('../images/bars/purple-right.png');
+}
+
+.ruby .barSegment {
+	background-image: url('../images/bars/ruby-bar.png');
+}
+.ruby .leftHandle {
+	background-image: url('../images/bars/ruby-left.png');
+}
+.ruby .rightHandle {
+	background-image: url('../images/bars/ruby-right.png');
+}
+
+.selected .barSegment {
+	background-image: url('../images/bars/lime-bar.png');
+	/* cursor:move; */
+}
+.selected .leftHandle {
+	background-image: url('../images/bars/lime-left.png');
+	/*cursor:w-resize;*/
+}
+.selected .rightHandle {
+	background-image: url('../images/bars/lime-right.png');
+	/*cursor:e-resize;*/
+}
+
+.deleteable .barSegment {
+	background-image: url('../images/bars/red-bar.png');
+}
+.deleteable .leftHandle {
+	background-image: url('../images/bars/red-left.png');
+}
+.deleteable .rightHandle {
+	background-image: url('../images/bars/red-right.png');
+}
+
+#charterInfo {
+	display:none;
+	background-color: #ffffff99;
+	padding: 8px;
+	border: 1px solid black;
+}
+
+.separator hr {
+	border: 0;
+	color: #C6C6C6;
+	background-color: #C6C6C6;
+	height: 1px;
+	width: 100%;
+}

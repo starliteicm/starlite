@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app id="starter" version="2.4" 
+         xmlns="http://java.sun.com/xml/ns/j2ee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	
+	<display-name>Starlite</display-name>
+	
+	<context-param>
+            <param-name>org.restlet.application</param-name>
+            <param-value>
+               com.itao.starlite.ui.service.StarliteServiceApplication
+            </param-value>
+    </context-param>
+    
+    <context-param>
+    	<param-name>jmesaPreferencesLocation</param-name>
+    	<param-value>WEB-INF/jmesa.properties</param-value>
+	</context-param> 
+	
+	<context-param>
+            <param-name>com.itao.guice.GuiceModule</param-name>
+            <param-value>
+               com.itao.starlite.ui.guice.StarliteGuiceModule
+            </param-value>
+    </context-param>
+	
+	<filter>
+    	<filter-name>struts-cleanup</filter-name>
+    	<filter-class>org.apache.struts2.dispatcher.ActionContextCleanUp</filter-class>
+	</filter>
+	<filter>
+        <filter-name>guice</filter-name>
+        <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+    </filter>
+	<filter>
+	    <filter-name>sitemesh</filter-name>
+	    <filter-class>org.apache.struts2.sitemesh.FreeMarkerPageFilter</filter-class>
+	</filter>
+	<filter>
+	    <filter-name>struts</filter-name>
+	    <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+	    <init-param>
+        	<param-name>actionPackages</param-name>
+        	<param-value>com.itao.starlite.ui.actions</param-value>
+        </init-param>
+	</filter>
+
+	<filter>
+    	<filter-name>auth</filter-name>
+    	<filter-class>com.itao.guice.FilterWrapper</filter-class>
+    	<init-param>
+    		<param-name>com.itao.guice.WrappedFilter</param-name>
+    		<param-value>com.itao.starlite.auth.FormBasedAuthenticationFilter</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>loginPage</param-name>
+    		<param-value>/login.action</param-value>
+    	</init-param>
+	</filter>
+	
+	<filter>
+        <filter-name>osivFilter</filter-name>
+        <filter-class>com.wideplay.warp.hibernate.SessionPerRequestFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>osivFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+	    <filter-name>auth</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+	    <filter-name>struts-cleanup</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+	    <filter-name>sitemesh</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+	    <filter-name>struts</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
+    
+    <servlet>
+            <servlet-name>ServerServlet</servlet-name>
+            <servlet-class>com.noelios.restlet.ext.servlet.ServerServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+            <servlet-name>DocumentsServlet</servlet-name>
+            
+            <servlet-class>com.itao.guice.ServletWrapper</servlet-class>
+    		<init-param>
+	    		<param-name>com.itao.guice.WrappedServlet</param-name>
+    			<param-value>com.itao.starlite.docs.service.DocumentService</param-value>
+    		</init-param>
+    </servlet>
+
+	<servlet>
+            <servlet-name>JsServlet</servlet-name>
+            <servlet-class>com.itao.js.servlet.JsServlet</servlet-class>
+    </servlet>
+   
+    
+    <servlet>
+    	<servlet-name>loginServlet</servlet-name>
+    	<servlet-class>com.itao.guice.ServletWrapper</servlet-class>
+    	<init-param>
+    		<param-name>com.itao.guice.WrappedServlet</param-name>
+    		<param-value>com.itao.starlite.auth.FormBasedLoginServlet</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>errorPage</param-name>
+    		<param-value>/loginError.action</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>defaultSuccessPage</param-name>
+    		<param-value>/</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>defaultLogoutPage</param-name>
+    		<param-value>/loggedOut.action</param-value>
+    	</init-param>
+    </servlet>
+   
+    <servlet>
+    	<servlet-name>jspSupportServlet</servlet-name>
+    	<servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+    	<load-on-startup>5</load-on-startup>
+    </servlet>
+    
+    <servlet>
+      <servlet-name>worksheet</servlet-name>
+      <servlet-class>org.jmesa.worksheet.servlet.WorksheetServlet</servlet-class>
+    </servlet>
+ 
+    <servlet-mapping>
+      <servlet-name>worksheet</servlet-name>
+      <url-pattern>*.wrk</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+    	<servlet-name>loginServlet</servlet-name>
+    	<url-pattern>/doLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServerServlet</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>DocumentsServlet</servlet-name>
+        <url-pattern>/documents/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+    	<servlet-name>JsServlet</servlet-name>
+        <url-pattern>/scripts/*</url-pattern>
+    </servlet-mapping>
+	
+	<taglib>
+    	<taglib-uri>sitemesh-page</taglib-uri>
+    	<taglib-location>/WEB-INF/sitemesh-page.tld</taglib-location>
+ 	</taglib>    
+ 	<taglib>
+	    <taglib-uri>sitemesh-decorator</taglib-uri>
+     	<taglib-location>/WEB-INF/sitemesh-decorator.tld</taglib-location>
+ 	</taglib> 
+</web-app>

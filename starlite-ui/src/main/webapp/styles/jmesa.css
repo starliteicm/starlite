@@ -1,0 +1,203 @@
+.jmesa {
+    margin: 0;
+    padding: 0;
+    cursor:default;
+}
+
+.jmesa caption {
+    caption-side: top;
+    color: #444444;
+    font-weight: bold;
+    font-size: 1em;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.jmesa .table {
+    border: 1px solid silver;
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+
+.toolbar table {
+    margin-right: auto;
+    margin-left: 0px;
+}
+
+.jmesa .toolbar td {
+    padding: 0px 1px 0px 1px;
+}
+
+.jmesa .toolbar select {
+    font-size: 11px;
+    border: solid 1px #c4c3c2;
+}
+
+.jmesa .toolbar img {
+    border:0px;
+}
+
+.jmesa .filter td {
+	padding: 2px 2px 3px 2px;
+}
+
+.jmesa .filter .dynFilter {
+    position: relative;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 11px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #c0c0c0;
+    background-color: #efebe7;
+    height: 15px;
+    white-space: nowrap;
+}
+
+.jmesa .filter #dynFilterDiv {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    padding: 0;
+    margin: 0;
+    height: 17px;
+    border: 1px solid #c0c0c0;
+    background-color: #e1ebf4;
+}
+
+.jmesa .filter #dynFilterInput {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+    border-style: none;
+    background-color: #e1ebf4;
+}
+
+.jmesa .filter #dynFilterDroplistDiv {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    padding: 0;
+    margin: 0;
+    height: 17px;
+    background-color: #e1ebf4;
+}
+
+.jmesa .filter #dynFilterDroplist {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #c0c0c0;
+    background-color: #e1ebf4;
+}
+
+.jmesa .header td {
+	background-image: url(../images/breadcrumbsBGyellow.png);
+    background-repeat: repeat-x;
+	white-space: nowrap;
+    color: #333;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 3px 4px 3px;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-color: silver;
+}
+
+.aircraft .jmesa .header td {
+	background-image: url(../images/breadcrumbsBG.png);
+}
+
+.charters .jmesa .header td {
+	background-image: url(../images/breadcrumbsBGgreen.png);
+}
+
+.crew .jmesa .header td {
+	background-image: url(../images/breadcrumbsBGpurple.png);
+}
+
+.jmesa .odd a,.jmesa .even a {
+    color: black;
+}
+
+.jmesa .odd td,.jmesa .even td {
+    font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+    padding: 2px 3px 2px 3px;
+}
+
+.jmesa .odd td {
+    border: 1px solid silver;
+}
+
+.jmesa .even td {
+    border: 1px solid silver;
+}
+
+.jmesa .odd {
+    background-color: #ffffff;
+}
+
+.jmesa .even {
+    background-color: #e3e3e3;
+}
+
+.charters .jmesa .even {
+	background-color: #EAFCE0;
+}
+
+.aircraft .jmesa .even {
+	background-color: #DBE9FF;
+}
+
+.crew .jmesa .even {
+	background-color: #F3EBFE;
+}
+
+.jmesa .highlight td {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 11px;
+    padding: 2px 3px 2px 3px;
+    background-color: #fdecae;
+}
+
+.jmesa .highlight a {
+    color: black;
+}
+
+.jmesa .statusBar td {
+    font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+    border-top: 1px solid silver;
+    background-color: #efebe7;
+    padding: 2px;
+}
+
+.jmesa .dropShadow {
+    padding: 0px 14px 14px 10px;
+}
+
+.jmesa .wsColumn {
+    position: relative;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 11px;
+    height: 15px;
+}
+
+.jmesa .wsColumn #wsColumnDiv {
+    position: absolute;
+    top: -2px;
+    left: -1px;
+}
+
+.jmesa .wsColumn #wsColumnInput {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 11px;
+    border: solid;
+    border-width: 1px;
+    border-color: #605a54;
+    background-color: #ededed;
+    padding-left: 1px;
+    height: 15px;
+}

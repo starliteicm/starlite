@@ -1,0 +1,107 @@
+<binding>
+	<mapping name="charter" class="com.itao.starlite.model.Charter">
+		<value name="id" field="id"/>
+		<value name="code" field="code"/>
+		<value name="startdate" get-method="getStartDatePlain" set-method="setStartDatePlain"/>
+		<value name="enddate" get-method="getEndDatePlain" set-method="setEndDatePlain"/>
+		<value name="client" field="client"/>
+		<value name="description" field="description"/>
+		<value name="location" field="location"/>
+		<value name="status" field="status"/>
+	</mapping>
+	<mapping name="charterlist" class="com.itao.starlite.model.CharterList">
+		<collection field="charterList"/>
+	</mapping>
+	<mapping name="aircraft" class="com.itao.starlite.model.Aircraft">
+		<value name="id" field="id"/>
+		<value name="ref" field="ref"/>
+		<value name="cargoSize" field="cargoSize" usage="optional"/>
+		<value name="licences" field="licences" usage="optional"/>
+		<value name="performancecounter" field="performanceCounter" usage="optional"/>
+	</mapping>
+	
+	
+
+	
+	<mapping name="aircraftlist" class="com.itao.starlite.model.AircraftList">
+		<collection field="aircraftList"/>
+	</mapping>
+	<!--mapping name="crewmember" class="com.itao.starlite.model.CrewMember">
+		<value name="id" field="id"/>
+		
+		<value name="firstname" field="firstName" usage="optional"/>
+		<value name="lastname" field="lastName" usage="optional"/>
+		<value name="contactnumber" field="contactNumber" usage="optional"/>
+		<value name="personalinformationcomplete" field="personalInformationComplete" usage="optional"/>
+		
+		<value name="licencenumber" field="licenceNumber" usage="optional"/>
+		<value name="licencetype" field="licenceType" usage="optional"/>
+		<value name="licenceexpirydate" field="licenceExpiryDate" usage="optional"/>
+		<value name="credentialscomplete" field="credentialsComplete" usage="optional"/>
+		
+		<value name="documentscomplete" field="documentsComplete" usage="optional"/>
+		
+		<value name="hourscomplete" field="hoursComplete" usage="optional"/>
+		
+		<value name="othercomplete" field="otherComplete" usage="optional"/>
+		
+		<structure name="technicalquiz" field="technicalQuiz" usage="optional">
+			<value name="url" field="docUrl" usage="optional"/>
+			<value name="isapproved" field="approved" usage="optional"/>
+		</structure>
+		<structure name="cv" field="cv" usage="optional">
+			<value name="url" field="docUrl" usage="optional"/>
+			<value name="isapproved" field="approved" usage="optional"/>
+		</structure>
+		<structure name="contract" field="contract" usage="optional">
+			<value name="url" field="docUrl" usage="optional"/>
+			<value name="isapproved" field="approved" usage="optional"/>
+		</structure>
+		<structure name="part127" field="part127" usage="optional">
+			<value name="url" field="docUrl" usage="optional"/>
+			<value name="isapproved" field="approved" usage="optional"/>
+		</structure>
+	</mapping>
+	
+	<mapping name="crewlist" class="com.itao.starlite.model.CrewList">
+		<collection field="crewList"/>
+	</mapping-->
+	
+	<!-- mapping name="document" class="com.itao.starlite.model.Document">
+		<value name="url" field="docUrl"/>
+		<value name="isapproved" get-method="isApproved" set-method="setApproved"/>
+	</mapping-->
+	
+	<mapping name="schedule" class="com.itao.starlite.scheduling.model.Schedule">
+		<collection field="allocations"/>
+		<collection field="assignments"/>
+		<collection field="assignables"/>
+	</mapping>
+	
+	<mapping name="allocation" class="com.itao.starlite.scheduling.model.Allocation">
+		<value name="id" field="id" usage="optional"/>
+		<value name="from" field="from"/>
+		<value name="to" field="to"/>
+		<value name="notes" field="notes" usage="optional"/>
+		
+		<value name="assignabletype" field="assignableType"/>
+		<value name="assignableid" field="assignableId" usage="optional"/>
+		
+		<value name="assignmenttype" field="assignmentType"/>
+		<value name="assignmentid" field="assignmentId" usage="optional"/>
+	</mapping>
+	
+	<mapping name="assignment" class="com.itao.starlite.scheduling.model.Assignment">
+		<value name="id" field="id" usage="optional"/>
+		<value name="label" field="label"/>
+		<value name="type" field="type"/>
+		<value name="from" field="from"/>
+		<value name="to" field="to"/>
+	</mapping>
+	
+	<mapping name="assignable" class="com.itao.starlite.scheduling.model.Assignable">
+		<value name="id" field="id" usage="optional"/>
+		<value name="label" field="label"/>
+		<value name="type" field="type"/>
+	</mapping>
+</binding>

@@ -1,0 +1,50 @@
+form.threeCols {
+	width:900px;
+}
+
+form fieldset {
+	margin-top: 20px;
+}
+
+form fieldset div {
+	width:300px;
+	float:left;
+}
+
+form fieldset legend {
+	font-size: 120%;
+}
+
+form fieldset.full {
+	width:100%;
+}
+
+form fieldset.oneCol {
+	width:300px;
+}
+
+form fieldset.twoCols {
+	width:600px;
+}
+
+form fieldset.threeCols {
+	width:900px;
+}
+
+
+form fieldset.floatLeft div {
+	float: left;
+}
+
+label {
+	width:100px;
+	text-align: right;
+}
+
+input {
+	border: 1px solid white;
+}
+
+input:focus {
+	border: 1px solid #999;
+}

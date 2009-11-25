@@ -1,0 +1,205 @@
+h1 {
+	font-size:250%;
+}
+
+h2 {
+	font-size:175%;
+}
+
+h3 {
+	font-size:138.5%;
+}
+
+a {
+	color: #0c4ea6;
+	outline: none;
+}
+
+#nav {
+	border: 0 dotted black;
+}
+
+.yuimenuitem {
+	background: #e4e4e4;
+	font-size:136.64%;
+}
+
+.scrollableDiv {
+	width: 275px;
+}
+
+#crewList {
+	font-size:122%;
+	position: relative;
+    width: 200px; 
+    list-style: none;
+    margin:0;
+    padding:0;
+    padding:10px 0;
+    /*
+       The bottom padding provides the cushion that makes the empty 
+       list targetable.  Alternatively, we could leave the padding 
+       off by default, adding it when we detect that the list is empty.
+    
+    padding-bottom:20px;
+    */
+}
+
+#crewList li {
+	margin-bottom: 10px;
+	padding: 5px;
+	background:#E6FFE2;
+	border: 1px solid #56d847;
+	cursor: move; 
+}
+
+#availableCrewList {
+	font-size:122%;
+	position: relative;
+    width: 200px; 
+    list-style: none;
+    margin:0;
+    padding:10px 0;
+    /*
+       The bottom padding provides the cushion that makes the empty 
+       list targetable.  Alternatively, we could leave the padding 
+       off by default, adding it when we detect that the list is empty.
+    
+    padding-bottom:20px;
+    */
+}
+
+#availableCrewList li {
+	margin-bottom: 10px;
+	padding: 5px;
+	background:#FFC4C5;
+	border: 1px solid #CC3338;
+    cursor: move; 
+}
+
+#aircraftList {
+	font-size:122%;
+	position: relative;
+    width: 200px; 
+    list-style: none;
+    margin:0;
+    padding:0;
+    padding:10px 0;
+    /*
+       The bottom padding provides the cushion that makes the empty 
+       list targetable.  Alternatively, we could leave the padding 
+       off by default, adding it when we detect that the list is empty.
+    
+    padding-bottom:20px;
+    */
+}
+
+#aircraftList li {
+	margin-bottom: 10px;
+	padding: 5px;
+	background:#E6FFE2;
+	border: 1px solid #56d847;
+	cursor: move; 
+}
+
+#availableAircraftList {
+	font-size:122%;
+	position: relative;
+    width: 200px; 
+    list-style: none;
+    margin:0;
+    padding:10px 0;
+    /*
+       The bottom padding provides the cushion that makes the empty 
+       list targetable.  Alternatively, we could leave the padding 
+       off by default, adding it when we detect that the list is empty.
+    
+    padding-bottom:20px;
+    */
+}
+
+#availableAircraftList li {
+	margin-bottom: 10px;
+	padding: 5px;
+	background:#FFC4C5;
+	border: 1px solid #CC3338;
+    cursor: move; 
+}
+
+#crewList li img {
+	width: 60px;
+	padding-right: 10px;
+	vertical-align: top;
+}
+
+.dragged {
+	background:#e4e4e4;
+}
+
+.formLabel {
+	text-align: right;
+	vertical-align: top;
+	padding: 10px;
+}
+
+/* Overriding yui
+*/
+
+.yui-skin-sam .yui-dt-table th {
+	background-image: none;
+	background-color: #666666;
+	color: #ffffff;
+}
+
+/* SELECTED DATE */ 
+	.yui-skin-sam .yui-calendar td.calcell.selected { 
+	    background-color:#b3d4ff; 
+	    color:#000; 
+	}
+	
+.even {
+	background-color:#e2ebfa;
+	padding: 4px;
+}
+
+.odd {
+	background-color:#e2ebfa;
+	padding: 4px; 
+	margin-bottom:5px;
+}
+
+.prepare {
+	background-color:#E6FFE2;
+}
+
+.approved {
+	background-color:#FFF9E2;
+}
+.yui-skin-sam .yui-calendar td.calcell.highlight2 { background-color:#FFC4C5; }
+.yui-skin-sam .yui-calendar td.calcell.highlight3 { background-color:#E6FFE2; }
+.yui-skin-sam .yui-calendar td.calcell.highlight4 { background-color:#FFF9E2; }
+.unavailable {
+	background-color:#FFC4C5;
+}
+
+.available {
+	background-color:#E6FFE2;
+}
+
+.hover {
+	background-color: #426fd9;
+	cursor:pointer;
+}
+
+.yui-skin-sam .yui-calendar td.calcell.highlight1 { background-color:#e2ebfa; }
+
+/* HOVER DATE */ 
+	.yui-skin-sam .yui-calendar td.calcell.calcellhover { 
+	    background-color:#426fd9; 
+	    color:#fff; 
+	    cursor:pointer; 
+	} 
+
+.l3 {
+	font-size:138.5%;
+}

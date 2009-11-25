@@ -1,0 +1,14 @@
+<html>
+<head>
+	<script type="text/javascript" src="js/itao/starlite/widget/tables.js"></script>
+	<script>
+		YAHOO.util.Event.onContentReady("crewTable", function() {
+			new ITAO.starlite.widget.CrewTable("crewTable", "http://localhost:8080/starlite-ui/services/starlite-core/crew");
+		});
+	</script>
+</head>
+<body>
+	<h2>Crew</h2>
+	<div id="crewTable"></div>
+</body>
+</html>

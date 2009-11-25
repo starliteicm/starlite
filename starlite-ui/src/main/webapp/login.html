@@ -1,0 +1,34 @@
+<html>
+<head>
+	<title>Authorization Required</title>
+	<link rel="stylesheet" type="text/css" href="styles/default.css"/>
+	<link rel="stylesheet" type="text/css" href="styles/forms.css"/>
+</head>
+<body>
+
+<div id="complete" style="position:relative;left:100px;top:100px;padding:10px;">
+	<form action="doLogin" method="POST" style="width:400px; float:left; border:1px solid silver; border-bottom: 2px solid grey; border-right: 2px solid grey; padding:10px;">
+		<fieldset style="text-align:center;">
+			<legend>Please login to access this page</legend>
+			<br/>
+			<div class="fm-opt">
+				<label for="username" style="font-size:120%;">Username</label>
+				<input name="username" id="username" type="text"/>
+			</div>
+			<div class="fm-opt">
+				<label for="password" style="font-size:120%;">Password</label>
+				<input name="password" id="password" type="password"/>
+			</div>
+			<!--div class="fm-opt" style="text-align:left;">
+				<label for="rememberMe">Remember Me?</label>
+				<input name="rememberMe" id="rememberMe" type="checkbox" class="checkbox" value="true"/>
+			</div-->
+			<br/>
+			<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/lock.png"/>Log In</button>
+		</fieldset>
+	</form>
+
+</div>
+
+</body>
+</html>

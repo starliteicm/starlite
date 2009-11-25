@@ -1,0 +1,30 @@
+<html>
+<head>
+	<title>Aicraft - ${aircraft.ref}</title>
+</head>
+<body>
+	<div style="margin-top:10px;">
+	<h2>${aircraft.ref}</h2>
+	<table>
+		<tr>
+			<td>Cargo Size</td><td>${aircraft.cargoSize}</td>
+		</tr>
+		<tr>
+			<td>Ownership</td><td>${aircraft.ownership}</td>
+		</tr>
+		<tr>
+			<td>Type</td><td>${aircraft.type}</td>
+		</tr>
+		<tr>
+			<td>Model</td><td>${aircraft.model}</td>
+		</tr>
+		<tr>
+			<td>Licence</td><td>${aircraft.licence}</td>
+		</tr>
+		<tr>
+			<td>Monthly Hours</td><td><a href="aircraftMonthlyTotals.action?id=${aircraft.id}">View Hours</a></td>
+		</tr>
+	</table>
+	</div>
+</body>
+</html>

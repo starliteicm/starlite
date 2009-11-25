@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>starlite</artifactId>
+		<groupId>com.itao.starlite</groupId>
+		<version>1.5.3-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>starlite-docs</artifactId>
+	<name>starlite-docs</name>
+	<dependencies>
+		<dependency>
+			<groupId>com.itao.persistence</groupId>
+			<artifactId>persistence</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.itao.persistence</groupId>
+			<artifactId>persistence-hibernate</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.itao.starlite</groupId>
+			<artifactId>starlite-auth</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.itao.concierge</groupId>
+			<artifactId>concierge-public</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.itao.concierge</groupId>
+			<artifactId>concierge-jibx</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jibx</groupId>
+			<artifactId>jibx-run</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3</artifactId>
+			<version>1.1.4c</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.ext.fileupload</artifactId>
+			<version>1.0.7</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet</artifactId>
+			<version>1.0.7</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.itao.guice</groupId>
+			<artifactId>guice-servlet</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jibx</groupId>
+				<artifactId>maven-jibx-plugin</artifactId>
+				<version>1.1.5</version>
+				<configuration>
+					<directory>src/main/jibx</directory>
+					<includes>
+						<includes>*-binding.xml</includes>
+					</includes>
+					<excludes>
+						<exclude>template-binding.xml</exclude>
+					</excludes>
+					<verbose>true</verbose>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>bind</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

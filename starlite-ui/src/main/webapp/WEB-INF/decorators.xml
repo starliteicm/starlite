@@ -1,0 +1,13 @@
+<decorators defaultDir="decorators">
+	<excludes>
+		<pattern>/documents/*</pattern>
+		<pattern>*editCharter.action</pattern>
+		<pattern>*selfService.action</pattern>
+		<pattern>*login.action</pattern>
+		<pattern>*loginError.action</pattern>
+		<pattern>*loggedOut.action</pattern>
+	</excludes>
+	<decorator name="main" page="starlite-main.ftl">
+          <pattern>/*</pattern>
+    </decorator>
+</decorators>

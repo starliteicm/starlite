@@ -1,0 +1,317 @@
+<html>
+
+<head>
+	<title>Charter Management</title>
+	<link rel="stylesheet" type="text/css" href="styles/forms.css">
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/utilities/utilities.js"></script>
+	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/element/element-beta-min.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/datasource/datasource-beta-min.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/connection/connection-min.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/dragdrop/dragdrop-min.js"></script>
+
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/datatable/datatable-beta-min.js"></script>
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/container/container-min.js"></script>
+	
+	<script>
+		var charterDataSource = new YAHOO.util.DataSource("http://localhost:8080/starlite-ui/services/charter");
+		charterDataSource.responseType = YAHOO.util.DataSource.TYPE_XML;
+		charterDataSource.responseSchema = {
+			resultNode: "charter",
+			fields: ["id", "code", "startDate", "endDate", "client", "description", "location", "status"]
+		};
+		
+		var rowFormatter = function(elCell, oRecord, oColumn, oData) {
+			if (oRecord.getData("processing")) {
+				elCell.innerHTML = "<img src='images/icons/loader.gif'/>";
+			} else {
+				elCell.innerHTML = oData;
+			}
+		};
+		
+		var dateFormatter = function(elCell, oRecord, oColumn, oData) {
+			var date = oData.substring(0, 10);
+			date = date.replace(/-/g, "/");
+			elCell.innerHTML = date;
+		};
+		
+		var enumFormatter = function(elCell, oRecord, oColumn, oData) {
+			var s = "";
+			for (var i=0; i < oData.length; i++) {
+				if (i ==0) {
+					s += oData.charAt(i).toUpperCase();
+				} else {
+					s += oData.charAt(i).toLowerCase();
+				}
+			}
+			elCell.innerHTML = s;
+		};
+		
+		var charterTableColDefs = [
+			{key:"code", label:"Code", formatter:rowFormatter},
+			{key:"client", label:"Client"},
+			{key:"location", label:"Location"},
+			{key:"startDate", label:"From", formatter:dateFormatter},
+			{key:"endDate", label:"To", formatter:dateFormatter},
+			{key:"status", label:"Status", formatter:enumFormatter},
+			{key:"description", label:"Description"}
+		];
+		var charterTable;
+		
+		YAHOO.util.Event.onContentReady("charterTable", function() {
+			charterTable = new YAHOO.widget.DataTable("charterTable", charterTableColDefs, charterDataSource, {
+				selectionMode:"single"
+			});
+			
+			charterTable.subscribe("rowMouseoverEvent", charterTable.onEventHighlightRow);
+        	charterTable.subscribe("rowMouseoutEvent", charterTable.onEventUnhighlightRow);
+        	charterTable.subscribe("rowClickEvent", charterTable.onEventSelectRow);
+		});
+		
+		var addEditCharterDialog;
+		
+		var successfullyProcessed = function(o) {
+			var rec = o.argument[0];
+			
+			if (o.argument.length > 1 && o.argument[1] == "delete") {
+				charterTable.deleteRow(rec);
+			} else {
+			
+				var id = rec._oData.id;
+				if (!id) {
+					id = o.responseXML.firstChild.firstChild.firstChild.nodeValue;
+				}
+				var code = rec._oData.code;
+				var startDate = rec._oData.startDate;
+				var endDate = rec._oData.endDate;
+				var client = rec._oData.client;
+				var description = rec._oData.description;
+				var location = rec._oData.location;
+				var status = rec._oData.status;
+				charterTable.updateRow(rec, {id:id, code:code, startDate:startDate, endDate:endDate, client:client, description:description, location:location, status:status, processing:false});
+			}
+		};
+		
+		var unsuccessfullyProcessed = function(o) {
+		
+		};
+		
+		YAHOO.util.Event.onContentReady("addEditCharter", function() {
+			var handleCancel = function() {
+				this.cancel();
+			};
+			
+			var handleSubmit = function() {
+				var id = document.getElementById("id").value;
+				
+				var code = document.getElementById("code").value;
+				var startDate = document.getElementById("startDate").value;
+				var ms = Date.parse(startDate);
+				startDate = new Date();
+				startDate.setTime(ms);
+				startDate = startDate.formatDate("c");
+				
+				var endDate = document.getElementById("endDate").value;
+				ms = Date.parse(endDate);
+				endDate = new Date();
+				endDate.setTime(ms);
+				endDate = endDate.formatDate("c");
+				
+				var client = document.getElementById("client").value;
+				var description = document.getElementById("description").value;
+				var location = document.getElementById("location").value;
+				
+				var statusSelect = document.getElementById("status");
+				var status = statusSelect.options[statusSelect.selectedIndex].value;
+				
+				var doc = document.implementation.createDocument("", "charter", null);
+				var charterEl = doc.firstChild;
+				
+				var idEl = doc.createElement("id");
+				idEl.appendChild(doc.createTextNode(id));
+				charterEl.appendChild(idEl);
+				
+				var codeEl = doc.createElement("code");
+				codeEl.appendChild(doc.createTextNode(code));
+				charterEl.appendChild(codeEl);
+				
+				var startDateEl = doc.createElement("startDate");
+				startDateEl.appendChild(doc.createTextNode(startDate));
+				charterEl.appendChild(startDateEl);
+				
+				var endDateEl = doc.createElement("endDate");
+				endDateEl.appendChild(doc.createTextNode(endDate));
+				charterEl.appendChild(endDateEl);
+				
+				var clientEl = doc.createElement("client");
+				clientEl.appendChild(doc.createTextNode(client));
+				charterEl.appendChild(clientEl);
+				
+				var descriptionEl = doc.createElement("description");
+				descriptionEl.appendChild(doc.createTextNode(description));
+				charterEl.appendChild(descriptionEl);
+				
+				var locationEl = doc.createElement("location");
+				locationEl.appendChild(doc.createTextNode(location));
+				charterEl.appendChild(locationEl);
+				
+				var statusEl = doc.createElement("status");
+				statusEl.appendChild(doc.createTextNode(status));
+				charterEl.appendChild(statusEl);
+				
+				var s = new XMLSerializer().serializeToString(doc);
+				var method;
+				YAHOO.util.Connect.initHeader("Content-Type", "text/xml", true);
+				if (id && id != -1) {
+					var recId = charterTable.getSelectedRows()[0];
+					var rec = charterTable.getRecord(recId);
+					charterTable.updateRow(rec, {id:id, code:code, startDate:startDate, endDate:endDate, client:client, description:description, location:location, status:status, processing:true});
+					YAHOO.util.Connect.asyncRequest("PUT", "services/charter/"+id, {success:successfullyProcessed, failure:unsuccessfullyProcessed, argument:[rec]}, s);
+				} else {
+					charterTable.addRow({code:code, startDate:startDate, endDate:endDate, client:client, description:description, location:location, status:status, processing:true});
+					var rs = charterTable.getRecordSet();
+					var rec = rs.getRecord(rs.getLength()-1);
+					YAHOO.util.Connect.asyncRequest("POST", "services/charter", {success:successfullyProcessed, failure:unsuccessfullyProcessed, argument:[rec]}, s);
+				}
+				addEditCharterDialog.hide();
+			};
+			
+			var buttons = [ {text:"Save", handler: handleSubmit, isDefault:true},
+							{text:"Cancel", handler:handleCancel}];
+		
+			addEditCharterDialog = new YAHOO.widget.Dialog("addEditCharter", {
+				visible:false,
+				fixedcenter: true,
+				modal:true
+			});
+			addEditCharterDialog.cfg.queueProperty("buttons", buttons);
+			addEditCharterDialog.render();
+		});
+		
+		YAHOO.util.Event.onContentReady("buttons", function() {
+			YAHOO.util.Event.addListener("addButton", "click", function() {
+				document.getElementById("id").value="-1";
+				document.getElementById("code").value="";
+				document.getElementById("client").value="";
+				document.getElementById("startDate").value="";
+				document.getElementById("endDate").value="";
+				document.getElementById("description").value="";
+				document.getElementById("location").value="";
+				document.getElementById("status").selectedIndex=0;
+				addEditCharterDialog.show();
+			});
+			
+			YAHOO.util.Event.addListener("editButton", "click", function() {
+				var sris = charterTable.getSelectedRows();
+				if (!sris || sris.length == 0)
+					return;
+				
+				var record = charterTable.getRecord(sris[0]);
+				
+				var startDate = record._oData.startDate;
+				startDate = startDate.substring(0, 10);
+				startDate = startDate.replace(/-/g, "/");
+				
+				var endDate = record._oData.endDate;
+				endDate = endDate.substring(0, 10);
+				endDate = endDate.replace(/-/g, "/");
+				
+				document.getElementById("id").value=record._oData.id;
+				document.getElementById("code").value=record._oData.code;
+				document.getElementById("client").value=record._oData.client;
+				document.getElementById("startDate").value=startDate;
+				document.getElementById("endDate").value=endDate;
+				document.getElementById("description").value=record._oData.description;
+				document.getElementById("location").value=record._oData.location;
+				var statusSelect = document.getElementById("status")
+				for (var i=0; i<statusSelect.options.length; i++) {
+					var opt = statusSelect.options[i];
+					if (opt.value == record._oData.status) {
+						statusSelect.selectedIndex = i;
+						break;
+					}
+				}
+				
+				addEditCharterDialog.show();
+			});
+			
+			YAHOO.util.Event.addListener("deleteButton", "click", function() {
+				var sris = charterTable.getSelectedRows();
+				if (!sris || sris.length == 0)
+					return;
+				
+				var record = charterTable.getRecord(sris[0]);
+				var id = rec._oData.id;
+				var code = rec._oData.code;
+				var startDate = rec._oData.startDate;
+				startDate = startDate.substring(0, 10);
+				startDate = startDate.replace(/-/g, "/");
+				
+				var endDate = rec._oData.endDate;
+				endDate = endDate.substring(0, 10);
+				endDate = endDate.replace(/-/g, "/");
+				
+				var client = rec._oData.client;
+				var description = rec._oData.description;
+				var location = rec._oData.location;
+				var status = rec._oData.status;
+				charterTable.updateRow(rec, {id:id, code:code, startDate:startDate, endDate:endDate, client:client, description:description, location:location, status:status, processing:true});
+				YAHOO.util.Connect.asyncRequest("DELETE", "services/charter/"+id, {success:successfullyProcessed, failure:unsuccessfullyProcessed, argument:[record,"delete"]});
+			});
+		});
+	</script> 
+</head>
+<body class="yui-skin-sam">
+	<div class="buttons" id="buttons" style="float:left;">
+		<button id="addButton" style="float:left;"><img src="images/icons/add.png"/>Add</button>
+		<button id="editButton" style="float:left;"><img src="images/icons/pencil.png"/>Edit</button>
+		<button id="deleteButton" style="float:left;"><img src="images/icons/delete.png"/>Delete</button>
+	</div>
+	<hr style="clear:left; display:none;"/>
+	<br/><br/>
+	<div id="charterTable"> </div>
+	
+	<div id="addEditCharter">
+		<div class="hd">Enter Charter Details</div>
+		<div class="bd">
+			<form action="javascript:doSaveCharter" class="thin">
+				<input type="hidden" name="id" id="id"/>
+				<fieldset>
+				<legend>Charter Info</legend>
+				<div class="fm-opt">
+					<label for="code">Code</label>
+					<input type="text" name="code" id="code"/>
+				</div>
+				<div class="fm-opt">
+				<label for="client">Client</label><input type="text" name="client" id="client"/>
+				</div>
+				<div class="fm-opt">
+				<label for="startDate">From</label><input type="text" name="startDate" id="startDate"/>
+				</div>
+				<div class="fm-opt">
+				<label for="endDate">To</label><input type="text" name="endDate" id="endDate"/>
+				</div>
+				<div class="fm-opt">
+				<label for="location">Location</label><input type="text" name="location" id="location"/>
+				</div>
+				<div class="fm-opt">
+				<label for="status">Status</label>
+				<select name="status" id="status">
+					<option value="PROSPECT">Prospect</option>
+					<option value="APPROVED">Approved</option>
+					<option value="PREPARE">Prepare</option>
+					<option value="POSITION">Position</option>
+					<option value="OPERATE">Operate</option>
+					<option value="DECOMMISSION">Decommission</option>
+				</select>
+				</div>
+				<div class="fm-opt">
+				<label for="description">Description</label><textarea name="description" id="description"/></textarea>
+				</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

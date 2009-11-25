@@ -1,0 +1,557 @@
+package com.itao.starlite.ui.actions;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.config.ParentPackage;
+import org.apache.struts2.config.Result;
+import org.apache.struts2.config.Results;
+import org.apache.struts2.dispatcher.ServletRedirectResult;
+import org.joda.time.DateMidnight;
+
+import com.google.inject.Inject;
+import com.itao.jmesa.dsl.entities.Table;
+import com.itao.starlite.auth.User;
+import com.itao.starlite.auth.UserAware;
+import com.itao.starlite.auth.annotations.Permissions;
+import com.itao.starlite.docs.manager.BookmarkManager;
+import com.itao.starlite.docs.manager.DocumentManager;
+import com.itao.starlite.docs.model.Document;
+import com.itao.starlite.docs.model.Folder;
+import com.itao.starlite.docs.model.Tag;
+import com.itao.starlite.exceptions.ExistingRecordException;
+import com.itao.starlite.manager.ApprovalsManager;
+import com.itao.starlite.manager.StarliteCoreManager;
+import com.itao.starlite.model.Aircraft;
+import com.itao.starlite.model.AircraftType;
+import com.itao.starlite.model.ApprovalStatus;
+import com.itao.starlite.model.Charter;
+import com.itao.starlite.model.CrewMember;
+import com.itao.starlite.model.ExchangeRate;
+import com.itao.starlite.model.Money;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.CharterEntry;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
+import com.itao.starlite.ui.Breadcrumb;
+import com.itao.starlite.ui.Tab;
+import com.itao.starlite.ui.jmesa.YesNoCellEditor;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.Preparable;
+
+
+
+@SuppressWarnings("serial")
+@ParentPackage("prepare")
+@Results({
+    @Result(name="unauthorised", type=ServletRedirectResult.class, value="unauthorised.html"),
+    @Result(name="redirect-addFlightActuals", type=ServletRedirectResult.class, value="crewMember!addFlightActuals.action?id=${id}&tab=flight&actualsId=${actuals.id}&errorMessage=${errorMessage}&notificationMessage=${notificationMessage}")
+})
+@Permissions("ManagerView || OwnDetails")
+public class CrewMemberAction extends ActionSupport implements Preparable, UserAware {
+	public CrewMember crewMember;
+	public List<AircraftType> aircraftTypes;
+	public String id;	
+	
+	public String current="crew";
+	public Breadcrumb[] breadcrumbs;
+
+	public Tab[] tableTabs;
+
+	public String tab = "personal";
+
+	public String tagArray = "[]";
+
+	private User user;
+
+	@Inject
+	private StarliteCoreManager manager;
+	@Inject
+	private DocumentManager docManager;
+	@Inject
+	private BookmarkManager bookmarkManager;
+	@Inject
+	private ApprovalsManager approvalsManager;
+
+	public boolean readOnly = false;
+	public boolean notAuthorised = false;
+
+	public int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+	@Override
+	public String execute() throws Exception {
+		//crewMember = manager.getCrewMember(id);
+		if (!user.hasPermission("ManagerView") && !user.getUsername().equalsIgnoreCase(id))
+			return "unauthorised";
+		breadcrumbs = Breadcrumb.toArray(
+			new Breadcrumb("Crew", "crew.action"),
+			new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+
+		prepareTabs();
+
+		if (!crewMember.getApprovalGroup().getApprovalStatus().equals(ApprovalStatus.OPEN_FOR_EDITING)
+				&& (tab.equals("personal") || tab.equals("banking") || tab.equals("role") || tab.equals("payments"))
+			) {
+				readOnly = true;
+			}
+
+		if (tab.equals("personal"))
+			return SUCCESS;
+
+		if (tab.toLowerCase().equals("review") && !user.hasPermission("ManagerEdit"))
+			notAuthorised = true;
+
+		if (tab.toLowerCase().equals("payments") && !user.hasPermission("ManagerEdit"))
+			notAuthorised = true;
+
+		if (tab.toLowerCase().equals("flight") && !user.hasPermission("ManagerEdit"))
+			notAuthorised = true;
+
+		if (!user.hasPermission("ManagerEdit")) {
+			readOnly = true;
+		}
+
+		if (user.getUsername().equalsIgnoreCase(id)) {
+			if (tab.equals("payments") || tab.equals("flight"))
+				readOnly = true;
+		}
+
+		if (tab.equals("flight"))
+			return setupFlight();
+		
+		if(tab.equals("role"))
+			aircraftTypes = manager.getAircraftTypes();
+		
+		return tab;
+	}
+
+	public String tableHtml;
+	private String setupFlight() {
+		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
+			tableHtml = "No Records Found";
+		}
+		else {
+			tableHtml = Table.create("crewFlightHoursTable").of(crewMember.getFlightAndDutyActuals())
+				.withColumns()
+				.column("date").asDate("MMMM, yyyy")
+					.link("crewMember!addFlightActuals.action?id="+id+"&tab=flight&actualsId=${id}")
+				.column("monthlyRate").withStyle("text-align:right")
+				.column("payMonthlyRate").as(YesNoCellEditor.class.getName())
+				.column("areaRate").withStyle("text-align:right")
+				.column("areaDays").called("Days")
+				.column("dailyRate").withStyle("text-align:right")
+				.column("dailyDays").called("Days")
+				.column("instructorRate").withStyle("text-align:right")
+				.column("instructorDays").called("Days")
+				.column("flightRate").withStyle("text-align:right")
+				.column("flightDays").called("Days")
+				.column("deductionTotal").called("Deductions")
+				.column("total").called("Total Due").withStyle("text-align:right")
+				.column("paidDate").called("Date Paid").asDate("dd/MM/yyyy")
+				.column("paidAmount").called("Amount Paid").withStyle("text-align:right")
+				.render();
+
+		}
+		return "flight";
+	}
+
+	public String errorMessage;
+	public String notificationMessage;
+	public CrewMember.FlightAndDutyActuals actuals;
+	public String charterCode;
+	public boolean actualsCompleted = false;
+	public int month, year;
+	public List<Charter> allCharters;
+	public List<Aircraft> allAircraft;
+	
+	public String reason;
+	public double amount;
+	public double amountUSD;
+	
+	//add a deduction to a crewMember
+	public String addDeduction() throws Exception{
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			if(amountUSD == 0.0){
+				Deduction deduction = new Deduction();
+				deduction.setRand(amount);
+				//LOG.info("RAND:"+amount);
+				deduction.setReason(reason);
+				//get xchange rate and convert amount (rand)
+				ExchangeRate ex =  manager.getExchangeRateByCode("ZAR", "USD");
+				deduction.setExchangeRate(ex.getAmount());
+				//LOG.info("XCHANGE:"+ex.getAmount());
+				Money converted = ex.convert(amount);
+				deduction.setAmount(converted);
+				actuals.getDeductions().put(reason,deduction);
+			}
+			else {
+				Deduction deduction = new Deduction();
+				Money converted = new Money("USD",amountUSD);
+				LOG.info("USD:"+converted.getAmountAsDouble());
+				deduction.setReason(reason);
+				//get xchange rate and convert amount (rand)
+				
+				ExchangeRate ex =  manager.getExchangeRateByCode("ZAR", "USD");
+				Double exAmount = ex.getAmount();
+				ex.setAmount(1/exAmount);
+				deduction.setExchangeRate( 1/ exAmount);
+				LOG.info("XCHANGE RATE:"+(1/exAmount));
+				Money rand = ex.convert(converted.getAmountAsDouble());
+				ex.setAmount(exAmount);
+				LOG.info("RAND:"+rand);
+				deduction.setAmount(converted);
+				deduction.setRand(rand.getAmountAsDouble());
+				actuals.getDeductions().put(reason,deduction);
+			}
+			
+			//LOG.info("XCHANGE converted:"+converted);
+			
+			//save actuals
+			try {
+				if (actuals.getId() == null) {
+					addFlightActuals();
+					notificationMessage = "Deduction Saved - Actuals Added";
+				} else {
+					manager.saveFlightAndDutyActuals(actuals);
+					notificationMessage = "Deduction Saved - Actuals saved";
+				}
+				crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+			} catch (ExistingRecordException e) {
+				errorMessage = e.getMessage();
+			}
+		}
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+		tab= "flight";
+		prepareTabs();
+		return "redirect-addFlightActuals";
+	}
+
+	//remove a deduction from a crewMember
+	public String remDeduction() throws Exception{
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			actuals.getDeductions().remove(reason);
+			try {
+				if (actuals.getId() == null) {
+					manager.addCrewFlightAndDutyActuals(crewMember.getCode(), actuals);
+					notificationMessage = "Deduction Removed - Actuals added";
+				} else {
+					manager.saveFlightAndDutyActuals(actuals);
+					notificationMessage = "Deduction Removed - Actuals saved";
+				}
+				crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+			} catch (ExistingRecordException e) {
+				errorMessage = e.getMessage();
+			}
+			//save actuals
+		}
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+		tab= "flight";
+		prepareTabs();
+		return "addFlightActuals";
+	}
+	
+	
+	public String addFlightActuals() throws Exception {
+		
+		if("".equals(errorMessage)){errorMessage = null; }
+		if("".equals(notificationMessage)){notificationMessage = null; }
+		
+		
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			allCharters=manager.getAllCharters().charterList;
+			allAircraft=manager.getAllAircraft().aircraftList;
+			
+			breadcrumbs = Breadcrumb.toArray(
+					new Breadcrumb("Crew", "crew.action"),
+					new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+			);
+			if (!actualsCompleted) {
+				if (crewMember.getPayments().getCurrency() == null) {
+					errorMessage = "Currency is not set.";
+					tab = "payments";
+					return execute();
+				}
+				tab = "flight";
+				prepareTabs();
+				return "addFlightActuals";
+			} else {
+				if (user.hasPermission("ManagerEdit")) {
+					Date date = new DateMidnight(year, month, 1).toDate();
+					actuals.setDate(date);
+
+					HashMap<String,String> tbRem = new HashMap<String,String>();
+					for (String code: actuals.getEntries().keySet()) {
+						CharterEntry ce = actuals.getEntries().get(code);
+						if (ce.getAreaDays() == 0 && ce.getDailyDays() == 0 && ce.getFlightDays() == 0 && ce.getInstructorDays() == 0)
+							tbRem.put(code,"remove");
+					}
+					
+					for(String rem : tbRem.keySet()){
+						actuals.getEntries().remove(rem);
+					}
+
+					int i=0;
+					String key1 = ServletActionContext.getRequest().getParameter("newEntryFirKey"+i);
+					String key2 = ServletActionContext.getRequest().getParameter("newEntrySecKey"+i);
+					String key = key1;
+					if((key1 != null) && (key2 != null)){
+						key = key1 +"_"+ key2;
+					}
+					while (key != null) {
+						int area = parseInt(ServletActionContext.getRequest().getParameter("newEntryArea"+i));
+						int daily = parseInt(ServletActionContext.getRequest().getParameter("newEntryDaily"+i));
+						int flight = parseInt(ServletActionContext.getRequest().getParameter("newEntryFlight"+i));
+						int instructor = parseInt(ServletActionContext.getRequest().getParameter("newEntryInstructor"+i));
+						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor);
+
+						i++;
+
+						if (area != 0 || daily != 0 || flight != 0 || instructor != 0) {
+							CharterEntry ce = new CrewMember.FlightAndDutyActuals.CharterEntry();
+							ce.setCharter(key1);
+							ce.setAircraft(key2);
+							ce.setAreaDays(area);
+							ce.setDailyDays(daily);
+							ce.setFlightDays(flight);
+							ce.setInstructorDays(instructor);
+							actuals.getEntries().put(key, ce);
+						}
+						key1 = ServletActionContext.getRequest().getParameter("newEntryFirKey"+i);
+						key2 = ServletActionContext.getRequest().getParameter("newEntrySecKey"+i);
+						if((key1 != null) && (key2 != null)){
+							key = key1 +"_"+ key2;
+						}
+						else{
+							key = key1;
+						}
+					}
+
+					try {
+						if (actuals.getId() == null) {
+							manager.addCrewFlightAndDutyActuals(crewMember.getCode(), actuals);
+							notificationMessage = "Actuals added successfully";
+						} else {
+							manager.saveFlightAndDutyActuals(actuals);
+							notificationMessage = "Actuals saved";
+						}
+						crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+					} catch (ExistingRecordException e) {
+						errorMessage = e.getMessage();
+					}
+					tab = "flight";
+					return execute();
+				}
+			}
+		}
+		return execute();
+	}
+
+	private int parseInt(String i) {
+		if (i == null || i.trim().length()==0)
+			return 0;
+		try {
+			int val = Integer.parseInt(i);
+			return val;
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+
+	public List<Document> docs;
+	public Folder folder;
+	public String docs() throws Exception {
+		if (id == null) {
+			return ERROR;
+		}
+		tab = "documents";
+		docs = new LinkedList<Document>();
+		folder = docManager.getFolderByPath("/crew/"+id, user);
+		if (folder != null) {
+			if (folder.canRead(user))
+				docs.addAll(folder.getDocs());
+			else {
+				errorMessage = "Insufficient Privilages";
+			}
+		}
+		Collections.sort(docs, new Comparator<Document>() {
+
+			public int compare(Document o1, Document o2) {
+				return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+			}
+
+		});
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+			);
+		prepareTabs();
+
+		List<Tag> tags = bookmarkManager.findAllTags();
+
+		StringBuilder buf = new StringBuilder();
+		buf.append('[');
+		boolean first = true;
+		for (Tag t: tags) {
+			if (first) {
+				first = false;
+			} else {
+				buf.append(',');
+			}
+			buf.append('\'');
+			buf.append(t.getTag());
+			buf.append('\'');
+		}
+		buf.append(']');
+		tagArray = buf.toString();
+		return "docs";
+	}
+
+	public String create() {
+		//crewMember = new CrewMember();
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb("New Crew Member")
+			);
+		Tab personalTab = new Tab("Personal", "#", true);
+		tableTabs = new Tab[] {personalTab};
+		return SUCCESS;
+	}
+
+	public String save() throws Exception {
+		manager.saveCrewMember(crewMember);
+		return execute();
+	}
+
+	public Integer actualsId;
+	public void prepare() throws Exception {
+		if (id == null) {
+			crewMember = new CrewMember();
+		} else {
+			crewMember = manager.getCrewMemberByCode(id);
+			if (actualsId == null) {
+				actuals = new CrewMember.FlightAndDutyActuals(
+						crewMember.getPayments().getMonthlyBaseRate(),
+						crewMember.getPayments().getAreaAllowance(),
+						crewMember.getPayments().getInstructorAllowance(),
+						crewMember.getPayments().getDailyAllowance(),
+						crewMember.getPayments().getFlightAllowance()
+				);
+			} else {
+				actuals = manager.getFlightAndDutyActualsById(actualsId);
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(actuals.getDate());
+				currentMonth = cal.get(Calendar.MONTH);
+				currentYear = cal.get(Calendar.YEAR);
+				//This needs to be reset so that if the user has unticked the box
+				//the correct value is saved.
+				if (actualsCompleted)
+					actuals.setPayMonthlyRate(false);
+			}
+		}
+	}
+
+	private void prepareTabs() {
+		String idStr = "";
+		if (id != null) {
+			idStr=id;
+		}
+		Tab personalTab = new Tab("Personal", "crewMember.action?id="+idStr, tab.equals("personal"));
+		Tab bankingTab = new Tab("Banking", "crewMember.action?tab=banking&id="+idStr, tab.equals("banking"));
+		Tab roleTab = new Tab("Role", "crewMember.action?tab=role&id="+idStr, tab.equals("role"));
+		Tab paymentsTab = new Tab("Payments", "crewMember.action?tab=payments&id="+idStr, tab.equals("payments"));
+		Tab documentsTab = new Tab("Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
+		Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
+		Tab flightAndDutyTab = new Tab("PDW", "crewMember.action?tab=flight&id="+idStr, tab.equals("flight"));
+		Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
+
+		if (user.hasPermission("ManagerView"))
+			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, documentsTab, reviewTab, assignmentsTab};
+		else
+			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, documentsTab};
+	}
+
+    public String fromPage = "";
+	public String assignments() {
+		tab = "assignments";
+
+        if ("".equals(fromPage)) {
+            breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+			);
+        }
+        else {
+            breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+                new Breadcrumb("Reports", fromPage),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+			);
+        }
+
+		prepareTabs();
+
+		return "assignments";
+	}
+
+	public void setUser(User arg0) {
+		user = arg0;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	@Permissions("Approve")
+	public String review() throws Exception {
+		String approvalKey = approvalsManager.review(crewMember.getApprovalGroup().getId(), 1000*60*5);
+		ServletActionContext.getRequest().getSession().setAttribute("approvalKey-"+crewMember.getApprovalGroup().getId(), approvalKey);
+		prepare();
+		notificationMessage = "Crew Member locked for 5 minutes";
+		return execute();
+	}
+
+	@Permissions("Approve")
+	public String approve() throws Exception {
+		String approvalKey = (String) ServletActionContext.getRequest().getSession().getAttribute("approvalKey-"+crewMember.getApprovalGroup().getId());
+		approvalsManager.approve(crewMember.getApprovalGroup().getId(), approvalKey);
+		prepare();
+		notificationMessage = "Crew Member has been approved";
+		return execute();
+	}
+
+	@Permissions("Approve")
+	public String open() throws Exception {
+		String approvalKey = (String) ServletActionContext.getRequest().getSession().getAttribute("approvalKey-"+crewMember.getApprovalGroup().getId());
+		approvalsManager.open(crewMember.getApprovalGroup().getId(), approvalKey);
+		prepare();
+		notificationMessage = "Crew Member has been opened for editing";
+		return execute();
+	}
+}

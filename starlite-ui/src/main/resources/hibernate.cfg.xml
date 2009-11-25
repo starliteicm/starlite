@@ -1,0 +1,51 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+        <hibernate-configuration>
+          <session-factory>
+          	<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+          	<property name="connection.url">jdbc:mysql://localhost/starliteLive</property>
+          	<property name="connection.username">root</property>
+          	<property name="connection.password"></property>
+          	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+          	<property name="hbm2ddl.auto">update</property>
+          	
+			<property name="c3p0.min_size">2</property>
+			<property name="c3p0.max_size">10</property>
+			<property name="c3p0.timeout">20</property>
+			<property name="c3p0.acquireRetryAttempts">30</property>
+			<property name="c3p0.acquireIncrement">2</property>
+			<property name="c3p0.idleConnectionTestPeriod">900</property>
+			<property name="c3p0.initialPoolSize">2</property>
+			<property name="c3p0.maxPoolSize">10</property>
+			<property name="c3p0.maxIdleTime">300</property>
+			<property name="c3p0.maxStatements">20</property>
+			<property name="c3p0.minPoolSize">2</property> 
+          	
+			<mapping class="com.itao.starlite.model.Actuals"/>
+          	<mapping class="com.itao.starlite.model.Aircraft"/>
+          	<mapping class="com.itao.starlite.model.AircraftType"/>
+			<mapping class="com.itao.starlite.model.ApprovalGroup"/>
+            <mapping class="com.itao.starlite.model.Charter"/>
+            <mapping class="com.itao.starlite.model.Charter$Cost$ItemGroup"/>
+            <mapping class="com.itao.starlite.model.CrewMember"/>
+            <mapping class="com.itao.starlite.model.CrewMember$FlightAndDutyActuals"/>
+            <mapping class="com.itao.starlite.model.Document"/>
+            <mapping class="com.itao.starlite.model.ExchangeRate"/>
+			<mapping class="com.itao.starlite.model.MonthlyInvoicedHours"/>
+            
+            <mapping class="com.itao.starlite.scheduling.model.Allocation"/>
+            
+            <mapping class="com.itao.starlite.docs.model.Document"/>
+            <mapping class="com.itao.starlite.docs.model.Folder"/>
+            <mapping class="com.itao.starlite.docs.model.Bookmark"/>
+            <mapping class="com.itao.starlite.docs.model.BookmarkType"/>
+            <mapping class="com.itao.starlite.docs.model.Tag"/>
+            
+            <mapping class="com.itao.starlite.auth.User"/>
+            <mapping class="com.itao.starlite.auth.Role"/>
+            <mapping class="com.itao.starlite.auth.Permission"/>
+          </session-factory>
+        </hibernate-configuration>
+        
