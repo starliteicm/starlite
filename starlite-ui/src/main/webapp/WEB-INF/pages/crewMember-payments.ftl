@@ -72,7 +72,7 @@
 				</#if>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.payments.monthlyBaseRate">Monthly:</label>
+				<label for="crewMember.payments.monthlyBaseRate"><span style="color:red;">*</span>&nbsp;Monthly:</label>
 				<#if readOnly>
 					<label>${crewMember.payments.monthlyBaseRate.amountAsDouble!'&nbsp;'}</label>
 				<#else>
@@ -85,7 +85,7 @@
 		<fieldset>
 			<legend>Allowances</legend>
 			<div class="fm-opt">
-				<label for="crewMember.payments.areaAllowance">Area:</label>
+				<label for="crewMember.payments.areaAllowance"><span style="color:red;">*</span>&nbsp;Daily:</label>
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
@@ -103,7 +103,7 @@
 			</div>
 
 			<div class="fm-opt">
-				<label for="crewMember.payments.dailyAllowance">Daily:</label>
+				<label for="crewMember.payments.dailyAllowance"><span style="color:red;">*</span>&nbsp;Training:</label>
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
@@ -112,7 +112,7 @@
 			</div>
 
 			<div class="fm-opt">
-				<label for="crewMember.payments.flightAllowance">Flight:</label>
+				<label for="crewMember.payments.flightAllowance"><span style="color:red;">*</span>&nbsp;Travel:</label>
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
