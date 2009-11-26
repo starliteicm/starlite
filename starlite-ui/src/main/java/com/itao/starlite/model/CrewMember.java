@@ -80,6 +80,7 @@ public class CrewMember implements Cloneable {
 		private String lastName;
 		private String firstName;
 		private String secondName;
+		private String preferedName;
 		private String title;
 		private String gender;
 		private String status;
@@ -167,6 +168,14 @@ public class CrewMember implements Cloneable {
 				return firstName+" "+lastName;
 			}
 			return firstName+" "+secondName+" "+lastName;
+		}
+		
+		public void setPreferedName(String preferedName){
+			this.preferedName = preferedName;
+		}
+		
+		public String getPreferedName(){
+			return preferedName;
 		}
 		
 		public String getAddress1() {
