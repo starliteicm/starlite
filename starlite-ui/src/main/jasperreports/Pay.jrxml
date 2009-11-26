@@ -446,7 +446,7 @@
 				<textElement textAlignment="Center">
 					<font reportFont="Calibri_Normal" size="10"/>
 				</textElement>
-				<text><![CDATA[Physical address: Harbour House, Waterfront Drive, Road Town, Tortola, British Virgin Islands, VG1110]]></text>
+				<text><![CDATA[Physical address: Coastal Building, Wickhams Cay II, Road Town, Tortola, British Virgin Islands, VG1110]]></text>
 	        </staticText>
 	        			<staticText>
 				<reportElement  x="50" y="155" width="425" height="15"/>
@@ -460,7 +460,7 @@
 				<textElement textAlignment="Center">
 					<font reportFont="Calibri_Normal" size="10"/>
 				</textElement>
-				<text><![CDATA[Tel: +1 284 494 9820  Fax: +1 284 6934  Email: admin@crewresource.biz]]></text>
+				<text><![CDATA[Tel: +1 284 494 7667  Fax: +1 284 6934  Email: admin@crewresource.biz]]></text>
 	        </staticText>
 	        
 		</band>
