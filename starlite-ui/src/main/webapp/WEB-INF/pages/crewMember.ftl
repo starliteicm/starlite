@@ -71,7 +71,7 @@
 				<input name="crewMember.personal.lastName" type="text" value="${crewMember.personal.lastName!}"/>
 			</div>
 			<div class="fm-opt">
-                <label for="crewMember.personal.preferedName">Last Name:</label>
+                <label for="crewMember.personal.preferedName">Prefered Name:</label>
                 <input name="crewMember.personal.preferedName" type="text" value="${crewMember.personal.preferedName!}"/>
             </div>
 		</fieldset>
