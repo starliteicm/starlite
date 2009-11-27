@@ -86,15 +86,6 @@
 		<fieldset>
 			<legend>Certificates & Licences</legend>
 			<div class="fm-opt">
-				<label for="crewMember.role.drivingLicenceNumber">Driving Licence:</label>
-				<input name="crewMember.role.drivingLicenceNumber" type="text" value="${crewMember.role.drivingLicenceNumber!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.drivingLicenceIssued">Driving Licence Issued:</label>
-				<input name="crewMember.role.drivingLicenceIssued" type="text" value="${crewMember.role.drivingLicenceIssued!}"/>
-			</div>
-			<br/><br/>
-			<div class="fm-opt">
 				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
 				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes"  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
 			</div>
@@ -177,14 +168,6 @@
 			<div class="fm-opt">
 				<label for="crewMember.role.expiryDate">Expiry Date:</label>
 				<input name="crewMember.role.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.medicalAid">Medical Aid:</label>
-				<input name="crewMember.role.medicalAid" type="text" value="${crewMember.role.medicalAid!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.medicalAidNumber">Aid Number:</label>
-				<input name="crewMember.role.medicalAidNumber" type="text" value="${crewMember.role.medicalAidNumber!}"/>
 			</div>
 		</fieldset>
 		<fieldset>
