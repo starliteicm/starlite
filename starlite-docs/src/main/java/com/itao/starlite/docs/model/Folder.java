@@ -71,6 +71,17 @@ public class Folder {
 		return null;
 	}
 	
+	public synchronized Document getDocumentByTag(String tag){
+		for(Document doc: docs){
+			for(Tag t : doc.getBookmark().getTags()){
+				if(tag.equals(t.getTag())){
+					return doc;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public synchronized void addDocument(Document doc) {
 		for (Document d: docs) {
 			if (d.getName().equals(doc.getName())) {

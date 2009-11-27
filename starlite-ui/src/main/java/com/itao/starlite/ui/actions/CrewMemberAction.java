@@ -1,5 +1,9 @@
 package com.itao.starlite.ui.actions;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +17,8 @@ import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 import org.apache.struts2.dispatcher.ServletRedirectResult;
+import org.apache.struts2.dispatcher.StreamResult;
+import org.jfree.util.Log;
 import org.joda.time.DateMidnight;
 
 import com.google.inject.Inject;
@@ -22,6 +28,7 @@ import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.auth.annotations.Permissions;
 import com.itao.starlite.docs.manager.BookmarkManager;
 import com.itao.starlite.docs.manager.DocumentManager;
+import com.itao.starlite.docs.model.Bookmark;
 import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
 import com.itao.starlite.docs.model.Tag;
@@ -49,6 +56,7 @@ import com.opensymphony.xwork2.Preparable;
 @ParentPackage("prepare")
 @Results({
     @Result(name="unauthorised", type=ServletRedirectResult.class, value="unauthorised.html"),
+    @Result(name="photo", type=StreamResult.class, value="photo", params={"inputName","photo","contentType","image","contentDisposition","inline"} ),
     @Result(name="redirect-addFlightActuals", type=ServletRedirectResult.class, value="crewMember!addFlightActuals.action?id=${id}&tab=flight&actualsId=${actuals.id}&errorMessage=${errorMessage}&notificationMessage=${notificationMessage}")
 })
 @Permissions("ManagerView || OwnDetails")
@@ -56,17 +64,19 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public CrewMember crewMember;
 	public List<AircraftType> aircraftTypes;
 	public String id;	
-	
 	public String current="crew";
 	public Breadcrumb[] breadcrumbs;
-
 	public Tab[] tableTabs;
-
 	public String tab = "personal";
-
 	public String tagArray = "[]";
-
 	private User user;
+	
+	public String docfolder;
+	public File document;
+	public String documentContentType;
+	public String documentFileName;
+	public String tags;
+	
 
 	@Inject
 	private StarliteCoreManager manager;
@@ -82,7 +92,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 	public int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
 	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
+	
 	@Override
 	public String execute() throws Exception {
 		//crewMember = manager.getCrewMember(id);
@@ -101,8 +111,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				readOnly = true;
 			}
 
-		if (tab.equals("personal"))
+		if (tab.equals("personal")){
 			return SUCCESS;
+		}
 
 		if (tab.toLowerCase().equals("review") && !user.hasPermission("ManagerEdit"))
 			notAuthorised = true;
@@ -131,6 +142,32 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		return tab;
 	}
 
+	public String photo(){
+		return "photo";
+	}
+	
+	public InputStream getPhoto(){
+	  try{
+	    folder = docManager.getFolderByPath("/crew/"+id, user);
+	    LOG.info(folder.getDocs());
+	    Document photo = folder.getDocumentByTag("photo");
+	    LOG.info("Name:"+photo.getName());
+	    LOG.info("Uuid:"+photo.getUuid());
+	    return (InputStream) docManager.getDocumentData(photo);
+	  }
+	  catch(Exception e){
+		  LOG.error(e);
+		  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+		  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+		  try {
+			return new FileInputStream(def);
+		} catch (FileNotFoundException e1) {
+			LOG.error(e1);
+			return null;
+		}
+	  }
+	}
+	
 	public String tableHtml;
 	private String setupFlight() {
 		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
@@ -446,6 +483,21 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 	public String save() throws Exception {
 		manager.saveCrewMember(crewMember);
+		try{
+		if(document != null){
+			LOG.info(tags+" "+docfolder);
+			String[] tagsArray = tags.split(" ");
+			Document doc = new Document();
+			doc.setName(documentFileName);
+			doc.setContentType(documentContentType);
+			Bookmark b = bookmarkManager.createBookmark(documentFileName, "Document", docfolder+"/"+documentFileName, tagsArray);
+			doc.setBookmark(b);
+			docManager.createDocument(doc, docfolder, new FileInputStream(document), user);
+		}
+		}
+		catch(Exception e){
+			LOG.error(e);
+		}
 		return execute();
 	}
 

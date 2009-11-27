@@ -37,7 +37,7 @@
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly" style="clear:left;">
 	<#else>
-	<form action="crewMember!save.action" method="POST" class="smart" style="clear:left;">
+	<form action="crewMember!save.action" method="POST" class="smart" style="clear:left;" enctype="multipart/form-data">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -47,6 +47,29 @@
 		
 		
 		<div style="float:left; width: 500px;">
+		<fieldset>
+		<legend>Photo</legend>
+		<div class="fm-opt" style="height:120px;">
+		    <label for="image" style="float:left;">&nbsp;</label>
+		    <div style="float:left;padding:10px;margin:10px;border:1px solid silver;width:100px;height:100px">
+		        <img name="image" src="crewMember!photo.action?id=${id!}" style="width:100px;height:100px;">
+		    </div>
+		</div>
+		<br/>
+		<div style="">
+		    <div class="fm-opt">
+                <label for="photo">Upload:</label>
+                <input name="document" type="file" value=""/>
+                <input type="hidden" name="tags" value="photo">
+                <input type="hidden" name="docfolder" value="/crew/${id!}"/>
+            </div>
+		</div>
+		
+		
+		
+		</fieldset>
+		
+		
 		<fieldset>
 			<legend>Name</legend>
 			<div class="fm-opt">
@@ -68,10 +91,6 @@
 			<div class="fm-opt">
 				<label for="crewMember.personal.firstName">First Name:</label>
 				<input name="crewMember.personal.firstName" type="text" value="${crewMember.personal.firstName!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.personal.preferredName">Preferred Name:</label>
-				<input name="crewMember.personal.preferredName" type="text" value="${crewMember.personal.preferredName!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.secondName">Second Name:</label>

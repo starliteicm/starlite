@@ -135,6 +135,16 @@ public class DocumentManager {
 	}
 	
 	@Transactional
+	public InputStream getDocumentData(Document doc){
+		File f = new File(docsFolderPath+doc.getUuid());
+		try {
+			return new FileInputStream(f);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+	}
+	
+	@Transactional
 	public void createDocument(Document info, String folder, InputStream docData, User user) throws IOException {
 		boolean created = false;
 		File file = null;
