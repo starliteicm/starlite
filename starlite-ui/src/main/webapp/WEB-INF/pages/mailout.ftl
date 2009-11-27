@@ -9,6 +9,7 @@
 	
 	var selectedEmail = ${memsSelected.size()};
 	var selectedDoc   = ${docsSelected.size()};
+
 	
 	function updateSelected(obj){
 	  //alert("here "+obj.className);
@@ -17,14 +18,15 @@
 	      selectedEmail++;
 	    }
 	    else {
-	    if(selectedEmail > 0){
-	      selectedEmail--;
-	      }
+          if(selectedEmail > 0){
+            selectedEmail--;
+            }
 	    }
 	    var esn = document.getElementById("emailSelectNo");
 	    //alert(esn+" "+ selectedEmail);
 	    esn.innerHTML = ""+selectedEmail;
 	  }
+	  
 	  else{
 	  	if (obj.checked == true){
 	      selectedDoc++;
@@ -55,6 +57,29 @@
 			});
 			$('#wysiwyg').wysiwyg();
         });
+        
+   function selectAll()
+   {
+      var count = document.emailForm.elements.length;
+      for (var i=0; i<count; i++)
+      {
+         if(document.emailForm.elements[i].name =="mems")
+         {
+            if(document.emailForm.elements[i].checked == true)
+               {
+                  document.emailForm.elements[i].checked = false; 
+               }
+            else 
+               {
+                  document.emailForm.elements[i].checked = true;
+               }
+         }  
+      }
+	}
+	
+        
+        
+        
 	</script>
 	<style type="text/css">
     #tooltip.pretty {
@@ -83,9 +108,8 @@
 }
     </style>
 </head>
+
 <body>
-
-
 		<#macro treeSegment folder path rootPath>
 			<#if folder.subFolders?size &gt; 0 || folder.docs?size &gt; 0>
 			<ul>
@@ -131,7 +155,12 @@
 		</#list>
 		</ul>
 		</div>
-		  
+		
+		<div>
+		<button type="button" name="checkallbox" onclick="selectAll();">Select All</button>
+		
+		
+		</div>
 		
 		<div class="heading"><span style="float:left;">Additional To: (Email Addresses)  </span><img class="tooltip" title="Additional To: Please enter the email address of people who you would like to include in this mailout but who are not on the system. Please comma / semicolon seperate any emails (e.g. to1@domain.com;to2@domain.com  to1@domain.com,to2@domain.com  )" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 		<div ><input type="text" name="emails" value="${emails?if_exists}" style="width:476px;margin-bottom:10px;border:1px solid silver;" /></div>
