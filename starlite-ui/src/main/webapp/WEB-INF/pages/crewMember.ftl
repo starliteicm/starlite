@@ -70,6 +70,10 @@
 				<input name="crewMember.personal.firstName" type="text" value="${crewMember.personal.firstName!}"/>
 			</div>
 			<div class="fm-opt">
+				<label for="crewMember.personal.preferredName">Preferred Name:</label>
+				<input name="crewMember.personal.preferredName" type="text" value="${crewMember.personal.preferredName!}"/>
+			</div>
+			<div class="fm-opt">
 				<label for="crewMember.personal.secondName">Second Name:</label>
 				<input name="crewMember.personal.secondName" type="text" value="${crewMember.personal.secondName!}"/>
 			</div>
