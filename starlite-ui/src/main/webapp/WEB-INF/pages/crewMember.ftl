@@ -121,7 +121,8 @@
 			</div>
 			<div class="fm-opt">
                 <label for="crewMember.personal.passportNumber">Upload:</label>
-                <input name="crewMember.personal.passportNumber" type="file" value="${crewMember.personal.passportNumber!}"/>
+                <input name="passport" type="file" value=""/>
+                <input type="hidden" name="passportTags" value="passport">                
             </div>
 		</fieldset>
 		<fieldset>

@@ -76,6 +76,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String documentContentType;
 	public String documentFileName;
 	public String tags;
+	public String passportTags;
+	public File passport;
+	public String passportContentType;
+	public String passportFileName;
 	
 
 	@Inject
@@ -498,6 +502,21 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		catch(Exception e){
 			LOG.error(e);
 		}
+		try{
+			if(passport != null){
+				LOG.info(passportTags+" "+docfolder);
+				String[] tagsArray = passportTags.split(" ");
+				Document doc = new Document();
+				doc.setName(passportFileName);
+				doc.setContentType(passportContentType);
+				Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
+				doc.setBookmark(b);
+				docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
+			}
+			}
+			catch(Exception e){
+				LOG.error(e);
+			}
 		return execute();
 	}
 
