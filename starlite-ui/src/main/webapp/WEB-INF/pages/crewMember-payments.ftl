@@ -1,30 +1,25 @@
 <script language="javascript">
-function showmsg()
-   { 
-      $("#msgmonthly").css("display","none");
-      $("#msgdaily").css("display","none");
-      $("#msgtraining").css("display","none");
-      $("#msgtravel").css("display","none");
-      var monthly = $("#monthly").val();
-      var daily = $("#daily").val();
+function showmsg(){            
+      var monthly  = $("#monthly").val();
+      var daily    = $("#daily").val();
       var training = $("#training").val();
-      var travel = $("#travel").val();
-      if (monthly == ""||daily==""||training==""||travel=="")
-         {
-            if (monthly =="")
-               {$('#msgmonthly').css("display","block");}
-            else{
-                  if (daily==""){$('#msgdaily').css("display","block");}
-                  else{
-                      if (training==""){$('#msgtraining').css("display","block");}
-                      else if(travel==""){$('#msgtravel').css("display","block");}
-                  }
-            }
-         
-         return false;}
-      else{document.forms.paymentform.submit();
-      }
-   }
+      var travel   = $("#travel").val();
+      var errormsg = "";
+      var error    = 0;
+      
+      if(monthly == ""){ errormsg += "Monthly payment not entered <br>"; error=1;}
+      if(daily   == ""){ errormsg += "Daily allowance not entered <br>"; error=1;}      
+      if(training== ""){ errormsg += "Training allowance not entered <br>"; error=1;}
+      if(travel  == ""){ errormsg += "Travel allowance not entered <br>"; error=1;}
+      
+      if(error==1){
+         document.getElementById("msg-error").innerHTML=errormsg; 
+         return false;      
+      }else{
+         document.getElementById("msg-error").innerHTML="";
+         document.forms.paymentform.submit();                   
+      }                          
+}
 </script>
 
 <#include "/starlite.ftl">
@@ -154,10 +149,9 @@ function showmsg()
 		<hr class="clear"/>
 		<#if !readOnly>
 		<button type="button" onclick="showmsg();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
-		<div style="display:none;" id ="msgmonthly"><span style="color:red;">Please ensure that the monthly payment is entered before saving</span></div>
-		<div style="display:none;" id ="msgdaily"><span style="color:red;">Please ensure that the daily allowance is entered before saving</span></div>
-		<div style="display:none;" id ="msgtraining"><span style="color:red;">Please ensure that the training allowance is entered before saving</span></div>
-		<div style="display:none;" id ="msgtravel"><span style="color:red;">Please ensure that the travel allowance is entered before saving</span></div>
+		
+  <div id="msg-error" style="color:red"></div>
+
 		
 		</#if>
 		</form>
