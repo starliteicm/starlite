@@ -7,18 +7,15 @@ function showmsg(){
       var errormsg = "";
       var error    = 0;
       
-      if(monthly == ""){ errormsg += "Monthly payment not entered <br>"; error=1;}
+      if(monthly == ""){ errormsg += "Monthly rate not entered <br>"; error=1;}
       if(daily   == ""){ errormsg += "Daily allowance not entered <br>"; error=1;}      
       if(training== ""){ errormsg += "Training allowance not entered <br>"; error=1;}
       if(travel  == ""){ errormsg += "Travel allowance not entered <br>"; error=1;}
       
-      if(error==1){
-         document.getElementById("msg-error").innerHTML=errormsg; 
-         return false;      
+      if(error==1){$("#msg-error").html(errormsg); return false;
       }else{
-         document.getElementById("msg-error").innerHTML="";
-         document.forms.paymentform.submit();                   
-      }                          
+      $("#msg-error").html(""); document.forms.paymentform.submit(); 
+      }                                     
 }
 </script>
 
