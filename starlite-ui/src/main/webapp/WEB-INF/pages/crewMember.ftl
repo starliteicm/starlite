@@ -4,6 +4,83 @@
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <@enableJQuery/>
   <@enableDatePickers/>
+
+<script language="javascript">
+  function validate(){            
+        var firstname          = $("#firstname").val();
+        var lastname           = $("#lastname").val();
+        var countryofissue     = $("#countryofissue").val();
+        var passportno         = $("#passportno").val();        
+        var expiry             = $("#expiry").val();
+        var address1           = $("#address1").val();
+        var address2           = $("#address2").val();
+        var address3           = $("#address3").val();
+        var address4           = $("#address4").val();
+        var postaladdress      = $("#postaladdress").val();
+        var postaltown         = $("#postaltown").val();
+        var postalcode         = $("#postalcode").val();
+        var mobilephone        = $("#mobilephone").val();
+        var homephone          = $("#homephone").val();
+        var email              = $("#email").val();
+        var gender             = $("#gender").val();
+        var dob                = $("#dob").val();
+        var nationality        = $("#nationality").val();
+        var maritalstatus      = $("#maritalstatus").val();
+        var nokfirstname       = $("#nokfirstname").val();
+        var noklastname        = $("#noklastname").val();
+        var nokmobilephone     = $("#nokmobilephone").val();
+        var nokhomephone       = $("#nokhomephone").val();
+        var nokrelation        = $("#nokrelation").val();
+        var nokaddress1        = $("#nokaddress1").val();
+        var nokaddress2        = $("#nokaddress2").val();
+        var nokaddress3        = $("#nokaddress3").val();
+        var nokaddress4        = $("#nokaddress4").val();
+        var ecdcontactname     = $("#ecdcontactname").val();
+        var ecdcontactrelation = $("#ecdcontactrelation").val();        
+        
+        var errormsg = "<b>The following mandatory fields are blank: </b>";
+        var error    = 0;
+        
+        if(firstname == ""){ errormsg += "First name, "; error=1;}
+        if(lastname   == ""){ errormsg += "Last name, "; error=1;}      
+        if(countryofissue== ""){ errormsg += "Country of issue, "; error=1;}
+        if(passportno  == ""){ errormsg += "Passport number, "; error=1;}
+        if(expiry  == ""){ errormsg += "Passport expiry,   "; error=1;}
+        if(address1  == ""){ errormsg += "Address 1, "; error=1;}
+        if(address2  == ""){ errormsg += "Address 2, "; error=1;}
+        if(address3  == ""){ errormsg += "Address 3, "; error=1;}
+        if(address4  == ""){ errormsg += "Address 4, "; error=1;}
+        if(postaladdress  == ""){ errormsg += "Postal address, "; error=1;}
+        if(postaltown  == ""){ errormsg += "Postal town, "; error=1;}
+        if(postalcode  == ""){ errormsg += "Postal code, "; error=1;}
+        if(mobilephone  == ""){ errormsg += "Mobile phone, "; error=1;}
+        if(homephone  == ""){ errormsg += "Home phone, "; error=1;}
+        if(email  == ""){ errormsg += "Email, "; error=1;}
+        if(gender  == ""){ errormsg += "Gender, "; error=1;}
+        if(dob  == ""){ errormsg += "Date of birth, "; error=1;}
+        if(nationality  == ""){ errormsg += "Nationality, "; error=1;}
+        if(maritalstatus  == ""){ errormsg += "Marital status, "; error=1;}
+        if(nokfirstname  == ""){ errormsg += "Next of kin's first name, "; error=1;}
+        if(noklastname  == ""){ errormsg += "Next of kin's second name, "; error=1;}
+        if(nokmobilephone  == ""){ errormsg += "Next of kin's mobile number, "; error=1;}
+        if(nokhomephone  == ""){ errormsg += "Next of kin's home phone, "; error=1;}
+        if(nokrelation  == ""){ errormsg += "Relation to next of kin, "; error=1;}
+        if(nokaddress1  == ""){ errormsg += "Next of kin's address 1, "; error=1;}
+        if(nokaddress2  == ""){ errormsg += "Next of kin's address 2, "; error=1;}
+        if(nokaddress3  == ""){ errormsg += "Next of kin's address 3, "; error=1;}
+        if(nokaddress4  == ""){ errormsg += "Next of kin's address 4, "; error=1;}
+        if(ecdcontactname  == ""){ errormsg += "Emergency contact's name, "; error=1;}
+        if(ecdcontactrelation  == ""){ errormsg += "Relation to emergency contact"; error=1;}
+        
+        
+        if(error==1){$("#msg-error").html(errormsg); return false;
+        }else{
+        $("#msg-error").html(""); document.forms.personalform.submit(); 
+        }                                                               
+  }
+
+</script>
+
 </head>
 
 <body>
@@ -37,7 +114,7 @@
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly" style="clear:left;">
 	<#else>
-	<form action="crewMember!save.action" method="POST" class="smart" style="clear:left;" enctype="multipart/form-data">
+	<form action="crewMember!save.action" name="personalform" method="POST" class="smart" style="clear:left;" enctype="multipart/form-data">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -90,7 +167,7 @@
 	    	</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.firstName">First Name:</label>
-				<input name="crewMember.personal.firstName" type="text" value="${crewMember.personal.firstName!}"/>
+				<input name="crewMember.personal.firstName" id="firstname" type="text" value="${crewMember.personal.firstName!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.secondName">Second Name:</label>
@@ -98,7 +175,7 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.lastName">Last Name:</label>
-				<input name="crewMember.personal.lastName" type="text" value="${crewMember.personal.lastName!}"/>
+				<input name="crewMember.personal.lastName" id="lastname" type="text" value="${crewMember.personal.lastName!}"/>
 			</div>
 			<div class="fm-opt">
                 <label for="crewMember.personal.preferedName">Prefered Name:</label>
@@ -109,15 +186,15 @@
 			<legend>Passport</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.passportCountry">Country of Issue:</label>
-				<input name="crewMember.personal.passportCountry" type="text" value="${crewMember.personal.passportCountry!}"/>
+				<input name="crewMember.personal.passportCountry" id="countryofissue" type="text" value="${crewMember.personal.passportCountry!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.passportNumber">Passport Number:</label>
-				<input name="crewMember.personal.passportNumber" type="text" value="${crewMember.personal.passportNumber!}"/>
+				<input name="crewMember.personal.passportNumber" id="passportno" type="text" value="${crewMember.personal.passportNumber!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.passportExpiryDate">Expiry Date:</label>
-				<input name="crewMember.personal.passportExpiryDate" class="date-pick" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>				
+				<input name="crewMember.personal.passportExpiryDate" id="expiry" class="date-pick" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>				
 			</div>
 			<div class="fm-opt">
                 <label for="crewMember.personal.passportNumber">Upload:</label>
@@ -129,19 +206,19 @@
 			<legend>Address</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.address1">Line 1:</label>
-				<input name="crewMember.personal.address1" type="text" value="${crewMember.personal.address1!}"/>
+				<input name="crewMember.personal.address1" id="address1" type="text" value="${crewMember.personal.address1!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.address2">Line 2:</label>
-				<input name="crewMember.personal.address2" type="text" value="${crewMember.personal.address2!}"/>
+				<input name="crewMember.personal.address2" id="address2" type="text" value="${crewMember.personal.address2!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.address3">Line 3:</label>
-				<input name="crewMember.personal.address3" type="text" value="${crewMember.personal.address3!}"/>
+				<input name="crewMember.personal.address3" id="address3" type="text" value="${crewMember.personal.address3!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.address4">Line 4:</label>
-				<input name="crewMember.personal.address4" type="text" value="${crewMember.personal.address4!}"/>
+				<input name="crewMember.personal.address4" id="address4" type="text" value="${crewMember.personal.address4!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.address5">Line 5:</label>
@@ -150,11 +227,11 @@
 			<br/>
 			<div class="fm-opt">
 				<label for="crewMember.personal.postalAddress">Postal Address:</label>
-				<input name="crewMember.personal.postalAddress" type="text" value="${crewMember.personal.postalAddress!}"/>
+				<input name="crewMember.personal.postalAddress" id="postaladdress" type="text" value="${crewMember.personal.postalAddress!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.postalTown">Postal Town:</label>
-				<input name="crewMember.personal.postalTown" type="text" value="${crewMember.personal.postalTown!}"/>
+				<input name="crewMember.personal.postalTown" id="postaltown" type="text" value="${crewMember.personal.postalTown!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.postalCountry">Postal Country:</label>
@@ -162,14 +239,14 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.postalCode">Postal Code:</label>
-				<input name="crewMember.personal.postalCode" type="text" value="${crewMember.personal.postalCode!}"/>
+				<input name="crewMember.personal.postalCode" id="postalcode" type="text" value="${crewMember.personal.postalCode!}"/>
 			</div>
 		</fieldset>
 		<fieldset>
 			<legend>Contact Details</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.mobilePhone">Mobile Phone:</label>
-				<input name="crewMember.personal.mobilePhone" type="text" value="${crewMember.personal.mobilePhone!}"/>
+				<input name="crewMember.personal.mobilePhone" id="mobilephone" type="text" value="${crewMember.personal.mobilePhone!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.mobilePhone2">Alt. Mobile Phone:</label>
@@ -177,7 +254,7 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.homePhone">Home Phone:</label>
-				<input name="crewMember.personal.homePhone" type="text" value="${crewMember.personal.homePhone!}"/>
+				<input name="crewMember.personal.homePhone" id="homephone" type="text" value="${crewMember.personal.homePhone!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.homeFax">Home Fax:</label>
@@ -193,7 +270,7 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.email">Email:</label>
-				<input name="crewMember.personal.email" type="text" value="${crewMember.personal.email!}"/>
+				<input name="crewMember.personal.email" id="email" type="text" value="${crewMember.personal.email!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.alternateEmail">Alt. Email:</label>
@@ -221,7 +298,7 @@
 			<div class="fm-opt">
 				<label for="crewMember.personal.status">Gender:</label>
 				<#assign gender=crewMember.personal.gender!/>
-				<select name="crewMember.personal.gender">
+				<select name="crewMember.personal.gender" id="gender">
 					<option>
 					<option <#if gender == 'Male'>selected</#if>>Male
 					<option <#if gender == 'Female'>selected</#if>>Female
@@ -230,16 +307,16 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.dateOfBirth">Date Of Birth:</label>
-				<input name="crewMember.personal.dateOfBirth" type="text" class="date-pick" value="<#if crewMember.personal.dateOfBirth??>${crewMember.personal.dateOfBirth?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.personal.dateOfBirth" id="dob" type="text" class="date-pick" value="<#if crewMember.personal.dateOfBirth??>${crewMember.personal.dateOfBirth?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nationality">Nationality:</label>
-				<input name="crewMember.personal.nationality" type="text" value="${crewMember.personal.nationality!}"/>
+				<input name="crewMember.personal.nationality" id="nationality" type="text" value="${crewMember.personal.nationality!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.status">Marital Status:</label>
 				<#assign status=crewMember.personal.status!/>
-				<select name="crewMember.personal.status">
+				<select name="crewMember.personal.status" id="maritalstatus" >
 					<option>
 					<option <#if status == 'Divorced'>selected</#if>>Divorced
 					<option <#if status == 'Engaged'>selected</#if>>Engaged
@@ -270,40 +347,40 @@
 			<legend>Next Of Kin</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinFirstName">First Name:</label>
-				<input name="crewMember.personal.nextOfKinFirstName" type="text" value="${crewMember.personal.nextOfKinFirstName!}"/>
+				<input name="crewMember.personal.nextOfKinFirstName" id="nokfirstname" type="text" value="${crewMember.personal.nextOfKinFirstName!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinLastName">Last Name:</label>
-				<input name="crewMember.personal.nextOfKinLastName" type="text" value="${crewMember.personal.nextOfKinLastName!}"/>
+				<input name="crewMember.personal.nextOfKinLastName" id="noklastname" type="text" value="${crewMember.personal.nextOfKinLastName!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinMobilePhone">Mobile Phone</label>
-				<input name="crewMember.personal.nextOfKinMobilePhone" type="text" value="${crewMember.personal.nextOfKinMobilePhone!}"/>
+				<input name="crewMember.personal.nextOfKinMobilePhone" id="nokmobilephone" type="text" value="${crewMember.personal.nextOfKinMobilePhone!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinHomePhone">Home Phone:</label>
-				<input name="crewMember.personal.nextOfKinHomePhone" type="text" value="${crewMember.personal.nextOfKinHomePhone!}"/>
+				<input name="crewMember.personal.nextOfKinHomePhone" id="nohomephone" type="text" value="${crewMember.personal.nextOfKinHomePhone!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinRelation">Relation:</label>
-				<input name="crewMember.personal.nextOfKinRelation" type="text" value="${crewMember.personal.nextOfKinRelation!}"/>
+				<input name="crewMember.personal.nextOfKinRelation" id="nokrelation" type="text" value="${crewMember.personal.nextOfKinRelation!}"/>
 			</div>
 			<br/>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinAddress1">Address Line 1:</label>
-				<input name="crewMember.personal.nextOfKinAddress1" type="text" value="${crewMember.personal.nextOfKinAddress1!}"/>
+				<input name="crewMember.personal.nextOfKinAddress1" id="nokaddress1" type="text" value="${crewMember.personal.nextOfKinAddress1!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinAddress2">Address Line 2:</label>
-				<input name="crewMember.personal.nextOfKinAddress2" type="text" value="${crewMember.personal.nextOfKinAddress2!}"/>
+				<input name="crewMember.personal.nextOfKinAddress2" id="nokaddress2" type="text" value="${crewMember.personal.nextOfKinAddress2!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinAddress3">Address Line 3:</label>
-				<input name="crewMember.personal.nextOfKinAddress3" type="text" value="${crewMember.personal.nextOfKinAddress3!}"/>
+				<input name="crewMember.personal.nextOfKinAddress3" id="nokaddress3" type="text" value="${crewMember.personal.nextOfKinAddress3!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinAddress4">Address Line 4:</label>
-				<input name="crewMember.personal.nextOfKinAddress4" type="text" value="${crewMember.personal.nextOfKinAddress4!}"/>
+				<input name="crewMember.personal.nextOfKinAddress4" id="nokaddress4" type="text" value="${crewMember.personal.nextOfKinAddress4!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinAddress5">Address Line 5:</label>
@@ -314,11 +391,11 @@
 			<legend>Emergency Contact Details (Different from Next of Kin)</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.emergencyContactName">Contact Name</label>
-				<input name="crewMember.personal.emergencyContactName" type="text" value="${crewMember.personal.emergencyContactName!}"/>
+				<input name="crewMember.personal.emergencyContactName" id="ecdcontactname" type="text" value="${crewMember.personal.emergencyContactName!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.emergencyContactRelationship">Contact Relation</label>
-				<input name="crewMember.personal.emergencyContactRelationship" type="text" value="${crewMember.personal.emergencyContactRelationship!}"/>
+				<input name="crewMember.personal.emergencyContactRelationship" id="ecdcontactrelation" type="text" value="${crewMember.personal.emergencyContactRelationship!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.emergencyContactNumber">Contact Number</label>
@@ -341,8 +418,9 @@
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>
-		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save</button>
-		<hr class="clear"/>
+		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save</button>
+		<div id="msg-error" style="color:red"></div>
+  <hr class="clear"/>
 		</#if>
 	</form>
 </body>
