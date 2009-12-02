@@ -7,6 +7,56 @@
   <@enableDatePickers/>
   <@enableCalculator/>
   <@enableHelp/>
+
+<script type="text/javascript">
+
+//this adds a leading zero if the day/month is one digit e.g 1 becomes 01
+function addZero(timeConstruct){
+   if(timeConstruct.length==1){
+      temp = "0" + timeConstruct;      
+      timeConstruct = temp;
+      return timeConstruct;
+   }else{
+      return timeConstruct;                    
+ }
+}
+
+$("document").ready(function() {        
+
+   //GENERATE AND PROCESS CURRENT DATE
+   var date = new Date();
+   var m = date.getMonth()+1  + "";
+   var d = date.getDate()     + "";
+   var y = date.getFullYear() + "";
+   
+   //add leading zeros to day and month if needed
+   currentday   = addZero(d); 
+   currentmonth = addZero(m);
+   currentyear  = y;
+   
+   //concatenate date and convert to integer
+   current_datestr = (currentyear + "" + currentmonth + "" + currentday);      
+   current_date=parseInt(current_datestr);
+
+   //PROCESS EXPIRY DATE
+   var expiry = $("#lic-exp").val();
+   var exp = expiry.split('/');
+   
+   //add leading zeros to day and month if needed   
+   expirymonth = addZero(exp[1]);
+   expiryday  = addZero(exp[0]);
+   expiryyear  = exp[2];
+   
+   //concatenate date and convert to integer
+   reversedatestr = expiryyear + expirymonth + expiryday;   
+   reversedate=parseInt(reversedatestr);
+   
+   //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
+   if(current_date > reversedate){ $("#msg-expiry").show();}else{$("#msg-expiry").hide();}
+});    
+
+</script>
+
 </head>
 
 <body>
@@ -131,7 +181,7 @@
 			<div class="fm-opt">
 				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
 				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
+			</div>			
 			<br/>
 			<div class="fm-opt">
 				<label for="crewMember.role.night">Night Rated:</label>
@@ -207,7 +257,10 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.expiryDate">Expiry Date:</label>
-				<input name="crewMember.role.r1.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="lic-exp" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
+			</div>
+			<div class="fm-opt" id="msg-expiry" style="margin-left:20px;">
+    <font color="red">License expired</font>
 			</div>
 			<br/><br/>
 		</fieldset>
@@ -257,7 +310,7 @@
 			<div class="fm-opt">
 				<label for="crewMember.role.lastDate">Date:</label>
 				<input name="crewMember.role.lastDate" type="text" class="date-pick" value="<#if crewMember.role.lastDate??>${crewMember.role.lastDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
+			</div>                                                                                                                                                                
 			<div class="fm-opt">
 				<label for="crewMember.role.lastType">Type:</label>
 					<select name="crewMember.role.lastType">
