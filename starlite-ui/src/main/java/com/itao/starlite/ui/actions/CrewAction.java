@@ -129,6 +129,7 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 
 		String firstname = "";
 		String lastname  = "";
+		String preferredname= "";
 		String fromDate  = "";
 		String toDate    = "";
 		String email     = "";
@@ -136,6 +137,7 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 		if(crewMembers.size() > 0){
 			CrewMember cm = (CrewMember) crewMembers.get(0);
 			firstname = cm.getPersonal().getFirstName();
+			//preferredname = cm.getPersonal().getPreferredName();
 			lastname  = cm.getPersonal().getLastName();
 			email     = cm.getPersonal().getEmail();
 			fromDate  = cm.startDate;

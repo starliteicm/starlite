@@ -68,6 +68,7 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	public String shallReturn;
 	
 	public String upload() throws Exception {
+		LOG.info(tags+" "+folder+" "+shallReturn);
 		String[] tagsArray = tags.split(" ");
 		
 		Document doc = new Document();

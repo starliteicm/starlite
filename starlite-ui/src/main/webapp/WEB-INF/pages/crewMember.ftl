@@ -2,6 +2,8 @@
 <html>
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
+  <@enableJQuery/>
+  <@enableDatePickers/>
 </head>
 
 <body>
@@ -31,15 +33,43 @@
 	</#if>
 
 	<@subTabs/>
+		
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly" style="clear:left;">
 	<#else>
-	<form action="crewMember!save.action" method="POST" class="smart" style="clear:left;">
+	<form action="crewMember!save.action" method="POST" class="smart" style="clear:left;" enctype="multipart/form-data">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
 		<input type="hidden" name="tab" value="personal"/>
+		
+		<div style="padding-top:25px;position:absolute;left:950px;"><button type="button" onclick="return false;" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/printer.png"/> Print</button></div>
+		
+		
 		<div style="float:left; width: 500px;">
+		<fieldset>
+		<legend>Photo</legend>
+		<div class="fm-opt" style="height:120px;">
+		    <label for="image" style="float:left;">&nbsp;</label>
+		    <div style="float:left;padding:10px;margin:10px;border:1px solid silver;width:100px;height:100px">
+		        <img name="image" src="crewMember!photo.action?id=${id!}" style="width:100px;height:100px;">
+		    </div>
+		</div>
+		<br/>
+		<div style="">
+		    <div class="fm-opt">
+                <label for="photo">Upload:</label>
+                <input name="document" type="file" value=""/>
+                <input type="hidden" name="tags" value="photo">
+                <input type="hidden" name="docfolder" value="/crew/${id!}"/>
+            </div>
+		</div>
+		
+		
+		
+		</fieldset>
+		
+		
 		<fieldset>
 			<legend>Name</legend>
 			<div class="fm-opt">
@@ -87,8 +117,13 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.passportExpiryDate">Expiry Date:</label>
-				<input name="crewMember.personal.passportExpiryDate" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.personal.passportExpiryDate" class="date-pick" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>				
 			</div>
+			<div class="fm-opt">
+                <label for="crewMember.personal.passportNumber">Upload:</label>
+                <input name="passport" type="file" value=""/>
+                <input type="hidden" name="passportTags" value="passport">                
+            </div>
 		</fieldset>
 		<fieldset>
 			<legend>Address</legend>
@@ -165,6 +200,20 @@
 				<input name="crewMember.personal.alternateEmail" type="text" value="${crewMember.personal.alternateEmail!}"/>
 			</div>
 		</fieldset>	
+		
+		<fieldset>
+		    <legend>Medical</legend>
+		    <div class="fm-opt">
+                <label for="crewMember.role.medicalAid">Medical Aid:</label>
+                <input name="crewMember.role.medicalAid" type="text" value="${crewMember.role.medicalAid!}"/>
+            </div>
+            <div class="fm-opt">
+                <label for="crewMember.role.medicalAidNumber">Aid Number:</label>
+                <input name="crewMember.role.medicalAidNumber" type="text" value="${crewMember.role.medicalAidNumber!}"/>
+            </div>
+        </fieldset>     
+		
+		
 		</div>
 		<div style="float:left; width: 500px;">
 		<fieldset>
@@ -181,7 +230,7 @@
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.dateOfBirth">Date Of Birth:</label>
-				<input name="crewMember.personal.dateOfBirth" type="text" value="<#if crewMember.personal.dateOfBirth??>${crewMember.personal.dateOfBirth?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.personal.dateOfBirth" type="text" class="date-pick" value="<#if crewMember.personal.dateOfBirth??>${crewMember.personal.dateOfBirth?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.personal.nationality">Nationality:</label>
@@ -205,6 +254,18 @@
 			</div>
 		</fieldset>
 
+        <fieldset>
+            <legend>Driving Licence</legend>
+            <div class="fm-opt">
+                <label for="crewMember.role.drivingLicenceNumber">Driving Licence:</label>
+                <input name="crewMember.role.drivingLicenceNumber" type="text" value="${crewMember.role.drivingLicenceNumber!}"/>
+            </div>
+            <div class="fm-opt">
+                <label for="crewMember.role.drivingLicenceIssued">Driving Licence Issued:</label>
+                <input name="crewMember.role.drivingLicenceIssued" type="text" value="${crewMember.role.drivingLicenceIssued!}"/>
+            </div>
+        </fieldset>
+
 		<fieldset>
 			<legend>Next Of Kin</legend>
 			<div class="fm-opt">
@@ -226,14 +287,6 @@
 			<div class="fm-opt">
 				<label for="crewMember.personal.nextOfKinRelation">Relation:</label>
 				<input name="crewMember.personal.nextOfKinRelation" type="text" value="${crewMember.personal.nextOfKinRelation!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinNumberOfChildren">Number of Children:</label>
-				<input name="crewMember.personal.nextOfKinNumberOfChildren" type="text" value="${crewMember.personal.nextOfKinNumberOfChildren!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinEldestChildName">Eldest Child:</label>
-				<input name="crewMember.personal.nextOfKinEldestChildName" type="text" value="${crewMember.personal.nextOfKinEldestChildName!}"/>
 			</div>
 			<br/>
 			<div class="fm-opt">
@@ -258,7 +311,7 @@
 			</div>
 		</fieldset>
 		<fieldset>
-			<legend>Emergency Contact Details</legend>
+			<legend>Emergency Contact Details (Different from Next of Kin)</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.emergencyContactName">Contact Name</label>
 				<input name="crewMember.personal.emergencyContactName" type="text" value="${crewMember.personal.emergencyContactName!}"/>
@@ -288,7 +341,7 @@
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>
-		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save</button>
 		<hr class="clear"/>
 		</#if>
 	</form>

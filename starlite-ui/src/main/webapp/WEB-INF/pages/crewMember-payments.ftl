@@ -1,6 +1,36 @@
+<script language="javascript">
+function showmsg()
+   { 
+      $("#msgmonthly").css("display","none");
+      $("#msgdaily").css("display","none");
+      $("#msgtraining").css("display","none");
+      $("#msgtravel").css("display","none");
+      var monthly = $("#monthly").val();
+      var daily = $("#daily").val();
+      var training = $("#training").val();
+      var travel = $("#travel").val();
+      if (monthly == ""||daily==""||training==""||travel=="")
+         {
+            if (monthly =="")
+               {$('#msgmonthly').css("display","block");}
+            else{
+                  if (daily==""){$('#msgdaily').css("display","block");}
+                  else{
+                      if (training==""){$('#msgtraining').css("display","block");}
+                      else if(travel==""){$('#msgtravel').css("display","block");}
+                  }
+            }
+         
+         return false;}
+      else{document.forms.paymentform.submit();
+      }
+   }
+</script>
+
 <#include "/starlite.ftl">
 <html>
 <head>
+   <@enableJQuery/> 
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
 </head>
@@ -45,9 +75,9 @@
 	<#else>
 
 	<#if readOnly>
-	<form action="#" method="POST" class="smart readonly">
+	<form action="#" method="POST" class="smart readonly" name ="paymentform">
 	<#else>
-	<form action="crewMember!save.action" method="POST" class="smart">
+	<form action="crewMember!save.action" method="POST" class="smart" name ="paymentform">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -76,7 +106,7 @@
 				<#if readOnly>
 					<label>${crewMember.payments.monthlyBaseRate.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.monthlyBaseRate.amountAsDouble" type="text" style="width:76px;" value="${crewMember.payments.monthlyBaseRate.amountAsDouble!}"/>
+					<input name="crewMember.payments.monthlyBaseRate.amountAsDouble"  id = "monthly" type="text" style="width:76px;" value="${crewMember.payments.monthlyBaseRate.amountAsDouble!}"/>
 				</#if>
 			</div>
 		</fieldset>
@@ -89,7 +119,7 @@
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.areaAllowance.amountAsDouble" type="text" style="width:76px;" value="${crewMember.payments.areaAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.areaAllowance.amountAsDouble" id = "daily" type="text" style="width:76px;" value="${crewMember.payments.areaAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 
@@ -98,7 +128,7 @@
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.instructorAllowance.amountAsDouble" type="text" style="width:76px;" value="${crewMember.payments.instructorAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.instructorAllowance.amountAsDouble" id = "instructor" type="text" style="width:76px;" value="${crewMember.payments.instructorAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 
@@ -107,7 +137,7 @@
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.dailyAllowance.amountAsDouble" type="text" style="width:76px;" value="${crewMember.payments.dailyAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.dailyAllowance.amountAsDouble" id ="training" type="text" style="width:76px;" value="${crewMember.payments.dailyAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 
@@ -116,17 +146,22 @@
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.flightAllowance.amountAsDouble" type="text" style="width:76px;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 		</fieldset>
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>
-		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
-		<hr class="clear"/>
+		<button type="button" onclick="showmsg();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+		<div style="display:none;" id ="msgmonthly"><span style="color:red;">Please ensure that the monthly payment is entered before saving</span></div>
+		<div style="display:none;" id ="msgdaily"><span style="color:red;">Please ensure that the daily allowance is entered before saving</span></div>
+		<div style="display:none;" id ="msgtraining"><span style="color:red;">Please ensure that the training allowance is entered before saving</span></div>
+		<div style="display:none;" id ="msgtravel"><span style="color:red;">Please ensure that the travel allowance is entered before saving</span></div>
+		
 		</#if>
-	</form>
+		</form>
 	</#if>
+
 </body>
 </html>

@@ -50,6 +50,7 @@
 						<option value="licence ame">Licence (AME)</option>
 						<option value="certificate">Certificate</option>
 						<option value="conversion">Conversion</option>
+						<option value="photo">Photo</option>
 						<option value="crew misc">Other</option>
 					</select>
 				</div>
