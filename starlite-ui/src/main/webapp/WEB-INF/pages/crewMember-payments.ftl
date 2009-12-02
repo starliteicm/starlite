@@ -1,3 +1,9 @@
+<#include "/starlite.ftl">
+<html>
+<head>
+   <@enableJQuery/> 
+  <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
+  <link rel="stylesheet" type="text/css" href="styles/forms.css">
 <script language="javascript">
 function showmsg(){            
       var monthly  = $("#monthly").val();
@@ -19,12 +25,6 @@ function showmsg(){
 }
 </script>
 
-<#include "/starlite.ftl">
-<html>
-<head>
-   <@enableJQuery/> 
-  <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
-  <link rel="stylesheet" type="text/css" href="styles/forms.css">
 </head>
 
 <body>
