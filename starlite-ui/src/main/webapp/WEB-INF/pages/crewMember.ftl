@@ -7,6 +7,7 @@
 
 <script language="javascript">
   function validate(){            
+        var title              = $("#title").val();
         var firstname          = $("#firstname").val();
         var lastname           = $("#lastname").val();
         var countryofissue     = $("#countryofissue").val();
@@ -41,6 +42,7 @@
         var errormsg = "<b>The following mandatory fields are blank: </b>";
         var error    = 0;
         
+        if(title == ""){ errormsg += "Title, "; error=1;}
         if(firstname == ""){ errormsg += "First name, "; error=1;}
         if(lastname   == ""){ errormsg += "Last name, "; error=1;}      
         if(countryofissue== ""){ errormsg += "Country of issue, "; error=1;}
@@ -152,7 +154,7 @@
 			<div class="fm-opt">
 				<label for="crewMember.personal.title">Title:</label>
 				<#assign title=crewMember.personal.title!/>
-	    		<select name="crewMember.personal.title">
+	    		<select name="crewMember.personal.title" id="title">
 	    		    <option> 
 	    			<option <#if title == 'Mr'>selected</#if> >Mr
 	    			<option <#if title == 'Master'>selected</#if> >Master
