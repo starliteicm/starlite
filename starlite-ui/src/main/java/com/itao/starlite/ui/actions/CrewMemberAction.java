@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.ParentPackage;
@@ -80,7 +84,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public File passport;
 	public String passportContentType;
 	public String passportFileName;
-	
+	@SuppressWarnings("unchecked")
+	public TreeMap<String, TreeMap> months;
 
 	@Inject
 	private StarliteCoreManager manager;
@@ -139,6 +144,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 		if (tab.equals("flight"))
 			return setupFlight();
+		
+		if (tab.equals("hours"))
+			return setupHours();
 		
 		if(tab.equals("role"))
 			aircraftTypes = manager.getAircraftTypes();
@@ -201,6 +209,51 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "flight";
 	}
+	
+	@SuppressWarnings("unchecked")
+	private String setupHours(){
+		
+		String start = "2009-01";
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		
+		months = new TreeMap<String,TreeMap>(Collections.reverseOrder());
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		SimpleDateFormat monthformat = new SimpleDateFormat("yyyy-MM");
+		SimpleDateFormat dayformat = new SimpleDateFormat("dd");
+		String nowMonth = monthformat.format(cal.getTime());
+		
+		while(!start.equals(nowMonth)){
+			
+			//LOG.info(nowMonth);
+			
+			TreeMap days = new TreeMap();
+			
+			while(nowMonth.equals(monthformat.format(cal.getTime()))){	
+				String day = dayformat.format(cal.getTime());
+				days.put(day,new Integer(cal.get(Calendar.DAY_OF_WEEK)));
+				cal.add(Calendar.DAY_OF_MONTH, 1);
+				//LOG.info(day);
+			}
+			
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+
+			months.put(nowMonth,days);
+			
+			cal.add(Calendar.MONTH, -1);
+			nowMonth = monthformat.format(cal.getTime());
+		  
+		}
+		
+		
+			
+		//provide month list
+		return "hours";
+	}
+	
 
 	public String errorMessage;
 	public String notificationMessage;
@@ -560,12 +613,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		Tab documentsTab = new Tab("Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
 		Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
 		Tab flightAndDutyTab = new Tab("PDW", "crewMember.action?tab=flight&id="+idStr, tab.equals("flight"));
+		Tab hours = new Tab("Hours", "crewMember.action?tab=hours&id="+idStr, tab.equals("hours"));
 		Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
 
 		if (user.hasPermission("ManagerView"))
-			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, documentsTab, reviewTab, assignmentsTab};
+			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, hours, documentsTab, reviewTab, assignmentsTab};
 		else
-			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, documentsTab};
+			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, hours, documentsTab};
 	}
 
     public String fromPage = "";

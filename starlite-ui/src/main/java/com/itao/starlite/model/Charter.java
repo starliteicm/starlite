@@ -526,7 +526,7 @@ public class Charter {
 	public static class Cost {
 		@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 		@IndexColumn(name="position")
-		List<ItemGroup> itemGroups = new ArrayList<ItemGroup>();
+		public List<ItemGroup> itemGroups = new ArrayList<ItemGroup>();
 		
 		private Cost() {
 			setupDefaults();

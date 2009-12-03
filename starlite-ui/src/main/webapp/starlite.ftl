@@ -84,6 +84,52 @@ function onInvokeAction(id) {
 	<input type="text" name="${name}" value="${current}" class="date-pick" style="width:70px;"/>
 </#macro>
 
+<#macro enableTimePickers>
+  <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.timeentry.css" />
+  <script type="text/javascript" src="${request.contextPath}/js/jquery.timeentry.min.js" ></script>
+  <script>
+  
+  function timeBetween(start,finish,hours){
+    var startTime = $(start).timeEntry('getTime');
+    var finishTime = $(finish).timeEntry('getTime');
+    
+    if((startTime != null)&&(finishTime != null)){
+      if((startTime != "")&&(finishTime != "")){
+        var diffHours = finishTime.getHours() - startTime.getHours();
+        var diffMins = finishTime.getMinutes() - startTime.getMinutes();
+    
+        if (diffMins < 0){
+          diffHours = diffHours - 1;
+          diffMins = diffMins + 60;
+        }
+        
+        if(diffHours >= 0){
+    
+          //alert(diffHours + ":" + diffMins);
+          if(diffHours < 10){diffHours = "0"+diffHours;}
+          if(diffMins < 10){diffMins = "0"+diffMins;}
+          $(hours).val(diffHours + ":" + diffMins);
+        }
+        else{
+          $(hours).val("00:00");
+        }   
+      }
+      else{
+        $(hours).val("00:00");
+      }
+    }
+    else{
+      $(hours).val("00:00");
+    }
+  }
+  
+        $(document).ready(function()
+        {
+            $('.time-pick').timeEntry({defaultTime: new Date(0, 0, 0, 0, 0, 0), show24Hours: true, spinnerImage: ''});
+        });
+  </script>
+</#macro>
+
 <#macro enableCalculator>
 	<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.calculator.css">
 	<script type="text/javascript" src="${request.contextPath}/js/jquery.calculator.min.js"></script>

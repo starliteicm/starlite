@@ -29,6 +29,7 @@
 			<mapping class="com.itao.starlite.model.ApprovalGroup"/>
             <mapping class="com.itao.starlite.model.Charter"/>
             <mapping class="com.itao.starlite.model.Charter$Cost$ItemGroup"/>
+            <mapping class="com.itao.starlite.model.CrewDay"/>
             <mapping class="com.itao.starlite.model.CrewMember"/>
             <mapping class="com.itao.starlite.model.CrewMember$FlightAndDutyActuals"/>
             <mapping class="com.itao.starlite.model.Document"/>
