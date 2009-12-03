@@ -16,14 +16,14 @@
       var accountnumber= $("#accountnumber").val();
       var swift      = $("#swift").val();
       var error      = 0;
-      var errormsg   ="";
-      if(bankname == "")   { errormsg += "Bank name rate not entered <br>"; error=1;}
-      if(branchcode == "") { errormsg += "Branch code not entered <br>"; error=1;}      
-      if(address1 == "")   { errormsg += "Address 1 not entered <br>"; error=1;}
-      if(address2 == "")   { errormsg += "Address 2 not entered <br>"; error=1;}
-      if(accountname == ""){ errormsg += "Account name not entered <br>"; error=1;}
-      if(accountnumber == ""){ errormsg += "Account number not entered <br>"; error=1;}
-      if(swift == "")      { errormsg += "SWIFT code not entered <br>"; error=1;}
+      var errormsg = "<b>The following mandatory fields are blank: </b>";
+      if(bankname == "")   { errormsg += "bank name, "; error=1;}
+      if(branchcode == "") { errormsg += "branch code, "; error=1;}      
+      if(address1 == "")   { errormsg += "address 1, "; error=1;}
+      if(address2 == "")   { errormsg += "address 2, "; error=1;}
+      if(accountname == ""){ errormsg += "account name, "; error=1;}
+      if(accountnumber == ""){ errormsg += "account number, "; error=1;}
+      if(swift == "")      { errormsg += "SWIFT code, "; error=1;}
       
       if(error==1){$("#msg-error").html(errormsg); return false;
       }else{

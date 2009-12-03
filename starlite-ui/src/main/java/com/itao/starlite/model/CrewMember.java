@@ -695,12 +695,12 @@ public class CrewMember implements Cloneable {
 		private Certificate ifr = new Certificate();
 		private Certificate instructor = new Certificate();
 		private Certificate test = new Certificate();
+		private Certificate huet = new Certificate();
 		
 		private String night;
 		private String nvg;
 		private String sling;
-		private String game;
-		private String huet;
+		private String game;		
 		
 		@CollectionOfElements(fetch=FetchType.LAZY)
 		@Fetch(FetchMode.SUBSELECT)
@@ -795,6 +795,12 @@ public class CrewMember implements Cloneable {
 			if (test == null)
 				test = new Certificate();
 			return test;
+		}
+
+		public Certificate getHuet() {
+			if (huet == null)
+				huet = new Certificate();
+			return huet;
 		}
 
 		public synchronized List<Certificate> getConversions() {
@@ -972,13 +978,7 @@ public class CrewMember implements Cloneable {
 			return game;
 		}
 
-		public void setHuet(String huet) {
-			this.huet = huet;
-		}
 
-		public String getHuet() {
-			return huet;
-		}
 	}
 	
 	@Embeddable

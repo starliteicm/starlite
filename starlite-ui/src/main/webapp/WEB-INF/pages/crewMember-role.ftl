@@ -73,7 +73,7 @@ $("document").ready(function() {
    validateDate("crmexpiry","CRM is expired");
    validateDate("dgexpiry", "DG is expired");
    validateDate("licenceexpiry", "Licence is expired");
-   
+   validateDate("huet", "HUET is expired");
 });    
    
 </script>
@@ -244,7 +244,9 @@ $("document").ready(function() {
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.huet">HUET Training:</label>
-				<input name="crewMember.role.huet" type="checkbox"  value="yes"  <#if crewMember.role.huet?if_exists == "yes" >checked</#if> />
+				<input name="crewMember.role.huet.expiryDate" class="date-pick" type="text" id="huet" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+			</div>
+			<div class="fm-opt" id="msg-huet" style="margin-left:90px; color:red; font-weight: bold;">  
 			</div>
 			<br/>
 			<div class="fm-opt">
@@ -359,7 +361,7 @@ $("document").ready(function() {
 		<hr class="clear"/>
 		<#if !readOnly>                                  
 		<button type="button" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;" onclick="validate()" ><img src="images/icons/pencil.png"/>Save</button>
-		<div id="msg-error" style="color:red; font-weight: bold;"></div>
+		<div id="msg-error" style="color:red;"></div>
   <hr class="clear"/>
 		</#if>
 	</form>

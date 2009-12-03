@@ -1,6 +1,7 @@
 <ul>
 	<li><a href="script.action?scriptName=aircraftCharterMatrix.groovy&month=${month}&year=${year?c}">Aircraft/Charter Matrix</a>
 	<li><a href="script.action?scriptName=certificate.groovy">Certificates</a>
+	<li><a href="script.action?scriptName=crewMemberProfiles.groovy">Crew Member Profiles</a>
 	<li><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a>
 	<#if notAuthorised>
 	<#else>
