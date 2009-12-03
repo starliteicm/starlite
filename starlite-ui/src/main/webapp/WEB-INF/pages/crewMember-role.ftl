@@ -10,8 +10,11 @@
 
 <script type="text/javascript">
 
+//CHECK LICENCE EXPIRY DATE
 //this adds a leading zero if the day/month is one digit e.g 1 becomes 01
-function addZero(timeConstruct){
+function addZero(tc){
+   timeConstruct="";
+   timeConstruct=tc;  
    if(timeConstruct.length==1){
       temp = "0" + timeConstruct;      
       timeConstruct = temp;
@@ -21,8 +24,26 @@ function addZero(timeConstruct){
  }
 }
 
-$("document").ready(function() {        
-
+function validateDate(datefield,msg){ 
+  
+   //SET UP VARIABLES
+   var dateinput  = "#"    + datefield;
+   var messagediv = "#msg-" + datefield;
+   var message    = msg;       
+                       
+   //PROCESS EXPIRY DATE
+   var expiry = $(dateinput).val();
+   var exp = expiry.split('/');
+   
+   //add leading zeros to day and month if needed   
+   expirymonth = addZero(exp[1]);
+   expiryday   = addZero(exp[0]);
+   expiryyear  = exp[2];
+   
+   //concatenate date and convert to integer
+   reversedatestr = expiryyear + expirymonth + expiryday;   
+   reversedate=parseInt(reversedatestr);
+   
    //GENERATE AND PROCESS CURRENT DATE
    var date = new Date();
    var m = date.getMonth()+1  + "";
@@ -37,24 +58,53 @@ $("document").ready(function() {
    //concatenate date and convert to integer
    current_datestr = (currentyear + "" + currentmonth + "" + currentday);      
    current_date=parseInt(current_datestr);
-
-   //PROCESS EXPIRY DATE
-   var expiry = $("#lic-exp").val();
-   var exp = expiry.split('/');
-   
-   //add leading zeros to day and month if needed   
-   expirymonth = addZero(exp[1]);
-   expiryday  = addZero(exp[0]);
-   expiryyear  = exp[2];
-   
-   //concatenate date and convert to integer
-   reversedatestr = expiryyear + expirymonth + expiryday;   
-   reversedate=parseInt(reversedatestr);
    
    //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
-   if(current_date > reversedate){ $("#msg-expiry").show();}else{$("#msg-expiry").hide();}
-});    
+   if(current_date > reversedate){ $(messagediv).html(message); }else{$(messagediv).html();}        
+   }
 
+</script>
+
+<script type="text/javascript">
+
+//ONLOAD FUNCTION   
+$("document").ready(function() {
+        
+   validateDate("crmexpiry","CRM is expired");
+   validateDate("dgexpiry", "DG is expired");
+   validateDate("licenceexpiry", "Licence is expired");
+   
+});    
+   
+</script>
+
+<script type="text/javascript">
+//VALIDATE MANDATORY FIELDS
+   function validate(){            
+      var position       = $("#position").val();
+      var empstatus      = $("#empstatus").val();      
+      var crmexpiry      = $("#crmexpiry").val();
+      var dgexpiry       = $("#dgexpiry").val();
+      var licencenumber  = $("#licencenumber").val();
+      var licencetype    = $("#licencetype").val();
+      var licenceexpiry  = $("#licenceexpiry").val();      
+      
+      var errormsg = "<b>The following mandatory fields are blank: </b>";
+      var error    = 0;
+      
+      if(position       == ""){ errormsg += "position, "; error=1;}
+      if(empstatus      == ""){ errormsg += "employment status, "; error=1;}            
+      if(crmexpiry      == ""){ errormsg += "CRM expiry, "; error=1;}
+      if(dgexpiry       == ""){ errormsg += "DG Expiry, "; error=1;}
+      if(licencenumber  == ""){ errormsg += "licence number, "; error=1;}      
+      if(licencetype    == ""){ errormsg += "licence type, "; error=1;}
+      if(licenceexpiry  == ""){ errormsg += "licence expiry, "; error=1;}
+      
+      if(error==1){$("#msg-error").html(errormsg); return false;
+      }else{
+      $("#msg-error").html(""); document.forms.roleform.submit(); 
+      }                          
+   }
 </script>
 
 </head>
@@ -89,7 +139,7 @@ $("document").ready(function() {
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly">
 	<#else>
-	<form action="crewMember!save.action" method="POST" class="smart">
+	<form action="crewMember!save.action" name="roleform" method="POST" class="smart">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -99,7 +149,7 @@ $("document").ready(function() {
 			<legend>Role</legend>
 			<div class="fm-opt">
 				<label for="crewMember.role.position">Position:</label>
-				<input name="crewMember.role.position" type="text" value="${crewMember.role.position!}"/>
+				<input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.primaryLocation">Primary Location:</label>
@@ -111,7 +161,7 @@ $("document").ready(function() {
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.employment">Employment Status:</label>
-				<select name="crewMember.role.employment"/>
+				<select name="crewMember.role.employment" id="empstatus" />
 					<option <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
 					<option <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
 				</select>
@@ -163,11 +213,13 @@ $("document").ready(function() {
 			<br/>
 			<div class="fm-opt">
 				<label for="crewMember.role.crm.expiryDate">CRM Expiry:</label>
-				<input name="crewMember.role.crm.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.dg.expiryDate">DG Expiry:</label>
-				<input name="crewMember.role.dg.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
@@ -224,11 +276,11 @@ $("document").ready(function() {
 			<legend>Licence</legend>
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.number"/>Number:</label>
-				<input name="crewMember.role.r1.number" type="text" value="${crewMember.role.r1.number!}"/>
+				<input name="crewMember.role.r1.number" id="licencenumber" type="text" value="${crewMember.role.r1.number!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.type">Type:</label>
-				<select name="crewMember.role.r1.type" value="${crewMember.role.r1.type!}">
+				<select name="crewMember.role.r1.type" value="${crewMember.role.r1.type!}" id="licencetype">
 				  <option <#if crewMember.role.r1.type?if_exists == "AME">selected</#if>>      AME
 				  <option <#if crewMember.role.r1.type?if_exists == "ATP">selected</#if>>      ATP
 				  <option <#if crewMember.role.r1.type?if_exists == "ATPL">selected</#if>>     ATPL
@@ -240,10 +292,9 @@ $("document").ready(function() {
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.expiryDate">Expiry Date:</label>
-				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="lic-exp" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
+				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
 			</div>
-			<div class="fm-opt" id="msg-expiry" style="margin-left:20px;">
-    <font color="red">License expired</font>
+			<div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;">  
 			</div>
 			<br/><br/>
 		</fieldset>
@@ -306,11 +357,12 @@ $("document").ready(function() {
 		</fieldset>	
 		</div>
 		<hr class="clear"/>
-		<#if !readOnly>
-		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
-		<hr class="clear"/>
+		<#if !readOnly>                                  
+		<button type="button" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;" onclick="validate()" ><img src="images/icons/pencil.png"/>Save</button>
+		<div id="msg-error" style="color:red; font-weight: bold;"></div>
+  <hr class="clear"/>
 		</#if>
 	</form>
-	<script>$('.imageCalc').calculator({showOn: 'button',     buttonImageOnly: true, buttonImage: 'images/calculator.png'});</script>
+	<script>$('.imageCalc').calculator({showOn: 'button', buttonImageOnly: true, buttonImage: 'images/calculator.png'});</script>
 </body>
 </html>
