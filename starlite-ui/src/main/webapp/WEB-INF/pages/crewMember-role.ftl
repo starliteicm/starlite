@@ -79,23 +79,17 @@ $("document").ready(function() {
 //VALIDATE MANDATORY FIELDS
    function validate(){        
        
-      alert("validate1"); 
       $("#msg-error").html("");      
       var errormsg = "<b> The following mandatory fields are blank: </b>";
       var error    = 0;
-      alert("validate2"); 
       
       if($("#position").val()       == ""){ errormsg += "position, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
       if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
-      
-      //if($("#empstatus").val()      == ""){ errormsg += "employment status, "; error=1;}  
-      //if($("#licencetype").val()    == ""){ errormsg += "licence type, "; error=1;}
-      
-      alert("Error:"+error+" : "+errormsg); 
-      
+      if($("#licencetype option:selected").val()  == ""){ errormsg += "licence type, "; error=1;}
+            
       if(error==1){
         $("#msg-error").html(errormsg); 
         return false;
