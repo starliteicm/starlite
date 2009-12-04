@@ -7,7 +7,8 @@
 
 <script language="javascript">
   function validate(){            
-        var title              = $("#title").val();
+        //var title              = $("#title").val();
+        var title = document.getElementById('title').options[document.getElementById('title').selectedIndex].value;                                                       
         var firstname          = $("#firstname").val();
         var lastname           = $("#lastname").val();
         var countryofissue     = $("#countryofissue").val();
@@ -23,10 +24,12 @@
         var mobilephone        = $("#mobilephone").val();
         var homephone          = $("#homephone").val();
         var email              = $("#email").val();
-        var gender             = $("#gender").val();
+        //var gender             = $("#gender option:selected").val();
+        var gender = document.getElementById('gender').options[document.getElementById('gender').selectedIndex].value;        
         var dob                = $("#dob").val();
         var nationality        = $("#nationality").val();
-        var maritalstatus      = $("#maritalstatus").val();
+        //var maritalstatus      = $("#maritalstatus option:selected").val();
+        var maritalstatus = document.getElementById('maritalstatus').options[document.getElementById('maritalstatus').selectedIndex].value;        
         var nokfirstname       = $("#nokfirstname").val();
         var noklastname        = $("#noklastname").val();
         var nokmobilephone     = $("#nokmobilephone").val();
@@ -39,7 +42,7 @@
         var ecdcontactname     = $("#ecdcontactname").val();
         var ecdcontactrelation = $("#ecdcontactrelation").val();        
         
-        var errormsg = "<b>The following mandatory fields are blank: </b>";
+        var errormsg = "<b> The following mandatory fields are blank: </b><br>";
         var error    = 0;
         
         if(title == ""){ errormsg += "Title, "; error=1;}
@@ -82,6 +85,21 @@
   }
 
 </script>
+
+  <style type="text/css"> 
+  
+    .star{
+       color:red;
+       }
+       
+     #msg-error{
+       font-size:12px;
+       color:red;
+       padding:5px;
+       text-align:center;       
+     }
+     
+  </style>
 
 </head>
 
@@ -152,23 +170,23 @@
 		<fieldset>
 			<legend>Name</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.title">Title:</label>
+				<label for="crewMember.personal.title"><span class="star">*</span>Title:</label>
 				<#assign title=crewMember.personal.title!/>
 	    		<select name="crewMember.personal.title" id="title">
 	    		    <option> 
-	    			<option <#if title == 'Mr'>selected</#if> >Mr
-	    			<option <#if title == 'Master'>selected</#if> >Master
-	    			<option <#if title == 'Mrs'>selected</#if> >Mrs
-	    			<option <#if title == 'Miss'>selected</#if> >Miss
-	    			<option <#if title == 'Ms'>selected</#if> >Ms
-	    			<option <#if title == 'Doctor'>selected</#if> >Doctor
-	    			<option <#if title == 'Professor'>selected</#if> >Professor
-	    			<option <#if title == 'Sir'>selected</#if> >Sir
+	    			<option value="Mr" <#if title == 'Mr'>selected</#if> >Mr
+	    			<option value="Master" <#if title == 'Master'>selected</#if> >Master
+	    			<option value="Mrs" <#if title == 'Mrs'>selected</#if> >Mrs
+	    			<option value="Miss" <#if title == 'Miss'>selected</#if> >Miss
+	    			<option value="Ms" <#if title == 'Ms'>selected</#if> >Ms
+	    			<option value="Doctor" <#if title == 'Doctor'>selected</#if> >Doctor
+	    			<option value="Professor" <#if title == 'Professor'>selected</#if> >Professor
+	    			<option value="Sir" <#if title == 'Sir'>selected</#if> >Sir
 	    		</select>
 	    		<br/>
 	    	</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.firstName">First Name:</label>
+				<label for="crewMember.personal.firstName"><span class="star">*</span>First Name:</label>
 				<input name="crewMember.personal.firstName" id="firstname" type="text" value="${crewMember.personal.firstName!}"/>
 			</div>
 			<div class="fm-opt">
@@ -176,7 +194,7 @@
 				<input name="crewMember.personal.secondName" type="text" value="${crewMember.personal.secondName!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.lastName">Last Name:</label>
+				<label for="crewMember.personal.lastName"><span class="star">*</span>Last Name:</label>
 				<input name="crewMember.personal.lastName" id="lastname" type="text" value="${crewMember.personal.lastName!}"/>
 			</div>
 			<div class="fm-opt">
@@ -187,15 +205,15 @@
 	    <fieldset>
 			<legend>Passport</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.passportCountry">Country of Issue:</label>
+				<label for="crewMember.personal.passportCountry"><span class="star">*</span>Country of Issue:</label>
 				<input name="crewMember.personal.passportCountry" id="countryofissue" type="text" value="${crewMember.personal.passportCountry!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.passportNumber">Passport Number:</label>
+				<label for="crewMember.personal.passportNumber"><span class="star">*</span>Passport Number:</label>
 				<input name="crewMember.personal.passportNumber" id="passportno" type="text" value="${crewMember.personal.passportNumber!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.passportExpiryDate">Expiry Date:</label>
+				<label for="crewMember.personal.passportExpiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.personal.passportExpiryDate" id="expiry" class="date-pick" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>				
 			</div>
 			<div class="fm-opt">
@@ -207,19 +225,19 @@
 		<fieldset>
 			<legend>Address</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.address1">Line 1:</label>
+				<label for="crewMember.personal.address1"><span class="star">*</span>Line 1:</label>
 				<input name="crewMember.personal.address1" id="address1" type="text" value="${crewMember.personal.address1!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.address2">Line 2:</label>
+				<label for="crewMember.personal.address2"><span class="star">*</span>Line 2:</label>
 				<input name="crewMember.personal.address2" id="address2" type="text" value="${crewMember.personal.address2!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.address3">Line 3:</label>
+				<label for="crewMember.personal.address3"><span class="star">*</span>Line 3:</label>
 				<input name="crewMember.personal.address3" id="address3" type="text" value="${crewMember.personal.address3!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.address4">Line 4:</label>
+				<label for="crewMember.personal.address4"><span class="star">*</span>Line 4:</label>
 				<input name="crewMember.personal.address4" id="address4" type="text" value="${crewMember.personal.address4!}"/>
 			</div>
 			<div class="fm-opt">
@@ -228,11 +246,11 @@
 			</div>
 			<br/>
 			<div class="fm-opt">
-				<label for="crewMember.personal.postalAddress">Postal Address:</label>
+				<label for="crewMember.personal.postalAddress"><span class="star">*</span>Postal Address:</label>
 				<input name="crewMember.personal.postalAddress" id="postaladdress" type="text" value="${crewMember.personal.postalAddress!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.postalTown">Postal Town:</label>
+				<label for="crewMember.personal.postalTown"><span class="star">*</span>Postal Town:</label>
 				<input name="crewMember.personal.postalTown" id="postaltown" type="text" value="${crewMember.personal.postalTown!}"/>
 			</div>
 			<div class="fm-opt">
@@ -240,14 +258,14 @@
 				<input name="crewMember.personal.postalCountry" type="text" value="${crewMember.personal.postalCountry!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.postalCode">Postal Code:</label>
+				<label for="crewMember.personal.postalCode"><span class="star">*</span>Postal Code:</label>
 				<input name="crewMember.personal.postalCode" id="postalcode" type="text" value="${crewMember.personal.postalCode!}"/>
 			</div>
 		</fieldset>
 		<fieldset>
 			<legend>Contact Details</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.mobilePhone">Mobile Phone:</label>
+				<label for="crewMember.personal.mobilePhone"><span class="star">*</span>Mobile Phone:</label>
 				<input name="crewMember.personal.mobilePhone" id="mobilephone" type="text" value="${crewMember.personal.mobilePhone!}"/>
 			</div>
 			<div class="fm-opt">
@@ -255,7 +273,7 @@
 				<input name="crewMember.personal.mobilePhone2" type="text" value="${crewMember.personal.mobilePhone2!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.homePhone">Home Phone:</label>
+				<label for="crewMember.personal.homePhone"><span class="star">*</span>Home Phone:</label>
 				<input name="crewMember.personal.homePhone" id="homephone" type="text" value="${crewMember.personal.homePhone!}"/>
 			</div>
 			<div class="fm-opt">
@@ -271,7 +289,7 @@
 				<input name="crewMember.personal.businessFax" type="text" value="${crewMember.personal.businessFax!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.email">Email:</label>
+				<label for="crewMember.personal.email"><span class="star">*</span>Email:</label>
 				<input name="crewMember.personal.email" id="email" type="text" value="${crewMember.personal.email!}"/>
 			</div>
 			<div class="fm-opt">
@@ -298,33 +316,33 @@
 		<fieldset>
 			<legend>Personal</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.status">Gender:</label>
+				<label for="crewMember.personal.status"><span class="star">*</span>Gender:</label>
 				<#assign gender=crewMember.personal.gender!/>
 				<select name="crewMember.personal.gender" id="gender">
 					<option>
-					<option <#if gender == 'Male'>selected</#if>>Male
-					<option <#if gender == 'Female'>selected</#if>>Female
-					<option <#if gender == 'Other'>selected</#if>>Other
+					<option value="Male" <#if gender == 'Male'>selected</#if>>Male
+					<option value="Female" <#if gender == 'Female'>selected</#if>>Female
+					<option value="Other" <#if gender == 'Other'>selected</#if>>Other
 				</select>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.dateOfBirth">Date Of Birth:</label>
+				<label for="crewMember.personal.dateOfBirth"><span class="star">*</span>Date Of Birth:</label>
 				<input name="crewMember.personal.dateOfBirth" id="dob" type="text" class="date-pick" value="<#if crewMember.personal.dateOfBirth??>${crewMember.personal.dateOfBirth?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nationality">Nationality:</label>
+				<label for="crewMember.personal.nationality"><span class="star">*</span>Nationality:</label>
 				<input name="crewMember.personal.nationality" id="nationality" type="text" value="${crewMember.personal.nationality!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.status">Marital Status:</label>
+				<label for="crewMember.personal.status"><span class="star">*</span>Marital Status:</label>
 				<#assign status=crewMember.personal.status!/>
 				<select name="crewMember.personal.status" id="maritalstatus" >
 					<option>
-					<option <#if status == 'Divorced'>selected</#if>>Divorced
-					<option <#if status == 'Engaged'>selected</#if>>Engaged
-					<option <#if status == 'Married'>selected</#if>>Married
-					<option <#if status == 'Single'>selected</#if>>Single
-					<option <#if status == 'Widowed'>selected</#if>>Widowed
+					<option value="Divorced" <#if status == 'Divorced'>selected</#if>>Divorced
+					<option value="Engaged" <#if status == 'Engaged'>selected</#if>>Engaged
+					<option value="Married" <#if status == 'Married'>selected</#if>>Married
+					<option value="Single" <#if status == 'Single'>selected</#if>>Single
+					<option value="Widowed" <#if status == 'Widowed'>selected</#if>>Widowed
 				</select>
 			</div>
 			<div class="fm-opt">
@@ -348,40 +366,40 @@
 		<fieldset>
 			<legend>Next Of Kin</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinFirstName">First Name:</label>
+				<label for="crewMember.personal.nextOfKinFirstName"><span class="star">*</span>First Name:</label>
 				<input name="crewMember.personal.nextOfKinFirstName" id="nokfirstname" type="text" value="${crewMember.personal.nextOfKinFirstName!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinLastName">Last Name:</label>
+				<label for="crewMember.personal.nextOfKinLastName"><span class="star">*</span>Last Name:</label>
 				<input name="crewMember.personal.nextOfKinLastName" id="noklastname" type="text" value="${crewMember.personal.nextOfKinLastName!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinMobilePhone">Mobile Phone</label>
+				<label for="crewMember.personal.nextOfKinMobilePhone"><span class="star">*</span>Mobile Phone</label>
 				<input name="crewMember.personal.nextOfKinMobilePhone" id="nokmobilephone" type="text" value="${crewMember.personal.nextOfKinMobilePhone!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinHomePhone">Home Phone:</label>
+				<label for="crewMember.personal.nextOfKinHomePhone"><span class="star">*</span>Home Phone:</label>
 				<input name="crewMember.personal.nextOfKinHomePhone" id="nohomephone" type="text" value="${crewMember.personal.nextOfKinHomePhone!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinRelation">Relation:</label>
+				<label for="crewMember.personal.nextOfKinRelation"><span class="star">*</span>Relation:</label>
 				<input name="crewMember.personal.nextOfKinRelation" id="nokrelation" type="text" value="${crewMember.personal.nextOfKinRelation!}"/>
 			</div>
 			<br/>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinAddress1">Address Line 1:</label>
+				<label for="crewMember.personal.nextOfKinAddress1"><span class="star">*</span>Address Line 1:</label>
 				<input name="crewMember.personal.nextOfKinAddress1" id="nokaddress1" type="text" value="${crewMember.personal.nextOfKinAddress1!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinAddress2">Address Line 2:</label>
+				<label for="crewMember.personal.nextOfKinAddress2"><span class="star">*</span>Address Line 2:</label>
 				<input name="crewMember.personal.nextOfKinAddress2" id="nokaddress2" type="text" value="${crewMember.personal.nextOfKinAddress2!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinAddress3">Address Line 3:</label>
+				<label for="crewMember.personal.nextOfKinAddress3"><span class="star">*</span>Address Line 3:</label>
 				<input name="crewMember.personal.nextOfKinAddress3" id="nokaddress3" type="text" value="${crewMember.personal.nextOfKinAddress3!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.nextOfKinAddress4">Address Line 4:</label>
+				<label for="crewMember.personal.nextOfKinAddress4"><span class="star">*</span>Address Line 4:</label>
 				<input name="crewMember.personal.nextOfKinAddress4" id="nokaddress4" type="text" value="${crewMember.personal.nextOfKinAddress4!}"/>
 			</div>
 			<div class="fm-opt">
@@ -392,11 +410,11 @@
 		<fieldset>
 			<legend>Emergency Contact Details (Different from Next of Kin)</legend>
 			<div class="fm-opt">
-				<label for="crewMember.personal.emergencyContactName">Contact Name</label>
+				<label for="crewMember.personal.emergencyContactName"><span class="star">*</span>Contact Name</label>
 				<input name="crewMember.personal.emergencyContactName" id="ecdcontactname" type="text" value="${crewMember.personal.emergencyContactName!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.personal.emergencyContactRelationship">Contact Relation</label>
+				<label for="crewMember.personal.emergencyContactRelationship"><span class="star">*</span>Contact Relation</label>
 				<input name="crewMember.personal.emergencyContactRelationship" id="ecdcontactrelation" type="text" value="${crewMember.personal.emergencyContactRelationship!}"/>
 			</div>
 			<div class="fm-opt">
@@ -421,7 +439,7 @@
 		<hr class="clear"/>
 		<#if !readOnly>
 		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save</button>
-		<div id="msg-error" style="color:red"></div>
+		<div id="msg-error"></div>
   <hr class="clear"/>
 		</#if>
 	</form>

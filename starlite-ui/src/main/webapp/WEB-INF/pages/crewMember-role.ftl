@@ -8,6 +8,23 @@
   <@enableCalculator/>
   <@enableHelp/>
 
+<style type="text/css">
+
+.star{
+   color:red;
+     }
+   
+#msg-error{
+       font-size:12px;
+       color:red;
+       padding:5px;
+       text-align:center;       
+     }
+          
+
+</style>
+
+
 <script type="text/javascript">
 
 //CHECK LICENCE EXPIRY DATE
@@ -77,18 +94,20 @@ $("document").ready(function() {
 
 <script type="text/javascript">
 //VALIDATE MANDATORY FIELDS
-   function validate(){        
-       
+   function validate(){               
       $("#msg-error").html("");      
-      var errormsg = "<b> The following mandatory fields are blank: </b>";
+      var errormsg = "<b> The following mandatory fields are blank: </b><br>";
       var error    = 0;
-      
+            
       if($("#position").val()       == ""){ errormsg += "position, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
       if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
-      if($("#licencetype option:selected").val()  == ""){ errormsg += "licence type, "; error=1;}
+      
+      var licencetype = $("#licencetype").val(); 
+      
+      if(licencetype == ""){ errormsg += "licence type, "; error=1;}
             
       if(error==1){
         $("#msg-error").html(errormsg); 
@@ -140,7 +159,7 @@ $("document").ready(function() {
 		<fieldset>
 			<legend>Role</legend>
 			<div class="fm-opt">
-				<label for="crewMember.role.position">Position:</label>
+				<label for="crewMember.role.position"><span class="star">*</span>Position:</label>
 				<input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/>
 			</div>
 			<div class="fm-opt">
@@ -204,16 +223,17 @@ $("document").ready(function() {
 			</div>
 			<br/>
 			<div class="fm-opt">
-				<label for="crewMember.role.crm.expiryDate">CRM Expiry:</label>
+				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
 				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.dg.expiryDate">DG Expiry:</label>
+				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
 				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
-			<div class="fm-opt">
+			
+   <div class="fm-opt">
 				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
 				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>			
@@ -233,13 +253,7 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.game">Game Rated:</label>
 				<input name="crewMember.role.game" type="checkbox"  value="yes"  <#if crewMember.role.game?if_exists == "yes" >checked</#if> />
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.huet">HUET Training:</label>
-				<input name="crewMember.role.huet.expiryDate" class="date-pick" type="text" id="huet" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
-			<div class="fm-opt" id="msg-huet" style="margin-left:90px; color:red; font-weight: bold;">  
-			</div>
+			</div>			
 			<br/>
 			<div class="fm-opt">
 				<label for="crewMember.role.test.number">Test Rated:</label>
@@ -269,7 +283,7 @@ $("document").ready(function() {
 		<fieldset>
 			<legend>Licence</legend>
 			<div class="fm-opt">
-				<label for="crewMember.role.r1.number"/>Number:</label>
+				<label for="crewMember.role.r1.number"/><span class="star">*</span>Number:</label>
 				<input name="crewMember.role.r1.number" id="licencenumber" type="text" value="${crewMember.role.r1.number!}"/>
 			</div>
 			<div class="fm-opt">
@@ -285,7 +299,7 @@ $("document").ready(function() {
 				</select>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.r1.expiryDate">Expiry Date:</label>
+				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
 			</div>
 			<div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;">  
@@ -359,7 +373,7 @@ $("document").ready(function() {
 		<hr class="clear"/>
 		<#if !readOnly>                                  
 		<button type="button" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;" onclick="validate()" ><img src="images/icons/pencil.png"/>Save</button>
-		<div id="msg-error" style="color:red;"></div>
+		<div id="msg-error"></div>
   <hr class="clear"/>
 		</#if>
 	</form>
