@@ -126,6 +126,7 @@ function onInvokeAction(id) {
         $(document).ready(function()
         {
             $('.time-pick').timeEntry({defaultTime: new Date(0, 0, 0, 0, 0, 0), show24Hours: true, spinnerImage: ''});
+            $("#loading").css("display","none");
         });
   </script>
 </#macro>

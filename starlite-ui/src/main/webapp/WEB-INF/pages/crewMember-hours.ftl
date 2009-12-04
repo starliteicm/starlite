@@ -124,6 +124,7 @@
            <option>${month}</option>		
 		</#list>
 		</select>
+		<div id="loading" style="color:silver;">Loading... Please Wait</div>
 		<br/><br/>
 				
 		<#list months.keySet() as month>
