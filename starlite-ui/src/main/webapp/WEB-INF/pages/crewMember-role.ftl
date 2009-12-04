@@ -13,11 +13,9 @@
 //CHECK LICENCE EXPIRY DATE
 //this adds a leading zero if the day/month is one digit e.g 1 becomes 01
 function addZero(tc){
-   timeConstruct="";
-   timeConstruct=tc;  
+   var timeConstruct=""+tc; 
    if(timeConstruct.length==1){
-      temp = "0" + timeConstruct;      
-      timeConstruct = temp;
+      timeConstruct =  "0" + timeConstruct;  
       return timeConstruct;
    }else{
       return timeConstruct;                    
@@ -68,8 +66,7 @@ function validateDate(datefield,msg){
 <script type="text/javascript">
 
 //ONLOAD FUNCTION   
-$("document").ready(function() {
-        
+$("document").ready(function() {    
    validateDate("crmexpiry","CRM is expired");
    validateDate("dgexpiry", "DG is expired");
    validateDate("licenceexpiry", "Licence is expired");
@@ -80,29 +77,30 @@ $("document").ready(function() {
 
 <script type="text/javascript">
 //VALIDATE MANDATORY FIELDS
-   function validate(){            
-      var position       = $("#position").val();
-      var empstatus      = $("#empstatus").val();      
-      var crmexpiry      = $("#crmexpiry").val();
-      var dgexpiry       = $("#dgexpiry").val();
-      var licencenumber  = $("#licencenumber").val();
-      var licencetype    = $("#licencetype").val();
-      var licenceexpiry  = $("#licenceexpiry").val();      
-      
-      var errormsg = "<b>The following mandatory fields are blank: </b>";
+   function validate(){        
+       
+      alert("validate1"); 
+      $("#msg-error").html("");      
+      var errormsg = "<b> The following mandatory fields are blank: </b>";
       var error    = 0;
+      alert("validate2"); 
       
-      if(position       == ""){ errormsg += "position, "; error=1;}
-      if(empstatus      == ""){ errormsg += "employment status, "; error=1;}            
-      if(crmexpiry      == ""){ errormsg += "CRM expiry, "; error=1;}
-      if(dgexpiry       == ""){ errormsg += "DG Expiry, "; error=1;}
-      if(licencenumber  == ""){ errormsg += "licence number, "; error=1;}      
-      if(licencetype    == ""){ errormsg += "licence type, "; error=1;}
-      if(licenceexpiry  == ""){ errormsg += "licence expiry, "; error=1;}
+      if($("#position").val()       == ""){ errormsg += "position, "; error=1;}
+      if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
+      if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
+      if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
+      if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
       
-      if(error==1){$("#msg-error").html(errormsg); return false;
+      //if($("#empstatus").val()      == ""){ errormsg += "employment status, "; error=1;}  
+      //if($("#licencetype").val()    == ""){ errormsg += "licence type, "; error=1;}
+      
+      alert("Error:"+error+" : "+errormsg); 
+      
+      if(error==1){
+        $("#msg-error").html(errormsg); 
+        return false;
       }else{
-      $("#msg-error").html(""); document.forms.roleform.submit(); 
+         document.forms.roleform.submit(); 
       }                          
    }
 </script>
@@ -137,9 +135,9 @@ $("document").ready(function() {
 	</#if>
 	<@subTabs/>
 	<#if readOnly>
-	<form action="#" method="POST" class="smart readonly">
+	<form action="#" method="POST" name="roleform" id="roleform" class="smart readonly">
 	<#else>
-	<form action="crewMember!save.action" name="roleform" method="POST" class="smart">
+	<form action="crewMember!save.action" name="roleform" id="roleform" method="POST" class="smart">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -333,6 +331,7 @@ $("document").ready(function() {
 				<option>Total Turbine
 				<option>NVG
 				<option>Offshore
+				<option>Undersling
 				<option>Undersling
 				<#list aircraftTypes?if_exists as aircraftType>
 				<option>${aircraftType.name!}
