@@ -5,20 +5,20 @@
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
   <@enableJQuery/>
   
-<style type="text/css">
-
-.star{
-   color:red;
+  <style type="text/css"> 
+  
+    .star{
+       color:red;
+       }
+       
+     #msg-error{
+       font-size:12px;
+       color:red;
+       padding:5px;
+       text-align:center;       
      }
-
-#msg-error{
-   margin: 0 auto;   
-   width:90%;
-   padding:5px;
-   color:red;
-   }
-
-</style>
+     
+  </style>
 
 <script language="javascript">
 
