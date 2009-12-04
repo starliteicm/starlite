@@ -326,7 +326,6 @@ $("document").ready(function() {
 				<option>NVG
 				<option>Offshore
 				<option>Undersling
-				<option>Undersling
 				<#list aircraftTypes?if_exists as aircraftType>
 				<option>${aircraftType.name!}
 				</#list>
