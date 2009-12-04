@@ -1,7 +1,7 @@
 package com.itao.starlite.model;
 
 import java.util.Date;
-
+import java.text.SimpleDateFormat;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,6 +35,32 @@ public class CrewDay {
 	private String timein;
 	private String timeout;
 	private String hours;
+	
+	
+	public CrewDay(){}
+	public CrewDay(String _date,String _activity, String _comments, String _type, String _position, String _instruments, Aircraft aircraft, Charter charter, CrewMember crewMember , Double _flown, String _timein, String _timeout, String _hours){
+		
+		try{
+		  SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		  date = df.parse(_date);
+		}
+		catch(Exception e){
+			//do nothing
+		}
+		
+		activity=_activity;
+		comments=_comments;
+		type=_type;
+		position=_position;
+		instruments=_instruments;
+		flown=_flown;
+		timein=_timein;
+		timeout=_timeout;
+		hours=_hours;	
+		setAircraft(aircraft);
+		setCharter(charter);
+		setCrewMember(crewMember);
+	}
 	
 
 	public void setId(Integer id) {

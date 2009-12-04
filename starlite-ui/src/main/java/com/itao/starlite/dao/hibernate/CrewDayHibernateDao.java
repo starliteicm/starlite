@@ -21,7 +21,7 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 		Date startDate = dm.toDate();
 		Date endDate = dm.plusMonths(1).toDate();
 		
-		return getCurrentSession().createQuery("from CrewDay c where a.crewmember_id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
+		return getCurrentSession().createQuery("from CrewDay c where c.crewMember.id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
 			.setInteger(0, c.getId())
 			.setDate(1, startDate)
 			.setDate(2, endDate)
@@ -29,12 +29,12 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year) {
+	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer year, Integer month) {
 		DateMidnight dm = new DateMidnight(year, month, 1);
 		Date startDate = dm.toDate();
 		Date endDate = dm.plusMonths(1).toDate();
 		
-		return getCurrentSession().createQuery("from CrewDay c where a.crewmember_id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
+		return getCurrentSession().createQuery("from CrewDay c where c.crewMember.id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
 			.setInteger(0, cId)
 			.setDate(1, startDate)
 			.setDate(2, endDate)
@@ -47,7 +47,7 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 		Date startDate = dm.toDate();
 		Date endDate = dm.plusMonths(1).toDate();
 		
-		return getCurrentSession().createQuery("from crewday c where c.aircraft_id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
+		return getCurrentSession().createQuery("from crewday c where c.aircraft.id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
 			.setInteger(0, a.getId())
 			.setDate(1, startDate)
 			.setDate(2, endDate)
@@ -60,13 +60,12 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 		Date startDate = dm.toDate();
 		Date endDate = dm.plusMonths(1).toDate();
 		
-		return getCurrentSession().createQuery("from crewday c where c.aircraft_id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
+		return getCurrentSession().createQuery("from crewday c where c.aircraft.id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
 			.setInteger(0, aId)
 			.setDate(1, startDate)
 			.setDate(2, endDate)
 			.list();
 	}
-
 
 
 	@SuppressWarnings("unchecked")
@@ -76,7 +75,7 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 		Date startDate = dm.toDate();
 		Date endDate = dm.plusMonths(1).toDate();
 		
-		return getCurrentSession().createQuery("from crewday c where c.charter_id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
+		return getCurrentSession().createQuery("from crewday c where c.charter.id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
 			.setInteger(0, c.getId())
 			.setDate(1, startDate)
 			.setDate(2, endDate)

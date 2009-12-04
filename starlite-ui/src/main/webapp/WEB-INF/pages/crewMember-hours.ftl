@@ -128,75 +128,200 @@
 				
 		<#list months.keySet() as month>
 		
-		<#if readOnly>
-        <form action="#" method="POST" autocomplete="off" class="smart readonly">
-        <#else>
-        <form action="crewMember!saveHours.action" autocomplete="off" method="POST" class="smart">
-        </#if>
+		  <#if readOnly>
+            <form action="#" method="POST" autocomplete="off" class="smart readonly">
+          <#else>
+            <form action="crewMember!saveHours.action" autocomplete="off" method="POST" class="smart">
+          </#if>
         
-        <input type="hidden" name="id" value="${id}">
-        <input type="hidden" name="month" value="${month}">
+          <input type="hidden" name="id" value="${id}">
+          <input type="hidden" name="hoursMonth" value="${month}">
 		
-		<div class="months" id="${month}" style="padding:5px;border:1px solid silver;margin:20px;display:none;">
-		<h3 style="height:20px;width:70px;background-color:white;color:silver;position:relative;top:-22px;left:30px;padding:5px;">${month}</h3>
-		<table style="width:100%">
-		<tr>
-		<th>&nbsp;</th>
-		<th>Activity / Comments</th>
-		<th>Type</th>
-		<th>Tail#</th>
-		<th>Charter</th>
-		<th>Hours Flow</th>
-		<th>Total Flow</th>
-		<th>Time In</th>
-		<th>Time Out</th>
-		<th>Hours</th>
-		</tr>
+		  <div class="months" id="${month}" style="padding:5px;border:1px solid silver;margin:20px;display:none;">
+		  <h3 style="height:20px;width:70px;background-color:white;color:silver;position:relative;top:-22px;left:30px;padding:5px;">${month}</h3>
+		  <table style="width:100%">
+		  <tr>
+		    <th>&nbsp;</th>
+		    <th>Activity / Comments</th>
+		    <th>Type</th>
+		    <th>Tail#</th>
+		    <th>Charter</th>
+		    <th>Hours Flow</th>
+		    <th>Total Flow</th>
+		    <th>Time In</th>
+		    <th>Time Out</th>
+		    <th>Hours</th>
+		  </tr>
+		
+		<#assign flownTotal = 0  />
 		
 		<#list months.get(month).keySet() as day>
-		<#if months.get(month).get(day) == 7>
-		<tr style="background-color:#DDD;border-bottom:1px dotted silver;height:20px;padding:2px;">
-		<#elseif months.get(month).get(day) == 1>
-		<tr style="background-color:#DDD;border-bottom:1px dotted silver;height:20px;padding:2px;">
-		<#else>
-		<tr style="border-bottom:1px dotted silver;height:20px;padding:2px;">
-		</#if>
-		<td>${day}</td>
-		<td>
-		<select name="${month}-${day}_activity" onchange="changeActivity(this,'${month}-${day}');">
-		<option></option>
-		<option value="W">Work [W]</option>
-		<option value="T">Travel [T]</option>
-		<option value="D">Training [D]</option>
-		<option value="L">Leave [L]</option>
-		<option value="R">Rest [R]</option>
-		<option value="U">Unavailable [U]</option>
+		  <#if months.get(month).get(day).get("day") == 7>
+		    <tr style="background-color:#DDD;border-bottom:1px dotted silver;height:20px;padding:2px;">
+		  <#elseif months.get(month).get(day).get("day") == 1>
+		    <tr style="background-color:#DDD;border-bottom:1px dotted silver;height:20px;padding:2px;">
+		  <#else>
+		    <tr style="border-bottom:1px dotted silver;height:20px;padding:2px;">
+		  </#if>
+		
+		  <#assign crewDay = months.get(month).get(day) />
+		  
+		  <#assign visible = "visibility:hidden" />
+		
+		  <td>${day}</td>
+		  <td>
+	  	  <select id="${month}-${day}_activity" name="${month}-${day}_activity" onchange="changeActivity(this,'${month}-${day}');">
+	 	    <option></option>
+		    <#if crewDay.get("crewDay")?? >
+		      <#if crewDay.get("crewDay").activity == "W">
+		        <#assign visible = "visibility:visible" />
+		        <option SELECTED value="W">Work [W]</option>
+		        <option value="T">Travel [T]</option>
+		        <option value="D">Training [D]</option>
+		        <option value="L">Leave [L]</option>
+		        <option value="R">Rest [R]</option>
+		        <option value="U">Unavailable [U]</option>
+		      <#elseif crewDay.get("crewDay").activity == "T">
+		        <option value="W">Work [W]</option>
+                <option SELECTED value="T">Travel [T]</option>
+                <option value="D">Training [D]</option>
+                <option value="L">Leave [L]</option>
+                <option value="R">Rest [R]</option>
+                <option value="U">Unavailable [U]</option>
+		      <#elseif crewDay.get("crewDay").activity == "D">
+		        <#assign visible = "visibility:visible" />
+		        <option value="W">Work [W]</option>
+                <option value="T">Travel [T]</option>
+                <option SELECTED value="D">Training [D]</option>
+                <option value="L">Leave [L]</option>
+                <option value="R">Rest [R]</option>
+                <option value="U">Unavailable [U]</option>
+		      <#elseif crewDay.get("crewDay").activity == "L">
+		        <option value="W">Work [W]</option>
+                <option value="T">Travel [T]</option>
+                <option value="D">Training [D]</option>
+                <option SELECTED value="L">Leave [L]</option>
+                <option value="R">Rest [R]</option>
+                <option value="U">Unavailable [U]</option>
+		      <#elseif crewDay.get("crewDay").activity == "R">
+		        <option value="W">Work [W]</option>
+                <option value="T">Travel [T]</option>
+                <option value="D">Training [D]</option>
+                <option value="L">Leave [L]</option>
+                <option SELECTED value="R">Rest [R]</option>
+                <option value="U">Unavailable [U]</option>
+		      <#elseif crewDay.get("crewDay").activity == "U">
+		        <option value="W">Work [W]</option>
+                <option value="T">Travel [T]</option>
+                <option value="D">Training [D]</option>
+                <option value="L">Leave [L]</option>
+                <option value="R">Rest [R]</option>
+                <option SELECTED value="U">Unavailable [U]</option>
+		      <#else>
+		        <option value="W">Work [W]</option>
+                <option value="T">Travel [T]</option>
+                <option value="D">Training [D]</option>
+                <option value="L">Leave [L]</option>
+                <option value="R">Rest [R]</option>
+                <option value="U">Unavailable [U]</option>
+		      </#if>
+		    <#else>
+		      <option value="W">Work [W]</option>
+              <option value="T">Travel [T]</option>
+              <option value="D">Training [D]</option>
+              <option value="L">Leave [L]</option>
+              <option value="R">Rest [R]</option>
+              <option value="U">Unavailable [U]</option>
+		    </#if>
 		</select>
-		<input style="width:80px;">
+		
+		
+		
+		<#if crewDay.get("crewDay")?? >
+		  <input name="${month}-${day}_comment" value="${crewDay.get("crewDay").comments?string}" style="width:80px;">
+		<#else>
+		  <input name="${month}-${day}_comment" value="" style="width:80px;">
+		</#if>
 		</td>
 		
 		<td>
 		
-		<div class="${month}-${day}_WorkDiv" style="visibility:hidden;">
+		<div class="${month}-${day}_WorkDiv" style="${visible}">
 		
-        <select id="${month}-${day}_type" onchange="changeType(this,'${month}-${day}_');">
+        <select name="${month}-${day}_type" id="${month}-${day}_type" onchange="changeType(this,'${month}-${day}_');">
           <option></option>
-          <option value="n">Night</option>
-          <option value="d">Day</option>
-          <option value="i">Instruments</option>
+          <#if crewDay.get("crewDay")??>
+            <#if crewDay.get("crewDay").type == "n">
+              <option SELECTED value="n">Night</option>
+              <option value="d">Day</option>
+              <option value="i">Instruments</option>
+            <#elseif crewDay.get("crewDay").type == "d" >
+              <option value="n">Night</option>
+              <option SELECTED value="d">Day</option>
+              <option value="i">Instruments</option>
+            <#elseif crewDay.get("crewDay").type == "i" >
+              <option value="n">Night</option>
+              <option value="d">Day</option>
+              <option SELECTED value="i">Instruments</option>
+            <#else>
+              <option value="n">Night</option>
+              <option value="d">Day</option>
+              <option value="i">Instruments</option>
+            </#if>
+          <#else>
+            <option value="n">Night</option>
+            <option value="d">Day</option>
+            <option value="i">Instruments</option>
+          </#if>
+          
+          
         </select>
         
-        <select id="${month}-${day}_position" style="display:inline;width:50px">
+        <select name="${month}-${day}_position" id="${month}-${day}_position" style="display:inline;width:50px">
           <option></option>
-          <option>Dual</option>
-          <option>Capt</option>
-          <option>Co</option>
+          <#if crewDay.get("crewDay")??>
+            <#if crewDay.get("crewDay").position == "Dual" >
+              <option SELECTED>Dual</option>
+              <option>Capt</option>
+              <option>Co</option>
+            <#elseif crewDay.get("crewDay").position == "Capt" >
+              <option>Dual</option>
+              <option SELECTED>Capt</option>
+              <option>Co</option>
+            <#elseif crewDay.get("crewDay").position == "Co" >
+              <option>Dual</option>
+              <option>Capt</option>
+              <option SELECTED>Co</option>
+            <#else>
+              <option>Dual</option>
+              <option>Capt</option>
+              <option>Co</option>
+            </#if>
+          <#else>
+            <option>Dual</option>
+            <option>Capt</option>
+            <option>Co</option>
+          </#if>
+          
         </select>
         
-        <select id="${month}-${day}_instruments" style="display:none;width:50px">
+        <select name="${month}-${day}_instruments" id="${month}-${day}_instruments" style="display:none;width:50px">
           <option></option>
-          <option>Sim</option>
-          <option>Act</option>
+          <#if crewDay.get("crewDay")??>
+            <#if crewDay.get("crewDay").instruments == "Sim" >
+              <option SELECTED>Sim</option>
+              <option>Act</option>
+            <#elseif crewDay.get("crewDay").instruments == "Act" >
+              <option>Sim</option>
+              <option SELECTED>Act</option>
+            <#else>
+              <option>Sim</option>
+              <option>Act</option>
+            </#if>
+          <#else>
+            <option>Sim</option>
+            <option>Act</option>
+          </#if>
         </select>
         </div>
         
@@ -204,11 +329,25 @@
         
         <td>
         
-        <div class="${month}-${day}_WorkDiv" style="visibility:hidden;">
-        <select id="${month}-${day}_tail">
+        <div class="${month}-${day}_WorkDiv" style="${visible}">
+        <select name="${month}-${day}_tail" id="${month}-${day}_tail">
           <option></option>
         <#list allAircraft as a>
-          <option>${a.ref}</option>
+        
+          <#if crewDay.get("crewDay")??>
+            <#if crewDay.get("crewDay").aircraft??>
+              <#if crewDay.get("crewDay").aircraft.id == a.id >
+                <option SELECTED value="${a.id}">${a.ref}</option>
+              <#else>
+                <option value="${a.id}">${a.ref}</option>
+              </#if>
+            <#else>
+              <option value="${a.id}">${a.ref}</option>
+            </#if>
+          <#else>
+            <option value="${a.id}">${a.ref}</option>
+          </#if>
+          
         </#list>
         </select>
         </div>
@@ -217,11 +356,25 @@
         
         <td>
         
-        <div class="${month}-${day}_WorkDiv" style="visibility:hidden;">
-        <select id="${month}-${day}_charter">
+        <div class="${month}-${day}_WorkDiv" style="${visible}">
+        <select name="${month}-${day}_charter" id="${month}-${day}_charter">
         <option></option>
         <#list allCharters as c>
-            <option>${c.code}</option>
+         
+          <#if crewDay.get("crewDay")??>
+            <#if crewDay.get("crewDay").aircraft??>
+              <#if crewDay.get("crewDay").charter.id == c.id >
+                <option SELECTED value="${c.id}">${c.code}</option>
+              <#else>
+                <option value="${c.id}">${c.code}</option>
+              </#if>
+            <#else>
+              <option value="${c.id}">${c.code}</option>
+            </#if>
+          <#else>
+            <option value="${c.id}">${c.code}</option>
+          </#if>
+            
         </#list>
         </select>
         </div>
@@ -229,26 +382,48 @@
         </td>
 		
 		<td>
-          <input style="width:45px;" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
+		  <div class="${month}-${day}_WorkDiv" style="${visible}">
+		  <#if crewDay.get("crewDay")?? >
+            <input style="width:45px;" value="${crewDay.get("crewDay").flown?string}" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
+            <#assign flownTotal = flownTotal + crewDay.get("crewDay").flown  />
+          <#else>
+            <input style="width:45px;" value="" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
+          </#if>
+          </div>
         </td>
 		<td>
-          <input style="width:45px;" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
+		<#if crewDay.get("crewDay")?? >
+          <input style="width:45px;" value="${flownTotal?string}" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
+        <#else>
+          <input style="width:45px;" value="" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
+        </#if>
         </td>
 		
 		<td>
-          <input style="width:45px;" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
+		<#if crewDay.get("crewDay")?? >
+          <input style="width:45px;" value="${crewDay.get("crewDay").timein?string}" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
+        <#else>
+          <input style="width:45px;" value="" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
+        </#if>
         </td>
         <td>
-          <input style="width:45px;" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
+        <#if crewDay.get("crewDay")?? >
+          <input style="width:45px;" value="${crewDay.get("crewDay").timeout?string}" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
+        <#else>
+          <input style="width:45px;" value="" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
+        </#if>
         </td>
         <td>
-          <input style="width:45px;" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
+        <#if crewDay.get("crewDay")?? >
+          <input style="width:45px;" value="${crewDay.get("crewDay").hours?string}" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
+        <#else>
+          <input style="width:45px;" value="" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
+        </#if>        
         </td>
 		
 		
 		</tr>
 		</#list>
-		
 		
 		</table>
 		<br/><br/>
@@ -266,10 +441,6 @@
 		<hr class="clear"/>
 		</div>
 		</div>
-		
-		
-		
-		
 	
 </body>
 </html>

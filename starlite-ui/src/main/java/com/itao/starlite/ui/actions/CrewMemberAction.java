@@ -43,6 +43,7 @@ import com.itao.starlite.model.Aircraft;
 import com.itao.starlite.model.AircraftType;
 import com.itao.starlite.model.ApprovalStatus;
 import com.itao.starlite.model.Charter;
+import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
@@ -60,6 +61,7 @@ import com.opensymphony.xwork2.Preparable;
 @ParentPackage("prepare")
 @Results({
     @Result(name="unauthorised", type=ServletRedirectResult.class, value="unauthorised.html"),
+    @Result(name="redirect-hours", type=ServletRedirectResult.class, value="crewMember.action?id=${id}&tab=hours&notificationMessage=Saved"),
     @Result(name="photo", type=StreamResult.class, value="photo", params={"inputName","photo","contentType","image","contentDisposition","inline"} ),
     @Result(name="redirect-addFlightActuals", type=ServletRedirectResult.class, value="crewMember!addFlightActuals.action?id=${id}&tab=flight&actualsId=${actuals.id}&errorMessage=${errorMessage}&notificationMessage=${notificationMessage}")
 })
@@ -86,6 +88,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String passportFileName;
 	@SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
+	public String hoursMonth;
 
 	@Inject
 	private StarliteCoreManager manager;
@@ -210,6 +213,60 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		return "flight";
 	}
 	
+	public String saveHours(){
+		
+		for(int i = 1; i < 32; i++){
+			
+			String day = ""+i;
+			if(i < 10){
+				day = "0"+day;
+			}
+						
+			String activity    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_activity");
+			String comment     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_comment");
+			String type        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_type");
+			String position    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_position");
+			String instruments =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_instruments");
+			String tail        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_tail");
+			String chart       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_charter");
+			String flown       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_flown");
+			String timein      =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timein");
+			String timeout     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timeout");
+			String hours       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_hours");
+			
+			LOG.info(hoursMonth+"-"+day+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|"+flown+"|"+timein+"|"+timeout+"|"+hours);
+			
+			Aircraft aircraft = null;
+			Charter charter = null;
+			
+			if(activity != null){
+			if(activity != ""){
+				if(tail != null){
+					if(tail != ""){
+						aircraft = manager.getAircraft(new Integer(tail));
+					}
+				}
+				if(chart != null){
+					if(chart != ""){
+						charter  = manager.getCharter(new Integer(chart));
+					}
+				}
+				Double flownHours = new Double(0.0);
+				if(flown != null){
+					if(flown != ""){
+						flownHours = new Double(flown);
+					}
+				}
+				
+				manager.saveCrewDay(new CrewDay(hoursMonth+"-"+day,activity,comment,type,position,instruments,aircraft,charter,crewMember,flownHours,timein,timeout,hours));
+			}
+		    }
+			
+		}
+		
+		return "redirect-hours";
+	}
+	
 	@SuppressWarnings("unchecked")
 	private String setupHours(){
 		
@@ -229,11 +286,24 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			
 			//LOG.info(nowMonth);
 			
+			 
+			
+			List<CrewDay> crewDays = manager.getCrewDayByCrewMemberByMonth(new Integer(crewMember.getId()),new Integer(nowMonth.substring(0, 4)),new Integer(nowMonth.substring(5, nowMonth.length())));
+			
+			Map<String,CrewDay> crewDayMap = new HashMap<String,CrewDay>();
+			for(CrewDay cd : crewDays){
+				crewDayMap.put(dayformat.format(cd.getDate()), cd);
+			}
+			
+			
 			TreeMap days = new TreeMap();
 			
 			while(nowMonth.equals(monthformat.format(cal.getTime()))){	
 				String day = dayformat.format(cal.getTime());
-				days.put(day,new Integer(cal.get(Calendar.DAY_OF_WEEK)));
+				Map dayMap = new HashMap();
+				dayMap.put("day", cal.get(Calendar.DAY_OF_WEEK));
+				dayMap.put("crewDay", crewDayMap.get(day));
+				days.put(day,dayMap);
 				cal.add(Calendar.DAY_OF_MONTH, 1);
 				//LOG.info(day);
 			}

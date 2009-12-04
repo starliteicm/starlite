@@ -14,13 +14,13 @@ import com.itao.starlite.model.CrewMember;
 @ImplementedBy(CrewDayHibernateDao.class)
 public interface CrewDayDao extends GenericDao<CrewDay, Integer> {
 
-	public List<CrewDay> getCrewDayByCrewMemberByMonth(CrewMember c, Integer month, Integer year);
-	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year);
+	public List<CrewDay> getCrewDayByCrewMemberByMonth(CrewMember c, Integer year, Integer month);
+	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer year, Integer month);
 	
-	public List<CrewDay> getCrewDayByAircraftByMonth(Aircraft a, Integer month, Integer year) ;
-	public List<CrewDay> getCrewDayByAircraftByMonth(Integer aId, Integer month, Integer year);
+	public List<CrewDay> getCrewDayByAircraftByMonth(Aircraft a, Integer year, Integer month) ;
+	public List<CrewDay> getCrewDayByAircraftByMonth(Integer aId, Integer year, Integer month);
 	
-	public List<CrewDay> getCrewDayByCharterByMonth(Charter c, Integer month, Integer year) ;
+	public List<CrewDay> getCrewDayByCharterByMonth(Charter c, Integer year, Integer month) ;
 
 
 }

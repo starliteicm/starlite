@@ -16,6 +16,7 @@ import com.itao.starlite.dao.AircraftDao;
 import com.itao.starlite.dao.AircraftTypeDao;
 import com.itao.starlite.dao.CharterDao;
 import com.itao.starlite.dao.CrewDao;
+import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
 import com.itao.starlite.docs.manager.DocumentManager;
@@ -31,6 +32,7 @@ import com.itao.starlite.model.ApprovalStatus;
 import com.itao.starlite.model.Charter;
 import com.itao.starlite.model.CharterList;
 import com.itao.starlite.model.CombinedActuals;
+import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
@@ -42,6 +44,7 @@ public class StarliteCoreManager {
 	@Inject private CrewDao crewDao;
 	@Inject private AircraftDao aircraftDao;
 	@Inject private ActualsDao actualsDao;
+	@Inject private CrewDayDao crewDayDao;
 	@Inject private FlightAndDutyActualsDao flightAndDutyActualsDao;
 	@Inject private AircraftTypeDao aircraftTypeDao;
 	@Inject private ExchangeDao exDao;
@@ -432,11 +435,23 @@ public class StarliteCoreManager {
 		}
 	}
 
+	
+	@Transactional
+	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
+		return crewDayDao.getCrewDayByCrewMemberByMonth(cId, month, year);
+	}
+	
+	@Transactional
+	public void saveCrewDay(CrewDay c){
+		crewDayDao.makePersistent(c);
+	}
+	
 	@Transactional
 	public List<AircraftType> getAircraftTypes() {
 		return aircraftTypeDao.findAll();
 	}
 	
+	@Transactional
 	public void saveAircraftType(AircraftType a){
 		aircraftTypeDao.makePersistent(a);
 	}
