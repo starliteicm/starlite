@@ -157,6 +157,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		return tab;
 	}
 
+	public String profile() throws Exception{
+		prepare();
+		LOG.info(crewMember.getId());
+		return "profile";
+	}
+	
 	public String photo(){
 		return "photo";
 	}
