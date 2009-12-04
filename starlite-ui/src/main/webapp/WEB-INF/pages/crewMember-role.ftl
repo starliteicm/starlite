@@ -328,6 +328,12 @@ $("document").ready(function() {
 				<label for="crewMember.role.conversions[${i+j}].number">Add Type:</label>
 				<select name="crewMember.role.conversions[${i+j}].number">
 				<option>
+				<option>Total Hours
+				<option>Total PIC
+				<option>Total Turbine
+				<option>NVG
+				<option>Offshore
+				<option>Undersling
 				<#list aircraftTypes?if_exists as aircraftType>
 				<option>${aircraftType.name!}
 				</#list>
