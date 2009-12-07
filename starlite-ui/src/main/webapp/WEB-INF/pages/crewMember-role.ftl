@@ -230,7 +230,11 @@ $("document").ready(function() {
 				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
-			
+			<div class="fm-opt">
+				<label for="crewMember.role.huet.expiryDate">HUET Training:</label>
+				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+			</div>
+				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
    <div class="fm-opt">
 				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
 				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
