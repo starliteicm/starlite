@@ -30,7 +30,7 @@
 //CHECK LICENCE EXPIRY DATE
 //this adds a leading zero if the day/month is one digit e.g 1 becomes 01
 function addZero(tc){
-   var timeConstruct=""+tc; 
+   var timeConstruct=""+tc; //force timeConstruct into string 
    if(timeConstruct.length==1){
       timeConstruct =  "0" + timeConstruct;  
       return timeConstruct;
@@ -48,6 +48,8 @@ function validateDate(datefield,msg){
                        
    //PROCESS EXPIRY DATE
    var expiry = $(dateinput).val();
+   if (expiry==null){
+   }else{   
    var exp = expiry.split('/');
    
    //add leading zeros to day and month if needed   
@@ -77,7 +79,7 @@ function validateDate(datefield,msg){
    //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
    if(current_date > reversedate){ $(messagediv).html(message); }else{$(messagediv).html();}        
    }
-
+   }
 </script>
 
 <script type="text/javascript">
@@ -304,7 +306,7 @@ $("document").ready(function() {
 		</fieldset>
 		<fieldset>
 			<legend>
-			Hours
+			Hours On Aircraft Types 
 			<img class="tooltip" title="To Add a Type: select a type from the dropdown and press save <br/><br/> To Remove a Type: select the empty option of the Type you wish to remove and save <br/><br/> You are unable to add more<br/> than one of the same type"  style="background-color:white;cursor:help;position:absolute;padding:10px;padding-top:0px;"  src="images/icons/info.png"/>
 			</legend>
 			<div class="fm-opt" style="position:relative;right:-340px;">
@@ -316,12 +318,6 @@ $("document").ready(function() {
 			    <label for="crewMember.role.conversions[${i}].number">Licence:</label>
 			    <select name="crewMember.role.conversions[${i}].number">
 			    <option>
-			    <option <#if conversion.number.equals("Total Hours")>selected</#if> >Total Hours
-                <option <#if conversion.number.equals("Total PIC")>selected</#if> >Total PIC
-                <option <#if conversion.number.equals("Total Turbine")>selected</#if> >Total Turbine
-                <option <#if conversion.number.equals("NVG")>selected</#if> >NVG
-                <option <#if conversion.number.equals("Offshore")>selected</#if> >Offshore
-                <option <#if conversion.number.equals("Undersling")>selected</#if> >Undersling
 				<#list aircraftTypes?if_exists as aircraftType>
 				<option <#if conversion.number.equals(aircraftType.name)>selected</#if> >${aircraftType.name!}
 				</#list>

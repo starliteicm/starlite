@@ -10,3 +10,12 @@
 	</#if>
 	<li><a href="script.action?scriptName=expiry.groovy">Expiry</a>
 </ul>
+
+<form action = "crewMember!profile.action">
+<select name="id">
+<#list crewMembers as crew>
+<option value="${crew.code?if_exists}" > ${crew.personal.fullName?if_exists}
+</#list>
+</select>
+<input type="submit" value="View Profile" />
+</form>
