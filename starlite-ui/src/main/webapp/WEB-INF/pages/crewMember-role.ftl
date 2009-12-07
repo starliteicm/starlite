@@ -104,10 +104,6 @@ $("document").ready(function() {
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
       if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
-      
-      var licencetype = $("#licencetype").val(); 
-      
-      if(licencetype == ""){ errormsg += "licence type, "; error=1;}
             
       if(error==1){
         $("#msg-error").html(errormsg); 

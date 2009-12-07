@@ -202,7 +202,8 @@
                 <input name="crewMember.personal.preferedName" type="text" value="${crewMember.personal.preferedName!}"/>
             </div>
 		</fieldset>
-	    <fieldset>
+		
+	    <!--<fieldset>
 			<legend>Passport</legend>
 			<div class="fm-opt">
 				<label for="crewMember.personal.passportCountry"><span class="star">*</span>Country of Issue:</label>
@@ -221,7 +222,40 @@
                 <input name="passport" type="file" value=""/>
                 <input type="hidden" name="passportTags" value="passport">                
             </div>
+		</fieldset>-->
+		
+		<fieldset>
+            <legend>Passports</legend>
+		
+		<#assign count=0>
+		<#list crewMember.passports as passport>
+		
+		<#if count != 0>
+		<div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
+		</#if>
+		
+		<#assign count=count +1>
+		
+		<div class="fm-opt">
+		  <label for="${count}_passport_country"><span class="star">*</span>Country of Issue:</label>
+		  <input type="text" name="${count}_passport_country" value="${passport.country!}" />
+		</div>
+		<div class="fm-opt">
+		  <label for="${count}_passport_passportNumber"><span class="star">*</span>Passport Number:</label>
+		  <input type="text" name="${count}_passport_passportNumber" value="${passport.passportNumber!}" />
+		</div>
+		<div class="fm-opt">
+          <label for="${count}_passport_passportExpiryDate"><span class="star">*</span>Expiry Date:</label>
+		  <#if passport.expiryDate??>
+		    <input type="text" name="${count}_passport_passportExpiryDate" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
+		  <#else>
+		    <input type="text" name="${count}_passport_passportExpiryDate" value="" />
+		  </#if>
+		</div>
+
+		</#list>
 		</fieldset>
+		
 		<fieldset>
 			<legend>Address</legend>
 			<div class="fm-opt">

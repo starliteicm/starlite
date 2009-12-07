@@ -82,10 +82,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String documentContentType;
 	public String documentFileName;
 	public String tags;
-	public String passportTags;
-	public File passport;
-	public String passportContentType;
-	public String passportFileName;
+	
+	public List<String> passportsTags;
+	public List<File> passports;
+	public List<String> passportsContentType;
+	public List<String> passportsFileName;
+	
 	@SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
 	public String hoursMonth;
@@ -625,22 +627,39 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		catch(Exception e){
 			LOG.error(e);
 		}
-		try{
-			if(passport != null){
-				LOG.info(passportTags+" "+docfolder);
-				String[] tagsArray = passportTags.split(" ");
-				Document doc = new Document();
-				doc.setName(passportFileName);
-				doc.setContentType(passportContentType);
-				Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
-				doc.setBookmark(b);
-				docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
-			}
+		
+		
+		LOG.info(passportsFileName);
+		LOG.info(passportsTags);
+		LOG.info(passportsContentType);
+		
+	    boolean morePassports = true;
+		while(morePassports){
+			
+			File passport = null;
+			String passportTags = null;
+			String passportFileName = null;
+			String passportContentType = null;
+			morePassports = false;
+			
+			try{
+				if(passport != null){
+					LOG.info(passportTags+" "+docfolder);
+					String[] tagsArray = passportTags.split(" ");
+					Document doc = new Document();
+					doc.setName(passportFileName);
+					doc.setContentType(passportContentType);
+					Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
+					doc.setBookmark(b);
+					docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
+				}
 			}
 			catch(Exception e){
 				LOG.error(e);
 			}
-		return execute();
+		}
+		
+	return execute();
 	}
 
 	public Integer actualsId;

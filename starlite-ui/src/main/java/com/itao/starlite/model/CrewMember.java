@@ -71,9 +71,76 @@ public class CrewMember implements Cloneable {
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private ApprovalGroup approvalGroup = new ApprovalGroup();
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@Fetch(FetchMode.SUBSELECT)
+	private List<Passport> passports = new ArrayList<Passport>();
+	
 	/*
 	 * Nested Classes - These are used to partition the data into manageable sections
 	 */
+	
+	@Entity
+	public class Passport{			
+		public String passportNumber;
+		@Temporal(TemporalType.DATE)
+		public Date expiryDate;
+		public String country;
+		@Id @GeneratedValue
+		public Integer id;
+		public Passport(){}
+		public Passport(String _passportNumber, String _passportCountry, Date _passportExpiry){
+			this.setPassportNumber(_passportNumber);
+			this.setCountry(_passportCountry);
+			this.setExpiryDate(_passportExpiry);
+		}
+		public void setPassportNumber(String passportNumber) {
+			this.passportNumber = passportNumber;
+		}
+		public String getPassportNumber() {
+			return passportNumber;
+		}
+		public void setExpiryDate(Date passportExpiryDate) {
+			this.expiryDate = passportExpiryDate;
+		}
+		public Date getExpiryDate() {
+			return expiryDate;
+		}
+		public void setCountry(String passportCountry) {
+			this.country = passportCountry;
+		}
+		public String getCountry() {
+			return country;
+		}
+		public void setId(Integer id) {
+			this.id = id;
+		}
+		public Integer getId() {
+			return id;
+		}
+		public String toString(){
+			return "{id:"+getId()+",country:"+getCountry()+",number:"+getPassportNumber()+",expiry:"+getExpiryDate()+"}";
+		}
+	}
+	
+	public List<Passport> getPassports(){
+	  if(passports == null){
+		  passports = new LinkedList<Passport>();
+	  }
+	  if(personal.passportCountry != null){
+		  //first passport
+		  passports.add(new Passport(personal.passportNumber,personal.passportCountry,personal.passportExpiryDate));
+	  }
+	  passports.add(new Passport()); 
+	  
+	  System.out.println("GET:"+passports);
+	  return passports;
+	}
+	
+	public void setPassports(List<Passport> passports) {
+		System.out.println("SET:"+passports);
+		this.passports = passports;
+	}
+	
 	
 	@Embeddable
 	public static class Personal {
@@ -136,8 +203,6 @@ public class CrewMember implements Cloneable {
 		private String alternativeEmergencyContactName;
 		private String alternativeEmergencyContactNumber;
 		private String alternativeEmergencyContactRelationship;
-		
-
 		
 		public String getLastName() {
 			return lastName;
