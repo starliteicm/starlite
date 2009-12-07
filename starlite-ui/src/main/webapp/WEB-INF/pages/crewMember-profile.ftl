@@ -39,7 +39,7 @@ document.write("AM")
 }
 </script>
 </div>
-   <div class="left">
+   <div class="profile-left">
    <div style="float:left; width: 500px;">			
 			<div class="fm-opt">			
 			    <img name="image" src="crewMember!photo.action?id=${id!}" style="width:100px;height:100px;">
@@ -163,7 +163,7 @@ document.write("AM")
 			</div>
    </div>
 </div>
- <div class="right">
+ <div class="profile-right">
  <div style="float:left; width: 500px;">			
 		 <div class="fm-opt">							
 				<label for="gender">Gender:</label>
