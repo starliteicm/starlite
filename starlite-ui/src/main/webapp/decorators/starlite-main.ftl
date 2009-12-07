@@ -42,7 +42,7 @@
 <body>
 </#if>
 
-<div name="logo" style="float:left;">
+<div name="logo" style="float:left;" id="logo">
 	<#if isManager>
 	<img style="float:left;position:absolute;z-index:100;" src="${request.contextPath}/images/starlite.png"/>
 	<#else>

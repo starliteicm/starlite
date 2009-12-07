@@ -140,8 +140,9 @@
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
 		<input type="hidden" name="tab" value="personal"/>
 		
-		<div style="padding-top:25px;position:absolute;left:950px;"><button type="button" onclick="return false;" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/printer.png"/> Print</button></div>
-		
+        <form method="link" action="crewMember!profile.action?id=${crewMember.code!}">
+		<div style="padding-top:25px;position:absolute;left:950px;"><button type="button" onclick="window.location='crewMember!profile.action?id=${crewMember.code!}';" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/printer.png"/> Print</button></div>
+		</form>
 		
 		<div style="float:left; width: 500px;">
 		<fieldset>
