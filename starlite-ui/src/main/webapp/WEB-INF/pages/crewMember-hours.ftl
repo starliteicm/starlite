@@ -4,7 +4,9 @@
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
   <@enableJQuery/>
+  <@enableDatePickers/>
   <@enableTimePickers/>
+  
   
   <script>
     function checkNum(obj){
@@ -115,17 +117,76 @@
 	<@subTabs/>
 	
 	    <div style="display:block;padding:10px;width:100%;height:auto;margin-top:35px;border:1px solid silver;position:relative">
-		<div style="padding:20px;">
 		
-		Select Month: 
-		<select name="month" onchange="changeMonth(this);">		
-		<option></option>
-		<#list months.keySet() as month>
-           <option>${month}</option>		
-		</#list>
-		</select>
-		<div id="loading" style="color:silver;">Loading... Please Wait</div>
-		<br/><br/>
+		<div style="padding:20px;padding-bottom:0px;width:450px;">
+		  <form>
+		  
+		    <fieldset>
+            <legend>Set Range</legend>
+		    
+		    <div class="fm-opt">
+		    <label for="dateFrom">Date Range:</label>
+		    <input name="dateFrom" type="text" class="date-pick" value=""/>
+            <input name="dateTo" type="text" class="date-pick" value=""/>
+            </div>
+            
+            <div class="fm-opt">
+            <label for="activity">Activity:</label>
+            <select name="activity">
+                <option SELECTED value="W">Work [W]</option>
+                <option value="T">Travel [T]</option>
+                <option value="D">Training [D]</option>
+                <option value="L">Leave [L]</option>
+                <option value="R">Rest [R]</option>
+                <option value="U">Unavailable [U]</option>
+            </select>
+            </div>
+            
+            <div class="fm-opt">
+            <label for="aircraft">Aircraft:</label>
+            <select name="aircraft" id="aircraft">
+              <option></option>
+              <#list allAircraft as a>
+                  <option SELECTED value="${a.id}">${a.ref}</option>
+              </#list>
+            </select>
+            </div>
+            
+            <div class="fm-opt">
+            <label for="dateFrom">Charter:</label>
+            <select name="charter" id="charter">
+              <#list allCharters as c>
+                <option SELECTED value="${c.id}">${c.code}</option>
+              </#list>
+            </select>
+            </div>
+            <br/>
+            <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Set</button>
+            
+            
+            </fieldset>
+            
+          </form>
+		</div>
+		
+		<div style="padding:20px;padding-top:0px;">
+		
+		  <form autocomplete="off" onSubmit="return false;">
+            <fieldset>
+            <legend>Hours</legend> 
+            <div class="fm-opt">
+            <label for="month">Select Month:</label>
+            <select id="month" name="month" onchange="changeMonth(this);">      
+            <option></option>
+            <#list months.keySet() as month>
+              <option>${month}</option>        
+            </#list>
+            </select>
+            <div id="loading" style="color:silver;">Loading... Please Wait</div>
+            <br/><br/>
+            </fieldset>    
+          </form>
+		
 				
 		<#list months.keySet() as month>
 		
@@ -363,7 +424,7 @@
         <#list allCharters as c>
          
           <#if crewDay.get("crewDay")??>
-            <#if crewDay.get("crewDay").aircraft??>
+            <#if crewDay.get("crewDay").charter??>
               <#if crewDay.get("crewDay").charter.id == c.id >
                 <option SELECTED value="${c.id}">${c.code}</option>
               <#else>

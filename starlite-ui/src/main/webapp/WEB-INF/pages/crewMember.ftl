@@ -252,6 +252,11 @@
 		    <input type="text" name="${count}_passport_passportExpiryDate" value="" />
 		  </#if>
 		</div>
+		<div class="fm-opt">
+          <label for="passports"><span class="star">*</span>Country of Issue:</label>
+          <input type="file" name="passports" value="" />
+          <input type="text" name="passportsTags" value="passport" />
+        </div>
 
 		</#list>
 		</fieldset>

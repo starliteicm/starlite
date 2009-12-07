@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,6 +88,15 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public List<File> passports;
 	public List<String> passportsContentType;
 	public List<String> passportsFileName;
+	
+	
+	public SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+	public SimpleDateFormat mysqlFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public String fromDate;
+	public String toDate;
+	public String activity;
+	public String chart;
+	public String tail;
 	
 	@SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
@@ -220,6 +230,44 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "flight";
 	}
+	
+	
+	public String saveRange(){
+		
+		Aircraft aircraft =  null;
+		Charter charter = null;
+		
+		if(tail != null){
+			if(tail != ""){
+				aircraft = manager.getAircraft(new Integer(tail));
+			}
+		}
+		if(chart != null){
+			if(chart != ""){
+				charter  = manager.getCharter(new Integer(chart));
+			}
+		}
+		
+		try {
+			Date from = df.parse(fromDate);
+			Date to   = df.parse(toDate);
+			Calendar cal = Calendar.getInstance();
+		    cal.setTime(from);
+			
+			if(from.before(to)){
+				while(cal.getTime().before(to)){
+					String date = mysqlFormat.format(cal.getTime());
+					manager.saveCrewDay(new CrewDay(date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null));
+					cal.add(Calendar.DAY_OF_MONTH,1);
+				}
+			}	
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect-hours";
+	}
+	
 	
 	public String saveHours(){
 		
