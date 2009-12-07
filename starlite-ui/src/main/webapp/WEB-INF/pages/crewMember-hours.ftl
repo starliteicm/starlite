@@ -118,9 +118,12 @@
 	
 	    <div style="display:block;padding:10px;width:100%;height:auto;margin-top:35px;border:1px solid silver;position:relative">
 		
+		
+		<div id="loading" style="color:silver;">Loading... Please Wait</div>
+		
 		<div style="padding:20px;padding-bottom:0px;width:450px;">
-		  <form>
-		  
+		  <form action="crewMember!saveRange.action" method="GET">
+		    <input type="hidden" name="id" value="${id}">
 		    <fieldset>
             <legend>Set Range</legend>
 		    
@@ -143,8 +146,8 @@
             </div>
             
             <div class="fm-opt">
-            <label for="aircraft">Aircraft:</label>
-            <select name="aircraft" id="aircraft">
+            <label for="tail">Aircraft:</label>
+            <select name="tail" id="tail">
               <option></option>
               <#list allAircraft as a>
                   <option SELECTED value="${a.id}">${a.ref}</option>
@@ -153,8 +156,8 @@
             </div>
             
             <div class="fm-opt">
-            <label for="dateFrom">Charter:</label>
-            <select name="charter" id="charter">
+            <label for="chart">Charter:</label>
+            <select name="chart" id="chart">
               <#list allCharters as c>
                 <option SELECTED value="${c.id}">${c.code}</option>
               </#list>
@@ -171,7 +174,7 @@
 		
 		<div style="padding:20px;padding-top:0px;">
 		
-		  <form autocomplete="off" onSubmit="return false;">
+		  <form action="#" autocomplete="off" onsubmit="return false;">
             <fieldset>
             <legend>Hours</legend> 
             <div class="fm-opt">
@@ -182,7 +185,7 @@
               <option>${month}</option>        
             </#list>
             </select>
-            <div id="loading" style="color:silver;">Loading... Please Wait</div>
+            
             <br/><br/>
             </fieldset>    
           </form>
@@ -229,6 +232,10 @@
 		  <#assign crewDay = months.get(month).get(day) />
 		  
 		  <#assign visible = "visibility:hidden" />
+		  
+		  <#if crewDay.get("crewDay")?? >
+		  <input type="hidden" name="${month}-${day}_id" value="crewDay.get("crewDay").id">
+		  </#if>
 		
 		  <td>${day}</td>
 		  <td>
@@ -300,7 +307,7 @@
 		
 		
 		<#if crewDay.get("crewDay")?? >
-		  <input name="${month}-${day}_comment" value="${crewDay.get("crewDay").comments?string}" style="width:80px;">
+		  <input name="${month}-${day}_comment" value="${crewDay.get("crewDay").comments!}" style="width:80px;">
 		<#else>
 		  <input name="${month}-${day}_comment" value="" style="width:80px;">
 		</#if>
@@ -313,15 +320,15 @@
         <select name="${month}-${day}_type" id="${month}-${day}_type" onchange="changeType(this,'${month}-${day}_');">
           <option></option>
           <#if crewDay.get("crewDay")??>
-            <#if crewDay.get("crewDay").type == "n">
+            <#if crewDay.get("crewDay").type! == "n">
               <option SELECTED value="n">Night</option>
               <option value="d">Day</option>
               <option value="i">Instruments</option>
-            <#elseif crewDay.get("crewDay").type == "d" >
+            <#elseif crewDay.get("crewDay").type! == "d" >
               <option value="n">Night</option>
               <option SELECTED value="d">Day</option>
               <option value="i">Instruments</option>
-            <#elseif crewDay.get("crewDay").type == "i" >
+            <#elseif crewDay.get("crewDay").type! == "i" >
               <option value="n">Night</option>
               <option value="d">Day</option>
               <option SELECTED value="i">Instruments</option>
@@ -342,15 +349,15 @@
         <select name="${month}-${day}_position" id="${month}-${day}_position" style="display:inline;width:50px">
           <option></option>
           <#if crewDay.get("crewDay")??>
-            <#if crewDay.get("crewDay").position == "Dual" >
+            <#if crewDay.get("crewDay").position! == "Dual" >
               <option SELECTED>Dual</option>
               <option>Capt</option>
               <option>Co</option>
-            <#elseif crewDay.get("crewDay").position == "Capt" >
+            <#elseif crewDay.get("crewDay").position! == "Capt" >
               <option>Dual</option>
               <option SELECTED>Capt</option>
               <option>Co</option>
-            <#elseif crewDay.get("crewDay").position == "Co" >
+            <#elseif crewDay.get("crewDay").position! == "Co" >
               <option>Dual</option>
               <option>Capt</option>
               <option SELECTED>Co</option>
@@ -370,10 +377,10 @@
         <select name="${month}-${day}_instruments" id="${month}-${day}_instruments" style="display:none;width:50px">
           <option></option>
           <#if crewDay.get("crewDay")??>
-            <#if crewDay.get("crewDay").instruments == "Sim" >
+            <#if crewDay.get("crewDay").instruments! == "Sim" >
               <option SELECTED>Sim</option>
               <option>Act</option>
-            <#elseif crewDay.get("crewDay").instruments == "Act" >
+            <#elseif crewDay.get("crewDay").instruments! == "Act" >
               <option>Sim</option>
               <option SELECTED>Act</option>
             <#else>
@@ -446,7 +453,7 @@
 		<td>
 		  <div class="${month}-${day}_WorkDiv" style="${visible}">
 		  <#if crewDay.get("crewDay")?? >
-            <input style="width:45px;" value="${crewDay.get("crewDay").flown?string}" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
+            <input style="width:45px;" value="${crewDay.get("crewDay").flown!?string}" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
             <#assign flownTotal = flownTotal + crewDay.get("crewDay").flown  />
           <#else>
             <input style="width:45px;" value="" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
@@ -455,7 +462,7 @@
         </td>
 		<td>
 		<#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${flownTotal?string}" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
+          <input style="width:45px;" value="${flownTotal!}" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
         <#else>
           <input style="width:45px;" value="" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
         </#if>
@@ -463,21 +470,21 @@
 		
 		<td>
 		<#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${crewDay.get("crewDay").timein?string}" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
+          <input style="width:45px;" value="${crewDay.get("crewDay").timein!}" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
         <#else>
           <input style="width:45px;" value="" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
         </#if>
         </td>
         <td>
         <#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${crewDay.get("crewDay").timeout?string}" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
+          <input style="width:45px;" value="${crewDay.get("crewDay").timeout!}" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
         <#else>
           <input style="width:45px;" value="" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
         </#if>
         </td>
         <td>
         <#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${crewDay.get("crewDay").hours?string}" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
+          <input style="width:45px;" value="${crewDay.get("crewDay").hours!}" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
         <#else>
           <input style="width:45px;" value="" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
         </#if>        

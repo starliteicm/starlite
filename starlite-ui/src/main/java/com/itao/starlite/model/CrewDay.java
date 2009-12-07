@@ -31,14 +31,14 @@ public class CrewDay {
 	private String type;
 	private String position;
 	private String instruments;
-	private double flown;
+	private Double flown;
 	private String timein;
 	private String timeout;
 	private String hours;
 	
 	
 	public CrewDay(){}
-	public CrewDay(String _date,String _activity, String _comments, String _type, String _position, String _instruments, Aircraft aircraft, Charter charter, CrewMember crewMember , Double _flown, String _timein, String _timeout, String _hours){
+	public CrewDay(Integer _id, String _date,String _activity, String _comments, String _type, String _position, String _instruments, Aircraft aircraft, Charter charter, CrewMember crewMember , Double _flown, String _timein, String _timeout, String _hours){
 		
 		try{
 		  SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -48,6 +48,7 @@ public class CrewDay {
 			//do nothing
 		}
 		
+		id = _id;
 		activity=_activity;
 		comments=_comments;
 		type=_type;
@@ -60,6 +61,11 @@ public class CrewDay {
 		setAircraft(aircraft);
 		setCharter(charter);
 		setCrewMember(crewMember);
+		
+		if(flown == null){
+			flown = 0.0;
+		}
+		
 	}
 	
 

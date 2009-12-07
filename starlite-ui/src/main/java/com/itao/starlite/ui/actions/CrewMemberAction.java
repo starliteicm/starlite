@@ -90,10 +90,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public List<String> passportsFileName;
 	
 	
-	public SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+	public SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat mysqlFormat = new SimpleDateFormat("yyyy-MM-dd");
-	public String fromDate;
-	public String toDate;
+	public String dateFrom;
+	public String dateTo;
 	public String activity;
 	public String chart;
 	public String tail;
@@ -232,8 +232,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 	
 	
-	public String saveRange(){
-		
+	public String saveRange() throws Exception{
+		prepare();
 		Aircraft aircraft =  null;
 		Charter charter = null;
 		
@@ -249,15 +249,20 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		
 		try {
-			Date from = df.parse(fromDate);
-			Date to   = df.parse(toDate);
+			Date from = df.parse(dateFrom);
+			Date to   = df.parse(dateTo);
 			Calendar cal = Calendar.getInstance();
 		    cal.setTime(from);
 			
 			if(from.before(to)){
 				while(cal.getTime().before(to)){
+					
+					CrewDay cd = null;
+					//cd = manager.getCrewDay()
+					
+					
 					String date = mysqlFormat.format(cal.getTime());
-					manager.saveCrewDay(new CrewDay(date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null));
+					manager.saveCrewDay(new CrewDay(null,date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null));
 					cal.add(Calendar.DAY_OF_MONTH,1);
 				}
 			}	
@@ -269,15 +274,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 	
 	
-	public String saveHours(){
-		
+	public String saveHours() throws Exception{
+		prepare();
 		for(int i = 1; i < 32; i++){
 			
 			String day = ""+i;
 			if(i < 10){
 				day = "0"+day;
 			}
-						
+			
+			String cDId        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_id");
 			String activity    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_activity");
 			String comment     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_comment");
 			String type        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_type");
@@ -290,10 +296,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			String timeout     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timeout");
 			String hours       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_hours");
 			
-			LOG.info(hoursMonth+"-"+day+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|"+flown+"|"+timein+"|"+timeout+"|"+hours);
+			LOG.info(hoursMonth+"-"+day+"|"+cDId+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|"+flown+"|"+timein+"|"+timeout+"|"+hours);
 			
 			Aircraft aircraft = null;
 			Charter charter = null;
+			
+			Integer crewDayId = null;
+			if (cDId != null) {
+				if(cDId != ""){
+					crewDayId = new Integer(cDId);
+				}
+			}
 			
 			if(activity != null){
 			if(activity != ""){
@@ -314,7 +327,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 					}
 				}
 				
-				manager.saveCrewDay(new CrewDay(hoursMonth+"-"+day,activity,comment,type,position,instruments,aircraft,charter,crewMember,flownHours,timein,timeout,hours));
+				manager.saveCrewDay(new CrewDay(crewDayId,hoursMonth+"-"+day,activity,comment,type,position,instruments,aircraft,charter,crewMember,flownHours,timein,timeout,hours));
 			}
 		    }
 			
@@ -665,6 +678,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 
 	public String save() throws Exception {
+		
+		LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
+		
 		manager.saveCrewMember(crewMember);
 		try{
 		if(document != null){
