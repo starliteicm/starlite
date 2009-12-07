@@ -257,12 +257,18 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			if(from.before(to)){
 				while(cal.getTime().before(to)){
 					
-					CrewDay cd = null;
-					//cd = manager.getCrewDay()
-					
-					
 					String date = mysqlFormat.format(cal.getTime());
-					manager.saveCrewDay(new CrewDay(null,date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null));
+					CrewDay cd = null;
+					cd = manager.getCrewDay(cal.getTime(),crewMember);
+					if(cd == null){
+						cd = new CrewDay(null,date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null);
+					}
+					else {
+						cd.setActivity(activity);
+						cd.setAircraft(aircraft);
+						cd.setCharter(charter);
+					}
+					manager.saveCrewDay(cd);
 					cal.add(Calendar.DAY_OF_MONTH,1);
 				}
 			}	
@@ -683,7 +689,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		manager.saveCrewMember(crewMember);
 		try{
-		if(document != null){
+		  if(document != null){
 			LOG.info(tags+" "+docfolder);
 			String[] tagsArray = tags.split(" ");
 			Document doc = new Document();
@@ -692,7 +698,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			Bookmark b = bookmarkManager.createBookmark(documentFileName, "Document", docfolder+"/"+documentFileName, tagsArray);
 			doc.setBookmark(b);
 			docManager.createDocument(doc, docfolder, new FileInputStream(document), user);
-		}
+		  }
 		}
 		catch(Exception e){
 			LOG.error(e);
@@ -704,31 +710,36 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		LOG.info(passportsContentType);
 		
 	    boolean morePassports = true;
+	    int count = 0;
 		while(morePassports){
+			if(count < passports.size()){
 			
-			File passport = null;
-			String passportTags = null;
-			String passportFileName = null;
-			String passportContentType = null;
-			morePassports = false;
+			    File passport = passports.get(count);
+			    String passportTags = passportsTags.get(count);
+			    String passportFileName = passportsFileName.get(count);
+			    String passportContentType = passportsContentType.get(count);
 			
-			try{
-				if(passport != null){
-					LOG.info(passportTags+" "+docfolder);
-					String[] tagsArray = passportTags.split(" ");
-					Document doc = new Document();
-					doc.setName(passportFileName);
-					doc.setContentType(passportContentType);
-					Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
-					doc.setBookmark(b);
-					docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
-				}
+			    try{
+				    if(passport != null){
+					    LOG.info(passportTags+" "+docfolder);
+					    String[] tagsArray = passportTags.split(" ");
+					    Document doc = new Document();
+					    doc.setName(passportFileName);
+					    doc.setContentType(passportContentType);
+					    Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
+					    doc.setBookmark(b);
+					    docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
+				    }
+			    }
+			    catch(Exception e){
+			    	LOG.error(e);
+			    }
+			count++;
 			}
-			catch(Exception e){
-				LOG.error(e);
-			}
+			else{
+				morePassports = false;
+			}	
 		}
-		
 	return execute();
 	}
 

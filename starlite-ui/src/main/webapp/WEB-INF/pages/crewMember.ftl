@@ -254,7 +254,7 @@
 		<div class="fm-opt">
           <label for="passports"><span class="star">*</span>Country of Issue:</label>
           <input type="file" name="passports" value="" />
-          <input type="text" name="passportsTags" value="passport" />
+          <input type="hidden" name="passportsTags" value="passport" />
         </div>
 
 		</#list>

@@ -81,6 +81,13 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 			.setDate(2, endDate)
 			.list();
 	}
+	
+	public CrewDay getCrewDay(Date date, CrewMember crewMember){
+		return (CrewDay) getCurrentSession().createQuery("from CrewDay c where c.crewMember.id = ? AND c.date = ? order by c.date asc LIMIT 1")
+			.setInteger(0, crewMember.getId())
+			.setDate(1, date)
+			.uniqueResult();
+	}
 
 
 }

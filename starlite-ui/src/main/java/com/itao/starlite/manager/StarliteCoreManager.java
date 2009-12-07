@@ -2,6 +2,7 @@ package com.itao.starlite.manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -435,16 +436,7 @@ public class StarliteCoreManager {
 		}
 	}
 
-	
-	@Transactional
-	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
-		return crewDayDao.getCrewDayByCrewMemberByMonth(cId, month, year);
-	}
-	
-	@Transactional
-	public void saveCrewDay(CrewDay c){
-		crewDayDao.makePersistent(c);
-	}
+
 	
 	@Transactional
 	public List<AircraftType> getAircraftTypes() {
@@ -484,6 +476,21 @@ public class StarliteCoreManager {
 			}
 		}
 		return perm;
+	}
+	
+	
+	@Transactional
+	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
+		return crewDayDao.getCrewDayByCrewMemberByMonth(cId, month, year);
+	}
+	
+	@Transactional
+	public void saveCrewDay(CrewDay c){
+		crewDayDao.makePersistent(c);
+	}
+
+	public CrewDay getCrewDay(Date date, CrewMember crewMember) {
+		return crewDayDao.getCrewDay(date, crewMember);
 	}
 
 }

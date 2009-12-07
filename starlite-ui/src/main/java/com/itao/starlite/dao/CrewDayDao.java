@@ -1,6 +1,7 @@
 package com.itao.starlite.dao;
 
 
+import java.util.Date;
 import java.util.List;
 import com.google.inject.ImplementedBy;
 import com.itao.persistence.GenericDao;
@@ -21,6 +22,7 @@ public interface CrewDayDao extends GenericDao<CrewDay, Integer> {
 	public List<CrewDay> getCrewDayByAircraftByMonth(Integer aId, Integer year, Integer month);
 	
 	public List<CrewDay> getCrewDayByCharterByMonth(Charter c, Integer year, Integer month) ;
+	public CrewDay getCrewDay(Date date, CrewMember crewMember);
 
 
 }
