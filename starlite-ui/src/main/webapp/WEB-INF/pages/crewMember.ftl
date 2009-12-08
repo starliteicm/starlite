@@ -86,6 +86,9 @@
 </script>
 
 <script type="text/javascript">
+
+var passportexpired=0;
+
 //CHECK LICENCE EXPIRY DATE
 //this adds a leading zero if the day/month is one digit e.g 1 becomes 01
 function addZero(tc){
@@ -180,7 +183,7 @@ function validateDate(datefield,msg){
    current_date=parseInt(current_datestr);
    
    //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
-   if(current_date > reversedate){ $(messagediv).html(message); }else{$(messagediv).html();}        
+   if(current_date > reversedate){ $(messagediv).html(message); passportexpired=1; }else{$(messagediv).html(); passportexpired=0; }        
    }
    }
 </script>
@@ -189,8 +192,10 @@ function validateDate(datefield,msg){
 
 //ONLOAD FUNCTION   
 $("document").ready(function() {                                
-   //validateDate("passportsExpiryDate","Passport expired");      
-   validityPeriod("passportsExpiryDate","Passport nearly expired");
+   validateDate("passportsExpiryDate","Passport expired");
+   if(passportexpired==0){      
+      validityPeriod("passportsExpiryDate","Passport nearly expired");
+   }
 });    
    
 </script>
