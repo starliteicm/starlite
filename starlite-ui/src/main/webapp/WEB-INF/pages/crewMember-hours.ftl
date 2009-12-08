@@ -7,7 +7,7 @@
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
   <@enableJQuery/>
   <@enableDatePickers/>
-    
+  <@enableTimePickers/>
   
   <script>
     function checkNum(obj){
