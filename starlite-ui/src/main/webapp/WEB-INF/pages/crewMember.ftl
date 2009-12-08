@@ -5,7 +5,6 @@
   <@enableJQuery/>
   <@enableDatePickers/>
   <@enableHelp/>
-<script type="text/javascript" src="/starlite-ui/js/date.js"></script>
 <script language="javascript">
   function validate(){            
         //var title              = $("#title").val();
@@ -101,12 +100,11 @@ function addZero(tc){
 
 function validityPeriod(datefield,msg){ 
   
-   var d1 = Date.today();        
    //SET UP VARIABLES
    var dateinput  = "#"    + datefield;
    var messagediv = "#msg-" + datefield;
-   var message    = msg;       
-                
+   var message    = "<font color='orange'>" + msg + "</font>";       
+                       
    //PROCESS EXPIRY DATE
    var expiry = $(dateinput).val();
    if (expiry==null){
@@ -117,38 +115,40 @@ function validityPeriod(datefield,msg){
    expirymonth = addZero(exp[1]);
    expiryday   = addZero(exp[0]);
    expiryyear  = exp[2];
-   
+             
    //concatenate date and convert to integer
    reversedatestr = expiryyear + expirymonth + expiryday;   
    reversedate=parseInt(reversedatestr);
    
    //GENERATE AND PROCESS CURRENT DATE
-   var date = (6).months.fromNow();
-   alert(date);
-   var m = date.getMonth()+1  + "";
-   var d = date.getDate()     + "";
-   var y = date.getFullYear() + "";
+   var date = new Date();
+   var date6MonthsFromNow = new Date(date.getTime() + (182*24*60*60*1000));
+   
+   var m = date6MonthsFromNow.getMonth()+1  + "";
+   var d = date6MonthsFromNow.getDate()     + "";
+   var y = date6MonthsFromNow.getFullYear() + "";
    
    //add leading zeros to day and month if needed
    currentday   = addZero(d); 
    currentmonth = addZero(m);
    currentyear  = y;
-   
+       
    //concatenate date and convert to integer
    current_datestr = (currentyear + "" + currentmonth + "" + currentday);      
    current_date=parseInt(current_datestr);
-
+   
    //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
    if(current_date > reversedate){ $(messagediv).html(message); }else{$(messagediv).html();}        
    }
-   }
+  }
 
-function validateDate(datefield,msg){   
+function validateDate(datefield,msg){ 
+  
    //SET UP VARIABLES
    var dateinput  = "#"    + datefield;
    var messagediv = "#msg-" + datefield;
-   var message    = msg;       
-                
+   var message    = "<font color='red'>" + msg + "</font>";       
+                       
    //PROCESS EXPIRY DATE
    var expiry = $(dateinput).val();
    if (expiry==null){
@@ -190,7 +190,7 @@ function validateDate(datefield,msg){
 //ONLOAD FUNCTION   
 $("document").ready(function() {                                
    //validateDate("passportsExpiryDate","Passport expired");      
-   validityPeriod("passportsExpiryDate","Passport expired");
+   validityPeriod("passportsExpiryDate","Passport nearly expired");
 });    
    
 </script>
@@ -213,6 +213,7 @@ $("document").ready(function() {
 </head>
 
 <body>
+
 	<#if crewMember.approvalGroup.approvalStatus.toString() == "UNDER_REVIEW">
 		<h3>Locked</h3>
 	</#if>
@@ -326,6 +327,7 @@ $("document").ready(function() {
 				<label for="crewMember.personal.passportExpiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.personal.passportExpiryDate" id="expiry" class="date-pick" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>				
 			</div>
+			
 			<div class="fm-opt">
                 <label for="crewMember.personal.passportNumber">Upload:</label>
                 <input name="passport" type="file" value=""/>
@@ -365,8 +367,7 @@ $("document").ready(function() {
 		    <input type="text" id="passportsExpiryDate" name="passportsExpiryDate" class="date-pick" value="" />
 		  </#if>
 		</div>
-				<div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; color:red; font-weight: bold;">  
-			</div>     			  
+				<div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
   <div class="fm-opt">
           <label for="passports"><span class="star">*</span>Upload:</label>
           <input type="file" name="passports" value="" />

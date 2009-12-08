@@ -250,7 +250,7 @@ $("document").ready(function() {
 				</select>
 			</div>
 
-			<!--
+		
    <div class="fm-opt">
 				<label for="crewMember.role.instructor.quantity">Instructor Grade:</label>
 				<select name="crewMember.role.instructor.quantity" >
@@ -259,16 +259,8 @@ $("document").ready(function() {
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
 				</select>
 			</div>
-   -->   
-    <div class="fm-opt">
-				<label for="crewMember.role.instructor.grade">Instructor Grade:</label>
-					<select name="crewMember.role.instructor.grade">
- 			    	<option>
-					<#list instructorGrades?if_exists as instructorGrade>
-						<option <#if crewMember.role.instructor.grade?if_exists == (instructorGrade.name)>selected</#if> >${instructorGrade.name!}
-					</#list>
-				</select>
-			</div>						
+   
+				
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
@@ -300,6 +292,11 @@ $("document").ready(function() {
 					<option <#if crewMember.role.test.type?if_exists == "Grade 1">selected</#if>>Grade 1
 					<option <#if crewMember.role.test.type?if_exists == "Grade 2">selected</#if>>Grade 2
 				</select>
+			</div>
+   
+  	<div class="fm-opt">
+				<label for="crewMember.role">Instrument hours:</label>
+				<input name="crewMember.role" type="text"  value="" />
 			</div>									   		
   </fieldset>
 		</#if>
