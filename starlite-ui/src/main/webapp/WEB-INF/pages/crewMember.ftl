@@ -5,7 +5,7 @@
   <@enableJQuery/>
   <@enableDatePickers/>
   <@enableHelp/>
-
+<script type="text/javascript" src="/starlite-ui/js/date.js"></script>
 <script language="javascript">
   function validate(){            
         //var title              = $("#title").val();
@@ -84,7 +84,115 @@
         $("#msg-error").html(""); document.forms.personalform.submit(); 
         }                                                               
   }
+</script>
 
+<script type="text/javascript">
+//CHECK LICENCE EXPIRY DATE
+//this adds a leading zero if the day/month is one digit e.g 1 becomes 01
+function addZero(tc){
+   var timeConstruct=""+tc; //force timeConstruct into string 
+   if(timeConstruct.length==1){
+      timeConstruct =  "0" + timeConstruct;  
+      return timeConstruct;
+   }else{
+      return timeConstruct;                    
+ }
+}
+
+function validityPeriod(datefield,msg){ 
+  
+   var d1 = Date.today();        
+   //SET UP VARIABLES
+   var dateinput  = "#"    + datefield;
+   var messagediv = "#msg-" + datefield;
+   var message    = msg;       
+                
+   //PROCESS EXPIRY DATE
+   var expiry = $(dateinput).val();
+   if (expiry==null){
+   }else{   
+   var exp = expiry.split('/');
+   
+   //add leading zeros to day and month if needed   
+   expirymonth = addZero(exp[1]);
+   expiryday   = addZero(exp[0]);
+   expiryyear  = exp[2];
+   
+   //concatenate date and convert to integer
+   reversedatestr = expiryyear + expirymonth + expiryday;   
+   reversedate=parseInt(reversedatestr);
+   
+   //GENERATE AND PROCESS CURRENT DATE
+   var date = (6).months.fromNow();
+   alert(date);
+   var m = date.getMonth()+1  + "";
+   var d = date.getDate()     + "";
+   var y = date.getFullYear() + "";
+   
+   //add leading zeros to day and month if needed
+   currentday   = addZero(d); 
+   currentmonth = addZero(m);
+   currentyear  = y;
+   
+   //concatenate date and convert to integer
+   current_datestr = (currentyear + "" + currentmonth + "" + currentday);      
+   current_date=parseInt(current_datestr);
+
+   //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
+   if(current_date > reversedate){ $(messagediv).html(message); }else{$(messagediv).html();}        
+   }
+   }
+
+function validateDate(datefield,msg){   
+   //SET UP VARIABLES
+   var dateinput  = "#"    + datefield;
+   var messagediv = "#msg-" + datefield;
+   var message    = msg;       
+                
+   //PROCESS EXPIRY DATE
+   var expiry = $(dateinput).val();
+   if (expiry==null){
+   }else{   
+   var exp = expiry.split('/');
+   
+   //add leading zeros to day and month if needed   
+   expirymonth = addZero(exp[1]);
+   expiryday   = addZero(exp[0]);
+   expiryyear  = exp[2];
+   
+   //concatenate date and convert to integer
+   reversedatestr = expiryyear + expirymonth + expiryday;   
+   reversedate=parseInt(reversedatestr);
+   
+   //GENERATE AND PROCESS CURRENT DATE
+   var date = new Date();
+   var m = date.getMonth()+1  + "";
+   var d = date.getDate()     + "";
+   var y = date.getFullYear() + "";
+   
+   //add leading zeros to day and month if needed
+   currentday   = addZero(d); 
+   currentmonth = addZero(m);
+   currentyear  = y;
+   
+   //concatenate date and convert to integer
+   current_datestr = (currentyear + "" + currentmonth + "" + currentday);      
+   current_date=parseInt(current_datestr);
+   
+   //COMPARE CURRENT DATE AND EXPIRY DATE THEN SHOW OR HIDE MESSAGE   
+   if(current_date > reversedate){ $(messagediv).html(message); }else{$(messagediv).html();}        
+   }
+   }
+</script>
+
+<script type="text/javascript">
+
+//ONLOAD FUNCTION   
+$("document").ready(function() {                                
+   //validateDate("passportsExpiryDate","Passport expired");      
+   validityPeriod("passportsExpiryDate","Passport expired");
+});    
+   
 </script>
 
   <style type="text/css"> 
@@ -213,6 +321,7 @@
 				<label for="crewMember.personal.passportNumber"><span class="star">*</span>Passport Number:</label>
 				<input name="crewMember.personal.passportNumber" id="passportno" type="text" value="${crewMember.personal.passportNumber!}"/>
 			</div>
+
 			<div class="fm-opt">
 				<label for="crewMember.personal.passportExpiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.personal.passportExpiryDate" id="expiry" class="date-pick" type="text" value="<#if crewMember.personal.passportExpiryDate??>${crewMember.personal.passportExpiryDate?string('dd/MM/yyyy')}</#if>"/>				
@@ -251,12 +360,14 @@
 		<div class="fm-opt">
           <label for="passportsExpiryDate" ><span class="star">*</span>Expiry Date:</label>
 		  <#if passport.expiryDate??>
-		    <input type="text" name="passportsExpiryDate" class="date-pick" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
+		    <input type="text" id="passportsExpiryDate" name="passportsExpiryDate" class="date-pick" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
 		  <#else>
-		    <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
+		    <input type="text" id="passportsExpiryDate" name="passportsExpiryDate" class="date-pick" value="" />
 		  </#if>
 		</div>
-		<div class="fm-opt">
+				<div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; color:red; font-weight: bold;">  
+			</div>     			  
+  <div class="fm-opt">
           <label for="passports"><span class="star">*</span>Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />

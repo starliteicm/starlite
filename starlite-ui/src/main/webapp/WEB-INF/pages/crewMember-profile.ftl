@@ -45,7 +45,8 @@ document.write("AM")
 			    <img name="image" src="crewMember!photo.action?id=${id!}" style="width:100px;height:100px;">
 			</div>
 			
-		<hr class="clear"/>		
+		<hr class="clear"/>
+  <div style="padding-top:25px;position:absolute;left:950px;" class="button"><button type="button" onclick="window.print()" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/printer.png"/> Print</button></div>		
 			<div class="fm-opt">											
 				<label for="title">Title:</label>
 				<div class="field" name="title">${crewMember.personal.title!} &nbsp;</div>

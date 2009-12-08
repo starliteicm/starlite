@@ -6,8 +6,7 @@
   <@enableJQuery/>
   <@enableDatePickers/>
   <@enableCalculator/>
-  <@enableHelp/>
-
+  <@enableHelp/>  
 <style type="text/css">
 
 .star{
@@ -21,7 +20,6 @@
        text-align:center;       
      }
           
-
 </style>
 
 
@@ -108,9 +106,8 @@ $("document").ready(function() {
       if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
             
       if(error==1){
-        $("#msg-error").html(errormsg);
-        document.forms.roleform.submit(); //TAKE THIS OUT  
-        //return false;
+         $("#msg-error").html(errormsg);        
+         return false;
       }else{
          document.forms.roleform.submit(); 
       }                          
@@ -120,6 +117,7 @@ $("document").ready(function() {
 </head>
 
 <body>
+
 	<#if crewMember.approvalGroup.approvalStatus.toString() == "UNDER_REVIEW">
 		<h3>Locked</h3>
 	</#if>
@@ -161,12 +159,13 @@ $("document").ready(function() {
 				<label for="crewMember.role.position"><span class="star">*</span>Position:</label>
 				<!--
     <input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/> 
-    -->
-    <select name="crewMember.role.position">
-    <option value="Pilot">Pilot</option>
-    <option value="AME">AME</option>
-    <option value="Base Manager">Base Manager</option>    
-    </select>
+    -->   		
+				<select name="crewMember.role.position" id="empstatus" />
+					<option <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
+					<option <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
+					<option <#if crewMember.role.position?if_exists == "Base Manager">selected</#if>>Base Manager
+				</select>
+			
 			</div>
 			<div class="fm-opt">
 			<label for="crewMember.role.positionSubcategory"></span>Position Subcategory:</label>				
@@ -235,6 +234,7 @@ $("document").ready(function() {
 			<br/>
 		</fieldset>
   <fieldset>
+  <#if crewMember.role.position?if_exists == "Pilot">
 		<legend>Ratings (Pilots only)</legend>
 		 <div class="fm-opt">
 				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
@@ -259,8 +259,7 @@ $("document").ready(function() {
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
 				</select>
 			</div>
-   -->
-   
+   -->   
     <div class="fm-opt">
 				<label for="crewMember.role.instructor.grade">Instructor Grade:</label>
 					<select name="crewMember.role.instructor.grade">
@@ -269,9 +268,7 @@ $("document").ready(function() {
 						<option <#if crewMember.role.instructor.grade?if_exists == (instructorGrade.name)>selected</#if> >${instructorGrade.name!}
 					</#list>
 				</select>
-			</div>
-			
-			
+			</div>						
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
@@ -303,14 +300,9 @@ $("document").ready(function() {
 					<option <#if crewMember.role.test.type?if_exists == "Grade 1">selected</#if>>Grade 1
 					<option <#if crewMember.role.test.type?if_exists == "Grade 2">selected</#if>>Grade 2
 				</select>
-			</div>									
-   <div class="fm-opt">
-   <label for="crewMember.role.ifr.instrumentHours">Instrument Hours:</label>
-   <input type="text" name="instrumentHours" value="${crewMember.role.instrumentHours!}" />
-		</div>
-		
+			</div>									   		
   </fieldset>
-		
+		</#if>
   <fieldset>
 			<legend>Certificates & Licences</legend>
 
@@ -347,10 +339,10 @@ $("document").ready(function() {
 		</div>
 		<div style="float:left; width: 500px;">
 		
-  
+  <#if crewMember.role.position?if_exists == "Pilot">               
 		<fieldset>
 			<legend>
-			Hours On Aircraft Types 
+			Hours On Aircraft Types (Pilots only) 
 			<img class="tooltip" title="To Add a Type: select a type from the dropdown and press save <br/><br/> To Remove a Type: select the empty option of the Type you wish to remove and save <br/><br/> You are unable to add more<br/> than one of the same type"  style="background-color:white;cursor:help;position:absolute;padding:10px;padding-top:0px;"  src="images/icons/info.png"/>
 			</legend>
 			<div class="fm-opt" style="position:relative;right:-340px;">  
@@ -392,7 +384,7 @@ $("document").ready(function() {
 				<span>Total Hours For All Types:</span>
 			    <input class="imageCalc" style="width:50px;margin-left:70px;" name="crewMember.role.totalHours" type="text" value="${crewMember.role.totalHours!}"/>
 			</div>
-			
+			</#if> 
 			<br/>
 		</fieldset>
 		<fieldset>
@@ -420,5 +412,6 @@ $("document").ready(function() {
 		</#if>
 	</form>
 	<script>$('.imageCalc').calculator({showOn: 'button', buttonImageOnly: true, buttonImage: 'images/calculator.png'});</script>
+
 </body>
 </html>
