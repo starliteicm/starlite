@@ -274,13 +274,9 @@ $("document").ready(function() {
                 <input type="hidden" name="tags" value="photo">
                 <input type="hidden" name="docfolder" value="/crew/${id!}"/>
             </div>
-		</div>
-		
-		
-		
+		</div>		
 		</fieldset>
-		
-		
+
 		<fieldset>
 			<legend>Name</legend>
 			<div class="fm-opt">

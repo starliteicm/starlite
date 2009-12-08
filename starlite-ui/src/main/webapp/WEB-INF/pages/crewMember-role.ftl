@@ -307,22 +307,38 @@ $("document").ready(function() {
 				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
 				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-			</div>
+    <label for="crm-upload">Upload:</label>
+                <input name="document" type="file" value=""/>
+                <input type="hidden" name="tags" value="crm-upload">
+                <input type="hidden" name="docfolder" value="/crew/${id!}"/>                
+   </div>
 			<div class="fm-opt">
 				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
 				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+    <label for="dg-upload">Upload:</label>
+                <input name="document" type="file" value=""/>
+                <input type="hidden" name="tags" value="dg-upload">
+                <input type="hidden" name="docfolder" value="/crew/${id!}"/>  
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.huet.expiryDate"><span class="star">*</span>HUET Training:</label>
-				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
-				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>			
+    <div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
    <div class="fm-opt">
+   <label for="huet-upload">Upload:</label>
+                <input name="document" type="file" value=""/>
+                <input type="hidden" name="tags" value="huet-upload">
+                <input type="hidden" name="docfolder" value="/crew/${id!}"/>  
+   </div>
+   
+				
 				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
 				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>			
 			<br/>
+			
+   <!--Medical-->
 			<div class="fm-opt">
 				<label for="crewMember.role.medicalClass">Class:</label>
 				<input name="crewMember.role.medicalClass" type="text" value="${crewMember.role.medicalClass!}"/>
@@ -335,7 +351,7 @@ $("document").ready(function() {
   </fieldset>
 		</div>
 		<div style="float:left; width: 500px;">
-		
+		                               
   <#if crewMember.role.position?if_exists == "Pilot">               
 		<fieldset>
 			<legend>
