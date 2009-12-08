@@ -41,126 +41,155 @@ document.write("AM")
 </div>
    <div class="profile-left">
    <div style="float:left; width: 500px;">			
-			<div class="fm-opt">			
+			<div class="fm-opt" style="padding-left:120px;">			
 			    <img name="image" src="crewMember!photo.action?id=${id!}" style="width:100px;height:100px;">
 			</div>
 			
 		<hr class="clear"/>
   <div style="padding-top:25px;position:absolute;left:950px;" class="button"><button type="button" onclick="window.print()" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/printer.png"/> Print</button></div>		
 			<div class="fm-opt">											
-				<label for="title">Title:</label>
-				<div class="field" name="title">${crewMember.personal.title!} &nbsp;</div>
+				<label for="title" style="height:auto;">Title:</label>
+				<div class="field" style="width:300px;height:auto;" name="title">${crewMember.personal.title!} &nbsp;</div>
 			</div>
 			<div class="fm-opt">							
-				<label for="fname">First name:</label>
-				<div class="field" name="fname">${crewMember.personal.firstName!} &nbsp;</div>				
+				<label for="fname" style="height:auto;">First name:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="fname">${crewMember.personal.firstName!} &nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="fname">${crewMember.personal.firstName!} &nbsp;</div>             
 			</div>
    <div class="fm-opt">							
-				<label for="lname">Last name:</label>
-				<div class="field" name="lname">${crewMember.personal.lastName!} &nbsp; </div>				
+				<label for="lname" style="height:auto;">Last name:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="lname">${crewMember.personal.lastName!} &nbsp; </div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="lname">${crewMember.personal.lastName!} &nbsp; </div>             
 			</div>
 			
-			<div class="fm-opt">							
+			<div class="fm-opt" style="height:auto;">							
 				<label for="pname">Preferred Name:</label>
-				<div class="field" name="pname">${crewMember.personal.preferredName!}&nbsp;</div>				
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="pname">${crewMember.personal.preferredName!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="pname">${crewMember.personal.preferredName!}&nbsp;</div>              
 			</div>
 			 
    <div class="fm-opt">							
-				<label for="coi">Country of issue:</label>
-				<div class="field" name="coi">${crewMember.personal.passportCountry!}&nbsp;</div>				
+				<label for="coi" style="height:auto;">Country of issue:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="coi">${crewMember.personal.passportCountry!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="coi">${crewMember.personal.passportCountry!}&nbsp;</div>              
 			</div>
    <div class="fm-opt">							
-				<label for="fname">Passport number:</label>
-				<div class="field" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>				
+				<label for="fname" style="height:auto;">Passport number:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>             
 			</div>
    <div class="fm-opt">							
-				<label for="fname">Passport expiry date:</label>
-				<div class="field" name="lname">${crewMember.personal.passportExpiryDate!}&nbsp;</div>				
+				<label for="fname" style="height:auto;">Passport expiry date:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="lname">${crewMember.personal.passportExpiryDate!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="lname">${crewMember.personal.passportExpiryDate!}&nbsp;</div>             
 			</div>            
 			
-			<div class="fm-opt">							
-				<label for="address1">Address 1:</label>
-				<div class="field" name="address1">${crewMember.personal.address1!}&nbsp;</div>				
+			<div class="fm-opt" >							
+				<label for="address1" style="height:auto;">Address 1:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address1">${crewMember.personal.address1!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address1">${crewMember.personal.address1!}&nbsp;</div>                
 			</div>
    <div class="fm-opt">							
-				<label for="address2">Address 2:</label>
-				<div class="field" name="address2">${crewMember.personal.address2!}&nbsp;</div>				
+				<label for="address2" style="height:auto;">Address 2:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address2">${crewMember.personal.address2!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address2">${crewMember.personal.address2!}&nbsp;</div>                
+
 			</div>	
    <div class="fm-opt">							
-				<label for="address3">Address 3:</label>
-				<div class="field" name="address3">${crewMember.personal.address3!}&nbsp;</div>				
+				<label for="address3" style="height:auto;">Address 3:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address3">${crewMember.personal.address3!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address3">${crewMember.personal.address3!}&nbsp;</div>                
+
 			</div>	
    <div class="fm-opt">							
-				<label for="address4">Address 4:</label>
-				<div class="field" name="address4">${crewMember.personal.address4!}&nbsp;</div>				
+				<label for="address4" style="height:auto;">Address 4:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address4">${crewMember.personal.address4!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address4">${crewMember.personal.address4!}&nbsp;</div>                
+
 			</div>   	
    <div class="fm-opt">							
-				<label for="address5">Address 5:</label>
-				<div class="field" name="address5">${crewMember.personal.address5!}&nbsp;</div>				
+				<label for="address5" style="height:auto;">Address 5:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address5">${crewMember.personal.address5!}&nbsp;</div>				
+			    <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address5">${crewMember.personal.address5!}&nbsp;</div>                	
 			</div>
    <br>
     <div class="fm-opt">							
-				<label for="postalAddress">Postal Address:</label>
-				<div class="field" name="postalAddress">${crewMember.personal.postalAddress!}&nbsp;</div>				
+				<label for="postalAddress" style="height:auto;">Postal Address:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="postalAddress">${crewMember.personal.postalAddress!}&nbsp;</div>
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="postalAddress">${crewMember.personal.postalAddress!}&nbsp;</div>				
 			</div>
    <div class="fm-opt">							
-				<label for="postalTown">Postal Town:</label>
-				<div class="field" name="postalTown">${crewMember.personal.postalTown!}&nbsp;</div>				
+				<label for="postalTown" style="height:100%;">Postal Town:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="postalTown">${crewMember.personal.postalTown!}&nbsp;</div>
+				<div class="field" style="visibility:hidden;width:300px;height:auto;" name="postalTown">${crewMember.personal.postalTown!}&nbsp;</div>
+				
 			</div>
    <div class="fm-opt">							
-				<label for="postalCountry">Postal Country:</label>
-				<div class="field" name="postalCountry">${crewMember.personal.postalCountry!}&nbsp;</div>				
+				<label for="postalCountry" style="height:100%;">Postal Country:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="postalCountry">${crewMember.personal.postalCountry!}&nbsp;</div>
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="postalCountry">${crewMember.personal.postalCountry!}&nbsp;</div>			
 			</div>  
    <div class="fm-opt">							
-				<label for="postalCode">Postal Code:</label>
-				<div class="field" name="postalCode">${crewMember.personal.postalCode!}&nbsp;</div>				
+				<label for="postalCode" style="height:auto;">Postal Code:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="postalCode">${crewMember.personal.postalCode!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="postalCode">${crewMember.personal.postalCode!}&nbsp;</div>                
 			</div>			
 		
 <br>	
 			
 		 <div class="fm-opt">							
-				<label for="mobilePhone">Mobile Phone:</label>
-				<div class="field" name="mobilePhone">${crewMember.personal.mobilePhone!}&nbsp;</div>				
+				<label for="mobilePhone" style="height:auto;">Mobile Phone:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="mobilePhone">${crewMember.personal.mobilePhone!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="mobilePhone">${crewMember.personal.mobilePhone!}&nbsp;</div>              
 			</div>
 			<div class="fm-opt">							
-				<label for="mobilePhone2">Alt. Mobile Phone:</label>
-				<div class="field" name="mobilePhone2">${crewMember.personal.mobilePhone2!}&nbsp;</div>				
+				<label for="mobilePhone2" style="height:auto;">Alt. Mobile Phone:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="mobilePhone2">${crewMember.personal.mobilePhone2!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="mobilePhone2">${crewMember.personal.mobilePhone2!}&nbsp;</div>                
 			</div>
 			<div class="fm-opt">							
-				<label for="homePhone">Home Phone:</label>
-				<div class="field" name="homePhone">${crewMember.personal.homePhone!}&nbsp;</div>				
+				<label for="homePhone" style="height:auto;">Home Phone:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="homePhone">${crewMember.personal.homePhone!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="homePhone">${crewMember.personal.homePhone!}&nbsp;</div>              
 			</div>
 			<div class="fm-opt">							
-				<label for="homeFax">Home Fax:</label>
-				<div class="field" name="homeFax">${crewMember.personal.homeFax!}&nbsp;</div>				
+				<label for="homeFax" style="height:auto;">Home Fax:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="homeFax">${crewMember.personal.homeFax!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="homeFax">${crewMember.personal.homeFax!}&nbsp;</div>              
 			</div>
 			<div class="fm-opt">							
-				<label for="businessPhone">Business Phone:</label>
-				<div class="field" name="businessPhone">${crewMember.personal.businessPhone!}&nbsp;</div>				
+				<label for="businessPhone" style="height:auto;">Business Phone:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="businessPhone">${crewMember.personal.businessPhone!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="businessPhone">${crewMember.personal.businessPhone!}&nbsp;</div>              
 			</div>
 			<div class="fm-opt">							
-				<label for="businessFax">Business Fax:</label>
-				<div class="field" name="businessFax">${crewMember.personal.businessFax!}&nbsp;</div>				
+				<label for="businessFax" style="height:auto;">Business Fax:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="businessFax">${crewMember.personal.businessFax!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="businessFax">${crewMember.personal.businessFax!}&nbsp;</div>              
 			</div>
 			<div class="fm-opt">							
-				<label for="email">Email:</label>
-				<div class="field" name="email">${crewMember.personal.email!}&nbsp;</div>				
+				<label for="email" style="height:auto;">Email:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="email">${crewMember.personal.email!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="email">${crewMember.personal.email!}&nbsp;</div>              
 			</div>
 			<div class="fm-opt">							
-				<label for="alternateEmail">Alt. Email:</label>
-				<div class="field" name="alternateEmail">${crewMember.personal.alternateEmail!}&nbsp;</div>				
+				<label for="alternateEmail" style="height:auto;">Alt. Email:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="alternateEmail">${crewMember.personal.alternateEmail!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="alternateEmail">${crewMember.personal.alternateEmail!}&nbsp;</div>                
 			</div>
 
   
 <br>
   
 			<div class="fm-opt">							
-				<label for="medicalAid">Medical Aid:</label>
-				<div class="field" name="medicalAid">${crewMember.role.medicalAid!}&nbsp;</div>				
+				<label for="medicalAid" style="height:auto;">Medical Aid:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="medicalAid">${crewMember.role.medicalAid!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="medicalAid">${crewMember.role.medicalAid!}&nbsp;</div>                
 			</div>
 						<div class="fm-opt">							
-				<label for="medicalAidNumber">Aid Number:</label>
-				<div class="field" name="medicalAidNumber">${crewMember.role.medicalAidNumber!}&nbsp;</div>				
+				<label for="medicalAidNumber" style="height:auto;">Aid Number:</label>
+				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="medicalAidNumber">${crewMember.role.medicalAidNumber!}&nbsp;</div>				
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="medicalAidNumber">${crewMember.role.medicalAidNumber!}&nbsp;</div>                
 			</div>
    </div>
 </div>
