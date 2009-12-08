@@ -249,11 +249,11 @@
 		  <input type="text" name="passportsNumber" value="${passport.passportNumber!}" />
 		</div>
 		<div class="fm-opt">
-          <label for="passportsExpiryDate"><span class="star">*</span>Expiry Date:</label>
+          <label for="passportsExpiryDate" ><span class="star">*</span>Expiry Date:</label>
 		  <#if passport.expiryDate??>
-		    <input type="text" name="passportsExpiryDate" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
+		    <input type="text" name="passportsExpiryDate" class="date-pick" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
 		  <#else>
-		    <input type="text" name="passportsExpiryDate" value="" />
+		    <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
 		  </#if>
 		</div>
 		<div class="fm-opt">
@@ -279,7 +279,7 @@
         </div>
         <div class="fm-opt">
           <label for="passportsExpiryDate"><span class="star">*</span>Expiry Date:</label>
-          <input type="text" name="passportsExpiryDate" value="" />
+          <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
         </div>
         <div class="fm-opt">
           <label for="passports"><span class="star">*</span>Upload:</label>
