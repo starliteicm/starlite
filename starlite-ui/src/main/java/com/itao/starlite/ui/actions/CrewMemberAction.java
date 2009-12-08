@@ -89,6 +89,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public List<String> passportsContentType;
 	public List<String> passportsFileName;
 	
+	public List<String> passportsId;
+	public List<String> passportsCountry;
+	public List<String> passportsNumber;
+	public List<String> passportsExpiryDate;
+	
 	
 	public SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 	public SimpleDateFormat mysqlFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -687,6 +692,31 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
 		
+		//set passports
+		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
+		int index = 0;
+		for(String passportNumber : passportsNumber ){
+			
+			String passC  = passportsCountry.get(index);
+			String passE  = passportsExpiryDate.get(index);
+			String passId = passportsId.get(index);
+			
+			if((passportNumber != null)&&(!"".equals(passportNumber))&&(passC != null)&&(!"".equals(passC))&&(passE != null)&&(!"".equals(passE))){
+			CrewMember.Passport p = new CrewMember.Passport();
+			p.setPassportNumber(passportNumber);
+			p.setCountry(passC);
+			p.setExpiryDate(df.parse(passE));
+			if(passId != null){
+				if(!passId.equals("")){
+					p.id = new Integer(passId);
+				}
+			}
+			cmPassports.add(p);
+			}
+			index++;
+			
+		}
+		crewMember.setPassport(cmPassports);
 		manager.saveCrewMember(crewMember);
 		try{
 		  if(document != null){
@@ -709,16 +739,22 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		LOG.info(passportsTags);
 		LOG.info(passportsContentType);
 		
+		LOG.info(passportsCountry);
+		LOG.info(passportsNumber);
+		LOG.info(passportsExpiryDate);
+		
 	    boolean morePassports = true;
 	    int count = 0;
+	    if(passports != null){
 		while(morePassports){
+			
 			if(count < passports.size()){
 			
 			    File passport = passports.get(count);
 			    String passportTags = passportsTags.get(count);
 			    String passportFileName = passportsFileName.get(count);
 			    String passportContentType = passportsContentType.get(count);
-			
+			    passportTags = passportTags + count;
 			    try{
 				    if(passport != null){
 					    LOG.info(passportTags+" "+docfolder);
@@ -740,6 +776,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				morePassports = false;
 			}	
 		}
+	    }
 	return execute();
 	}
 
@@ -783,7 +820,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		Tab documentsTab = new Tab("Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
 		Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
 		Tab flightAndDutyTab = new Tab("PDW", "crewMember.action?tab=flight&id="+idStr, tab.equals("flight"));
-		Tab hours = new Tab("Hours", "crewMember.action?tab=hours&id="+idStr, tab.equals("hours"));
+		Tab hours = new Tab("On Contract", "crewMember.action?tab=hours&id="+idStr, tab.equals("hours"));
 		Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
 
 		if (user.hasPermission("ManagerView"))
