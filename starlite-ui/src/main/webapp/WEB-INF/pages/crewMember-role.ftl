@@ -108,8 +108,9 @@ $("document").ready(function() {
       if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
             
       if(error==1){
-        $("#msg-error").html(errormsg); 
-        return false;
+        $("#msg-error").html(errormsg);
+        document.forms.roleform.submit(); //TAKE THIS OUT  
+        //return false;
       }else{
          document.forms.roleform.submit(); 
       }                          
@@ -158,12 +159,23 @@ $("document").ready(function() {
 			<legend>Role</legend>
 			<div class="fm-opt">
 				<label for="crewMember.role.position"><span class="star">*</span>Position:</label>
-				<input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/>
+				<!--
+    <input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/> 
+    -->
+    <select name="crewMember.role.position">
+    <option value="Pilot">Pilot</option>
+    <option value="AME">AME</option>
+    <option value="Base Manager">Base Manager</option>    
+    </select>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.primaryLocation">Primary Location:</label>
-				<input name="crewMember.role.primaryLocation" type="text" value="${crewMember.role.primaryLocation!}"/>
-			</div>
+			<label for="crewMember.role.positionSubcategory"></span>Position Subcategory:</label>				
+   <select name="crewMember.role.positionSubcategory" id="positionSub" />
+   <option value="Position Subcategory 1">Position Subcategory 1 </option>
+   <option value="Position Subcategory 2">Position Subcategory 2 </option>
+   <option value="Position Subcategory 3">Position Subcategory 3 </option>
+   </select> 
+   </div>								
 			<div class="fm-opt">
 				<label for="crewMember.role.initialDate">Initial Date:</label>
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
@@ -174,6 +186,10 @@ $("document").ready(function() {
 					<option <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
 					<option <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
 				</select>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.primaryLocation">Primary Location:</label>
+				<input name="crewMember.role.primaryLocation" type="text" value="${crewMember.role.primaryLocation!}"/>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.company">Company:</label>
@@ -190,96 +206,6 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.telephoneExtension">Telephone Extension:</label>
 				<input name="crewMember.role.telephoneExtension" type="text" value="${crewMember.role.telephoneExtension!}"/>
-			</div>
-		</fieldset>
-		<fieldset>
-			<legend>Certificates & Licences</legend>
-			<div class="fm-opt">
-				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
-				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes"  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.instructor.type">Instructor Type:</label>
-					<select name="crewMember.role.instructor.type">
-			    	<option>
-					<#list aircraftTypes?if_exists as aircraftType>
-						<option <#if crewMember.role.instructor.type?if_exists == (aircraftType.name)>selected</#if> >${aircraftType.name!}
-					</#list>
-				</select>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.instructor.quantity">Instructor Grade:</label>
-				<select name="crewMember.role.instructor.quantity" >
-					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 1">selected</#if>>Grade 1
-					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 2">selected</#if>>Grade 2
-					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
-				</select>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.instructor.expiryDate">Instructor Expiry:</label>
-				<input name="crewMember.role.instructor.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.instructor.expiryDate??>${crewMember.role.instructor.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
-			<br/>
-			<div class="fm-opt">
-				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
-				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
-				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.huet.expiryDate">HUET Training:</label>
-				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
-				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-   <div class="fm-opt">
-				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
-				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>			
-			<br/>
-			<div class="fm-opt">
-				<label for="crewMember.role.night">Night Rated:</label>
-				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.nvg">NVG Rated:</label>
-				<input name="crewMember.role.nvg" type="checkbox"  value="yes"  <#if crewMember.role.nvg?if_exists == "yes" >checked</#if> />
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.sling">Undersling Rated:</label>
-				<input name="crewMember.role.sling" type="checkbox"  value="yes"  <#if crewMember.role.sling?if_exists == "yes" >checked</#if> />
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.game">Game Rated:</label>
-				<input name="crewMember.role.game" type="checkbox"  value="yes"  <#if crewMember.role.game?if_exists == "yes" >checked</#if> />
-			</div>			
-			<br/>
-			<div class="fm-opt">
-				<label for="crewMember.role.test.number">Test Rated:</label>
-				<input name="crewMember.role.test.number" type="checkbox"  value="yes"  <#if crewMember.role.test.number?if_exists == "yes" >checked</#if> />
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.test.type">Test Grade:</label>
-				<select name="crewMember.role.test.type" >
-					<option <#if crewMember.role.test.type?if_exists == "Grade 1">selected</#if>>Grade 1
-					<option <#if crewMember.role.test.type?if_exists == "Grade 2">selected</#if>>Grade 2
-				</select>
-			</div>
-		</fieldset>
-		</div>
-		<div style="float:left; width: 500px;">
-		<fieldset>
-			<legend>Medical</legend>
-			<div class="fm-opt">
-				<label for="crewMember.role.medicalClass">Class:</label>
-				<input name="crewMember.role.medicalClass" type="text" value="${crewMember.role.medicalClass!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.expiryDate">Expiry Date:</label>
-				<input name="crewMember.role.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 		</fieldset>
 		<fieldset>
@@ -306,14 +232,128 @@ $("document").ready(function() {
 			</div>
 			<div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;">  
 			</div>
-			<br/><br/>
+			<br/>
 		</fieldset>
+  <fieldset>
+		<legend>Ratings (Pilots only)</legend>
+		 <div class="fm-opt">
+				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
+				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes"  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
+			</div>	
+				<div class="fm-opt">
+				<label for="crewMember.role.instructor.type">Instructor Type:</label>
+					<select name="crewMember.role.instructor.type">
+			    	<option>
+					<#list aircraftTypes?if_exists as aircraftType>
+						<option <#if crewMember.role.instructor.type?if_exists == (aircraftType.name)>selected</#if> >${aircraftType.name!}
+					</#list>
+				</select>
+			</div>
+
+			<!--
+   <div class="fm-opt">
+				<label for="crewMember.role.instructor.quantity">Instructor Grade:</label>
+				<select name="crewMember.role.instructor.quantity" >
+					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 1">selected</#if>>Grade 1
+					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 2">selected</#if>>Grade 2
+					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
+				</select>
+			</div>
+   -->
+   
+    <div class="fm-opt">
+				<label for="crewMember.role.instructor.grade">Instructor Grade:</label>
+					<select name="crewMember.role.instructor.grade">
+ 			    	<option>
+					<#list instructorGrades?if_exists as instructorGrade>
+						<option <#if crewMember.role.instructor.grade?if_exists == (instructorGrade.name)>selected</#if> >${instructorGrade.name!}
+					</#list>
+				</select>
+			</div>
+			
+			
+			<div class="fm-opt">
+				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
+				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
+			</div>
+					<div class="fm-opt">
+				<label for="crewMember.role.night">Night Rated:</label>
+				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.game">Game Rated:</label>
+				<input name="crewMember.role.game" type="checkbox"  value="yes"  <#if crewMember.role.game?if_exists == "yes" >checked</#if> />
+			</div>			
+			<div class="fm-opt">
+				<label for="crewMember.role.nvg">NVG Rated:</label>
+				<input name="crewMember.role.nvg" type="checkbox"  value="yes"  <#if crewMember.role.nvg?if_exists == "yes" >checked</#if> />
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.sling">Undersling Rated:</label>
+				<input name="crewMember.role.sling" type="checkbox"  value="yes"  <#if crewMember.role.sling?if_exists == "yes" >checked</#if> />
+			</div>			
+		
+  	<div class="fm-opt">
+				<label for="crewMember.role.test.number">Test Rated:</label>
+				<input name="crewMember.role.test.number" type="checkbox"  value="yes"  <#if crewMember.role.test.number?if_exists == "yes" >checked</#if> />
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.test.type">Test Grade:</label>
+				<select name="crewMember.role.test.type" >
+					<option <#if crewMember.role.test.type?if_exists == "Grade 1">selected</#if>>Grade 1
+					<option <#if crewMember.role.test.type?if_exists == "Grade 2">selected</#if>>Grade 2
+				</select>
+			</div>									
+   <div class="fm-opt">
+   <label for="crewMember.role.ifr.instrumentHours">Instrument Hours:</label>
+   <input type="text" name="instrumentHours" value="${crewMember.role.instrumentHours!}" />
+		</div>
+		
+  </fieldset>
+		
+  <fieldset>
+			<legend>Certificates & Licences</legend>
+
+			<div class="fm-opt">
+				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
+				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
+				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.huet.expiryDate"><span class="star">*</span>HUET Training:</label>
+				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+			</div>
+				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+   <div class="fm-opt">
+				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
+				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+			</div>			
+			<br/>
+			<div class="fm-opt">
+				<label for="crewMember.role.medicalClass">Class:</label>
+				<input name="crewMember.role.medicalClass" type="text" value="${crewMember.role.medicalClass!}"/>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.expiryDate">Expiry Date:</label>
+				<input name="crewMember.role.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+			</div>
+		
+  </fieldset>
+		</div>
+		<div style="float:left; width: 500px;">
+		
+  
 		<fieldset>
 			<legend>
 			Hours On Aircraft Types 
 			<img class="tooltip" title="To Add a Type: select a type from the dropdown and press save <br/><br/> To Remove a Type: select the empty option of the Type you wish to remove and save <br/><br/> You are unable to add more<br/> than one of the same type"  style="background-color:white;cursor:help;position:absolute;padding:10px;padding-top:0px;"  src="images/icons/info.png"/>
 			</legend>
-			<div class="fm-opt" style="position:relative;right:-340px;">
+			<div class="fm-opt" style="position:relative;right:-340px;">  
 			Total Hours
 			</div>
 			<#assign i=0/> 
