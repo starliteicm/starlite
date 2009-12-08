@@ -695,6 +695,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		//set passports
 		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
 		int index = 0;
+		if(passportsNumber){
 		for(String passportNumber : passportsNumber ){
 			
 			String passC  = passportsCountry.get(index);
@@ -717,6 +718,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			
 		}
 		crewMember.setPassport(cmPassports);
+		}
+		
 		manager.saveCrewMember(crewMember);
 		try{
 		  if(document != null){
