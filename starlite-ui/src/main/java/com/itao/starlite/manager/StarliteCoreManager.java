@@ -493,4 +493,9 @@ public class StarliteCoreManager {
 		return crewDayDao.getCrewDay(date, crewMember);
 	}
 
+	public List<CrewDay> getCrewDayByCharterBetween(Integer id, Date dateFrom,Date dateTo) {
+		// TODO Auto-generated method stub
+		return crewDayDao.getCrewDayByCharterBetween(id,dateFrom,dateTo);
+	}
+
 }

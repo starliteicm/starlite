@@ -1,13 +1,16 @@
 package com.itao.starlite.ui.actions;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
@@ -36,6 +39,7 @@ import com.itao.starlite.manager.StarliteCoreManager;
 import com.itao.starlite.model.Aircraft;
 import com.itao.starlite.model.Charter;
 import com.itao.starlite.model.CombinedActuals;
+import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.types.CharterStatus;
 import com.itao.starlite.scheduling.manager.SchedulingManager;
@@ -73,6 +77,8 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 	public User user;
 	public List<CrewMember> allCrew;
 	public List<Aircraft> allAircraft;
+	@SuppressWarnings("unchecked")
+	public TreeMap<String,Map> crewDayAircraft;
 	
 	public Date dateFrom;
 	public Date dateTo;
@@ -80,6 +86,9 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 	public String activity;
 	public String tail;
 	public List<String> members;
+	
+	public SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	public SimpleDateFormat mysqlFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
 	public String execute() throws Exception {
@@ -157,9 +166,60 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 		return SUCCESS;
 	}
 	
-	public String contract(){
+	public String saveCrew() throws Exception{
+		prepare();
+		Aircraft aircraft =  null;
+		
+		if(tail != null){
+			if(tail != ""){
+				aircraft = manager.getAircraft(new Integer(tail));
+			}
+		}
+
+		try {
+
+			for(String member : members){
+
+				CrewMember crewMember = manager.getCrewMemberByCode(member);
+
+				Date from = dateFrom;
+				Date to   = dateTo;
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(from);
+
+
+				if(from.before(to)){
+					while(cal.getTime().before(to)){
+						String date = mysqlFormat.format(cal.getTime());
+						CrewDay cd = null;
+						cd = manager.getCrewDay(cal.getTime(),crewMember);
+						if(cd == null){
+							cd = new CrewDay(null,date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null);
+						}
+						else {
+							cd.setActivity(activity);
+							cd.setAircraft(aircraft);
+							cd.setCharter(charter);
+						}
+						manager.saveCrewDay(cd);
+						cal.add(Calendar.DAY_OF_MONTH,1);
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect-contract";
+	}
+
+	@SuppressWarnings("unchecked")
+	public String contract() throws Exception{
 		tab = "contract";
 		prepareTabs();
+		
+		prepare();
+		
 		List<CrewMember> crew = manager.getAllCrew();
 		
 		TreeMap<String,CrewMember> ordered = new TreeMap<String,CrewMember>();
@@ -176,6 +236,56 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 			setDefaultDates();
 		}
 		
+		List<CrewDay> crewDays = manager.getCrewDayByCharterBetween(charter.getId(), dateFrom, dateTo); 
+		
+		crewDayAircraft =  new TreeMap<String,Map>();
+		
+		for(CrewDay cd : crewDays){
+			Aircraft a = cd.getAircraft();
+			CrewMember c = cd.getCrewMember();
+			
+			if((a != null)&&(c != null)){
+			
+			if(!crewDayAircraft.containsKey(""+a.getRef())){
+				//add aircraft
+				HashMap aircraft = new HashMap();
+				aircraft.put("aircraft", a);
+				aircraft.put("crewMap", new TreeMap());
+				crewDayAircraft.put(""+a.getRef(), aircraft);
+			}
+			
+			Map crewMap =  (Map) crewDayAircraft.get(""+a.getRef()).get("crewMap");
+			if(!crewMap.containsKey(""+c.getCode())){
+				//crew member already added
+				Map crewMember = new HashMap();
+				crewMember.put("crewMember", c);
+				crewMember.put("crewDayMap", new HashMap());
+				crewMap.put(""+c.getCode(), crewMember);
+			}
+
+			
+			Map crewDayMap = (Map) ((Map) crewMap.get(""+c.getCode())).get("crewDayMap");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(cd.getDate());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			if(crewDayMap.containsKey(df.format(cal.getTime()))){
+				Map crewDay = (Map) crewDayMap.get(df.format(cal.getTime()));
+				crewDay.put("end",cd.getDate());
+				crewDayMap.remove(df.format(cal.getTime()));
+				crewDayMap.put(df.format(cd.getDate()),crewDay);
+			}
+			else{
+				Map crewDay = (Map) new HashMap();
+				crewDay.put("start",cd.getDate());
+				crewDay.put("end",cd.getDate());
+				crewDayMap.put(df.format(cd.getDate()),crewDay);
+			}
+			
+			}	
+			
+		}
+		
+		System.out.println(crewDayAircraft);
 		
 		return "contract";
 	}
@@ -190,6 +300,8 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 		cal.add(Calendar.MONTH, -1);
 		cal.set(Calendar.DAY_OF_MONTH,21);
 		dateFrom = cal.getTime();
+		
+		
 	
 	}
 

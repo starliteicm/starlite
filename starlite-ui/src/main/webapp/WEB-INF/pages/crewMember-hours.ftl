@@ -1,3 +1,5 @@
+<#setting number_format = "######" />
+<#assign visible = "visibility:hidden" />
 <#include "/starlite.ftl">
 <html>
 <head>
@@ -5,8 +7,7 @@
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
   <@enableJQuery/>
   <@enableDatePickers/>
-  <@enableTimePickers/>
-  
+    
   
   <script>
     function checkNum(obj){
@@ -234,7 +235,7 @@
 		  <#assign visible = "visibility:hidden" />
 		  
 		  <#if crewDay.get("crewDay")?? >
-		  <input type="hidden" name="${month}-${day}_id" value="crewDay.get("crewDay").id">
+		  <input type="hidden" name="${month}-${day}_id" value='${crewDay.get("crewDay").id}'>
 		  </#if>
 		
 		  <td>${day}</td>
