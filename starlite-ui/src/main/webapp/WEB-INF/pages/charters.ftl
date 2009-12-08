@@ -9,7 +9,7 @@
            addDropShadow('images/table/');
         });
 </script>
-<title>Charters</title>
+<title>Contract</title>
 </head>
 <body>
 <#if user.hasPermission("UserAdmin")>

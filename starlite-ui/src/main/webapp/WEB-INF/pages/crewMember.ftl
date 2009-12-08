@@ -4,6 +4,7 @@
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <@enableJQuery/>
   <@enableDatePickers/>
+  <@enableHelp/>
 
 <script language="javascript">
   function validate(){            
@@ -224,10 +225,12 @@
 		</fieldset>-->
 		
 		<fieldset>
-            <legend>Passports</legend>
+            <legend>Passports
+            <img class="tooltip" title="Passports: <br/><br/> To Add a passport fill in all the required fields then save.<br/><br/> To Remove a passport, clear any of the fields and then save."  style="background-color:white;cursor:help;position:absolute;padding:10px;padding-top:0px;"  src="images/icons/info.png"/>
+            </legend>
 		
 		<#assign count=0>
-		<#list crewMember.passports as passport>
+		<#list crewMember.passport as passport>
 		
 		<#if count != 0>
 		<div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
@@ -235,29 +238,57 @@
 		
 		<#assign count=count +1>
 		
+		<input type="hidden" name="passportsId" value="${passport.id!}">
+		
 		<div class="fm-opt">
-		  <label for="${count}_passport_country"><span class="star">*</span>Country of Issue:</label>
-		  <input type="text" name="${count}_passport_country" value="${passport.country!}" />
+		  <label for="passportsCountry"><span class="star">*</span>Country of Issue:</label>
+		  <input type="text" name="passportsCountry" value="${passport.country!}" />
 		</div>
 		<div class="fm-opt">
-		  <label for="${count}_passport_passportNumber"><span class="star">*</span>Passport Number:</label>
-		  <input type="text" name="${count}_passport_passportNumber" value="${passport.passportNumber!}" />
+		  <label for="passportsNumber"><span class="star">*</span>Passport Number:</label>
+		  <input type="text" name="passportsNumber" value="${passport.passportNumber!}" />
 		</div>
 		<div class="fm-opt">
-          <label for="${count}_passport_passportExpiryDate"><span class="star">*</span>Expiry Date:</label>
+          <label for="passportsExpiryDate"><span class="star">*</span>Expiry Date:</label>
 		  <#if passport.expiryDate??>
-		    <input type="text" name="${count}_passport_passportExpiryDate" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
+		    <input type="text" name="passportsExpiryDate" value="${passport.expiryDate?string('dd/MM/yyyy')}" />
 		  <#else>
-		    <input type="text" name="${count}_passport_passportExpiryDate" value="" />
+		    <input type="text" name="passportsExpiryDate" value="" />
 		  </#if>
 		</div>
 		<div class="fm-opt">
-          <label for="passports"><span class="star">*</span>Country of Issue:</label>
+          <label for="passports"><span class="star">*</span>Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
         </div>
 
+
 		</#list>
+		
+		<div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
+	    
+	    <input type="hidden" name="passportsId" value="">
+	    
+	    <div class="fm-opt">
+          <label for="passportsCountry"><span class="star">*</span>Country of Issue:</label>
+          <input type="text" name="passportsCountry" value="" />
+        </div>
+        <div class="fm-opt">
+          <label for="passportsNumber"><span class="star">*</span>Passport Number:</label>
+          <input type="text" name="passportsNumber" value="" />
+        </div>
+        <div class="fm-opt">
+          <label for="passportsExpiryDate"><span class="star">*</span>Expiry Date:</label>
+          <input type="text" name="passportsExpiryDate" value="" />
+        </div>
+        <div class="fm-opt">
+          <label for="passports"><span class="star">*</span>Upload:</label>
+          <input type="file" name="passports" value="" />
+          <input type="hidden" name="passportsTags" value="passport" />
+        </div>	
+        
+        
+		
 		</fieldset>
 		
 		<fieldset>

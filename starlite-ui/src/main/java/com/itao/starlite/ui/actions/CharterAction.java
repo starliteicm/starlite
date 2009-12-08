@@ -1,10 +1,14 @@
 package com.itao.starlite.ui.actions;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.ParentPackage;
@@ -67,6 +71,15 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 	private BookmarkManager bookmarkManager;
 
 	public User user;
+	public List<CrewMember> allCrew;
+	public List<Aircraft> allAircraft;
+	
+	public Date dateFrom;
+	public Date dateTo;
+	
+	public String activity;
+	public String tail;
+	public List<String> members;
 
 	@Override
 	public String execute() throws Exception {
@@ -75,7 +88,7 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 
 		//crewMember = manager.getCrewMember(id);
 		breadcrumbs = Breadcrumb.toArray(
-			new Breadcrumb("Charters", "charters.action"),
+			new Breadcrumb("Contract", "charters.action"),
 			new Breadcrumb(charter.getCode())
 		);
 		prepareTabs();
@@ -104,7 +117,7 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 
 		});
 		breadcrumbs = Breadcrumb.toArray(
-				new Breadcrumb("Charters", "charters.action"),
+				new Breadcrumb("Contract", "charters.action"),
 				new Breadcrumb(charter.getCode())
 			);
 		prepareTabs();
@@ -136,12 +149,48 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 	public String create() {
 		//crewMember = new CrewMember();
 		breadcrumbs = Breadcrumb.toArray(
-				new Breadcrumb("Charters", "charters.action"),
+				new Breadcrumb("Contract", "charters.action"),
 				new Breadcrumb("New Charter")
 			);
 		Tab administrativeTab = new Tab("Administrative", "#", true);
 		tableTabs = new Tab[] {administrativeTab};
 		return SUCCESS;
+	}
+	
+	public String contract(){
+		tab = "contract";
+		prepareTabs();
+		List<CrewMember> crew = manager.getAllCrew();
+		
+		TreeMap<String,CrewMember> ordered = new TreeMap<String,CrewMember>();
+		for(CrewMember cm : crew){
+			if(cm.getCode() != null){
+			   ordered.put(cm.getCode(), cm);
+			}
+		}
+		allCrew = new ArrayList<CrewMember>(ordered.values());
+		allAircraft= manager.getAllAircraft().aircraftList;
+		
+		//getCrewDays
+		if((dateFrom == null)||("".equals(dateFrom))||(dateTo == null)||("".equals(dateTo))){
+			setDefaultDates();
+		}
+		
+		
+		return "contract";
+	}
+	
+	public void setDefaultDates(){
+	
+		//starlite months 21-20
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_MONTH,20);
+		dateTo = cal.getTime();
+		
+		cal.add(Calendar.MONTH, -1);
+		cal.set(Calendar.DAY_OF_MONTH,21);
+		dateFrom = cal.getTime();
+	
 	}
 
 	public String tableHtml;
@@ -192,7 +241,7 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 		tableFacade.setView(new PlainTableView());
 		tableHtml = tableFacade.render();
 		breadcrumbs = Breadcrumb.toArray(
-			new Breadcrumb("Charters", "charters.action"),
+			new Breadcrumb("Contract", "charters.action"),
 			new Breadcrumb(" Hours")
 		);
 		tab = "hours";
@@ -227,7 +276,7 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 	public String assignableArray;
 	public String assignments() throws Exception {
 		breadcrumbs = Breadcrumb.toArray(
-				new Breadcrumb("Charters", "charters.action"),
+				new Breadcrumb("Contract", "charters.action"),
 				new Breadcrumb(charter.getCode())
 		);
 		tab = "assignments";
@@ -276,10 +325,11 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 		Tab insurance = new Tab("Insurance", "charter.action?tab=insurance&id="+idStr, tab.equals("insurance"));
 		Tab cost = new Tab("Cost", "charter.action?tab=cost&id="+idStr, tab.equals("cost"));
 		Tab hours = new Tab("Hours", "charter!hours.action?id="+idStr, tab.equals("hours"));
+		Tab contract = new Tab("On Contract", "charter!contract.action?id="+idStr, tab.equals("contract"));
 		Tab docs = new Tab("Documents", "charter!docs.action?id="+idStr, tab.equals("docs"));
 
 		Tab assignments = new Tab("Assignments", "charter!assignments.action?id="+idStr, tab.equals("assignments"));
-		tableTabs = new Tab[] {administrative, resources, pricing, insurance, cost, hours, docs, assignments};
+		tableTabs = new Tab[] {administrative, resources, pricing, insurance, cost, hours,contract, docs, assignments};
 	}
 
 	public void setUser(User arg0) {

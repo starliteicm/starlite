@@ -76,7 +76,7 @@
 	      <#else>
 	      <li class="charters">
 	      </#if>
-	      <a href="charters.action">Charters</a></li>
+	      <a href="charters.action">Contract</a></li>
 	      <#if current?? && current=="crew">
 	      <li class="crew current">
 	      <#else>

@@ -73,26 +73,24 @@ public class CrewMember implements Cloneable {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
-	private List<Passport> passports = new ArrayList<Passport>();
+	private List<Passport> passport = new ArrayList<Passport>();
 	
 	/*
 	 * Nested Classes - These are used to partition the data into manageable sections
 	 */
 	
 	@Entity
-	public class Passport{			
+	public static class Passport{			
 		public String passportNumber;
 		@Temporal(TemporalType.DATE)
 		public Date expiryDate;
 		public String country;
+		
 		@Id @GeneratedValue
 		public Integer id;
-		public Passport(){}
-		public Passport(String _passportNumber, String _passportCountry, Date _passportExpiry){
-			this.setPassportNumber(_passportNumber);
-			this.setCountry(_passportCountry);
-			this.setExpiryDate(_passportExpiry);
-		}
+		
+		public Passport() {}
+		
 		public void setPassportNumber(String passportNumber) {
 			this.passportNumber = passportNumber;
 		}
@@ -111,34 +109,34 @@ public class CrewMember implements Cloneable {
 		public String getCountry() {
 			return country;
 		}
-		public void setId(Integer id) {
-			this.id = id;
-		}
-		public Integer getId() {
-			return id;
-		}
+		
 		public String toString(){
-			return "{id:"+getId()+",country:"+getCountry()+",number:"+getPassportNumber()+",expiry:"+getExpiryDate()+"}";
+			return "{id:"+id+",country:"+getCountry()+",number:"+getPassportNumber()+",expiry:"+getExpiryDate()+"}";
 		}
 	}
 	
-	public List<Passport> getPassports(){
-	  if(passports == null){
-		  passports = new LinkedList<Passport>();
-	  }
-	  if(personal.passportCountry != null){
-		  //first passport
-		  passports.add(new Passport(personal.passportNumber,personal.passportCountry,personal.passportExpiryDate));
-	  }
-	  passports.add(new Passport()); 
+	public List<Passport> getPassport(){
+	  System.out.println("GET:"+passport);
 	  
-	  System.out.println("GET:"+passports);
-	  return passports;
+	  if(passport == null){
+		  passport = new LinkedList<Passport>();
+	  }
+	  if(passport.size() == 0){
+	      if(personal.passportCountry != null){
+		     //first passport
+	    	    Passport pass = new Passport();
+				pass.setPassportNumber(personal.passportNumber);
+				pass.setCountry(personal.passportCountry);
+				pass.setExpiryDate(personal.passportExpiryDate);
+	    	    passport.add(pass);
+	      }
+	  }
+	  return passport;
 	}
 	
-	public void setPassports(List<Passport> passports) {
+	public void setPassport(List<Passport> passports) {
 		System.out.println("SET:"+passports);
-		this.passports = passports;
+		this.passport = passports;
 	}
 	
 	

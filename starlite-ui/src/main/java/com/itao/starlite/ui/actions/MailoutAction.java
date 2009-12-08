@@ -117,7 +117,9 @@ public class MailoutAction extends ActionSupport implements UserAware {
 		crew = manager.getAllCrew();
 		TreeMap<String,CrewMember> ordered = new TreeMap<String,CrewMember>();
 		for(CrewMember cm : crew){
-			ordered.put(cm.getCode(), cm);
+			if(cm.getCode() != null){
+			   ordered.put(cm.getCode(), cm);
+			}
 		}
 		crew = new ArrayList<CrewMember>(ordered.values());
 		

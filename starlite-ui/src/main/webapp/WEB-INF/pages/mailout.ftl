@@ -57,7 +57,24 @@
 			});
 			$('#wysiwyg').wysiwyg();
         });
-        
+   function selectNone()//all crew
+   {
+      var count = document.emailForm.elements.length;
+      for (var i=0; i<count; i++)
+      {
+         if(document.emailForm.elements[i].name1 =="mems")
+         {
+            if(document.emailForm.elements[i].checked == true)
+               {
+                  document.emailForm.elements[i].checked = false; 
+                  selectedEmail--;
+               }
+         }  
+      }
+      var esn = document.getElementById("emailSelectNo");
+       esn.innerHTML = ""+selectedEmail;
+    }
+         
    function selectAll()//all crew
    {
       var count = document.emailForm.elements.length;
@@ -69,11 +86,6 @@
                {
                   document.emailForm.elements[i].checked = true; 
                   selectedEmail++;
-               }
-            else 
-               {
-                  document.emailForm.elements[i].checked = false;
-                  selectedEmail--;
                }
          }  
       }
@@ -272,7 +284,7 @@
 		<div class="heading"><span style="float:left;">Subject: (Email Subject)  </span><img class="tooltip" title=" - Email Subject: - please enter the subject to be used on the email sent out." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 		<div ><input type="text" value="${subject?if_exists}" name="subject" style="width:476px;margin-bottom:10px;border:1px solid silver;" /></div>
 		
-		<div class="heading"><span style="float:left;">To: (System) - [<span id="emailSelectNo">${memsSelected.size()}</span> selected] </span><img class="tooltip" title=" - System To: - Please check the boxes to the right of the member / members names you wish to send this mail to."  style="cursor:help;position:static;float:right;" src="images/icons/info.png"/>
+		<div class="heading"><span style="float:left;">To: (System) - [<span id="emailSelectNo">${memsSelected.size()}</span> selected] </span><img class="tooltip" title=" - System To: - Please check the boxes to the left of the member / members names you wish to send this mail to."  style="cursor:help;position:static;float:right;" src="images/icons/info.png"/>
 		</div>
 		
 		<div style="height:100px; width:460px; overflow:auto; padding:5px; margin-bottom:10px; border: 1px solid silver;">
@@ -290,26 +302,24 @@
 		</div>
 
 		
-		<div>Select:
+		<div>Select:<br/>
 
-		<input type="checkbox" name="PC" onclick="selectGroupPC(this);"> All Permanent Crew  </button>
-		<input type="checkbox" name="FC" onclick="selectGroupFC(this);"> All Freelance Crew  </button>
-		<input type="checkbox" name="PA" onclick="selectGroupPA(this);"> All Permanent AMEs</button>
-		<input type="checkbox" name="FA" onclick="selectGroupFA(this);"> All Freelance AMEs</button>
-		<input type="checkbox" name="PP" onclick="selectGroupPP(this);"> All Permanent Pilots </button>
-		<input type="checkbox" name="FP" onclick="selectGroupFP(this);"> All Freelance Pilots </button>
+		<div style="width:200px;float:left"><input type="checkbox" name="PC" onclick="selectGroupPC(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Permanent Crew</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="PA" onclick="selectGroupPA(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Permanent AMEs</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="PP" onclick="selectGroupPP(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Permanent Pilots</div>
+		<br/>
+		<div style="width:200px;float:left"><input type="checkbox" name="FC" onclick="selectGroupFC(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Freelance Crew</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="FA" onclick="selectGroupFA(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Freelance AMEs</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="FP" onclick="selectGroupFP(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Freelance Pilots</div>
+		<br/>
+		<div style="width:200px;float:left"><input type="checkbox" name="FC" onclick="selectAll();var check=this;setTimeout(function(){check.checked=false;},500);"> All</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="FC" onclick="selectNone();var check=this;setTimeout(function(){check.checked=false;},500);"> None</div>
 		</div>
-		
-		
-		
-		<div>
-		<button type="button" name="checkallbox" onclick="selectAll();">Email To All Crew</button>
-		</div>
-		
+		<br/><br/>
 		<div class="heading"><span style="float:left;">Additional To: (Email Addresses)  </span><img class="tooltip" title="Additional To: Please enter the email address of people who you would like to include in this mailout but who are not on the system. Please comma / semicolon seperate any emails (e.g. to1@domain.com;to2@domain.com  to1@domain.com,to2@domain.com  )" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 		<div ><input type="text" name="emails" value="${emails?if_exists}" style="width:476px;margin-bottom:10px;border:1px solid silver;" /></div>
 			
-			<div class="heading"><span style="float:left;">Attach Documents: - [<span id="docSelectNo">${docsSelected.size()}</span> selected]</span><img class="tooltip" title=" - Attach Documents: - Please check the boxes to the right to select documents uploaded to the Distribution documents folder to be attached and sent with this mail" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
+			<div class="heading"><span style="float:left;">Attach Documents: - [<span id="docSelectNo">${docsSelected.size()}</span> selected]</span><img class="tooltip" title=" - Attach Documents: - Please check the boxes to the left to select documents uploaded to the Distribution documents folder to be attached and sent with this mail" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 			
 			<div style="height:100px; width:460px; overflow:auto; padding:5px; margin-bottom:10px; border: 1px solid silver;">
 			<ul class="mktree" style="">

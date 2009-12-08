@@ -42,24 +42,69 @@
 		
 		<fieldset>
 		<legend>Exchange Rates</legend>
-		<form id="randForm" name="randForm" action="exchange!setRates.action" method="GET">
 		
 		<div style="border:1px solid silver;padding:20px;">
-		<div  style="text-align:center;padding:5px;width:100px;display:inline;">(ZAR) <img src="images/flagZA.gif"/></div>
-		<input name="amount" style="text-align:center;width:100px;margin:10px;display:inline;" value="${rand.amount}">
-		<div  style="text-align:center;padding:5px;width:100px;display:inline;">(USD) <img src="images/flagUS.gif"/></div>
+		<form id="randForm" name="randForm" action="exchange!setRates.action" method="GET">
+		<input name="type" value="ZAR" type="hidden" />
+		<div  style="text-align:center;padding:5px;width:100px;display:inline;">(ZAR) <img style="position:relative;top:10px;" src="images/flagZA.png"/></div>
+		<input name="amount" style="text-align:center;width:100px;margin:10px;display:inline;" value="${rand.amount}" />
+		<div  style="text-align:center;padding:5px;width:100px;display:inline;">(USD) <img style="position:relative;top:10px;" src="images/flagUS.png"/></div>
 		<button type="button" onclick="document.forms.randForm.submit();" class="smooth" style="position:relative;float:right;top:4px"><img src="images/icons/accept.png"/> Set</button>
-		
-		<!--
-		<br/>
-		<div style="text-align:center;padding:5px;width:100px;display:inline;">(1 ZAR)</div>
-        <div style="text-align:center;width:100px;margin:20px;display:inline;">=</div>
-        <div style="text-align:center;padding:5px;width:100px;display:inline;">(? USD)</div>
-		-->
+		</form>
 		<br/><br/>
 		<#if rand.lastUpdated?exists>
 		<small style="color:silver">Last Updated: ${rand.lastUpdated?datetime} - ${rand.updatedBy}</small>
 		</#if>
+		</div>
+		
+		<br/><br/>
+		
+		<div style="border:1px solid silver;padding:20px;">
+        <form id="gbpForm" name="gbpForm" action="exchange!setRates.action" method="GET">
+        <input name="type" value="GBP" type="hidden" />
+        <div  style="text-align:center;padding:5px;width:100px;display:inline;">(GBP) <img style="position:relative;top:10px;" src="images/flagGB.png"/></div>
+        <input name="amount" style="text-align:center;width:100px;margin:10px;display:inline;" value="${gbp.amount}" />
+        <div  style="text-align:center;padding:5px;width:100px;display:inline;">(USD) <img style="position:relative;top:10px;" src="images/flagUS.png"/></div>
+        <button type="button" onclick="document.forms.gbpForm.submit();" class="smooth" style="position:relative;float:right;top:4px"><img src="images/icons/accept.png"/> Set</button>
+        </form>
+        <br/><br/>
+        <#if gbp.lastUpdated?exists>
+        <small style="color:silver">Last Updated: ${gbp.lastUpdated?datetime} - ${gbp.updatedBy}</small>
+        </#if>
+        </div>
+		
+		<br/><br/>
+        
+        <div style="border:1px solid silver;padding:20px;">
+        <form id="randForm" name="eurForm" action="exchange!setRates.action" method="GET">
+        <input name="type" value="EUR" type="hidden" />
+        <div  style="text-align:center;padding:5px;width:100px;display:inline;">(EUR) <img style="position:relative;top:10px;" src="images/flagEU.png"/></div>
+        <input name="amount" style="text-align:center;width:100px;margin:10px;display:inline;" value="${eur.amount}" />
+        <div  style="text-align:center;padding:5px;width:100px;display:inline;">(USD) <img style="position:relative;top:10px;" src="images/flagUS.png"/></div>
+        <button type="button" onclick="document.forms.eurForm.submit();" class="smooth" style="position:relative;float:right;top:4px"><img src="images/icons/accept.png"/> Set</button>
+        </form>
+        <br/><br/>
+        <#if eur.lastUpdated?exists>
+        <small style="color:silver">Last Updated: ${eur.lastUpdated?datetime} - ${eur.updatedBy}</small>
+        </#if>
+        </div>
+        
+        <br/><br/>
+        
+        <div style="border:1px solid silver;padding:20px;">
+        <form id="audForm" name="audForm" action="exchange!setRates.action" method="GET">
+        <input name="type" value="AUD" type="hidden" />
+        <div  style="text-align:center;padding:5px;width:100px;display:inline;">(AUD) <img style="position:relative;top:10px;" src="images/flagAU.png"/></div>
+        <input name="amount" style="text-align:center;width:100px;margin:10px;display:inline;" value="${aud.amount}" />
+        <div  style="text-align:center;padding:5px;width:100px;display:inline;">(USD) <img style="position:relative;top:10px;" src="images/flagUS.png"/></div>
+        <button type="button" onclick="document.forms.audForm.submit();" class="smooth" style="position:relative;float:right;top:4px"><img src="images/icons/accept.png"/> Set</button>
+        </form>
+        <br/><br/>
+        <#if aud.lastUpdated?exists>
+        <small style="color:silver">Last Updated: ${aud.lastUpdated?datetime} - ${aud.updatedBy}</small>
+        </#if>
+        </div>
+
 		
 		</fieldset>
 		
