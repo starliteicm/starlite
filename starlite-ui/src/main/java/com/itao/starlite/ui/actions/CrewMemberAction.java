@@ -106,7 +106,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public File   crmFile;
 	public String crmFileContentType;
     public String crmFileFileName;
-	
+    public File   dgFile;
+	public String dgFileContentType;
+    public String dgFileFileName;
+    public File   huetFile;
+	public String huetFileContentType;
+    public String huetFileFileName;
+    
     @SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
 	public String hoursMonth;
@@ -192,6 +198,15 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		return "crmFile";
 	}
 	
+	public String dgFile(){
+		return "dgFile";
+	}
+	
+	public String huetFile(){
+		return "huetFile";
+	}
+	
+	
 	public InputStream getPhoto(){
 	  try{
 	    folder = docManager.getFolderByPath("/crew/"+id, user);
@@ -235,7 +250,51 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 		  }
 	}
-		
+
+	public InputStream getDgFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document dgFile = folder.getDocumentByTag("dgFile");
+		    LOG.info("Name:"+dgFile.getName());
+		    LOG.info("Uuid:"+dgFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(dgFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);
+			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+			  try{
+				return new FileInputStream(def);				
+	     	  }catch(FileNotFoundException e1){				
+				LOG.error(e1);
+				return null;
+			}
+		  }
+	}
+	
+	public InputStream getHuetFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document huetFile = folder.getDocumentByTag("huetFile");
+		    LOG.info("Name:"+huetFile.getName());
+		    LOG.info("Uuid:"+huetFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(huetFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);
+			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+			  try{
+				return new FileInputStream(def);				
+	     	  }catch(FileNotFoundException e1){				
+				LOG.error(e1);
+				return null;
+			}
+		  }
+	}	
+	
 	public String tableHtml;
 	private String setupFlight() {
 		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
@@ -811,15 +870,43 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
                 LOG.info(tags+" "+docfolder);
                 String[] tagsArray = tags.split(" ");
                 Document doc = new Document();
-                doc.setName(crmFileFileName);
-                System.out.println("crmFileFileName");
-                System.out.println(crmFileFileName);
-                System.out.println("crmFile");
-                System.out.print(crmFile);
+                doc.setName(crmFileFileName);                
                 doc.setContentType(crmFileContentType);
                 Bookmark b = bookmarkManager.createBookmark(crmFileFileName, "Document", docfolder+"/"+ crmFileFileName, tagsArray);
                 doc.setBookmark(b);
                 docManager.createDocument(doc, docfolder, new FileInputStream(crmFile), user);
+            }else{            	
+            }
+          }
+          catch(Exception e){
+                LOG.error(e);
+          }
+  	    try{
+            if(dgFile!= null){         
+                LOG.info(tags+" "+docfolder);
+                String[] tagsArray = tags.split(" ");
+                Document doc = new Document();
+                doc.setName(dgFileFileName);
+                doc.setContentType(dgFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(dgFileFileName, "Document", docfolder+"/"+ dgFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(dgFile), user);
+            }else{            	
+            }
+          }
+          catch(Exception e){
+                LOG.error(e);
+          }
+  	    try{
+            if(huetFile!= null){         
+                LOG.info(tags+" "+docfolder);
+                String[] tagsArray = tags.split(" ");
+                Document doc = new Document();
+                doc.setName(huetFileFileName);
+                doc.setContentType(huetFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(huetFileFileName, "Document", docfolder+"/"+ huetFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(huetFile), user);
             }else{            	
             }
           }

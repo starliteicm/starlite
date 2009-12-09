@@ -7,7 +7,6 @@
   <@enableHelp/>
 <script language="javascript">
   function validate(){            
-        //var title              = $("#title").val();
         var title = document.getElementById('title').options[document.getElementById('title').selectedIndex].value;                                                       
         var firstname          = $("#firstname").val();
         var lastname           = $("#lastname").val();
@@ -23,12 +22,10 @@
         var postalcode         = $("#postalcode").val();
         var mobilephone        = $("#mobilephone").val();
         var homephone          = $("#homephone").val();
-        var email              = $("#email").val();
-        //var gender             = $("#gender option:selected").val();
+        var email              = $("#email").val();        
         var gender = document.getElementById('gender').options[document.getElementById('gender').selectedIndex].value;        
         var dob                = $("#dob").val();
         var nationality        = $("#nationality").val();
-      //var maritalstatus      = $("#maritalstatus option:selected").val();
         var maritalstatus      = document.getElementById('maritalstatus').options[document.getElementById('maritalstatus').selectedIndex].value;        
         var nokfirstname       = $("#nokfirstname").val();
         var noklastname        = $("#noklastname").val();
@@ -76,8 +73,7 @@
         if(nokaddress4  == ""){ errormsg += "Next of kin's address 4, "; error=1;}
         if(ecdcontactname  == ""){ errormsg += "Emergency contact's name, "; error=1;}
         if(ecdcontactrelation  == ""){ errormsg += "Relation to emergency contact, "; error=1;}
-        
-        
+                
         if(error==1){ 
         errormsg=errormsg.substring(0,errormsg.length-2);        
         $("#msg-error").html(errormsg); return false;
