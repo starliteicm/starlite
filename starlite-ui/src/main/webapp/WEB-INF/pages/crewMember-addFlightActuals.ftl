@@ -374,15 +374,15 @@
 			<td style="padding:5px;">
 			<select style="width:40px;" name='actuals.entries["${key}"].discomfort' >
 			  <option>0</option>
-			  <option>1</option>
-			  <option>2</option>
-			  <option>3</option>
-			  <option>4</option>
-			  <option>5</option>
-			  <option>6</option>
-			  <option>7</option>
-			  <option>8</option>
-			  <option>9</option>
+			  <option <#if entry.discomfort==1 >SELECTED</#if>>1</option>
+			  <option <#if entry.discomfort==2 >SELECTED</#if>>2</option>
+			  <option <#if entry.discomfort==3 >SELECTED</#if>>3</option>
+			  <option <#if entry.discomfort==4 >SELECTED</#if>>4</option>
+			  <option <#if entry.discomfort==5 >SELECTED</#if>>5</option>
+			  <option <#if entry.discomfort==6 >SELECTED</#if>>6</option>
+			  <option <#if entry.discomfort==7 >SELECTED</#if>>7</option>
+			  <option <#if entry.discomfort==8 >SELECTED</#if>>8</option>
+			  <option <#if entry.discomfort==9 >SELECTED</#if>>9</option>
 			</select>
 			</tr>
 			</#list>

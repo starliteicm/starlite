@@ -1298,10 +1298,13 @@ public class CrewMember implements Cloneable {
 			Money sum = new Money("USD",0.0);
 			for (CharterEntry e: entries.values()) {
 				if(e != null){
-					if(e.getDailyDays() > 0){ 
-						sum = sum.add(new Money("USD",100.0));
-						sum = sum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
-						sum = sum.multiply(e.getDailyDays());
+					if(e.getAreaDays() > 0){ 
+						if(e.getDiscomfort() > 0){
+						  sum = sum.add(new Money("USD",100.0));
+						  sum = sum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
+						  sum = sum.multiply(e.getAreaDays());
+						  System.out.println("Discomfort:"+e.getDiscomfort()+" Daily:"+e.getAreaDays()+" Total:"+sum.getAmountAsDouble());
+						}
 					}
 				}
 			}
@@ -1340,6 +1343,7 @@ public class CrewMember implements Cloneable {
 			total = total.add(getFlightRate().multiply(getFlightDays()));
 			total = total.add(getAreaRate().multiply(getAreaDays()));
 			total = total.add(getInstructorRate().multiply(getInstructorDays()));
+			total = total.add(getDiscomfortTotal());
 			total = total.subtract(getDeductionTotal());
 		
 			
@@ -1406,7 +1410,7 @@ public class CrewMember implements Cloneable {
 			private int    instructorDays;
 			private int    dailyDays;
 			private int    flightDays;
-		    private int    discomfort;
+		    private Integer discomfort;
 			
 			public int getAreaDays() {
 				return areaDays;
@@ -1444,11 +1448,21 @@ public class CrewMember implements Cloneable {
 			public String getCharter() {
 				return charter;
 			}
-			public void setDiscomfort(int discomfort) {
-				this.discomfort = discomfort;
+			public void setDiscomfort(Integer discomfort){
+				if(discomfort != null){
+					this.discomfort = discomfort;
+				}
+				else{
+					this.discomfort = new Integer(0);
+				}
 			}
-			public int getDiscomfort(){
-				return discomfort;
+			public Integer getDiscomfort(){
+				if(discomfort != null){
+				    return discomfort;
+				}
+				else{
+					return new Integer(0);
+				}
 			}
 
 		}
@@ -1779,6 +1793,21 @@ public class CrewMember implements Cloneable {
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
+				
+				if(fda.getDiscomfortTotal().getAmount() > 0){
+					type = "Discomfort";
+					if(storedCMs.containsKey(type)){
+						cm = storedCMs.get(type);
+						cm = cm.addPayments(type,""+fda.getAreaDays(),"",fda.getDiscomfortTotal().toString(),fdatotal);
+					}
+					else{
+						cm = (CrewMember) clone();
+						cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getAreaDays(),fda.getAreaRate().toString(),fda.getAreaRate().multiply(fda.getAreaDays()).toString(),fdatotal);
+					}
+					storedCMs.put(type, cm);
+					//clones.add(cm);
+				}
+				
 			}
 			if(fda.getDailyDays() != 0){
 				String type = "Daily";

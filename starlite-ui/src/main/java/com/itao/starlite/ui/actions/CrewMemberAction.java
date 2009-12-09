@@ -250,6 +250,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				.column("payMonthlyRate").as(YesNoCellEditor.class.getName())
 				.column("areaRate").withStyle("text-align:right").called("Daily")
 				.column("areaDays").called("Days")
+				.column("discomfortTotal").called("Discomfort")
 				.column("dailyRate").withStyle("text-align:right").called("Training")
 				.column("dailyDays").called("Days")
 				.column("instructorRate").withStyle("text-align:right")
