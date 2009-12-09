@@ -220,22 +220,21 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		    LOG.info(folder.getDocs());
 		    Document crmFile = folder.getDocumentByTag("crmFile");
 		    LOG.info("Name:"+crmFile.getName());
-		    LOG.info("Uuid:"+crmFile.getUuid());
-		    System.out.print(crmFile.getName());
+		    LOG.info("Uuid:"+crmFile.getUuid());		    
 		    return (InputStream) docManager.getDocumentData(crmFile);
 		  }
 		  catch(Exception e){
 			  LOG.error(e);
 			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
 			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  try {
+			  try{
 				return new FileInputStream(def);				
-			} catch (FileNotFoundException e1) {				
+	     	  }catch(FileNotFoundException e1){				
 				LOG.error(e1);
 				return null;
 			}
 		  }
-		}
+	}
 		
 	public String tableHtml;
 	private String setupFlight() {
