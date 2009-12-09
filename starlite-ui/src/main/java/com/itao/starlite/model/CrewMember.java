@@ -1303,7 +1303,7 @@ public class CrewMember implements Cloneable {
 						  sum = sum.add(new Money("USD",100.0));
 						  sum = sum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
 						  sum = sum.multiply(e.getAreaDays());
-						  System.out.println("Discomfort:"+e.getDiscomfort()+" Daily:"+e.getAreaDays()+" Total:"+sum.getAmountAsDouble());
+						  //System.out.println("Discomfort:"+e.getDiscomfort()+" Daily:"+e.getAreaDays()+" Total:"+sum.getAmountAsDouble());
 						}
 					}
 				}
@@ -1368,6 +1368,9 @@ public class CrewMember implements Cloneable {
 			private Money amount;
 			private double exchangeRate;
 			private double rand;
+			private Double entered;
+			private String currency;
+			
 			public String getReason() {
 				return reason;
 			}
@@ -1386,18 +1389,43 @@ public class CrewMember implements Cloneable {
 			public void setExchangeRate(double exchangeRate) {
 				this.exchangeRate = exchangeRate;
 			}
-			public double getRand() {
-				return rand;
+			public Double getEntered() {
+				if(this.entered == null){
+					this.entered = getRand();
+				}
+				return entered;
 			}
 			public String getUSD(){
 			 return CurrencyFormatter.getInstance(Currency.getInstance("USD"),false).format(amount.getAmount());
 			}
-			public void setRand(double rand) {
-				this.rand = rand;
+			
+			public void setEntered(Double entered) {
+				if(this.entered == null){
+					this.entered = getRand();
+				}
+				this.entered = entered;
+			}
+			public String getEnteredStr(){
+				return CurrencyFormatter.getInstance(Currency.getInstance(getCurrency()),false).format(new Double(getEntered()*100).longValue());
 			}
 			
-			public String getRandStr(){
-				return CurrencyFormatter.getInstance(Currency.getInstance("ZAR"),false).format(new Double(rand*100).longValue());
+			public void setCurrency(String currency) {
+				this.currency = currency;
+				if(this.currency == null){this.currency = "ZAR";}
+			}
+			public String getCurrency() {
+				if(this.currency == null){this.currency = "ZAR";}
+				return currency;
+			}
+			
+			public void setRand(double rand) {
+				this.rand = rand;
+				if(entered == null){
+					entered = rand;
+				}
+			}
+			public double getRand() {
+				return rand;
 			}
 			
 		}
@@ -1802,7 +1830,7 @@ public class CrewMember implements Cloneable {
 					}
 					else{
 						cm = (CrewMember) clone();
-						cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getAreaDays(),fda.getAreaRate().toString(),fda.getAreaRate().multiply(fda.getAreaDays()).toString(),fdatotal);
+						cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getAreaDays(),"",fda.getDiscomfortTotal().toString(),fdatotal);
 					}
 					storedCMs.put(type, cm);
 					//clones.add(cm);

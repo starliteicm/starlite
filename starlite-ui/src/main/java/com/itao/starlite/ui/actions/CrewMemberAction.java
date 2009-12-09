@@ -84,6 +84,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String documentFileName;
 	public String tags;
 	
+	public String currency;
+	public List<ExchangeRate> rates;
+	
 	public List<String> passportsTags;
 	public List<File> passports;
 	public List<String> passportsContentType;
@@ -495,13 +498,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
 		} else {
+			
+			LOG.info("amount:"+amount+" amountUSD:"+amountUSD);
+			
 			if(amountUSD == 0.0){
 				Deduction deduction = new Deduction();
-				deduction.setRand(amount);
+				deduction.setEntered(amount);
+				deduction.setCurrency(currency);
 				//LOG.info("RAND:"+amount);
 				deduction.setReason(reason);
 				//get xchange rate and convert amount (rand)
-				ExchangeRate ex =  manager.getExchangeRateByCode("ZAR", "USD");
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
 				deduction.setExchangeRate(ex.getAmount());
 				//LOG.info("XCHANGE:"+ex.getAmount());
 				Money converted = ex.convert(amount);
@@ -513,18 +520,18 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				Money converted = new Money("USD",amountUSD);
 				LOG.info("USD:"+converted.getAmountAsDouble());
 				deduction.setReason(reason);
+				deduction.setCurrency(currency);
 				//get xchange rate and convert amount (rand)
-				
-				ExchangeRate ex =  manager.getExchangeRateByCode("ZAR", "USD");
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
 				Double exAmount = ex.getAmount();
 				ex.setAmount(1/exAmount);
 				deduction.setExchangeRate( 1/ exAmount);
 				LOG.info("XCHANGE RATE:"+(1/exAmount));
-				Money rand = ex.convert(converted.getAmountAsDouble());
+				Money entered = ex.convert(converted.getAmountAsDouble());
 				ex.setAmount(exAmount);
-				LOG.info("RAND:"+rand);
+				LOG.info("ENTERED:"+entered);
 				deduction.setAmount(converted);
-				deduction.setRand(rand.getAmountAsDouble());
+				deduction.setEntered(entered.getAmountAsDouble());
 				actuals.getDeductions().put(reason,deduction);
 			}
 			
@@ -602,6 +609,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		} else {
 			allCharters=manager.getAllCharters().charterList;
 			allAircraft=manager.getAllAircraft().aircraftList;
+			rates=manager.getExchangeRates();
 			
 			breadcrumbs = Breadcrumb.toArray(
 					new Breadcrumb("Crew", "crew.action"),

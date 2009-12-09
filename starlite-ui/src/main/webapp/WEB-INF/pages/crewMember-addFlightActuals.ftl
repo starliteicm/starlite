@@ -41,7 +41,7 @@
             return false;
         }
 		
-		function saveDeduction(reason,amountId,amountUSDId){
+		function saveDeduction(reason,currencyId,amountId,amountUSDId){
 		  //alert(reason+" - "+amountId);
 		  var amou = document.getElementById(amountId);
 		  var amount = amou.value;
@@ -49,12 +49,16 @@
 		  var amouUSD = document.getElementById(amountUSDId);
 		  var amountUSD = amouUSD.value;
 		  
+		  var cur = document.getElementById(currencyId);
+		  var currency = getSelected(cur);
+		  
 		  var deductForm = document.forms.mainForm;
 		  
 		  if((0+amount > 0)||(0+amountUSD > 0)){
 		      var action = "crewMember!addDeduction.action";
               deductForm.action          = action;
               deductForm.amount.value    = amount;
+              deductForm.currency.value  = currency;
               deductForm.amountUSD.value = amountUSD;
               deductForm.reason.value    = reason;
               deductForm.submit();
@@ -72,11 +76,13 @@
 		  return false;
 		}
 		
-		function saveNewDeduction(reasonId,amountId,amountUSDId){
+		function saveNewDeduction(reasonId,currencyId,amountId,amountUSDId){
 		  //alert(reasonId+" - "+amountId);
           var reas = document.getElementById(reasonId);
           var amou = document.getElementById(amountId);
+          var cur = document.getElementById(currencyId);
           var reason = getSelected(reas); 
+          var currency = getSelected(cur);
           var amount = amou.value;
           
           var amouUSD = document.getElementById(amountUSDId);
@@ -89,6 +95,7 @@
               var action = "crewMember!addDeduction.action";
               deductForm.action          = action;
               deductForm.amount.value    = amount;
+              deductForm.currency.value  = currency;
               deductForm.amountUSD.value = amountUSD;
               deductForm.reason.value    = reason;
               deductForm.submit();
@@ -212,6 +219,22 @@
             tmpTd.appendChild(tmpInput);
             newRow.appendChild(tmpTd);
             
+            
+            tmpTd = document.createElement("td");
+            select = document.createElement("select");
+            select.setAttribute("name", "newDeductionCurrency"+newDeductionRowIndex);
+            select.setAttribute("id", "newDeductionCurrency"+newDeductionRowIndex);
+            select.setAttribute("style", "width:60px;");
+         
+            <#list rates as rate>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${rate.currencyCodeFrom}');
+            tmpOption.appendChild(document.createTextNode('${rate.currencyCodeFrom}'));
+            select.appendChild(tmpOption);
+            </#list>
+            tmpTd.appendChild(select);
+            newRow.appendChild(tmpTd);
+            
             var tmpInput;
             tmpTd = document.createElement("td");
             tmpInput = document.createElement("input");
@@ -228,7 +251,7 @@
             tmpInput = document.createElement("button");
             tmpInput.setAttribute("type", "button");
             tmpInput.setAttribute("value", "Save");
-            tmpInput.setAttribute("onclick", "saveNewDeduction('newDeductionFirKey"+newDeductionRowIndex+"','newDeductionAmount"+newDeductionRowIndex+"','newDeductionAmountUSD"+newDeductionRowIndex+"');return false;");
+            tmpInput.setAttribute("onclick", "saveNewDeduction('newDeductionFirKey"+newDeductionRowIndex+"','newDeductionCurrency"+newDeductionRowIndex+"','newDeductionAmount"+newDeductionRowIndex+"','newDeductionAmountUSD"+newDeductionRowIndex+"');return false;");
             tmpInput.setAttribute("class", "smooth");
             tmpInput.innerHTML = "<img src='images/icons/pencil.png'/>Save";
             tmpTd.appendChild(tmpInput);
@@ -398,7 +421,7 @@
 		<fieldset>
             <legend>Deductions</legend>
             <table>
-            <thead><tr><th style="width:200px">Reason</th><th style="width:100px">Amount (ZAR)</th><th style="width:100px">Amount (USD)</th><th style="width:100px">&nbsp;</th></tr></thead>
+            <thead><tr><th style="width:200px">Reason</th><th style="width:100px">Amount</th><th style="width:100px">Currency</th><th style="width:100px">Amount (USD)</th><th style="width:100px">&nbsp;</th></tr></thead>
             <tbody id="deductionTableBody">
             <#if actuals.deductions.isEmpty()>
             <tr id="noDeductionsRow"><td colspan="3">No Deductions</td></tr>
@@ -413,9 +436,16 @@
             <#else>
             <tr><td style="width:200px;">${key}</td>
             </#if>
-            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key}AmountUSD').value = '';" type="text" name='Deduction${key}Amount' id='Deduction${key}Amount' value="${deduction.randStr}"/></td>
-            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key}Amount').value = '';" type="text" name='Deduction${key}AmountUSD' id='Deduction${key}AmountUSD' value="${deduction.USD}"/></td>
-            <td><button type="button" class="smooth" onclick="saveDeduction('${deduction.reason?if_exists}','Deduction${key}Amount','Deduction${key}AmountUSD');return false;" ><img src="images/icons/pencil.png"/>Save</button></td>
+            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key.replace(" ","_")}AmountUSD').value = '';" type="text" name='Deduction${key.replace(" ","_")}Amount' id='Deduction${key.replace(" ","_")}Amount' value="${deduction.enteredStr}"/></td>
+            <td>
+                <select style="width:60px;" id="Deduction${key.replace(" ","_")}Currency" name="Deduction${key.replace(" ","_")}Currency">
+                <#list rates as rate>
+                   <option <#if deduction.currency == rate.currencyCodeFrom >SELECTED</#if>  >${rate.currencyCodeFrom}</option>
+                </#list>
+                </select>
+            </td>
+            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key.replace(" ","_")}Amount').value = '';" type="text" name='Deduction${key.replace(" ","_")}AmountUSD' id='Deduction${key.replace(" ","_")}AmountUSD' value="${deduction.USD}"/></td>
+            <td><button type="button" class="smooth" onclick="saveDeduction('${deduction.reason?if_exists}','Deduction${key.replace(" ","_")}Currency','Deduction${key.replace(" ","_")}Amount','Deduction${key.replace(" ","_")}AmountUSD');return false;" ><img src="images/icons/pencil.png"/>Save</button></td>
             </tr>
             </#list>
             </#if>
@@ -456,6 +486,7 @@
 			
 			
 	    <input type="hidden" name="amount" value="0" />
+	    <input type="hidden" name="currency" value="ZAR" />
 	    <input type="hidden" name="amountUSD" value="0" />
         <input type="hidden" name="reason" value="" />
 		</form>

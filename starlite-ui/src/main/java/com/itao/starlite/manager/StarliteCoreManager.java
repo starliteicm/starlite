@@ -498,4 +498,9 @@ public class StarliteCoreManager {
 		return crewDayDao.getCrewDayByCharterBetween(id,dateFrom,dateTo);
 	}
 
+	public List<ExchangeRate> getExchangeRates() {
+		// TODO Auto-generated method stub
+		return exDao.findAll();
+	}
+
 }
