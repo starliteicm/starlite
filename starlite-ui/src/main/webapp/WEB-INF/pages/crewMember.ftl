@@ -28,8 +28,8 @@
         var gender = document.getElementById('gender').options[document.getElementById('gender').selectedIndex].value;        
         var dob                = $("#dob").val();
         var nationality        = $("#nationality").val();
-        //var maritalstatus      = $("#maritalstatus option:selected").val();
-        var maritalstatus = document.getElementById('maritalstatus').options[document.getElementById('maritalstatus').selectedIndex].value;        
+      //var maritalstatus      = $("#maritalstatus option:selected").val();
+        var maritalstatus      = document.getElementById('maritalstatus').options[document.getElementById('maritalstatus').selectedIndex].value;        
         var nokfirstname       = $("#nokfirstname").val();
         var noklastname        = $("#noklastname").val();
         var nokmobilephone     = $("#nokmobilephone").val();
@@ -75,10 +75,12 @@
         if(nokaddress3  == ""){ errormsg += "Next of kin's address 3, "; error=1;}
         if(nokaddress4  == ""){ errormsg += "Next of kin's address 4, "; error=1;}
         if(ecdcontactname  == ""){ errormsg += "Emergency contact's name, "; error=1;}
-        if(ecdcontactrelation  == ""){ errormsg += "Relation to emergency contact"; error=1;}
+        if(ecdcontactrelation  == ""){ errormsg += "Relation to emergency contact, "; error=1;}
         
         
-        if(error==1){$("#msg-error").html(errormsg); return false;
+        if(error==1){ 
+        errormsg=errormsg.substring(0,errormsg.length-2);        
+        $("#msg-error").html(errormsg); return false;
         }else{
         $("#msg-error").html(""); document.forms.personalform.submit(); 
         }                                                               

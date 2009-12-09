@@ -98,14 +98,15 @@ $("document").ready(function() {
       $("#msg-error").html("");      
       var errormsg = "<b> The following mandatory fields are blank: </b><br>";
       var error    = 0;
-            
-      if($("#position").val()       == ""){ errormsg += "position, "; error=1;}
+                  
+      var position = document.getElementById('position').options[document.getElementById('position').selectedIndex].value;      
+      if(position                   == ""){ errormsg += "Position, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
-      if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
-            
+      if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}            
       if(error==1){
+         errormsg=errormsg.substring(0,errormsg.length-2);
          $("#msg-error").html(errormsg);        
          return false;
       }else{
@@ -145,9 +146,9 @@ $("document").ready(function() {
 	</#if>
 	<@subTabs/>
 	<#if readOnly>
-	<form action="#" method="POST" name="roleform" id="roleform" class="smart readonly">
+	<form action="#" method="POST" name="roleform" id="roleform" class="smart readonly" >
 	<#else>
-	<form action="crewMember!save.action" name="roleform" id="roleform" method="POST" class="smart">
+	<form action="crewMember!save.action" name="roleform" id="roleform" method="POST" class="smart" enctype="multipart/form-data">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -160,7 +161,8 @@ $("document").ready(function() {
 				<!--
     <input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/> 
     -->   		
-				<select name="crewMember.role.position" id="empstatus" />
+				<select name="crewMember.role.position" id="position" />
+				 <option value=""> </option>
 					<option <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
 					<option <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
 					<option <#if crewMember.role.position?if_exists == "Base Manager">selected</#if>>Base Manager
@@ -168,7 +170,7 @@ $("document").ready(function() {
 			
 			</div>
 			<div class="fm-opt">
-			<label for="crewMember.role.positionSubcategory"></span>Position Subcategory:</label>				
+			<label for="crewMember.role.positionSubcategory">Position Subcategory:</label>				
    <select name="crewMember.role.positionSubcategory" id="positionSub" />
    <option value="Position Subcategory 1">Position Subcategory 1 </option>
    <option value="Position Subcategory 2">Position Subcategory 2 </option>
@@ -307,29 +309,29 @@ $("document").ready(function() {
 				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
 				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-    <label for="crm-upload">Upload:</label>
-                <input name="document" type="file" value=""/>
-                <input type="hidden" name="tags" value="crm-upload">
-                <input type="hidden" name="docfolder" value="/crew/${id!}"/>                
+      <label for="crmFile">Upload:</label>
+      <input id="crmFile" name="crmFile" value="" type="file">
+      <input name="tags" value="crmFile" type="hidden">
+      <input name="docfolder" value="/crew/${id}" type="hidden">                
    </div>
 			<div class="fm-opt">
 				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
 				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-    <label for="dg-upload">Upload:</label>
-                <input name="document" type="file" value=""/>
-                <input type="hidden" name="tags" value="dg-upload">
-                <input type="hidden" name="docfolder" value="/crew/${id!}"/>  
+    <label for="dgFile">Upload:</label>
+      <input id="dgFile" name="dgFile" value="" type="file">
+      <input name="tags" value="photo" type="hidden">
+      <input name="docfolder" value="/crew/${id}" type="hidden">  
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.huet.expiryDate"><span class="star">*</span>HUET Training:</label>
 				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>			
     <div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
    <div class="fm-opt">
-   <label for="huet-upload">Upload:</label>
-                <input name="document" type="file" value=""/>
-                <input type="hidden" name="tags" value="huet-upload">
-                <input type="hidden" name="docfolder" value="/crew/${id!}"/>  
+   <label for="huetFile">Upload:</label>
+      <input id="huetmFile" name="huetFile" value="" type="file">
+      <input name="tags" value="photo" type="hidden">
+      <input name="docfolder" value="/crew/${id}" type="hidden">  
    </div>
    
 				
@@ -346,12 +348,11 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.expiryDate">Expiry Date:</label>
 				<input name="crewMember.role.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>
-		
+			</div>		
   </fieldset>
 		</div>
-		<div style="float:left; width: 500px;">
-		                               
+		
+		<div style="float:left; width: 500px;">	                               
   <#if crewMember.role.position?if_exists == "Pilot">               
 		<fieldset>
 			<legend>

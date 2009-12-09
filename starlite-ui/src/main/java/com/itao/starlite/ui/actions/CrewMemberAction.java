@@ -103,7 +103,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String chart;
 	public String tail;
 	
-	@SuppressWarnings("unchecked")
+	public File   crmFile;
+	public String crmFileContentType;
+    public String crmFileFileName;
+	
+    @SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
 	public String hoursMonth;
 
@@ -184,6 +188,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		return "photo";
 	}
 	
+	public String crmFile(){
+		return "crmFile";
+	}
+	
 	public InputStream getPhoto(){
 	  try{
 	    folder = docManager.getFolderByPath("/crew/"+id, user);
@@ -206,6 +214,29 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	  }
 	}
 	
+	public InputStream getCrmFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document crmFile = folder.getDocumentByTag("crmFile");
+		    LOG.info("Name:"+crmFile.getName());
+		    LOG.info("Uuid:"+crmFile.getUuid());
+		    System.out.print(crmFile.getName());
+		    return (InputStream) docManager.getDocumentData(crmFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);
+			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+			  try {
+				return new FileInputStream(def);				
+			} catch (FileNotFoundException e1) {				
+				LOG.error(e1);
+				return null;
+			}
+		  }
+		}
+		
 	public String tableHtml;
 	private String setupFlight() {
 		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
@@ -397,9 +428,6 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			nowMonth = monthformat.format(cal.getTime());
 		  
 		}
-		
-		
-			
 		//provide month list
 		return "hours";
 	}
@@ -714,8 +742,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 			cmPassports.add(p);
 			}
-			index++;
-			
+			index++;			
 		}
 		crewMember.setPassport(cmPassports);
 		}
@@ -736,8 +763,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		catch(Exception e){
 			LOG.error(e);
 		}
-		
-		
+				
 		LOG.info(passportsFileName);
 		LOG.info(passportsTags);
 		LOG.info(passportsContentType);
@@ -749,10 +775,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	    boolean morePassports = true;
 	    int count = 0;
 	    if(passports != null){
-		while(morePassports){
-			
-			if(count < passports.size()){
-			
+		while(morePassports){			
+			if(count < passports.size()){			
 			    File passport = passports.get(count);
 			    String passportTags = passportsTags.get(count);
 			    String passportFileName = passportsFileName.get(count);
@@ -780,6 +804,26 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}	
 		}
 	    }
+	    try{
+            if(crmFile!= null){         
+                LOG.info(tags+" "+docfolder);
+                String[] tagsArray = tags.split(" ");
+                Document doc = new Document();
+                doc.setName(crmFileFileName);
+                System.out.println("crmFileFileName");
+                System.out.println(crmFileFileName);
+                System.out.println("crmFile");
+                System.out.print(crmFile);
+                doc.setContentType(crmFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(crmFileFileName, "Document", docfolder+"/"+ crmFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(crmFile), user);
+            }else{            	
+            }
+          }
+          catch(Exception e){
+                LOG.error(e);
+          }
 	return execute();
 	}
 
