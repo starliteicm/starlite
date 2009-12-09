@@ -85,6 +85,27 @@
     
     
     }
+    
+    function validate(){
+      
+      var message = "";
+      var dateFrom = document.forms.setForm.dateFrom.value;
+      var dateTo   = document.forms.setForm.dateTo.value;
+      
+      if(dateFrom == ""){message = message+"Please Enter a From date<br/>";}
+      if(dateTo == ""){message = message+"Please Enter a To date<br/>";}
+       
+      $("#message").html(message+"<br/>");
+        
+      if(message == ""){        
+      return confirm("This will override any Crew on Contract Information already set over this time period, are you sure you wish to continue?");
+      }
+      
+      
+      return false;
+      
+      }
+    
    </script>
   
 </head>
@@ -123,10 +144,12 @@
 		<div id="loading" style="color:silver;">Loading... Please Wait</div>
 		
 		<div style="padding:20px;padding-bottom:0px;width:450px;">
-		  <form action="crewMember!saveRange.action" method="GET">
+		  <form name="setForm" action="crewMember!saveRange.action" onsubmit="return validate();" method="GET">
 		    <input type="hidden" name="id" value="${id}">
 		    <fieldset>
             <legend>Set Range</legend>
+		    
+		    <div id="message" style="color:red"></div>
 		    
 		    <div class="fm-opt">
 		    <label for="dateFrom">Date Range:</label>

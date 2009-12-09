@@ -248,13 +248,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 					.link("crewMember!addFlightActuals.action?id="+id+"&tab=flight&actualsId=${id}")
 				.column("monthlyRate").withStyle("text-align:right")
 				.column("payMonthlyRate").as(YesNoCellEditor.class.getName())
-				.column("areaRate").withStyle("text-align:right")
+				.column("areaRate").withStyle("text-align:right").called("Daily")
 				.column("areaDays").called("Days")
-				.column("dailyRate").withStyle("text-align:right")
+				.column("dailyRate").withStyle("text-align:right").called("Training")
 				.column("dailyDays").called("Days")
 				.column("instructorRate").withStyle("text-align:right")
 				.column("instructorDays").called("Days")
-				.column("flightRate").withStyle("text-align:right")
+				.column("flightRate").withStyle("text-align:right").called("Travel")
 				.column("flightDays").called("Days")
 				.column("deductionTotal").called("Deductions")
 				.column("total").called("Total Due").withStyle("text-align:right")
@@ -600,7 +600,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						int daily = parseInt(ServletActionContext.getRequest().getParameter("newEntryDaily"+i));
 						int flight = parseInt(ServletActionContext.getRequest().getParameter("newEntryFlight"+i));
 						int instructor = parseInt(ServletActionContext.getRequest().getParameter("newEntryInstructor"+i));
-						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor);
+						int discomfort = parseInt(ServletActionContext.getRequest().getParameter("newEntryDiscomfort"+i));
+						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor+", "+discomfort);
 
 						i++;
 
@@ -611,6 +612,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 							ce.setAreaDays(area);
 							ce.setDailyDays(daily);
 							ce.setFlightDays(flight);
+							ce.setDiscomfort(discomfort);
 							ce.setInstructorDays(instructor);
 							actuals.getEntries().put(key, ce);
 						}

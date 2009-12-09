@@ -1293,6 +1293,21 @@ public class CrewMember implements Cloneable {
 			}
 			return sum;
 		}
+		
+		public Money getDiscomfortTotal(){
+			Money sum = new Money("USD",0.0);
+			for (CharterEntry e: entries.values()) {
+				if(e != null){
+					if(e.getDailyDays() > 0){ 
+						sum = sum.add(new Money("USD",100.0));
+						sum = sum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
+						sum = sum.multiply(e.getDailyDays());
+					}
+				}
+			}
+			return sum;
+		}
+		
 		public Date getPaidDate() {
 			return paidDate;
 		}
@@ -1391,6 +1406,7 @@ public class CrewMember implements Cloneable {
 			private int    instructorDays;
 			private int    dailyDays;
 			private int    flightDays;
+		    private int    discomfort;
 			
 			public int getAreaDays() {
 				return areaDays;
@@ -1427,6 +1443,12 @@ public class CrewMember implements Cloneable {
 			}
 			public String getCharter() {
 				return charter;
+			}
+			public void setDiscomfort(int discomfort) {
+				this.discomfort = discomfort;
+			}
+			public int getDiscomfort(){
+				return discomfort;
 			}
 
 		}
