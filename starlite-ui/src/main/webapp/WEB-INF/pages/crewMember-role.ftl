@@ -96,11 +96,10 @@ $("document").ready(function() {
 //VALIDATE MANDATORY FIELDS
    function validate(){               
       $("#msg-error").html("");      
-      var errormsg = "<b> The following mandatory fields are blank: </b><br>";
-      var error    = 0;
-                  
-      var position = document.getElementById('position').options[document.getElementById('position').selectedIndex].value;      
-      if(position                   == ""){ errormsg += "Position, "; error=1;}
+      var errormsg = "<b>The following mandatory fields are blank: </b><br>";
+      var error    = 0;                  
+      var position = document.getElementById('position').options[document.getElementById('position').selectedIndex].value;             
+      if(position                   == ""){ errormsg += "Position, "; error=1;}      
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
@@ -158,24 +157,18 @@ $("document").ready(function() {
 			<legend>Role</legend>
 			<div class="fm-opt">
 				<label for="crewMember.role.position"><span class="star">*</span>Position:</label>
-				<!--
-    <input name="crewMember.role.position" id="position" type="text" value="${crewMember.role.position!}"/> 
-    -->   		
+
 				<select name="crewMember.role.position" id="position" />
-				 <option value=""> </option>
-					<option <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
-					<option <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
-					<option <#if crewMember.role.position?if_exists == "Base Manager">selected</#if>>Base Manager
+				 <option value=""></option>
+					<option value="Pilot" <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
+					<option value="AME" <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
+					<option value="Base Manager" <#if crewMember.role.position?if_exists == "Base Manager">selected</#if>>Base Manager
 				</select>
 			
 			</div>
 			<div class="fm-opt">
 			<label for="crewMember.role.positionSubcategory">Position Subcategory:</label>				
-   <select name="crewMember.role.positionSubcategory" id="positionSub" />
-   <option value="Position Subcategory 1">Position Subcategory 1 </option>
-   <option value="Position Subcategory 2">Position Subcategory 2 </option>
-   <option value="Position Subcategory 3">Position Subcategory 3 </option>
-   </select> 
+   <input type="text" /> 
    </div>								
 			<div class="fm-opt">
 				<label for="crewMember.role.initialDate">Initial Date:</label>
