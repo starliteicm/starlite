@@ -99,7 +99,9 @@ $("document").ready(function() {
       var errormsg = "<b>The following mandatory fields are blank: </b><br>";
       var error    = 0;                  
       var position = document.getElementById('position').options[document.getElementById('position').selectedIndex].value;             
+      var empstatus= document.getElementById('empstatus').options[document.getElementById('empstatus').selectedIndex].value;      
       if(position                   == ""){ errormsg += "Position, "; error=1;}      
+      if(empstatus                  == ""){ errormsg += "Employment status, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
@@ -175,10 +177,11 @@ $("document").ready(function() {
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.employment">Employment Status:</label>
+				<label for="crewMember.role.employment"><span class="star">*</span>Employment Status:</label>
 				<select name="crewMember.role.employment" id="empstatus" />
-					<option <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
-					<option <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
+				 <option value=""></option>
+					<option value="Permanent" <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
+					<option value="Freelance" <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
 				</select>
 			</div>
 			<div class="fm-opt">

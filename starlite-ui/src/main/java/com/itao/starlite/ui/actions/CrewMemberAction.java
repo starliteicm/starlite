@@ -106,12 +106,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public File   crmFile;
 	public String crmFileContentType;
     public String crmFileFileName;
+	public String crmTags;
+	
     public File   dgFile;
 	public String dgFileContentType;
     public String dgFileFileName;
+    public String dgTags;
+    
     public File   huetFile;
 	public String huetFileContentType;
     public String huetFileFileName;
+    public String huetTags;
     
     @SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
@@ -233,66 +238,45 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
-		    Document crmFile = folder.getDocumentByTag("crmFile");
+		    Document crmFile = folder.getDocumentByTag("CRM");
 		    LOG.info("Name:"+crmFile.getName());
 		    LOG.info("Uuid:"+crmFile.getUuid());		    
 		    return (InputStream) docManager.getDocumentData(crmFile);
 		  }
 		  catch(Exception e){
-			  LOG.error(e);
-			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  try{
-				return new FileInputStream(def);				
-	     	  }catch(FileNotFoundException e1){				
-				LOG.error(e1);
-				return null;
-			}
+			  LOG.error(e);			  			 
 		  }
+		  return null;
 	}
 
 	public InputStream getDgFile(){
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
-		    Document dgFile = folder.getDocumentByTag("dgFile");
+		    Document dgFile = folder.getDocumentByTag("DG");
 		    LOG.info("Name:"+dgFile.getName());
 		    LOG.info("Uuid:"+dgFile.getUuid());		    
 		    return (InputStream) docManager.getDocumentData(dgFile);
 		  }
 		  catch(Exception e){
-			  LOG.error(e);
-			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  try{
-				return new FileInputStream(def);				
-	     	  }catch(FileNotFoundException e1){				
-				LOG.error(e1);
-				return null;
-			}
+			  LOG.error(e);			  			 
 		  }
+		  return null;
 	}
 	
 	public InputStream getHuetFile(){
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
-		    Document huetFile = folder.getDocumentByTag("huetFile");
+		    Document huetFile = folder.getDocumentByTag("HUET");
 		    LOG.info("Name:"+huetFile.getName());
 		    LOG.info("Uuid:"+huetFile.getUuid());		    
 		    return (InputStream) docManager.getDocumentData(huetFile);
 		  }
 		  catch(Exception e){
-			  LOG.error(e);
-			  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
-			  try{
-				return new FileInputStream(def);				
-	     	  }catch(FileNotFoundException e1){				
-				LOG.error(e1);
-				return null;
-			}
+			  LOG.error(e);			  			 
 		  }
+		  return null;
 	}	
 	
 	public String tableHtml;
@@ -868,7 +852,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	    try{
             if(crmFile!= null){         
                 LOG.info(tags+" "+docfolder);
-                String[] tagsArray = tags.split(" ");
+                String[] tagsArray = crmTags.split(" ");
                 Document doc = new Document();
                 doc.setName(crmFileFileName);                
                 doc.setContentType(crmFileContentType);
@@ -883,7 +867,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
           }
   	    try{
             if(dgFile!= null){         
-                LOG.info(tags+" "+docfolder);
+                LOG.info(dgTags+" "+docfolder);
                 String[] tagsArray = tags.split(" ");
                 Document doc = new Document();
                 doc.setName(dgFileFileName);
@@ -899,7 +883,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
           }
   	    try{
             if(huetFile!= null){         
-                LOG.info(tags+" "+docfolder);
+                LOG.info(huetTags+" "+docfolder);
                 String[] tagsArray = tags.split(" ");
                 Document doc = new Document();
                 doc.setName(huetFileFileName);

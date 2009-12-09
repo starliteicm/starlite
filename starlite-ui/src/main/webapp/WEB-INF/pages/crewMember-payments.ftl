@@ -4,19 +4,25 @@
    <@enableJQuery/> 
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
+  
+
 <script language="javascript">
-function showmsg(){            
+
+function validate(){            
+      
+      var currency = document.getElementById('currency').options[document.getElementById('currency').selectedIndex].value;
       var monthly  = $("#monthly").val();
       var daily    = $("#daily").val();
       var training = $("#training").val();
       var travel   = $("#travel").val();
-      var errormsg = "";
+      var errormsg = "<b> The following mandatory fields are blank: </b><br>";
       var error    = 0;
       
-      if(monthly == ""){ errormsg += "Monthly rate not entered <br>"; error=1;}
-      if(daily   == ""){ errormsg += "Daily allowance not entered <br>"; error=1;}      
-      if(training== ""){ errormsg += "Training allowance not entered <br>"; error=1;}
-      if(travel  == ""){ errormsg += "Travel allowance not entered <br>"; error=1;}
+      if(currency== ""){ errormsg += "Currency allowance, "; error=1;}
+      if(monthly == ""){ errormsg += "Monthly rate, "; error=1;}
+      if(daily   == ""){ errormsg += "Daily allowance, "; error=1;}      
+      if(training== ""){ errormsg += "Training allowance, "; error=1;}
+      if(travel  == ""){ errormsg += "Travel allowance, "; error=1;}
       
       if(error==1){$("#msg-error").html(errormsg); return false;
       }else{
@@ -78,17 +84,17 @@ function showmsg(){
 		<fieldset>
 			<legend>Base Rate</legend>
 			<div class="fm-opt">
-				<label for="crewMember.payments.currency">Currency:</label>
+				<label for="crewMember.payments.currency"><span style="color:red;">*</span>&nbsp;Currency:</label>
 				<!--input name="crewMember.banking.currency" type="text" value="${crewMember.banking.bic!}"/-->
 				<#if readOnly>
 					<label>${crewMember.payments.currency!'&nbsp;'}</label>
 				<#else>
 				<#assign currency=crewMember.payments.currency!/>
-				<select name="crewMember.payments.currency" type="text" style="width:80px;">
-					<option value=''></option>
-					<option <#if currency == 'EUR'>selected</#if> value='EUR'>EUR (&euro;)</option>
-					<option <#if currency == 'GBP'>selected</#if> value='GBP'>GBP (&pound;)</option>
-					<option <#if currency == 'USD'>selected</#if> value='USD'>USD ($)</option>
+				<select name="crewMember.payments.currency" type="text" style="width:80px;" id="currency" >
+					<option value=""></option>
+					<option value="EUR" <#if currency == 'EUR'>selected</#if> value='EUR'>EUR (&euro;)</option>
+					<option value="GBP" <#if currency == 'GBP'>selected</#if> value='GBP'>GBP (&pound;)</option>
+					<option value="USD" <#if currency == 'USD'>selected</#if> value='USD'>USD ($)</option>
 					<!--option <#if currency == 'ZAR'>selected</#if> value='ZAR'>ZAR (R)</option-->
 				</select>
 				</#if>
@@ -145,7 +151,7 @@ function showmsg(){
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>
-		<button type="button" onclick="showmsg();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
 		
   <div id="msg-error" style="color:red"></div>
 
