@@ -78,7 +78,7 @@
         errormsg=errormsg.substring(0,errormsg.length-2);        
         $("#msg-error").html(errormsg); return false;
         }else{
-        $("#msg-error").html(""); alert(error); document.forms.personalform.submit(); 
+        $("#msg-error").html(""); document.forms.personalform.submit(); 
         }                                                               
   }
 </script>

@@ -84,10 +84,10 @@ function validateDate(datefield,msg){
 
 //ONLOAD FUNCTION   
 $("document").ready(function() {    
-   validateDate("crmexpiry","CRM is expired");
-   validateDate("dgexpiry", "DG is expired");
+   validateDate("crmexpiry",     "CRM is expired");
+   validateDate("dgexpiry",      "DG is expired");
    validateDate("licenceexpiry", "Licence is expired");
-   validateDate("huet", "HUET is expired");
+   validateDate("huet",          "HUET is expired");
 });    
    
 </script>
@@ -305,7 +305,7 @@ $("document").ready(function() {
       <label for="crmFile">Upload:</label>
       <input id="crmFile" name="crmFile" value="" type="file">
       <input name="tags" value="crmFile" type="hidden">
-      <input name="docfolder" value="/crew/${id}" type="hidden">                
+      <input name="docfolder" value="/crew/${id}" type="hidden">                      
    </div>
 			<div class="fm-opt">
 				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
@@ -313,8 +313,7 @@ $("document").ready(function() {
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
     <label for="dgFile">Upload:</label>
       <input id="dgFile" name="dgFile" value="" type="file">
-      <input name="tags" value="photo" type="hidden">
-      <input name="docfolder" value="/crew/${id}" type="hidden">  
+      <input name="tags" value="dgFile" type="hidden">        
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.huet.expiryDate"><span class="star">*</span>HUET Training:</label>
@@ -322,9 +321,9 @@ $("document").ready(function() {
     <div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
    <div class="fm-opt">
    <label for="huetFile">Upload:</label>
-      <input id="huetmFile" name="huetFile" value="" type="file">
-      <input name="tags" value="photo" type="hidden">
-      <input name="docfolder" value="/crew/${id}" type="hidden">  
+      <input id="huetFile" name="huetFile" value="" type="file">
+      <input name="tags" value="huetFile" type="hidden">
+        
    </div>
    
 				
