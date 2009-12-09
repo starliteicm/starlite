@@ -304,7 +304,7 @@ $("document").ready(function() {
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
       <label for="crmFile">Upload:</label>
       <input id="crmFile" name="crmFile" value="" type="file">
-      <input name="tags" value="crmFile" type="hidden">
+      <input name="crmTags" value="CRM" type="hidden">
       <input name="docfolder" value="/crew/${id}" type="hidden">                      
    </div>
 			<div class="fm-opt">
@@ -313,7 +313,7 @@ $("document").ready(function() {
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
     <label for="dgFile">Upload:</label>
       <input id="dgFile" name="dgFile" value="" type="file">
-      <input name="tags" value="dgFile" type="hidden">        
+      <input name="dgTags" value="DG" type="hidden">        
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.huet.expiryDate"><span class="star">*</span>HUET Training:</label>
@@ -322,7 +322,7 @@ $("document").ready(function() {
    <div class="fm-opt">
    <label for="huetFile">Upload:</label>
       <input id="huetFile" name="huetFile" value="" type="file">
-      <input name="tags" value="huetFile" type="hidden">
+      <input name="huetTags" value="HUET" type="hidden">
         
    </div>
    
