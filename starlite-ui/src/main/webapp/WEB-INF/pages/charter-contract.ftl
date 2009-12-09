@@ -5,6 +5,7 @@
 
 <@enableJQuery/>
 <@enableDatePickers/>
+<@enableHelp/>
 
 <link rel="stylesheet" type="text/css" href="styles/jmesa.css">
 <script type="text/javascript" src="js/jmesa.js"></script>
@@ -154,8 +155,9 @@ table tr td{
             <div class="fm-opt">
             <label for="tail">Aircraft:</label>
             <select name="tail" id="tail">
+              <option></option>
               <#list allAircraft! as a>
-                  <option SELECTED value="${a.id}">${a.ref}</option>
+                  <option value="${a.id}">${a.ref}</option>
               </#list>
             </select>
             </div>

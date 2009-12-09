@@ -112,6 +112,7 @@
 			var newRow = document.createElement("tr");
 			
 			var tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
 			var select = document.createElement("select");
 			select.setAttribute("name", "newEntryFirKey"+newRowIndex);
 			select.setAttribute("style", "width:100px;");
@@ -128,6 +129,7 @@
 			//do the same for aircraft here.
 			
 			var tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
 			var select = document.createElement("select");
 			select.setAttribute("name", "newEntrySecKey"+newRowIndex);
 			select.setAttribute("style", "width:100px;");
@@ -144,6 +146,7 @@
 			var tmpInput;
 			<#list ['Area', 'Daily', 'Flight', 'Instructor'] as field>
 			tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
 			tmpInput = document.createElement("input");
 			tmpInput.setAttribute("type", "text");
 			tmpInput.setAttribute("name", "newEntry${field}"+newRowIndex);
@@ -152,6 +155,20 @@
 			tmpTd.appendChild(tmpInput);
 			newRow.appendChild(tmpTd);
 			</#list>
+			
+			tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
+			select = document.createElement("select");
+            select.setAttribute("name", "newEntryDiscomfort"+newRowIndex);
+            select.setAttribute("style", "width:40px;");
+            <#list [0,1,2,3,4,5,6,7,8,9] as field>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${field}');
+            tmpOption.appendChild(document.createTextNode('${field}'));
+            select.appendChild(tmpOption);
+            </#list>
+			tmpTd.appendChild(select);
+			newRow.appendChild(tmpTd);
 			
 			if (noEntriesRowVisible) {
 				entryTableBody.removeChild(document.getElementById("noEntriesRow"));
@@ -306,11 +323,11 @@
 		<fieldset>
 			<legend>Flight &amp; Duty</legend>
 			<div class="fm-opt">
-				<label for="actuals.areaRate.amountAsDouble">Area <@symbol "${actuals.areaRate.currency}"/></label>
+				<label for="actuals.areaRate.amountAsDouble">Daily <@symbol "${actuals.areaRate.currency}"/></label>
 				<input type="text" id="areaDays" onchange="onFormChange();" name="actuals.areaRate.amountAsDouble" style="width:50px;" value="${actuals.areaRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="actuals.dailyRate.amountAsDouble">Daily <@symbol "${actuals.dailyRate.currency}"/></label>
+				<label for="actuals.dailyRate.amountAsDouble">Training <@symbol "${actuals.dailyRate.currency}"/></label>
 				<input type="text" id="dailyDays" onchange="onFormChange();" name="actuals.dailyRate.amountAsDouble" style="width:50px;" value="${actuals.dailyRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
@@ -318,7 +335,7 @@
 				<input type="text" id="instructorDays" onchange="onFormChange();" name="actuals.instructorRate.amountAsDouble" style="width:50px;" value="${actuals.instructorRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="actuals.flightRate.amountAsDouble">Flight <@symbol "${actuals.flightRate.currency}"/></label>
+				<label for="actuals.flightRate.amountAsDouble">Travel <@symbol "${actuals.flightRate.currency}"/></label>
 				<input type="text" id="flightDays" onchange="onFormChange();" name="actuals.flightRate.amountAsDouble" style="width:50px;" value="${actuals.flightRate.amountAsDouble}"/>
 			</div>
 			<!--<input type="hidden" name="actuals.paidAmount.currencyCode" value="${crewMember.payments.currency}"/>
@@ -334,7 +351,7 @@
 		<fieldset>
 			<legend>Entries</legend>
 			<table>
-			<thead><tr><th>Charter</th><th>Aircraft</th><th>Area</th><th>Daily</th><th>Flight</th><th>Instructor</th></tr></thead>
+			<thead><tr><th style="padding:5px;">Charter</th><th style="padding:5px;">Aircraft</th><th style="padding:5px;">Daily</th><th style="padding:5px;">Training</th><th style="padding:5px;">Travel</th><th style="padding:5px;">Instructor</th><th style="padding:5px;">Discomfort</th></tr></thead>
 			<tbody id="entryTableBody">
 			<#if actuals.entries.isEmpty()>
 			<tr id="noEntriesRow"><td colspan="6">No Entries</td></tr>
@@ -345,15 +362,28 @@
 			<#list actuals.entries.keySet() as key>
 			<#assign entry=actuals.entries.get(key)/>
 			<#if entry.charter?exists>
-			<tr><td style="width:100px;">${entry.charter?if_exists}</td>
+			<tr><td style="width:100px;padding:5px;">${entry.charter?if_exists}</td>
 			<#else>
-		    <tr><td style="width:100px;">${key}</td>
+		    <tr><td style="width:100px;padding:5px;">${key}</td>
 			</#if>
-			<td style="width:100px;">${entry.aircraft?if_exists}&nbsp;</td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].areaDays' value="${entry.areaDays}"/></td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].dailyDays' value="${entry.dailyDays}"/></td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].flightDays' value="${entry.flightDays}"/></td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].instructorDays' value="${entry.instructorDays}"/></td>
+			<td style="width:100px;padding:5px;">${entry.aircraft?if_exists}&nbsp;</td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].areaDays' value="${entry.areaDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].dailyDays' value="${entry.dailyDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].flightDays' value="${entry.flightDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].instructorDays' value="${entry.instructorDays}"/></td>
+			<td style="padding:5px;">
+			<select style="width:40px;" name='actuals.entries["${key}"].discomfort' >
+			  <option>0</option>
+			  <option>1</option>
+			  <option>2</option>
+			  <option>3</option>
+			  <option>4</option>
+			  <option>5</option>
+			  <option>6</option>
+			  <option>7</option>
+			  <option>8</option>
+			  <option>9</option>
+			</select>
 			</tr>
 			</#list>
 			</#if>
