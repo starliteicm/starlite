@@ -1,3 +1,4 @@
+<#setting number_format = "######" />
 <#include "/starlite.ftl">
 <html>
 <head>
@@ -39,6 +40,29 @@ table tr td{
         //alert(esn+" "+ selectedEmail);
         esn.innerHTML = ""+selectedEmail;
       };
+      
+      function validate(){
+      
+      var message = "";
+      var dateFrom = document.forms.setForm.dateFrom.value;
+      var dateTo   = document.forms.setForm.dateTo.value;
+      
+      if(selectedEmail <= 0 ){
+        message = message+ "Please select at least one Crew Member<br/>";
+      }
+      if(dateFrom == ""){message = message+"Please Enter a from date<br/>";}
+      if(dateTo == ""){message = message+"Please Enter a To date<br/>";}
+       
+      $("#message").html(message+"<br/>");
+        
+      if(message == ""){        
+      return confirm("This will override any Crew on Contract Information already set for selected crew over this time period, are you sure you wish to continue?");
+      }
+      
+      
+      return false;
+      
+      }
         
 </script>
 </head>
@@ -49,10 +73,16 @@ table tr td{
 	        <div style="width:530px;float:right;border:1px solid silver;height:430px;padding:10px;">
             
             <div class="fm-opt">
-            <label for="dateFrom">View Period:</label>
-            <input name="dateFrom" type="text" class="date-pick" value="${dateFrom}"/>
-            <input name="dateTo" type="text"  class="date-pick" value="${dateTo}"/>
-            <button type="submit" class="smooth" style="float:right; margin-right:50px; margin-bottom: 4px;"><img src="images/icons/zoom_in.png"/>View</button>
+            <form action="charter!contract.action" >
+              <input name="id" value="${id}" type="hidden"/>
+            
+              <label for="dateFrom">View Period:</label>
+              <input name="dateFrom" type="text" class="date-pick" value="${dateFrom?string('dd/MM/yyyy')}"/>
+              <input name="dateTo" type="text"  class="date-pick" value="${dateTo?string('dd/MM/yyyy')}"/>
+              <button type="submit" class="smooth" style="float:right; margin-right:50px; margin-bottom: 4px;"><img src="images/icons/zoom_in.png"/>View</button>
+            
+            </form>
+            
             </div>
             <br/><br/>
             
@@ -66,159 +96,42 @@ table tr td{
             </table>
             
             <div style="overflow:auto;width:520px;height:350px;border-bottom:1px solid silver;">
-            <table width="504px" style="border-left:1px solid silver;border-right:1px solid silver;" >
-                        
+            <table width="504px" style="border-left:1px solid silver;border-right:1px solid silver;border-bottom:1px solid silver;" >
+             
+            <#list crewDayAircraft.values() as aircraft>
+              <tr>
+              <td colspan="3" style="background-color:silver" ><B>${aircraft.aircraft.ref!}</B></td>
+              </tr>
             
-            <tr>
-            <td width="300px;">XXXX</td>
-            <td width="100px;">XXXX</td>
-            <td width="100px;">XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
-            <tr>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            <td>XXXX</td>
-            </tr>
+              <#list aircraft.crewMap.values() as crew>
+                <tr>
+                <td width="300"  align="center"><B>${crew.crewMember.personal.fullName!}<B></td>
+                <#assign first = 1/>
+                        
+                <#list crew.crewDayMap.values() as crewDay>
+                  <#if first=1>
+                    <td width="100">${crewDay.start?string('dd/MM/yyyy')}</td><td width="100">${crewDay.end?string('dd/MM/yyyy')}</td></tr>
+                  <#else>
+                    <tr><td width="300" align="center"> - </td><td width="100">${crewDay.start?string('dd/MM/yyyy')}</td><td width="100">${crewDay.end?string('dd/MM/yyyy')}</td></tr>
+                  </#if>
+                  <#assign first = 0/>
+                </#list>
+              </#list>
+            </#list>           
+            
+            
             </table>
             </div>
             </div>
 	
 	
 	    <div style="padding:20px;padding-bottom:0px;width:450px;">
-          <form action="crewMember!saveRange.action" method="GET">
-            <input type="hidden" name="id" value="${id}">
+          <form name="setForm" action="charter!saveCrew.action" method="GET" onsubmit='return validate();'>
+            <input type="hidden" name="id" value="${id!}">
             <fieldset>
             <legend>Set Crew on Contract</legend>
+        
+            <div id="message" style="color:red"></div>
         
             <div class="fm-opt">
             <label for="dateFrom">Date Range:</label>
@@ -241,7 +154,6 @@ table tr td{
             <div class="fm-opt">
             <label for="tail">Aircraft:</label>
             <select name="tail" id="tail">
-              <option></option>
               <#list allAircraft! as a>
                   <option SELECTED value="${a.id}">${a.ref}</option>
               </#list>

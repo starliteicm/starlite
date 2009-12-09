@@ -89,5 +89,13 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 			.uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<CrewDay> getCrewDayByCharterBetween(Integer id, Date dateFrom,Date dateTo){
+		return getCurrentSession().createQuery("from CrewDay c where c.charter.id = ? AND c.date >= ? AND c.date < ? order by c.date asc")
+		.setInteger(0, id)
+		.setDate(1, dateFrom)
+		.setDate(2, dateTo)
+		.list();
+	}
 
 }
