@@ -84,8 +84,10 @@ function validateDate(datefield,msg){
 
 //ONLOAD FUNCTION   
 $("document").ready(function() {    
+   validateDate("mediexpiry",    "Medical is expired");
    validateDate("crmexpiry",     "CRM is expired");
    validateDate("dgexpiry",      "DG is expired");
+   validateDate("licenceexpiry", "Licence is expired");
    validateDate("licenceexpiry", "Licence is expired");
    validateDate("huet",          "HUET is expired");
 });    
@@ -154,6 +156,8 @@ $("document").ready(function() {
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
 		<input type="hidden" name="tab" value="role"/>
+		<input name="docfolder" value="/crew/${id}" type="hidden"/> 
+		
 		<div style="float:left; width: 500px;">
 		<fieldset>
 			<legend>Role</legend>
@@ -161,7 +165,7 @@ $("document").ready(function() {
 				<label for="crewMember.role.position"><span class="star">*</span>Position:</label>
 
 				<select name="crewMember.role.position" id="position" />
-				 <option value=""></option>
+				    <option value=""></option>
 					<option value="Pilot" <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
 					<option value="AME" <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
 					<option value="Base Manager" <#if crewMember.role.position?if_exists == "Base Manager">selected</#if>>Base Manager
@@ -184,7 +188,7 @@ $("document").ready(function() {
 					<option value="Freelance" <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
 				</select>
 			</div>
-			<div class="fm-opt">
+			<!--<div class="fm-opt">
 				<label for="crewMember.role.primaryLocation">Primary Location:</label>
 				<input name="crewMember.role.primaryLocation" type="text" value="${crewMember.role.primaryLocation!}"/>
 			</div>
@@ -203,7 +207,7 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.telephoneExtension">Telephone Extension:</label>
 				<input name="crewMember.role.telephoneExtension" type="text" value="${crewMember.role.telephoneExtension!}"/>
-			</div>
+			</div>-->
 		</fieldset>
 		<fieldset>
 			<legend>Licence</legend>
@@ -226,9 +230,13 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
-			</div>
-			<div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;">  
-			</div>
+			    <div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;"></div>
+			    <label for="licenceFile">Upload:</label>
+                <input id="licenceFile" name="licenceFile" value="" type="file" />
+                <input name="licenceTags" value="licence" type="hidden" />
+            </div>
+			
+			
 			<br/>
 		</fieldset>
   <fieldset>
@@ -295,55 +303,72 @@ $("document").ready(function() {
   	<div class="fm-opt">
 				<label for="crewMember.role">Instrument hours:</label>
 				<input name="crewMember.role" type="text"  value="" />
-			</div>									   		
+			</div>	
+			
+			<#if crewMember.role.position?if_exists == "Pilot">   
+                <div class="fm-opt">
+                <label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
+                <input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+                </div>
+                </#if>
+											   		
   </fieldset>
 		</#if>
   <fieldset>
-			<legend>Certificates & Licences</legend>
-
-			<div class="fm-opt">
+			<legend>Certificates</legend>
+               
+             
+             
+             <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+                <label for="crewMember.role.expiryDate">Medical Expiry:</label>
+                <input name="crewMember.role.expiryDate" id="mediexpiry" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+                <div id="msg-mediexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+                <label for="mediFile">Upload:</label>
+                <input id="mediFile" name="mediFile" value="" type="file"/>
+                <input name="mediTags" value="medical" type="hidden"/>
+            </div> 
+            <br/>   
+			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
 				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-      <label for="crmFile">Upload:</label>
-      <input id="crmFile" name="crmFile" value="" type="file">
-      <input name="crmTags" value="CRM" type="hidden">
-      <input name="docfolder" value="/crew/${id}" type="hidden">                      
-   </div>
-			<div class="fm-opt">
+                <label for="crmFile">Upload:</label>
+                <input id="crmFile" name="crmFile" value="" type="file"/>
+                <input name="crmTags" value="CRM" type="hidden"/>
+                                     
+            </div>
+            <br/>    
+			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
 				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-    <label for="dgFile">Upload:</label>
-      <input id="dgFile" name="dgFile" value="" type="file">
-      <input name="dgTags" value="DG" type="hidden">        
+                <label for="dgFile">Upload:</label>
+                <input id="dgFile" name="dgFile" value="" type="file">
+                <input name="dgTags" value="DG" type="hidden">        
 			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.huet.expiryDate"><span class="star">*</span>HUET Training:</label>
+			<br/>   
+			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+				<label for="crewMember.role.huet.expiryDate">HUET Training:</label>
 				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>			
-    <div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
-   <div class="fm-opt">
-   <label for="huetFile">Upload:</label>
-      <input id="huetFile" name="huetFile" value="" type="file">
-      <input name="huetTags" value="HUET" type="hidden">
-        
-   </div>
-   
+                <div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+                <label for="huetFile">Upload:</label>
+                <input id="huetFile" name="huetFile" value="" type="file" />
+                <input name="huetTags" value="HUET" type="hidden" />
+            </div>
+            <br/>
 				
-				<label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
-				<input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>			
+				
+				
+				
+				
+				
+				
+						
 			<br/>
 			
    <!--Medical-->
-			<div class="fm-opt">
-				<label for="crewMember.role.medicalClass">Class:</label>
-				<input name="crewMember.role.medicalClass" type="text" value="${crewMember.role.medicalClass!}"/>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.expiryDate">Expiry Date:</label>
-				<input name="crewMember.role.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>		
+
+				
   </fieldset>
 		</div>
 		

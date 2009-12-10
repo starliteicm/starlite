@@ -121,6 +121,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String huetFileFileName;
     public String huetTags;
     
+    public File   mediFile;
+	public String mediFileContentType;
+    public String mediFileFileName;
+    public String mediTags;
+    
+    public File   licenceFile;
+	public String licenceFileContentType;
+    public String licenceFileFileName;
+    public String licenceTags;
+    
+    
     @SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
 	public String hoursMonth;
@@ -200,18 +211,6 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	
 	public String photo(){
 		return "photo";
-	}
-	
-	public String crmFile(){
-		return "crmFile";
-	}
-	
-	public String dgFile(){
-		return "dgFile";
-	}
-	
-	public String huetFile(){
-		return "huetFile";
 	}
 	
 	
@@ -816,14 +815,6 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		catch(Exception e){
 			LOG.error(e);
 		}
-				
-		LOG.info(passportsFileName);
-		LOG.info(passportsTags);
-		LOG.info(passportsContentType);
-		
-		LOG.info(passportsCountry);
-		LOG.info(passportsNumber);
-		LOG.info(passportsExpiryDate);
 		
 	    boolean morePassports = true;
 	    int count = 0;
@@ -857,9 +848,27 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}	
 		}
 	    }
+	    
+	    
+	    try{
+            if(licenceFile!= null){         
+                LOG.info(licenceTags+" "+docfolder);
+                String[] tagsArray = licenceTags.split(" ");
+                Document doc = new Document();
+                doc.setName(licenceFileFileName);                
+                doc.setContentType(licenceFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(licenceFileFileName, "Document", docfolder+"/"+ licenceFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(licenceFile), user);
+            }
+          }
+          catch(Exception e){
+                LOG.error(e);
+          }
+	    
 	    try{
             if(crmFile!= null){         
-                LOG.info(tags+" "+docfolder);
+                LOG.info(crmTags+" "+docfolder);
                 String[] tagsArray = crmTags.split(" ");
                 Document doc = new Document();
                 doc.setName(crmFileFileName);                
@@ -867,44 +876,61 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
                 Bookmark b = bookmarkManager.createBookmark(crmFileFileName, "Document", docfolder+"/"+ crmFileFileName, tagsArray);
                 doc.setBookmark(b);
                 docManager.createDocument(doc, docfolder, new FileInputStream(crmFile), user);
-            }else{            	
             }
           }
           catch(Exception e){
                 LOG.error(e);
           }
+          
+          try{
+              if(mediFile!= null){         
+                  LOG.info(mediTags+" "+docfolder+docfolder+"/"+ mediFileFileName);
+                  String[] tagsArray = mediTags.split(" ");
+                  Document doc = new Document();
+                  doc.setName(mediFileFileName);                
+                  doc.setContentType(mediFileContentType);
+                  Bookmark b = bookmarkManager.createBookmark(mediFileFileName, "Document", docfolder+"/"+ mediFileFileName, tagsArray);
+                  doc.setBookmark(b);
+                  docManager.createDocument(doc, docfolder, new FileInputStream(mediFile), user);
+              }
+            }
+            catch(Exception e){
+                  LOG.error(e);
+            }
+          
   	    try{
             if(dgFile!= null){         
-                LOG.info(dgTags+" "+docfolder);
-                String[] tagsArray = tags.split(" ");
+                LOG.info(dgTags+" "+docfolder+" "+docfolder+"/"+ dgFileFileName);
+                String[] tagsArray = dgTags.split(" ");
                 Document doc = new Document();
                 doc.setName(dgFileFileName);
                 doc.setContentType(dgFileContentType);
                 Bookmark b = bookmarkManager.createBookmark(dgFileFileName, "Document", docfolder+"/"+ dgFileFileName, tagsArray);
                 doc.setBookmark(b);
                 docManager.createDocument(doc, docfolder, new FileInputStream(dgFile), user);
-            }else{            	
             }
           }
           catch(Exception e){
-                LOG.error(e);
+                LOG.error("DG error: "+e);
+                e.printStackTrace();
           }
-  	    try{
+  	      try{
             if(huetFile!= null){         
-                LOG.info(huetTags+" "+docfolder);
-                String[] tagsArray = tags.split(" ");
+                LOG.info(huetTags+" "+docfolder+" "+docfolder+"/"+ huetFileFileName);
+                String[] tagsArray = huetTags.split(" ");
                 Document doc = new Document();
                 doc.setName(huetFileFileName);
                 doc.setContentType(huetFileContentType);
                 Bookmark b = bookmarkManager.createBookmark(huetFileFileName, "Document", docfolder+"/"+ huetFileFileName, tagsArray);
                 doc.setBookmark(b);
                 docManager.createDocument(doc, docfolder, new FileInputStream(huetFile), user);
-            }else{            	
             }
           }
           catch(Exception e){
-                LOG.error(e);
+        	  LOG.error("HUET error: "+e);
+              e.printStackTrace();
           }
+          
 	return execute();
 	}
 
@@ -945,7 +971,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		Tab bankingTab = new Tab("Banking", "crewMember.action?tab=banking&id="+idStr, tab.equals("banking"));
 		Tab roleTab = new Tab("Role", "crewMember.action?tab=role&id="+idStr, tab.equals("role"));
 		Tab paymentsTab = new Tab("Payments", "crewMember.action?tab=payments&id="+idStr, tab.equals("payments"));
-		Tab documentsTab = new Tab("Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
+		Tab documentsTab = new Tab("Additional Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
 		Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
 		Tab flightAndDutyTab = new Tab("PDW", "crewMember.action?tab=flight&id="+idStr, tab.equals("flight"));
 		Tab hours = new Tab("On Contract", "crewMember.action?tab=hours&id="+idStr, tab.equals("hours"));

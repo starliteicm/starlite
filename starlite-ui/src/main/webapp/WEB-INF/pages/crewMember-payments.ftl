@@ -91,7 +91,6 @@ function validate(){
 				<#else>
 				<#assign currency=crewMember.payments.currency!/>
 				<select name="crewMember.payments.currency" type="text" style="width:80px;" id="currency" >
-					<option value=""></option>
 					<option value="EUR" <#if currency == 'EUR'>selected</#if> value='EUR'>EUR (&euro;)</option>
 					<option value="GBP" <#if currency == 'GBP'>selected</#if> value='GBP'>GBP (&pound;)</option>
 					<option value="USD" <#if currency == 'USD'>selected</#if> value='USD'>USD ($)</option>

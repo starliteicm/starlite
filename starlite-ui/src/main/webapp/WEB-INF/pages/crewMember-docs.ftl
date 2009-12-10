@@ -5,7 +5,6 @@
   
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
   <script type="text/javascript" src="js/jquery-1.2.3.min.js"></script>
-  <script type="text/javascript" src="js/jquery-1.2.3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="styles/jquery.autocomplete.css">
   <script type="text/javascript" src="js/jquery.autocomplete.multi.js"></script>
   
@@ -29,7 +28,7 @@
        		method="post">
        		<div style="float:left; width: 500px;">
 			<fieldset>
-				<legend>Upload Document</legend>
+				<legend>Upload Additional Document</legend>
 				<div class="fm-opt">
 					<label for="document" style="width:40px;">File: </label>
 					<input name="document" id="document" type="file"/>
@@ -39,20 +38,8 @@
 					<input name="tags" id="tags" type="text"/>
 				</div-->
 				<div class="fm-opt">
-					<label for="tags" style="width:40px;">Type: </label>
-					<select name="tags">
-						<option value=""> </option>
-						<option value="medical insurance">Medical Insurance</option>
-						<option value="accident insurance">24 Hour Accident Insurance</option>
-						<option value="personal insurance">Personal Insurance</option>
-						<option value="licence captain">Licence (Captain)</option>
-						<option value="licence co-pilot">Licence (Co-Pilot)</option>
-						<option value="licence ame">Licence (AME)</option>
-						<option value="certificate">Certificate</option>
-						<option value="conversion">Conversion</option>
-						<option value="photo">Photo</option>
-						<option value="crew misc">Other</option>
-					</select>
+					<label for="tags" style="width:40px;">Tag: </label>
+					<input type="text" name="tags" value="" />
 				</div>
 			</fieldset>
 			</div>
@@ -65,7 +52,15 @@
 		<#list docs as doc>
 		<#assign bookmark=doc.bookmark/>
 		<#assign isManager=user.hasPermission("ManagerView")/>
-		<div style="margin-top:20px;">
+		
+		<#assign hide=0/>
+		<#list bookmark.tags as tag>
+		  <#if tag.tag == "CRM"><#assign hide=1/></#if>
+		  <#if tag.tag == "DG"><#assign hide=1/></#if>
+		</#list>
+		
+		<#if hide == 0>
+		<div style="margin-top:20px;">    
 			<h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?path=${bookmark.bookmarkedId}">x</a></#if></h3>
 			<#if isManager>
 			<span style="font-size:90%;">Tags: 
@@ -75,6 +70,8 @@
 			</span>
 			</#if>
 		</div>
+		</#if>
+		
 	</#list>
 	</div>
 	<script>
