@@ -183,7 +183,6 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.employment"><span class="star">*</span>Employment Status:</label>
 				<select name="crewMember.role.employment" id="empstatus" />
-				 <option value=""></option>
 					<option value="Permanent" <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
 					<option value="Freelance" <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
 				</select>

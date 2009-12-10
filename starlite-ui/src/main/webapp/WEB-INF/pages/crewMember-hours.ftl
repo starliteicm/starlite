@@ -235,8 +235,8 @@
 		    <th>Type</th>
 		    <th>Tail#</th>
 		    <th>Charter</th>
-		    <th>Hours Flow</th>
-		    <th>Total Flow</th>
+		    <th>Hours Flown</th>
+		    <th>Total Flown</th>
 		    <th>Time In</th>
 		    <th>Time Out</th>
 		    <th>Hours</th>
