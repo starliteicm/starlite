@@ -234,6 +234,10 @@ $("document").ready(function() {
 			    <label for="licenceFile">Upload:</label>
                 <input id="licenceFile" name="licenceFile" value="" type="file" />
                 <input name="licenceTags" value="licence" type="hidden" />
+                <#if licence?exists>
+                  <label for="crewMember.role.r1.number"/>&nbsp;</label>
+                  <div><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
+                </#if>
             </div>
 			
 			
@@ -326,6 +330,10 @@ $("document").ready(function() {
                 <label for="mediFile">Upload:</label>
                 <input id="mediFile" name="mediFile" value="" type="file"/>
                 <input name="mediTags" value="medical" type="hidden"/>
+                <#if medical?exists>
+                  <label for="medicalUploadedFile"/>&nbsp;</label>
+                  <div id="medicalUploadedFile"><a href='${request.contextPath}${medical.bookmark.url!}'>${medical.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${medical.bookmark.bookmarkedId}">x</a></#if></div>
+                </#if>
             </div> 
             <br/>   
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
@@ -335,6 +343,10 @@ $("document").ready(function() {
                 <label for="crmFile">Upload:</label>
                 <input id="crmFile" name="crmFile" value="" type="file"/>
                 <input name="crmTags" value="CRM" type="hidden"/>
+                <#if crm?exists>
+                  <label for="crmUploadedFile"/>&nbsp;</label>
+                  <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">x</a></#if></div>
+                </#if>
                                      
             </div>
             <br/>    
@@ -344,7 +356,11 @@ $("document").ready(function() {
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="dgFile">Upload:</label>
                 <input id="dgFile" name="dgFile" value="" type="file">
-                <input name="dgTags" value="DG" type="hidden">        
+                <input name="dgTags" value="DG" type="hidden">
+                <#if dg?exists>
+                  <label for="dgUploadedFile"/>&nbsp;</label>
+                  <div id="dgUploadedFile"><a href='${request.contextPath}${dg.bookmark.url!}'>${dg.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${dg.bookmark.bookmarkedId}">x</a></#if></div>
+                </#if> 
 			</div>
 			<br/>   
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
@@ -354,6 +370,10 @@ $("document").ready(function() {
                 <label for="huetFile">Upload:</label>
                 <input id="huetFile" name="huetFile" value="" type="file" />
                 <input name="huetTags" value="HUET" type="hidden" />
+                <#if huet?exists>
+                  <label for="huetUploadedFile"/>&nbsp;</label>
+                  <div id="huetUploadedFile"><a href='${request.contextPath}${huet.bookmark.url!}'>${huet.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${huet.bookmark.bookmarkedId}">x</a></#if></div>
+                </#if>
             </div>
             <br/>
 				

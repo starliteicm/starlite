@@ -340,13 +340,14 @@ $("document").ready(function() {
             </legend>
 		
 		<#assign count=0>
+		<#assign passFileCount=0>
 		<#list crewMember.passport as passport>
 		
 		<#if count != 0>
 		<div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
 		</#if>
 		
-		<#assign count=count +1>
+		<#assign count = count +1>
 		
 		<input type="hidden" name="passportsId" value="${passport.id!}">
 		
@@ -366,11 +367,23 @@ $("document").ready(function() {
 		    <input type="text" id="passportsExpiryDate" name="passportsExpiryDate" class="date-pick" value="" />
 		  </#if>
 		</div>
-				<div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
-  <div class="fm-opt">
+		  <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
+          <div class="fm-opt">
           <label for="passports"><span class="star">*</span>Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
+
+          <#assign passname = "passport"+passFileCount />
+          <#if passportFiles.get(passname)?exists > 
+          <#assign pass = passportFiles.get(passname)/>
+          <#if pass?exists>
+             <label for="passportsUploadedFile"/>&nbsp;</label>
+             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div>
+          </#if> 
+          </#if>
+          
+          <#assign passFileCount = passFileCount +1>
+          
         </div>
 
 

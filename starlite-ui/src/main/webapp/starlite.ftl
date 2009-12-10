@@ -149,15 +149,15 @@ function onInvokeAction(id) {
     			extraClass: "pretty", 
     			fixPNG: true, 
     			opacity: 0.95,
-    			top: 100,
-    			left: 30
+    			top:10 ,
+    			left: 20
 			});
         });
 	</script>
 	<style type="text/css">
     #tooltip.pretty {
+        display:inline;
     	position:absolute;
-    	margin-top:80px;
 		font-family: Arial;
 		border: none;
 		width: 210px;

@@ -87,15 +87,15 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String currency;
 	public List<ExchangeRate> rates;
 	
-	public List<String> passportsTags;
-	public List<File> passports;
-	public List<String> passportsContentType;
-	public List<String> passportsFileName;
-	
-	public List<String> passportsId;
-	public List<String> passportsCountry;
-	public List<String> passportsNumber;
-	public List<String> passportsExpiryDate;
+	public List<String>   passportsTags;
+	public List<File>     passports;
+	public List<String>   passportsContentType;
+	public List<String>   passportsFileName;
+	public List<String>   passportsId;
+	public List<String>   passportsCountry;
+	public List<String>   passportsNumber;
+	public List<String>   passportsExpiryDate;
+	public Map<String,Document> passportFiles;
 	
 	
 	public SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -130,6 +130,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String licenceFileContentType;
     public String licenceFileFileName;
     public String licenceTags;
+    
+    public Document licence;
+    public Document medical;
+    public Document crm;
+    public Document dg;
+    public Document huet;
     
     
     @SuppressWarnings("unchecked")
@@ -170,6 +176,22 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 
 		if (tab.equals("personal")){
+			passportFiles = new HashMap<String,Document>();
+			folder = docManager.getFolderByPath("/crew/"+id, user);
+			int count=0;
+			boolean morePassports = true;
+	       
+			while(morePassports){
+				 Document passport = folder.getDocumentByTag("passport"+count);
+				 if(passport != null){
+					 passportFiles.put("passport"+count,passport);
+				 }
+				 else{
+					 morePassports = false;
+				 }
+				 count++;
+			}
+			
 			return SUCCESS;
 		}
 
@@ -197,8 +219,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		if (tab.equals("hours"))
 			return setupHours();
 		
-		if(tab.equals("role"))
+		if(tab.equals("role")){
 			aircraftTypes = manager.getAircraftTypes();
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+	        LOG.info(folder.getDocs());
+	        licence = folder.getDocumentByTag("licence");
+	        medical = folder.getDocumentByTag("medical");
+	        crm     = folder.getDocumentByTag("CRM");
+	        dg      = folder.getDocumentByTag("DG");
+	        huet    = folder.getDocumentByTag("HUET");   
+		}
 		
 		return tab;
 	}
