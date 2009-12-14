@@ -1300,9 +1300,10 @@ public class CrewMember implements Cloneable {
 				if(e != null){
 					if(e.getAreaDays() > 0){ 
 						if(e.getDiscomfort() > 0){
-						  sum = sum.add(new Money("USD",100.0));
-						  sum = sum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
-						  sum = sum.multiply(e.getAreaDays());
+						  Money emsum = new Money("USD",0.0);
+						  emsum = emsum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
+						  emsum = emsum.multiply(e.getAreaDays());
+						  sum = sum.add(emsum);
 						  //System.out.println("Discomfort:"+e.getDiscomfort()+" Daily:"+e.getAreaDays()+" Total:"+sum.getAmountAsDouble());
 						}
 					}
@@ -1389,6 +1390,8 @@ public class CrewMember implements Cloneable {
 			public void setExchangeRate(double exchangeRate) {
 				this.exchangeRate = exchangeRate;
 			}
+			
+			
 			public Double getEntered() {
 				if(this.entered == null){
 					this.entered = getRand();
@@ -1817,7 +1820,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getAreaDays(),fda.getAreaRate().toString(),fda.getAreaRate().multiply(fda.getAreaDays()).toString(),fdatotal);
+					cm.setPayments(dateFrom,dateTo,today,advice,category,"Daily",""+fda.getAreaDays(),fda.getAreaRate().toString(),fda.getAreaRate().multiply(fda.getAreaDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
@@ -1845,7 +1848,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getDailyDays(),fda.getDailyRate().toString(),fda.getDailyRate().multiply(fda.getDailyDays()).toString(),fdatotal);
+					cm.setPayments(dateFrom,dateTo,today,advice,category,"Training",""+fda.getDailyDays(),fda.getDailyRate().toString(),fda.getDailyRate().multiply(fda.getDailyDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
@@ -1871,7 +1874,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getFlightDays(),fda.getFlightRate().toString(),fda.getFlightRate().multiply(fda.getFlightDays()).toString(),fdatotal);
+					cm.setPayments(dateFrom,dateTo,today,advice,category,"Travel",""+fda.getFlightDays(),fda.getFlightRate().toString(),fda.getFlightRate().multiply(fda.getFlightDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 			}
