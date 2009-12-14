@@ -180,7 +180,7 @@
             </div>
             
             <div class="fm-opt">
-            <label for="chart">Charter:</label>
+            <label for="chart">Contract:</label>
             <select name="chart" id="chart">
               <#list allCharters as c>
                 <option SELECTED value="${c.id}">${c.code}</option>
@@ -234,7 +234,7 @@
 		    <th>Activity / Comments</th>
 		    <th>Type</th>
 		    <th>Tail#</th>
-		    <th>Charter</th>
+		    <th>Contract</th>
 		    <th>Hours Flown</th>
 		    <th>Total Flown</th>
 		    <th>Time In</th>

@@ -389,6 +389,7 @@ $("document").ready(function() {
 
 		</#list>
 		
+		<#if count < 2 >
 		<div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
 	    
 	    <input type="hidden" name="passportsId" value="">
@@ -410,6 +411,7 @@ $("document").ready(function() {
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
         </div>	
+        </#if>
         
         
 		
@@ -494,11 +496,11 @@ $("document").ready(function() {
 		<fieldset>
 		    <legend>Medical</legend>
 		    <div class="fm-opt">
-                <label for="crewMember.role.medicalAid">Medical Aid:</label>
+                <label for="crewMember.role.medicalAid"><span class="star">*</span>Medical Aid:</label>
                 <input name="crewMember.role.medicalAid" type="text" value="${crewMember.role.medicalAid!}"/>
             </div>
             <div class="fm-opt">
-                <label for="crewMember.role.medicalAidNumber">Aid Number:</label>
+                <label for="crewMember.role.medicalAidNumber"><span class="star">*</span>Aid Number:</label>
                 <input name="crewMember.role.medicalAidNumber" type="text" value="${crewMember.role.medicalAidNumber!}"/>
             </div>
         </fieldset>     

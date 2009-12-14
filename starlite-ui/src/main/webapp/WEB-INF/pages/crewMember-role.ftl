@@ -104,6 +104,7 @@ $("document").ready(function() {
       var empstatus= document.getElementById('empstatus').options[document.getElementById('empstatus').selectedIndex].value;      
       if(position                   == ""){ errormsg += "Position, "; error=1;}      
       if(empstatus                  == ""){ errormsg += "Employment status, "; error=1;}
+      if($("#mediexpiry").val()     == ""){ errormsg += "Medical expiry, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
       if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
@@ -181,6 +182,10 @@ $("document").ready(function() {
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
+                <label for="crewMember.role.exDate">Expiry Date:</label>
+                <input name="crewMember.role.exDate" type="text" class="date-pick" value="<#if crewMember.role.exDate??>${crewMember.role.exDate?string('dd/MM/yyyy')}</#if>"/>
+            </div>
+			<div class="fm-opt">
 				<label for="crewMember.role.employment"><span class="star">*</span>Employment Status:</label>
 				<select name="crewMember.role.employment" id="empstatus" />
 					<option value="Permanent" <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
@@ -218,12 +223,8 @@ $("document").ready(function() {
 				<label for="crewMember.role.r1.type">Type:</label>
 				<select name="crewMember.role.r1.type" value="${crewMember.role.r1.type!}" id="licencetype">
 				  <option <#if crewMember.role.r1.type?if_exists == "AME">selected</#if>>      AME
-				  <option <#if crewMember.role.r1.type?if_exists == "ATP">selected</#if>>      ATP
 				  <option <#if crewMember.role.r1.type?if_exists == "ATPL">selected</#if>>     ATPL
 				  <option <#if crewMember.role.r1.type?if_exists == "CPL">selected</#if>>      CPL
-				  <option <#if crewMember.role.r1.type?if_exists == "PPL">selected</#if>>      PPL
-				  <option <#if crewMember.role.r1.type?if_exists == "PPL, ATP">selected</#if>> PPL, ATP
-				  <option <#if crewMember.role.r1.type?if_exists == "SPL">selected</#if>>      SPL
 				</select>
 			</div>
 			<div class="fm-opt">
@@ -304,13 +305,17 @@ $("document").ready(function() {
 			</div>
    
   	<div class="fm-opt">
-				<label for="crewMember.role">Instrument hours:</label>
-				<input name="crewMember.role" type="text"  value="" />
+				<label for="crewMember.role">Instrument Rated:</label>
+				<#if crewMember.role.instrument?exists  >
+				  <input name="crewMember.role.instrument" type="checkbox"  value="1" />
+				<#else>
+				  <input name="crewMember.role.instrument" type="checkbox" CHECKED value="1" />
+				</#if>
 			</div>	
 			
 			<#if crewMember.role.position?if_exists == "Pilot">   
                 <div class="fm-opt">
-                <label for="crewMember.role.ifr.expiryDate">Instrument Rating Expiry:</label>
+                <label for="crewMember.role.ifr.expiryDate">Instrument Rated Expiry:</label>
                 <input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
                 </div>
                 </#if>
@@ -323,7 +328,7 @@ $("document").ready(function() {
              
              
              <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
-                <label for="crewMember.role.expiryDate">Medical Expiry:</label>
+                <label for="crewMember.role.expiryDate"><span class="star">*</span>Medical Expiry:</label>
                 <input name="crewMember.role.expiryDate" id="mediexpiry" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
                 <div id="msg-mediexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="mediFile">Upload:</label>
@@ -404,10 +409,9 @@ $("document").ready(function() {
 			<#assign i=0/> 
 			<#list crewMember.role.conversions as conversion>
 			<div class="fm-opt">
-			    <label for="crewMember.role.conversions[${i}].number">Licence:</label>
+			    <label for="crewMember.role.conversions[${i}].number">Hours:</label>
 			    <select name="crewMember.role.conversions[${i}].number">
 			    <option>
-                <option <#if conversion.number.equals("Total Hours")>selected</#if>>Total Hours
                 <option <#if conversion.number.equals("Total PIC")>selected</#if>>Total PIC
                 <option <#if conversion.number.equals("Total Turbine")>selected</#if>>Total Turbine
                 <option <#if conversion.number.equals("NVG")>selected</#if>>NVG
@@ -427,7 +431,6 @@ $("document").ready(function() {
 				<label for="crewMember.role.conversions[${i+j}].number">Add Type:</label>
 				<select name="crewMember.role.conversions[${i+j}].number">
 				<option>
-				<option>Total Hours
 				<option>Total PIC
 				<option>Total Turbine
 				<option>NVG
