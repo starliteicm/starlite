@@ -758,7 +758,7 @@ public class CrewMember implements Cloneable {
 		private Certificate ifr = new Certificate();
 		private Certificate instructor = new Certificate();
 		private Certificate test = new Certificate();
-		private Certificate huet = new Certificate();
+		private Certificate huet = new Certificate();		
 		
 		private String night;
 		private String nvg;
@@ -817,7 +817,60 @@ public class CrewMember implements Cloneable {
 		public void setExpiryDate(Date expiryDate) {
 			this.expiryDate = expiryDate;
 		}
+		
+		public String getExpiryDateWithColor(){
+			  SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			  Date expDate        = this.expiryDate;
 
+			  if(expDate!=null){
+				  if(Calendar.getInstance().getTime().before(expDate)){
+				     return "<span style='color:green'>"+df.format(this.expiryDate)+"</span>";
+				  }else if(Calendar.getInstance().getTime().after(expDate)){
+				     return "<span style='color:red'>"+df.format(this.expiryDate)+"</span>";			 
+				  }
+			  }	
+			  return "<span>Document missing</span>";			  			  			  
+		} 
+		
+		public String getCrmExpiryDateWithColor(){
+			  SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			  Date expDate        = this.crm.getExpiryDate();
+			  if(expDate!=null){
+				  if(Calendar.getInstance().getTime().before(expDate)){
+				     return "<span style='color:green'>"+df.format(expDate)+"</span>";
+				  }else if(Calendar.getInstance().getTime().after(expDate)){
+				     return "<span style='color:red'>"+df.format(expDate)+"</span>";
+				  }
+			  }
+			  return "<span>Document missing</span>";
+		} 
+		
+		public String getDgExpiryDateWithColor(){
+			  SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			  Date expDate        = this.dg.getExpiryDate();
+			  if(expDate!=null){
+				  if(Calendar.getInstance().getTime().before(expDate)){
+				     return "<span style='color:green'>"+df.format(expDate)+"</span>";
+				  }else if(Calendar.getInstance().getTime().after(expDate)){
+				     return "<span style='color:red'>"+df.format(expDate)+"</span>";			 
+				  }
+			  }
+			  return "<span>Document missing</span>";			 
+		} 
+		
+		public String getIfrExpiryDateWithColor(){
+			  SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			  Date expDate        = this.ifr.getExpiryDate();
+			  if(expDate!=null){
+				  if(Calendar.getInstance().getTime().before(expDate)){
+				     return "<span style='color:green'>"+df.format(expDate)+"</span>";
+				  }else if(Calendar.getInstance().getTime().after(expDate)){
+				     return "<span style='color:red'>"+df.format(expDate)+"</span>";			 
+				  }
+			  }
+			  return "<span>Document missing</span>";	
+		} 
+	
 		public Certificate getR1() {
 			if (r1 == null)
 				r1 = new Certificate();
