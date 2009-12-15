@@ -8,7 +8,7 @@
 	<li><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a>
 	<li><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>
 	</#if>
-	<li><a href="script.action?scriptName=expiry.groovy">Crew Document Analysis</a>
+	<li><a href="script.action?scriptName=crewDocumentAnalysis.groovy">Crew Document Analysis</a>
 </ul>
 
 <form action = "crewMember!profile.action">
