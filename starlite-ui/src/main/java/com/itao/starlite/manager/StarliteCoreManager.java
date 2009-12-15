@@ -145,6 +145,14 @@ public class StarliteCoreManager {
 	public List<CrewMember> getAllCrew() {
 		return crewDao.findAll();
 	}
+
+	
+	@Transactional
+	public List<CrewMember> getAllCrewPlus() {
+		List<CrewMember> crewplusList = crewDao.findAll();
+		return crewplusList;
+	}
+	
 	
 	@Transactional
 	public List<CrewMember> getCrewMembersByCodes(String codes) {
