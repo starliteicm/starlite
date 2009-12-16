@@ -5,6 +5,7 @@
 	<li><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a>
 	<#if notAuthorised>
 	<#else>
+	<li><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a>
 	<li><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a>
 	<li><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>
 	<li><a href="script.action?scriptName=crewDocumentAnalysis.groovy">Crew Document Analysis</a>	
