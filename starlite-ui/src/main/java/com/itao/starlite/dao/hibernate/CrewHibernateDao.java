@@ -52,4 +52,10 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 	public List<CrewMember> findCrewMembersByCodes(String codes){
 		return (List<CrewMember>) getCurrentSession().createQuery("from CrewMember cm where id in ("+codes+")").list();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CrewMember> findAllCrewReadOnly() {
+		// TODO Auto-generated method stub
+		return (List<CrewMember>) getCurrentSession().createQuery("from CrewMember cm").setReadOnly(true).list();
+	}
 }

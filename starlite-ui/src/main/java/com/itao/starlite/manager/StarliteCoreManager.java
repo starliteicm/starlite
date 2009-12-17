@@ -145,6 +145,11 @@ public class StarliteCoreManager {
 	public List<CrewMember> getAllCrew() {
 		return crewDao.findAll();
 	}
+	
+	@Transactional
+	public List<CrewMember> getAllCrewReadOnly() {
+		return crewDao.findAllCrewReadOnly();
+	}
 
 	
 	@Transactional
