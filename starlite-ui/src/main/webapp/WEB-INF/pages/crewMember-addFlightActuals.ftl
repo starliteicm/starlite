@@ -341,9 +341,7 @@
 		
 		
 		function addRowAdditions() {
-		
-		    alert("Add Row Additions");
-		
+				
             var additionTableBody = document.getElementById("additionTableBody");
             var newRow = document.createElement("tr");
             
