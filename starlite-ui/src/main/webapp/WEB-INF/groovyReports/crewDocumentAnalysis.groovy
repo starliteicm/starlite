@@ -23,7 +23,7 @@ def generate(manager, pageContext) {
 	def user = pageContext["request"].getAttribute("user")
 	def docManager = pageContext["request"].getAttribute("docManager") 
 	
-	def crew = manager.getAllCrew()
+	def crew = manager.getAllCrewReadOnly()
     def report = []
 	for (CrewMember cm in crew) {
     	def reportRow = [:];
