@@ -48,6 +48,7 @@ import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.CharterEntry;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
 import com.itao.starlite.ui.Breadcrumb;
@@ -333,6 +334,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				.column("flightRate").withStyle("text-align:right").called("Travel")
 				.column("flightDays").called("Days")
 				.column("deductionTotal").called("Deductions")
+				.column("additionTotal").called("Additions")
 				.column("total").called("Total Due").withStyle("text-align:right")
 				.column("paidDate").called("Date Paid").asDate("dd/MM/yyyy")
 				.column("paidAmount").called("Amount Paid").withStyle("text-align:right")
@@ -520,6 +522,110 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String reason;
 	public double amount;
 	public double amountUSD;
+
+	
+	public String addAddition() throws Exception{
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			
+			LOG.info("amount:"+amount+" amountUSD:"+amountUSD);
+			
+			if(amountUSD == 0.0){
+				Addition add = new Addition();
+				add.setEntered(amount);
+				add.setCurrency(currency);
+				//LOG.info("RAND:"+amount);
+				add.setReason(reason);
+				//get xchange rate and convert amount (rand)
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
+				add.setExchangeRate(ex.getAmount());
+				//LOG.info("XCHANGE:"+ex.getAmount());
+				Money converted = ex.convert(amount);
+				add.setAmount(converted);
+				actuals.getAdditions().put(reason,add);
+			}
+			else {
+				Addition add = new Addition();
+				Money converted = new Money("USD",amountUSD);
+				LOG.info("USD:"+converted.getAmountAsDouble());
+				add.setReason(reason);
+				add.setCurrency(currency);
+				//get xchange rate and convert amount (rand)
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
+				Double exAmount = ex.getAmount();
+				ex.setAmount(1/exAmount);
+				add.setExchangeRate( 1/ exAmount);
+				LOG.info("XCHANGE RATE:"+(1/exAmount));
+				Money entered = ex.convert(converted.getAmountAsDouble());
+				ex.setAmount(exAmount);
+				LOG.info("ENTERED:"+entered);
+				add.setAmount(converted);
+				add.setEntered(entered.getAmountAsDouble());
+				actuals.getAdditions().put(reason,add);
+			}
+			
+			//LOG.info("XCHANGE converted:"+converted);
+			
+			//save actuals
+			try {
+				if (actuals.getId() == null) {
+					addFlightActuals();
+					notificationMessage = "Addition Saved - Actuals Added";
+				} else {
+					manager.saveFlightAndDutyActuals(actuals);
+					notificationMessage = "Addition Saved - Actuals saved";
+				}
+				crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+			} catch (ExistingRecordException e) {
+				errorMessage = e.getMessage();
+			}
+		}
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+		tab= "flight";
+		prepareTabs();
+		return "redirect-addFlightActuals";
+	}
+	
+	//remove a deduction from a crewMember
+	public String remAddition() throws Exception{
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			actuals.getAdditions().remove(reason);
+			try {
+				if (actuals.getId() == null) {
+					manager.addCrewFlightAndDutyActuals(crewMember.getCode(), actuals);
+					notificationMessage = "Addition Removed - Actuals added";
+				} else {
+					manager.saveFlightAndDutyActuals(actuals);
+					notificationMessage = "Addition Removed - Actuals saved";
+				}
+				crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+			} catch (ExistingRecordException e) {
+				errorMessage = e.getMessage();
+			}
+			//save actuals
+		}
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+		tab= "flight";
+		prepareTabs();
+		return "addFlightActuals";
+	}
 	
 	//add a deduction to a crewMember
 	public String addDeduction() throws Exception{

@@ -62,7 +62,7 @@
 	</form>
 	<#else>
 
-	<div style="border: 1px solid silver; padding: 10px; clear:left;">
+	<div style="border: 1px solid silver; padding: 10px; clear:left;width:1100px;">
 	<#if user.hasPermission("ManagerEdit")>
 		<a href="${request.contextPath}/crewMember!addFlightActuals.action?tab=flight&id=${id}">Add Entry</a>
 		<br/><br/>

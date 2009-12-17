@@ -27,9 +27,11 @@
 			
 		var newRowIndex = 0;
 		var newDeductionRowIndex = 0;
+		var newAdditionRowIndex = 0;
 		
 		var noEntriesRowVisible;
 		var noDeductionsRowVisible;
+		var noAdditionsRowVisible;
 		
 		function getSelected(selection){
             for(i=0;i<selection.length;i++) {
@@ -39,6 +41,41 @@
                 }
             }
             return false;
+        }
+        
+        function saveAddition(reason,currencyId,amountId,amountUSDId){
+          //alert(reason+" - "+amountId);
+          var amou = document.getElementById(amountId);
+          var amount = amou.value;
+          
+          var amouUSD = document.getElementById(amountUSDId);
+          var amountUSD = amouUSD.value;
+          
+          var cur = document.getElementById(currencyId);
+          var currency = getSelected(cur);
+          
+          var additionForm = document.forms.mainForm;
+          
+          if((0+amount > 0)||(0+amountUSD > 0)){
+              var action = "crewMember!addAddition.action";
+              additionForm.action          = action;
+              additionForm.amount.value    = amount;
+              additionForm.currency.value  = currency;
+              additionForm.amountUSD.value = amountUSD;
+              additionForm.reason.value    = reason;
+              additionForm.submit();
+          }
+          else if((0+amount == 0)||(0+amountUSD == 0)){
+              var action = "crewMember!remAddition.action";
+              additionForm.action       = action;
+              additionForm.reason.value = reason; 
+              additionForm.submit();        
+          }
+          else {
+            alert(amount+" is not a valid amount");
+          }
+          
+          return false;
         }
 		
 		function saveDeduction(reason,currencyId,amountId,amountUSDId){
@@ -75,6 +112,43 @@
 		  
 		  return false;
 		}
+
+        function saveNewAddition(reasonId,currencyId,amountId,amountUSDId){
+          //alert(reasonId+" - "+amountId);
+          var reas = document.getElementById(reasonId);
+          var amou = document.getElementById(amountId);
+          var cur = document.getElementById(currencyId);
+          var reason = getSelected(reas); 
+          var currency = getSelected(cur);
+          var amount = amou.value;
+          
+          var amouUSD = document.getElementById(amountUSDId);
+          var amountUSD = amouUSD.value;
+          
+          var additionForm = document.forms.mainForm;
+          
+          
+          if((0+amount > 0)||(0+amountUSD > 0)){
+              var action = "crewMember!addAddition.action";
+              additionForm.action          = action;
+              additionForm.amount.value    = amount;
+              additionForm.currency.value  = currency;
+              additionForm.amountUSD.value = amountUSD;
+              additionForm.reason.value    = reason;
+              additionForm.submit();
+          }
+          else if((0+amount == 0)||(0+amountUSD == 0)){
+              var action = "crewMember!remAddition.action";
+              additionForm.action       = action;
+              additionForm.reason.value = reason; 
+              additionForm.submit();        
+          }
+          else {
+            alert(amount+" is not a valid amount");
+          }
+          
+          return false;
+        }
 		
 		function saveNewDeduction(reasonId,currencyId,amountId,amountUSDId){
 		  //alert(reasonId+" - "+amountId);
@@ -263,6 +337,89 @@
             }
             deductionTableBody.appendChild(newRow);
             newDeductionRowIndex++;
+        }
+		
+		
+		function addRowAdditions() {
+		
+		    alert("Add Row Additions");
+		
+            var additionTableBody = document.getElementById("additionTableBody");
+            var newRow = document.createElement("tr");
+            
+            var tmpTd = document.createElement("td");
+            var select = document.createElement("select");
+            select.setAttribute("name", "newAdditionFirKey"+newAdditionRowIndex);
+            select.setAttribute("id", "newAdditionFirKey"+newAdditionRowIndex);
+            select.setAttribute("style", "width:100px;");
+            var tmpOption;
+            
+            
+            
+            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries"] as c>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${c}');
+            tmpOption.appendChild(document.createTextNode('${c}'));
+            select.appendChild(tmpOption);
+            </#list>
+            tmpTd.appendChild(select);
+            newRow.appendChild(tmpTd);
+          
+            var tmpInput;
+            tmpTd = document.createElement("td");
+            tmpInput = document.createElement("input");
+            tmpInput.setAttribute("type", "text");
+            tmpInput.setAttribute("name", "newAdditionAmount"+newAdditionRowIndex);
+            tmpInput.setAttribute("id", "newAdditionAmount"+newAdditionRowIndex);
+            tmpInput.setAttribute("value", "0");
+            tmpInput.setAttribute("style", "width:60px;");
+            tmpTd.appendChild(tmpInput);
+            newRow.appendChild(tmpTd);
+            
+            
+            tmpTd = document.createElement("td");
+            select = document.createElement("select");
+            select.setAttribute("name", "newAdditionCurrency"+newAdditionRowIndex);
+            select.setAttribute("id", "newAdditionCurrency"+newAdditionRowIndex);
+            select.setAttribute("style", "width:60px;");
+         
+            <#list rates as rate>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${rate.currencyCodeFrom}');
+            tmpOption.appendChild(document.createTextNode('${rate.currencyCodeFrom}'));
+            select.appendChild(tmpOption);
+            </#list>
+            tmpTd.appendChild(select);
+            newRow.appendChild(tmpTd);
+            
+            var tmpInput;
+            tmpTd = document.createElement("td");
+            tmpInput = document.createElement("input");
+            tmpInput.setAttribute("type", "text");
+            tmpInput.setAttribute("name", "newAdditionAmountUSD"+newAdditionRowIndex);
+            tmpInput.setAttribute("id", "newAdditionAmountUSD"+newAdditionRowIndex);
+            tmpInput.setAttribute("value", "0");
+            tmpInput.setAttribute("style", "width:60px;");
+            tmpTd.appendChild(tmpInput);
+            newRow.appendChild(tmpTd);
+            
+            var tmpInput;
+            tmpTd = document.createElement("td");
+            tmpInput = document.createElement("button");
+            tmpInput.setAttribute("type", "button");
+            tmpInput.setAttribute("value", "Save");
+            tmpInput.setAttribute("onclick", "saveNewAddition('newAdditionFirKey"+newAdditionRowIndex+"','newAdditionCurrency"+newAdditionRowIndex+"','newAdditionAmount"+newAdditionRowIndex+"','newAdditionAmountUSD"+newAdditionRowIndex+"');return false;");
+            tmpInput.setAttribute("class", "smooth");
+            tmpInput.innerHTML = "<img src='images/icons/pencil.png'/>Save";
+            tmpTd.appendChild(tmpInput);
+            newRow.appendChild(tmpTd);
+            
+            if (noAdditionsRowVisible) {
+                additionTableBody.removeChild(document.getElementById("noAdditionsRow"));
+                noAdditionsRowVisible = false;
+            }
+            additionTableBody.appendChild(newRow);
+            newAdditionRowIndex++;
         }
 		
 		
@@ -457,6 +614,46 @@
         </fieldset>
 		
 		<br/>
+		
+		<fieldset>
+            <legend>Contributions</legend>
+            <table>
+            <thead><tr><th style="width:200px">Reason</th><th style="width:100px">Amount</th><th style="width:100px">Currency</th><th style="width:100px">Amount (USD)</th><th style="width:100px">&nbsp;</th></tr></thead>
+            <tbody id="additionTableBody">
+            <#if actuals.additions.isEmpty()>
+            <tr id="noAdditionsRow"><td colspan="3">No Contributions</td></tr>
+            <script>
+            noAdditionsRowVisible=true;
+            </script>
+            <#else>
+            <#list actuals.additions.keySet() as key>
+            <#assign addition=actuals.additions.get(key)/>
+            <#if addition.reason?exists>
+            <tr><td style="width:200px;">${addition.reason?if_exists}</td>
+            <#else>
+            <tr><td style="width:200px;">${key}</td>
+            </#if>
+            <td><input style="width:60px;" onfocus="document.getElementById('Addition${key.replace(" ","_")}AmountUSD').value = '';" type="text" name='Addition${key.replace(" ","_")}Amount' id='Addition${key.replace(" ","_")}Amount' value="${addition.enteredStr}"/></td>
+            <td>
+                <select style="width:60px;" id="Addition${key.replace(" ","_")}Currency" name="Addition${key.replace(" ","_")}Currency">
+                <#list rates as rate>
+                   <option <#if deduction.currency == rate.currencyCodeFrom >SELECTED</#if>  >${rate.currencyCodeFrom}</option>
+                </#list>
+                </select>
+            </td>
+            <td><input style="width:60px;" onfocus="document.getElementById('Addition${key.replace(" ","_")}Amount').value = '';" type="text" name='Addition${key.replace(" ","_")}AmountUSD' id='Addition${key.replace(" ","_")}AmountUSD' value="${addition.USD}"/></td>
+            <td><button type="button" class="smooth" onclick="saveAddition('${addition.reason?if_exists}','Addition${key.replace(" ","_")}Currency','Addition${key.replace(" ","_")}Amount','Addition${key.replace(" ","_")}AmountUSD');return false;" ><img src="images/icons/pencil.png"/>Save</button></td>
+            </tr>
+            </#list>
+            </#if>
+            </tbody>
+            </table>
+            <#if user.hasPermission("ManagerEdit")>
+            <a href="#" onclick="addRowAdditions();">Add New Contribution</a>
+            </#if>
+        </fieldset>
+        
+        <br/>
 		
 		<fieldset>
 			<legend>Payment</legend>

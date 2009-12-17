@@ -31,6 +31,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.OrderBy;
 
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
 
 /**
@@ -1214,6 +1215,9 @@ public class CrewMember implements Cloneable {
 		@CollectionOfElements
 		private Map<String, Deduction> deductions = new HashMap<String, Deduction>();
 		
+		@CollectionOfElements
+		private Map<String, Addition> additions = new HashMap<String, Addition>();
+		
 		@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 		private ApprovalGroup approvalGroup = new ApprovalGroup();
 		
@@ -1223,6 +1227,14 @@ public class CrewMember implements Cloneable {
 		public Integer getId() {
 			return id;
 		}
+		
+		public Map<String, Addition> getAdditions() {
+			return additions;
+		}
+		public void setAdditions(Map<String, Addition> additions) {
+			this.additions = additions;
+		}
+		
 		public Date getDate() {
 			return date;
 		}
@@ -1284,6 +1296,17 @@ public class CrewMember implements Cloneable {
 			}
 			return sum;
 		}
+		
+		public Money getAdditionTotal() {
+			Money sum = new Money("USD",0.0);
+			for (Addition d: additions.values()) {
+				if(d != null){
+					sum = sum.add(d.getAmount());
+				}
+			}
+			return sum;
+		}
+		
 		public Money getDeductionTotal() {
 			Money sum = new Money("USD",0.0);
 			for (Deduction d: deductions.values()) {
@@ -1345,9 +1368,9 @@ public class CrewMember implements Cloneable {
 			total = total.add(getAreaRate().multiply(getAreaDays()));
 			total = total.add(getInstructorRate().multiply(getInstructorDays()));
 			total = total.add(getDiscomfortTotal());
+			total = total.add(getAdditionTotal());
 			total = total.subtract(getDeductionTotal());
-		
-			
+						
 			return total;
 		}
 		
@@ -1361,6 +1384,76 @@ public class CrewMember implements Cloneable {
 			this.instructorRate = instructorRate;
 			this.dailyRate = dailyRate;
 			this.flightRate = flightRate;			
+		}
+		
+		@Embeddable
+		public static class Addition{
+			private String reason;
+			private Money amount;
+			private double exchangeRate;
+			private double rand;
+			private Double entered;
+			private String currency;
+			
+			public String getReason() {
+				return reason;
+			}
+			public void setReason(String reason) {
+				this.reason = reason;
+			}
+			public Money getAmount() {
+				return amount;
+			}
+			public void setAmount(Money amount) {
+				this.amount = amount;
+			}
+			public double getExchangeRate() {
+				return exchangeRate;
+			}
+			public void setExchangeRate(double exchangeRate) {
+				this.exchangeRate = exchangeRate;
+			}
+			
+			
+			public Double getEntered() {
+				if(this.entered == null){
+					this.entered = getRand();
+				}
+				return entered;
+			}
+			public String getUSD(){
+			 return CurrencyFormatter.getInstance(Currency.getInstance("USD"),false).format(amount.getAmount());
+			}
+			
+			public void setEntered(Double entered) {
+				if(this.entered == null){
+					this.entered = getRand();
+				}
+				this.entered = entered;
+			}
+			public String getEnteredStr(){
+				return CurrencyFormatter.getInstance(Currency.getInstance(getCurrency()),false).format(new Double(getEntered()*100).longValue());
+			}
+			
+			public void setCurrency(String currency) {
+				this.currency = currency;
+				if(this.currency == null){this.currency = "ZAR";}
+			}
+			public String getCurrency() {
+				if(this.currency == null){this.currency = "ZAR";}
+				return currency;
+			}
+			
+			public void setRand(double rand) {
+				this.rand = rand;
+				if(entered == null){
+					entered = rand;
+				}
+			}
+			public double getRand() {
+				return rand;
+			}
+			
 		}
 		
 		@Embeddable
@@ -1497,6 +1590,7 @@ public class CrewMember implements Cloneable {
 			}
 
 		}
+
 	}
 	
 	/*
@@ -1892,6 +1986,22 @@ public class CrewMember implements Cloneable {
 					cm.setPayments(dateFrom,dateTo,today,advice,"Deduction",type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
 				}
 				storedCMs.put("Z"+type, cm);
+				//clones.add(cm);
+				}
+			}
+            if(fda.getDeductions().size() != 0){	
+				for(String key: fda.getAdditions().keySet()){
+					Addition d = fda.getAdditions().get(key);
+				String type = ""+d.getReason();
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get("X"+type);
+					cm = cm.addPayments(type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPayments(dateFrom,dateTo,today,advice,"Contribution",type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
+				}
+				storedCMs.put("X"+type, cm);
 				//clones.add(cm);
 				}
 			}
