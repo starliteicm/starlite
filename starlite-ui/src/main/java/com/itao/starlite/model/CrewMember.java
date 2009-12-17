@@ -1047,9 +1047,9 @@ public class CrewMember implements Cloneable {
 	
 	@Embeddable
 	public static class Payments {
+		
 		@Column(nullable=false)
 		private Money monthlyBaseRate = new Money();
-		
 		@Column(nullable=false)
 		private Money areaAllowance = new Money();
 		@Column(nullable=false)
@@ -1101,7 +1101,6 @@ public class CrewMember implements Cloneable {
 			flightAllowance.setCurrencyCode(currency);
 		}
 		
-		private Payments() {}
 	}
 
 //	@Embeddable
@@ -1769,7 +1768,7 @@ public class CrewMember implements Cloneable {
     	return this;
     }
     
-    public void setPayments(String _fromDate, String _toDate, String _procDate, Boolean advice, String _category, String _paymentType, String _paymentDays, String _paymentRate, String _paymentTotal, double _total){
+    public void setPaymentsValues(String _fromDate, String _toDate, String _procDate, Boolean advice, String _category, String _paymentType, String _paymentDays, String _paymentRate, String _paymentTotal, double _total){
     	if(advice){
     	   this.title        = "Pay Advice";
     	   this.type         = "period";
@@ -1901,7 +1900,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,type,"-",fda.getMonthlyRate().toString(),fda.getMonthlyRate().toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,type,"-",fda.getMonthlyRate().toString(),fda.getMonthlyRate().toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
@@ -1914,7 +1913,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,"Daily",""+fda.getAreaDays(),fda.getAreaRate().toString(),fda.getAreaRate().multiply(fda.getAreaDays()).toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Daily",""+fda.getAreaDays(),fda.getAreaRate().toString(),fda.getAreaRate().multiply(fda.getAreaDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
@@ -1927,7 +1926,7 @@ public class CrewMember implements Cloneable {
 					}
 					else{
 						cm = (CrewMember) clone();
-						cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getAreaDays(),"",fda.getDiscomfortTotal().toString(),fdatotal);
+						cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,type,""+fda.getAreaDays(),"",fda.getDiscomfortTotal().toString(),fdatotal);
 					}
 					storedCMs.put(type, cm);
 					//clones.add(cm);
@@ -1942,7 +1941,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,"Training",""+fda.getDailyDays(),fda.getDailyRate().toString(),fda.getDailyRate().multiply(fda.getDailyDays()).toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Training",""+fda.getDailyDays(),fda.getDailyRate().toString(),fda.getDailyRate().multiply(fda.getDailyDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
@@ -1955,7 +1954,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,type,""+fda.getInstructorDays(),fda.getInstructorRate().toString(),fda.getInstructorRate().multiply(fda.getInstructorDays()).toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,type,""+fda.getInstructorDays(),fda.getInstructorRate().toString(),fda.getInstructorRate().multiply(fda.getInstructorDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 				//clones.add(cm);
@@ -1968,7 +1967,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,category,"Travel",""+fda.getFlightDays(),fda.getFlightRate().toString(),fda.getFlightRate().multiply(fda.getFlightDays()).toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Travel",""+fda.getFlightDays(),fda.getFlightRate().toString(),fda.getFlightRate().multiply(fda.getFlightDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 			}
@@ -1983,7 +1982,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,"Deduction",type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,"Deduction",type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
 				}
 				storedCMs.put("Z"+type, cm);
 				//clones.add(cm);
@@ -1999,7 +1998,7 @@ public class CrewMember implements Cloneable {
 				}
 				else{
 					cm = (CrewMember) clone();
-					cm.setPayments(dateFrom,dateTo,today,advice,"Contribution",type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,"Contribution",type,"1",d.getAmount().toString(),d.getAmount().toString(),fdatotal);
 				}
 				storedCMs.put("X"+type, cm);
 				//clones.add(cm);

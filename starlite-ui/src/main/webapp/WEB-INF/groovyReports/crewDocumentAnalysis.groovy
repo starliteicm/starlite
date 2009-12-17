@@ -37,13 +37,21 @@ def generate(manager, pageContext) {
 		reportRow["role.crm.expiryDate"] = cm.role.crm.expiryDate
 		reportRow["role.dg.expiryDate"] = cm.role.dg.expiryDate
 		reportRow["role.huet.expiryDate"] = cm.role.huet.expiryDate
-				
-		folder = docManager.getFolderByPath("/crew/"+cm.code, user);
-		reportRow["licence"] = folder.getDocumentByTag("licence") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("licence").name : "#";
-		reportRow["medical"] = folder.getDocumentByTag("medical") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("medical").name : "#" ;
-		reportRow["crm"] = folder.getDocumentByTag("CRM") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("CRM").name : "#";
-		reportRow["dg"] = folder.getDocumentByTag("DG") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("DG").name : "#";
-		reportRow["huet"] = folder.getDocumentByTag("HUET") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("HUET").name : "#";
+		
+		try{
+		code = cm.code;		
+		path = "/crew/"+code;
+		System.out.println("path is :"+path)
+		folder = docManager.getFolderByPath(path, user);
+		reportRow["passport"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "#";
+		reportRow["licence"]  = folder.getDocumentByTag("licence") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("licence").name : "#";
+		reportRow["medical"]  = folder.getDocumentByTag("medical") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("medical").name : "#" ;
+		reportRow["crm"]      = folder.getDocumentByTag("CRM") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("CRM").name : "#";
+		reportRow["dg"]       = folder.getDocumentByTag("DG") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("DG").name : "#";
+		reportRow["huet"]     = folder.getDocumentByTag("HUET") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("HUET").name : "#";
+		}
+		catch(Exception e){//e.printStackTrace();
+		}
 		report.add(reportRow)
     }
     
@@ -56,22 +64,22 @@ def generate(manager, pageContext) {
     def huetstyle     = ""
     
     if(doctype=="passport"){
-       passportstyle="background:yellow"
+       passportstyle="background:#d0f0c0;"
     }
 	else if(doctype=="licence"){
-       licencestyle="background:yellow"
+       licencestyle="background:#d0f0c0"
     }
 	else if(doctype=="medical"){
-       medicalstyle="background:yellow"
+       medicalstyle="background:#d0f0c0"
     }
 	else if(doctype=="crm"){
-       crmstyle="background:yellow"
+       crmstyle="background:#d0f0c0"
     }
 	else if(doctype=="dg"){
-       dgstyle="background:yellow"
+       dgstyle="background:#d0f0c0"
     }
 	else if(doctype=="huet"){
-       huetstyle="background:yellow"
+       huetstyle="background:#d0f0c0"
     }
 
 	pageContext["title"] = "Crew Document Analysis"	
@@ -82,7 +90,7 @@ def generate(manager, pageContext) {
 			.column("code").link('crewMember!assignments.action?id=${code}&fromPage='+pageContext["thisUrl"])
 			.column("personal.lastName").called("Last Name")
 			.column("personal.firstName").called("First Name")
-			.column("personal.passportExpiryDate").called("Passport").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle)							
+			.column("personal.passportExpiryDate").called("Passport").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle).link('${passport}')						
 			.column("role.r1.expiryDate").called("Licence").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(licencestyle).link('${licence}')
 			.column("role.expiryDate").called("Medical").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(medicalstyle).link('${medical}')									
 			.column("role.crm.expiryDate").called("CRM").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(crmstyle).link('${crm}')
