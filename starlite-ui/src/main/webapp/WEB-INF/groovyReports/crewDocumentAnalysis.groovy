@@ -83,6 +83,8 @@ def generate(manager, pageContext) {
     }
 
 	pageContext["title"] = "Crew Document Analysis"	
+	
+	if(pageContext["VIEW"] == Table.Type.HTML){
 	return Table.create("Crew Document Analysis", pageContext["VIEW"])
 		.of(report)
 		.captioned("Crew Document Analysis")
@@ -103,4 +105,27 @@ def generate(manager, pageContext) {
 			.column("role.huet.expiryDate").called("Huet Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(huetstyle)
 			.column("huet").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(huetstyle)
 		.render();
+	}
+	else{
+	return Table.create("Crew Document Analysis", pageContext["VIEW"])
+        .of(report)
+        .captioned("Crew Document Analysis")
+        .withColumns()
+            .column("code").link('crewMember!assignments.action?id=${code}&fromPage='+pageContext["thisUrl"])
+            .column("personal.lastName").called("Last Name")
+            .column("personal.firstName").called("First Name")
+            .column("personal.passportExpiryDate").called("Passport Exp")             
+            .column("passport").called("Doc")
+            .column("role.r1.expiryDate").called("Licence Exp")
+            .column("licence").called("Doc")
+            .column("role.expiryDate").called("Medical Exp")                               
+            .column("medical").called("Doc")
+            .column("role.crm.expiryDate").called("CRM Exp")
+            .column("crm").called("Doc")
+            .column("role.dg.expiryDate").called("DG Exp")
+            .column("dg").called("Doc")
+            .column("role.huet.expiryDate").called("Huet Exp")
+            .column("huet").called("Doc")
+        .render();
+	}
 }
