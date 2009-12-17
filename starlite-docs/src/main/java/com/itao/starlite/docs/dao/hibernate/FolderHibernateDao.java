@@ -12,9 +12,10 @@ public class FolderHibernateDao extends GenericHibernateDao<Folder, Integer> imp
 //		return (Folder)getCurrentSession().createQuery("from Folder f where f.path = ?")
 //			.setString(0, path)
 //			.uniqueResult();
+		Folder root = findById(1);
+    try{
 		if (path.startsWith("/"))
 			path = path.substring(1);
-		Folder root = findById(1);
 		String[] parts = path.split("/");
 		Folder current = root;
 		for (int i=0; i<parts.length; i++) {
@@ -33,4 +34,9 @@ public class FolderHibernateDao extends GenericHibernateDao<Folder, Integer> imp
 		}
 		return current;
 	}
+	catch(Exception e){
+	   e.printStackTrace();
+	}
+	return root;
+}
 }
