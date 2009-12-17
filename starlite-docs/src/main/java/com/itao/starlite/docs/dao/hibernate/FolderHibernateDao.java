@@ -37,6 +37,6 @@ public class FolderHibernateDao extends GenericHibernateDao<Folder, Integer> imp
 	catch(Exception e){
 	   e.printStackTrace();
 	}
-	return root;
+	return new Folder();
 }
 }

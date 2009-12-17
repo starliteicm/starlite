@@ -43,12 +43,12 @@ def generate(manager, pageContext) {
 		path = "/crew/"+code;
 		System.out.println("path is :"+path)
 		folder = docManager.getFolderByPath(path, user);
-		reportRow["passport"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "#";
-		reportRow["licence"]  = folder.getDocumentByTag("licence") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("licence").name : "#";
-		reportRow["medical"]  = folder.getDocumentByTag("medical") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("medical").name : "#" ;
-		reportRow["crm"]      = folder.getDocumentByTag("CRM") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("CRM").name : "#";
-		reportRow["dg"]       = folder.getDocumentByTag("DG") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("DG").name : "#";
-		reportRow["huet"]     = folder.getDocumentByTag("HUET") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("HUET").name : "#";
+		reportRow["passport"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "";
+		reportRow["licence"]  = folder.getDocumentByTag("licence") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("licence").name : "";
+		reportRow["medical"]  = folder.getDocumentByTag("medical") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("medical").name : "" ;
+		reportRow["crm"]      = folder.getDocumentByTag("CRM") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("CRM").name : "";
+		reportRow["dg"]       = folder.getDocumentByTag("DG") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("DG").name : "";
+		reportRow["huet"]     = folder.getDocumentByTag("HUET") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("HUET").name : "";
 		}
 		catch(Exception e){//e.printStackTrace();
 		}
@@ -90,11 +90,17 @@ def generate(manager, pageContext) {
 			.column("code").link('crewMember!assignments.action?id=${code}&fromPage='+pageContext["thisUrl"])
 			.column("personal.lastName").called("Last Name")
 			.column("personal.firstName").called("First Name")
-			.column("personal.passportExpiryDate").called("Passport").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle).link('${passport}')						
-			.column("role.r1.expiryDate").called("Licence").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(licencestyle).link('${licence}')
-			.column("role.expiryDate").called("Medical").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(medicalstyle).link('${medical}')									
-			.column("role.crm.expiryDate").called("CRM").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(crmstyle).link('${crm}')
-			.column("role.dg.expiryDate").called("DG").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(dgstyle).link('${dg}')
-			.column("role.huet.expiryDate").called("Huet").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(huetstyle).link('${huet}')
+			.column("personal.passportExpiryDate").called("Passport Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle)				
+			.column("passport").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(passportstyle)
+			.column("role.r1.expiryDate").called("Licence Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(licencestyle)
+			.column("licence").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(licencestyle)
+			.column("role.expiryDate").called("Medical Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(medicalstyle)									
+			.column("medical").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(medicalstyle)
+			.column("role.crm.expiryDate").called("CRM Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(crmstyle)
+			.column("crm").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(crmstyle)
+			.column("role.dg.expiryDate").called("DG Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(dgstyle)
+			.column("dg").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(dgstyle)
+			.column("role.huet.expiryDate").called("Huet Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(huetstyle)
+			.column("huet").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(huetstyle)
 		.render();
 }
