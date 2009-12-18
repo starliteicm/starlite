@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.text.SimpleDateFormat;
 
 import com.itao.starlite.model.Aircraft;
 import com.itao.starlite.model.CrewDay;
@@ -45,6 +46,7 @@ def contract(manager, crew, allAircraft, charter, dateFrom, dateTo) {
 				crewMember.put("crewDayMap", new HashMap());
 				crewMap.put(""+c.getCode(), crewMember);
 			}
+			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Map crewDayMap = (Map) ((Map) crewMap.get(""+c.getCode())).get("crewDayMap");
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(cd.getDate());
@@ -82,8 +84,8 @@ def generate(manager, pageContext) {
 	
 	def allAircraft = manager.getAllAircraft().aircraftList;
 	
-	def dateFrom = new org.joda.time.DateMidnight(2007, 3, 1).toDate()
-    def dateTo = new org.joda.time.DateMidnight(2008, 8, 1).toDate()
+	def dateFrom = new org.joda.time.DateMidnight(new Integer(year), new Integer(month), 1).toDate()
+    def dateTo = new org.joda.time.DateMidnight(new Integer(year),new Integer(month), 30).toDate()
 	
 	for (charter in charters) {
 		crewDayAircraft = contract(manager, crew, allAircraft, charter, dateFrom, dateTo)
