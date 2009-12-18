@@ -258,15 +258,17 @@ $("document").ready(function() {
 		<div style="float:left; width: 500px;">
 		<fieldset>
 		<legend>Photo</legend>
-		<div class="fm-opt" style="height:150px;">
+		<div class="fm-opt" style="height:120px;">
 		    <label for="image" style="float:left;">&nbsp;</label>
-		    <div style="float:left;padding:10px;margin:10px;margin-bottom:30px;border:1px solid silver;width:100px;height:100px">
+		    <div style="float:left;padding:10px;margin:10px;border:1px solid silver;width:100px;height:100px">
 		        <img name="image" src="crewMember!photo.action?id=${id!}" style="width:100px;height:100px;"><br/><br/>
-		     <#if photoFile?exists>
-               <div id="photoUploadedFile"><a href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="document!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
-             </#if>
+		    
 		    </div>
 		</div>
+		<br/>
+		 <#if photoFile?exists>
+         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="document!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
+        </#if>
 		<br/>
 		<div style="">
 		    <div class="fm-opt">
