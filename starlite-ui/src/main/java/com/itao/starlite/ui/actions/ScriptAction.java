@@ -51,6 +51,8 @@ public class ScriptAction extends ActionSupport implements UserAware {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
+		
+		
 		pageContext = new HashMap<String, Object>();
 		pageContext.put("extraParams", processParams(ServletActionContext.getRequest()));
 		
