@@ -198,18 +198,21 @@
 		
 		<div style="padding:20px;padding-top:0px;">
 		
-		  <form action="#" autocomplete="off" onsubmit="return false;">
+		  <form action="crewMember.action" autocomplete="off" >
+		  <input type="hidden" name="tab" value="hours">
+          <input type="hidden" name="id" value="${id}">
             <fieldset>
             <legend>Hours</legend> 
-            <div class="fm-opt">
-            <label for="month">Select Month:</label>
-            <select id="month" name="month" onchange="changeMonth(this);">      
+            <div style="float:left;padding-right:20px;" class="fm-opt">
+            <label for="hoursMonth">Select Month:</label>
+            <select id="hoursMonth" name="hoursMonth" >      
             <option></option>
             <#list months.keySet() as month>
               <option>${month}</option>        
             </#list>
             </select>
-            
+            </div>
+            <button type="submit" class="smooth" style="float:left;margin-right:10px; margin-bottom: 4px;"><img src="images/icons/zoom_in.png"/>Select</button>
             <br/><br/>
             </fieldset>    
           </form>
@@ -225,8 +228,11 @@
         
           <input type="hidden" name="id" value="${id}">
           <input type="hidden" name="hoursMonth" value="${month}">
-		
+		  <#if hoursMonth! == month>
+		  <div class="months" id="${month}" style="padding:5px;border:1px solid silver;margin:20px;">
+		  <#else>
 		  <div class="months" id="${month}" style="padding:5px;border:1px solid silver;margin:20px;display:none;">
+		  </#if>
 		  <h3 style="height:20px;width:70px;background-color:white;color:silver;position:relative;top:-22px;left:30px;padding:5px;">${month}</h3>
 		  <table style="width:100%">
 		  <tr>

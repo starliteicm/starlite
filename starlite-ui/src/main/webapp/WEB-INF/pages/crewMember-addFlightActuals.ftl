@@ -354,7 +354,7 @@
             
             
             
-            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries"] as c>
+            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries","Pension"] as c>
             tmpOption = document.createElement("option");
             tmpOption.setAttribute("value", '${c}');
             tmpOption.appendChild(document.createTextNode('${c}'));

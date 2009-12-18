@@ -8,7 +8,6 @@
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDocumentAnalysis.groovy">Crew Document Analysis</a>	
 	</#if>
 </ul>
 
@@ -16,7 +15,7 @@
     <input type="hidden" name="scriptName" value="crewDocumentAnalysis.groovy" />
 <li style="width:200px;height:30px;float:left;" ><A href="#" onclick="document.forms.crewDoc.submit();" >View Crew Document Report</A></li>
     <select style="float:left" name="documenttype">
-        <option value="">No Filter</option>
+        <option value="">-</option>
         <option value="passport">Passport</option>
         <option value="licence">Licence</option>
         <option value="medical">Medical</option>

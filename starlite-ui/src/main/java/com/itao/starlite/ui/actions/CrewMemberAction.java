@@ -137,6 +137,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document crm;
     public Document dg;
     public Document huet;
+    public Document photoFile;
     
     
     @SuppressWarnings("unchecked")
@@ -177,8 +178,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 
 		if (tab.equals("personal")){
+			
 			passportFiles = new HashMap<String,Document>();
 			folder = docManager.getFolderByPath("/crew/"+id, user);
+			
+			photoFile = folder.getDocumentByTag("photo");
+			
 			int count=0;
 			boolean morePassports = true;
 	       
@@ -334,7 +339,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				.column("flightRate").withStyle("text-align:right").called("Travel")
 				.column("flightDays").called("Days")
 				.column("deductionTotal").called("Deductions")
-				.column("additionTotal").called("Additions")
+				.column("additionTotal").called("Contributions")
 				.column("total").called("Total Due").withStyle("text-align:right")
 				.column("paidDate").called("Date Paid").asDate("dd/MM/yyyy")
 				.column("paidAmount").called("Amount Paid").withStyle("text-align:right")
@@ -456,37 +461,71 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String setupHours(){
+	private String setupHours() throws Exception{
 		
-		String start = "2009-01";
+		int startYear = 2009;
+		int startMonth = 1;
+		boolean moreMonths = true;
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		
+		int currMonth = cal.get(Calendar.MONTH)+1;
+		int currYear = cal.get(Calendar.YEAR);
 		months = new TreeMap<String,TreeMap>(Collections.reverseOrder());
+		
+		while(moreMonths){
+		if(startYear < currYear){
+			for(int i=1; i< 13; i++){
+				if(i < 10){
+					months.put(""+startYear+"-0"+i,new TreeMap());
+				}
+				else{
+					months.put(""+startYear+"-"+i,new TreeMap());
+				}
+			}
+		}
+		else if (startYear == currYear) {
+			for(int i=1; i<=currMonth; i++){
+				if(i < 10){
+					months.put(""+startYear+"-0"+i,new TreeMap());
+				}
+				else{
+					months.put(""+startYear+"-"+i,new TreeMap());
+				}
+			}
+		}
+		else{
+			moreMonths = false;
+		}
+		startYear++;
+		}
+		
 		allCharters=manager.getAllCharters().charterList;
 		allAircraft=manager.getAllAircraft().aircraftList;
 		
+		
+		if(hoursMonth != null){
+
+		
+		
 		SimpleDateFormat monthformat = new SimpleDateFormat("yyyy-MM");
 		SimpleDateFormat dayformat = new SimpleDateFormat("dd");
+		
+		cal = Calendar.getInstance();
+		cal.setTime(monthformat.parse(hoursMonth));
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		
 		String nowMonth = monthformat.format(cal.getTime());
 		
-		while(!start.equals(nowMonth)){
-			
-			//LOG.info(nowMonth);
-			
-			 
-			
-			List<CrewDay> crewDays = manager.getCrewDayByCrewMemberByMonth(new Integer(crewMember.getId()),new Integer(nowMonth.substring(0, 4)),new Integer(nowMonth.substring(5, nowMonth.length())));
-			
-			Map<String,CrewDay> crewDayMap = new HashMap<String,CrewDay>();
-			for(CrewDay cd : crewDays){
-				crewDayMap.put(dayformat.format(cd.getDate()), cd);
-			}
+		//LOG.info(nowMonth);	
+		List<CrewDay> crewDays = manager.getCrewDayByCrewMemberByMonth(new Integer(crewMember.getId()),new Integer(nowMonth.substring(0, 4)),new Integer(nowMonth.substring(5, nowMonth.length())));
+		Map<String,CrewDay> crewDayMap = new HashMap<String,CrewDay>();
+		for(CrewDay cd : crewDays){
+			crewDayMap.put(dayformat.format(cd.getDate()), cd);
+		}
 			
 			
-			TreeMap days = new TreeMap();
+		TreeMap days = new TreeMap();
 			
-			while(nowMonth.equals(monthformat.format(cal.getTime()))){	
+		while(nowMonth.equals(monthformat.format(cal.getTime()))){	
 				String day = dayformat.format(cal.getTime());
 				Map dayMap = new HashMap();
 				dayMap.put("day", cal.get(Calendar.DAY_OF_WEEK));
@@ -494,17 +533,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				days.put(day,dayMap);
 				cal.add(Calendar.DAY_OF_MONTH, 1);
 				//LOG.info(day);
-			}
-			
-			cal.add(Calendar.DAY_OF_MONTH, -1);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-
-			months.put(nowMonth,days);
-			
-			cal.add(Calendar.MONTH, -1);
-			nowMonth = monthformat.format(cal.getTime());
-		  
 		}
+		
+			
+		months.put(nowMonth,days);
+		
+		}
+		
 		//provide month list
 		return "hours";
 	}
