@@ -107,7 +107,7 @@ $("document").ready(function() {
       if($("#mediexpiry").val()     == ""){ errormsg += "Medical expiry, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
-      if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}      
+      if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}     
       if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}            
       if(error==1){
          errormsg=errormsg.substring(0,errormsg.length-2);
@@ -220,7 +220,7 @@ $("document").ready(function() {
 				<input name="crewMember.role.r1.number" id="licencenumber" type="text" value="${crewMember.role.r1.number!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.r1.type">Type:</label>
+				<label for="crewMember.role.r1.type"><span class="star">*</span>Type:</label>
 				<select name="crewMember.role.r1.type" value="${crewMember.role.r1.type!}" id="licencetype">
 				  <option <#if crewMember.role.r1.type?if_exists == "AME">selected</#if>>      AME
 				  <option <#if crewMember.role.r1.type?if_exists == "ATPL">selected</#if>>     ATPL
