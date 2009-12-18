@@ -84,8 +84,13 @@ def generate(manager, pageContext) {
 	
 	def allAircraft = manager.getAllAircraft().aircraftList;
 	
-	def dateFrom = new org.joda.time.DateMidnight(new Integer(year), new Integer(month), 1).toDate()
-    def dateTo = new org.joda.time.DateMidnight(new Integer(year),new Integer(month), 30).toDate()
+	def dateFromJoda = new org.joda.time.DateMidnight(new Integer(year), new Integer(month), 1)
+	def dateToJoda = dateFromJoda.plusMonths(1).plusDays(-1)
+	
+	def dateFrom = dateFromJoda.toDate()
+    def dateTo = dateToJoda.toDate()
+
+    def rptDateFormat = new java.text.SimpleDateFormat("dd/MM/yyyy")
 	
 	for (charter in charters) {
 		crewDayAircraft = contract(manager, crew, allAircraft, charter, dateFrom, dateTo)
@@ -98,8 +103,8 @@ def generate(manager, pageContext) {
 					reportRow["firstName"] = crewday.value["crewMember"].personal.firstName
 					reportRow["lastName"] = crewday.value["crewMember"].personal.lastName
 					reportRow["date"] = cd.key
-					reportRow["from"] = cd.value["start"]
-					reportRow["to"] = cd.value["end"]
+					reportRow["from"] = rptDateFormat.format(cd.value["start"])
+					reportRow["to"] = rptDateFormat.format(cd.value["end"])
 					report.add(reportRow)
 				}
 			}
@@ -115,9 +120,9 @@ def generate(manager, pageContext) {
 		.withColumns()
 			.column("charter").sort(0)
 			.column("aircraft").sort(1)
-			.column("firstName").sort(4)
-            .column("lastName").sort(3)
-			.column("date").sort(2)
+			.column("firstName").sort(3)
+            .column("lastName").sort(2)
+			.column("date").sort(4)
 			.column("from")
 			.column("to")
 //			.column("amount").withStyle("text-align:right;width:80px;")
