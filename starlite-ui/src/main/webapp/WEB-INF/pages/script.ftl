@@ -27,7 +27,7 @@
 <div id="toolbar">
 	<a href="${request.requestURL}?scriptName=${scriptName}&view=CSV${currentDateParams!}" style="float: left;"><img src="images/icons/page_white_text.png"/>Export Csv</a>
 	<a href="${request.requestURL}?scriptName=${scriptName}&view=EXCEL${currentDateParams!}" style="float: left;"><img src="images/icons/page_white_excel.png"/>Export Excel</a>
-	<a href="${request.requestURL}?scriptName=${scriptName}&view=PDF${currentDateParams!}" style="float: left;"><img src="images/icons/page_white_acrobat.png"/>Export Pdf</a>
+	<!--<a href="${request.requestURL}?scriptName=${scriptName}&view=PDF${currentDateParams!}" style="float: left;"><img src="images/icons/page_white_acrobat.png"/>Export Pdf</a>-->
 	<div class="separator"> </div>
 	<#if pageContext["extraParams"]["previousMonth"]?? && pageContext["extraParams"]["previousYear"]??>
 	<a href="${request.requestURL}${paramstring}&month=${pageContext["extraParams"]["previousMonth"]}&year=${pageContext["extraParams"]["previousYear"]?c}"><img src="images/icons/resultset_previous.png"/>Previous</a>
