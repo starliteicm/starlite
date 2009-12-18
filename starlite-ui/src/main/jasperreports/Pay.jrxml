@@ -319,11 +319,11 @@
    
 	<pageHeader>
 		<band height="120">
-            <!-- <image>
+            <image>
 				<reportElement x="165" y="25" width="220" height="70"/>
 				<graphicElement pen="None"/>
 				<imageExpression class="java.lang.String"><![CDATA["images/cri-logo.gif"]]></imageExpression>
-			</image> -->
+			</image>
             <staticText>
 				<reportElement mode="Opaque" x="62" y="5" width="400" height="25" forecolor="#777777" />
 				<textElement textAlignment="Center">
