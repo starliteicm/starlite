@@ -89,15 +89,21 @@ def generate(manager, pageContext) {
 	
 	for (charter in charters) {
 		crewDayAircraft = contract(manager, crew, allAircraft, charter, dateFrom, dateTo)
-		def reportRow = [:];
-		println charter.id+", "+crewDayAircraft
-		reportRow["lastName"] = charter.id
-		reportRow["firstName"] = crewDayAircraft
-//		reportRow["date"] = a.date
-//		reportRow["type"] = d.key
-//		reportRow["amount"] = d.value.USD
-		report.add(reportRow)
-		
+		for (aircraft in crewDayAircraft) {
+			for (crewday in aircraft.value["crewMap"]) {
+				for (cd in crewday.value["crewDayMap"]) {
+					def reportRow = [:];
+					reportRow["charter"] = charter.code
+					reportRow["aircraft"] = aircraft.key
+					reportRow["firstName"] = crewday.value["crewMember"].personal.firstName
+					reportRow["lastName"] = crewday.value["crewMember"].personal.lastName
+					reportRow["date"] = cd.key
+					reportRow["from"] = cd.value["start"]
+					reportRow["to"] = cd.value["end"]
+					report.add(reportRow)
+				}
+			}
+		}
 	}
 	
 	def datePeriod = new org.joda.time.DateMidnight(Integer.valueOf(year), Integer.valueOf(month), 1).toDate()
@@ -107,10 +113,13 @@ def generate(manager, pageContext) {
 		.of(report)
 		.captioned("Crew Charter Time " + dateFormat.format(datePeriod))
 		.withColumns()
-			.column("lastName").sort(0)
-			.column("firstName").sort(1)
-//			.column("date")
-//			.column("type")
+			.column("charter").sort(0)
+			.column("aircraft").sort(1)
+			.column("firstName").sort(4)
+            .column("lastName").sort(3)
+			.column("date").sort(2)
+			.column("from")
+			.column("to")
 //			.column("amount").withStyle("text-align:right;width:80px;")
 			
 			
