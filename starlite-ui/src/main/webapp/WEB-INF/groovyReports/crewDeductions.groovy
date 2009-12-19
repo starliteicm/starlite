@@ -14,6 +14,9 @@ def generate(manager, pageContext) {
 	def report = []
 	
 	for (CrewMember cm in crew) {
+	    System.out.println(period);
+	    System.out.println(cm);
+	    System.out.println(cm.getFlightAndDutyActualsForMonth(period));
         CrewMember.FlightAndDutyActuals actuals = cm.getFlightAndDutyActualsForMonth(period);
 		for (a in actuals) {
 			for (d in a.deductions) {

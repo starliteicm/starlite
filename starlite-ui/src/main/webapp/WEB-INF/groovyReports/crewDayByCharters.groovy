@@ -125,7 +125,6 @@ def generate(manager, pageContext) {
 			.column("date").sort(4)
 			.column("from")
 			.column("to")
-//			.column("amount").withStyle("text-align:right;width:80px;")
 			
 			
 	return tableBuilder.render();

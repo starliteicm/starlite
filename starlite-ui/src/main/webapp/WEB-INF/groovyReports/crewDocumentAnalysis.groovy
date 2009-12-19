@@ -44,11 +44,23 @@ def generate(manager, pageContext) {
 		System.out.println("path is :"+path)
 		folder = docManager.getFolderByPath(path, user);
 		reportRow["passport"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "";
+		if(!"".equals(reportRow["passport"])){reportRow["ptick"] = "Y";}
+		else{reportRow["ptick"] = "N";}
 		reportRow["licence"]  = folder.getDocumentByTag("licence") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("licence").name : "";
+		if(!"".equals(reportRow["licence"])){reportRow["ltick"] = "Y";}
+        else{reportRow["ltick"] = "N";}
 		reportRow["medical"]  = folder.getDocumentByTag("medical") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("medical").name : "" ;
+		if(!"".equals(reportRow["medical"])){reportRow["mtick"] = "Y";}
+        else{reportRow["mtick"] = "N";}
 		reportRow["crm"]      = folder.getDocumentByTag("CRM") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("CRM").name : "";
+		if(!"".equals(reportRow["crm"])){reportRow["ctick"] = "Y";}
+        else{reportRow["ctick"] = "N";}
 		reportRow["dg"]       = folder.getDocumentByTag("DG") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("DG").name : "";
+		if(!"".equals(reportRow["dg"])){reportRow["dtick"] = "Y";}
+        else{reportRow["dtick"] = "N";}
 		reportRow["huet"]     = folder.getDocumentByTag("HUET") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("HUET").name : "";
+		if(!"".equals(reportRow["medical"])){reportRow["htick"] = "Y";}
+        else{reportRow["htick"] = "N";}
 		}
 		catch(Exception e){//e.printStackTrace();
 		}
@@ -111,21 +123,21 @@ def generate(manager, pageContext) {
         .of(report)
         .captioned("Crew Document Analysis")
         .withColumns()
-            .column("code").link('crewMember!assignments.action?id=${code}&fromPage='+pageContext["thisUrl"])
+            .column("code")
             .column("personal.lastName").called("Last Name")
             .column("personal.firstName").called("First Name")
             .column("personal.passportExpiryDate").called("Passport Exp")             
-            .column("passport").called("Doc")
+            .column("ptick").called("Doc")
             .column("role.r1.expiryDate").called("Licence Exp")
-            .column("licence").called("Doc")
+            .column("ltick").called("Doc")
             .column("role.expiryDate").called("Medical Exp")                               
-            .column("medical").called("Doc")
+            .column("mtick").called("Doc")
             .column("role.crm.expiryDate").called("CRM Exp")
-            .column("crm").called("Doc")
+            .column("ctick").called("Doc")
             .column("role.dg.expiryDate").called("DG Exp")
-            .column("dg").called("Doc")
+            .column("dtick").called("Doc")
             .column("role.huet.expiryDate").called("Huet Exp")
-            .column("huet").called("Doc")
+            .column("htick").called("Doc")
         .render();
 	}
 }

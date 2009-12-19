@@ -1668,9 +1668,11 @@ public class CrewMember implements Cloneable {
     public FlightAndDutyActuals getFlightAndDutyActualsForMonth( String month ) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
         for (FlightAndDutyActuals actual : getFlightAndDutyActuals()) {
+        	if(actual.getDate() != null){
             if ( month.equals(df.format(actual.getDate())) ) {
                 return actual;
             }
+        	}
         }
         return new FlightAndDutyActuals(
 						getPayments().getMonthlyBaseRate(),
