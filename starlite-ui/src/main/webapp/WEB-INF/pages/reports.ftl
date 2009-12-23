@@ -5,6 +5,7 @@
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a>
 	<#if notAuthorised>
 	<#else>
+	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days On Contract</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>
