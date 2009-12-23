@@ -165,7 +165,7 @@ $("document").ready(function() {
 			<div class="fm-opt">
 				<label for="crewMember.role.position"><span class="star">*</span>Position:</label>
 
-				<select name="crewMember.role.position" id="position" />
+				<select name="crewMember.role.position" id="position" onchange="$('#switch_role_to').attr('value', this.value);$('#switchrole').submit();"/>
 				    <option value=""></option>
 					<option value="Pilot" <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
 					<option value="AME" <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
@@ -213,6 +213,8 @@ $("document").ready(function() {
 				<input name="crewMember.role.telephoneExtension" type="text" value="${crewMember.role.telephoneExtension!}"/>
 			</div>-->
 		</fieldset>
+		
+		<#if crewMember.role.position?if_exists != "Base Manager">
 		<fieldset>
 			<legend>Licence</legend>
 			<div class="fm-opt">
@@ -239,19 +241,43 @@ $("document").ready(function() {
                   <div><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
             </div>
-			
-			
 			<br/>
 		</fieldset>
-  <fieldset>
-  <#if crewMember.role.position?if_exists == "Pilot">
+		</#if>
+  
+       <#if crewMember.role.position?if_exists == "AME">
+       <#-- using night, game, nvg and sling fields -->
+       <#-- for AME ratings S92, S330J, 407 and other -->
+       <fieldset>
+		<legend>Ratings</legend>
+		 	<div class="fm-opt">
+				<label for="crewMember.role.night">S92:</label>
+				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.game">S330J:</label>
+				<input name="crewMember.role.game" type="checkbox"  value="yes"  <#if crewMember.role.game?if_exists == "yes" >checked</#if> />
+			</div>			
+			<div class="fm-opt">
+				<label for="crewMember.role.nvg">407:</label>
+				<input name="crewMember.role.nvg" type="checkbox"  value="yes"  <#if crewMember.role.nvg?if_exists == "yes" >checked</#if> />
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.sling">Other:</label>
+				<input name="crewMember.role.sling" type="checkbox"  value="yes"  <#if crewMember.role.sling?if_exists == "yes" >checked</#if> />
+			</div>			
+        </fieldset>
+	    </#if>
+        
+       <#if crewMember.role.position?if_exists == "Pilot">
+       <fieldset>
 		<legend>Ratings (Pilots only)</legend>
 		 <div class="fm-opt">
 				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
 				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes"  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
 			</div>	
 				<div class="fm-opt">
-				<label for="crewMember.role.instructor.type">Instructor Type:</label>
+				<label for="crewMember.role.instructor.type">Instructor for AC Type:</label>
 					<select name="crewMember.role.instructor.type">
 			    	<option>
 					<#list aircraftTypes?if_exists as aircraftType>
@@ -259,9 +285,7 @@ $("document").ready(function() {
 					</#list>
 				</select>
 			</div>
-
-		
-   <div class="fm-opt">
+            <div class="fm-opt">
 				<label for="crewMember.role.instructor.quantity">Instructor Grade:</label>
 				<select name="crewMember.role.instructor.quantity" >
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 1">selected</#if>>Grade 1
@@ -269,13 +293,11 @@ $("document").ready(function() {
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
 				</select>
 			</div>
-   
-				
 			<div class="fm-opt">
 				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
 			</div>
-					<div class="fm-opt">
+			<div class="fm-opt">
 				<label for="crewMember.role.night">Night Rated:</label>
 				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
 			</div>
@@ -291,8 +313,7 @@ $("document").ready(function() {
 				<label for="crewMember.role.sling">Undersling Rated:</label>
 				<input name="crewMember.role.sling" type="checkbox"  value="yes"  <#if crewMember.role.sling?if_exists == "yes" >checked</#if> />
 			</div>			
-		
-  	<div class="fm-opt">
+  	        <div class="fm-opt">
 				<label for="crewMember.role.test.number">Test Rated:</label>
 				<input name="crewMember.role.test.number" type="checkbox"  value="yes"  <#if crewMember.role.test.number?if_exists == "yes" >checked</#if> />
 			</div>
@@ -303,8 +324,7 @@ $("document").ready(function() {
 					<option <#if crewMember.role.test.type?if_exists == "Grade 2">selected</#if>>Grade 2
 				</select>
 			</div>
-   
-  	<div class="fm-opt">
+  	        <div class="fm-opt">
 				<label for="crewMember.role">Instrument Rated:</label>
 				<#if crewMember.role.instrument?exists  >
 				  <input name="crewMember.role.instrument" type="checkbox"  value="1" />
@@ -312,21 +332,15 @@ $("document").ready(function() {
 				  <input name="crewMember.role.instrument" type="checkbox" CHECKED value="1" />
 				</#if>
 			</div>	
-			
-			<#if crewMember.role.position?if_exists == "Pilot">   
-                <div class="fm-opt">
+            <div class="fm-opt">
                 <label for="crewMember.role.ifr.expiryDate">Instrument Rated Expiry:</label>
                 <input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-                </div>
-                </#if>
-											   		
-  </fieldset>
-		</#if>
-  <fieldset>
+            </div>
+    </fieldset>
+	</#if>
+    <#if crewMember.role.position?if_exists == "Pilot">
+    <fieldset>
 			<legend>Certificates</legend>
-               
-             
-             
              <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
                 <label for="crewMember.role.expiryDate"><span class="star">*</span>Medical Expiry:</label>
                 <input name="crewMember.role.expiryDate" id="mediexpiry" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
@@ -351,7 +365,6 @@ $("document").ready(function() {
                   <label for="crmUploadedFile"/>&nbsp;</label>
                   <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
-                                     
             </div>
             <br/>    
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
@@ -380,19 +393,14 @@ $("document").ready(function() {
                 </#if>
             </div>
             <br/>
-				
-				
-						
 			<br/>
-			
-   <!--Medical-->
-
-				
-  </fieldset>
+    </fieldset>
+    </#if>
+    
 		</div>
 		
 		<div style="float:left; width: 500px;">	                               
-  <#if crewMember.role.position?if_exists == "Pilot">               
+        <#if crewMember.role.position?if_exists == "Pilot">               
 		<fieldset>
 			<legend>
 			Hours (Pilots only) 
@@ -441,9 +449,10 @@ $("document").ready(function() {
 				<span>Total Hours For All Types:</span>
 			    <input class="imageCalc" style="width:50px;margin-left:70px;" name="crewMember.role.totalHours" type="text" value="${crewMember.role.totalHours!}"/>
 			</div>
-			</#if> 
 			<br/>
 		</fieldset>
+		 
+		
 		<fieldset>
 			<legend>Last Base Check</legend>
 			<div class="fm-opt">
@@ -459,7 +468,9 @@ $("document").ready(function() {
 					</#list>
 				</select>
 			</div>
-		</fieldset>	
+		</fieldset>
+		</#if>
+			
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>                                  
@@ -469,6 +480,11 @@ $("document").ready(function() {
 		</#if>
 	</form>
 	<script>$('.imageCalc').calculator({showOn: 'button', buttonImageOnly: true, buttonImage: 'images/calculator.png'});</script>
-
+<form action="crewMember.action" id="switchrole" method="GET">
+<input type="hidden" name="tab" value="role"/>
+<input type="hidden" name="id" value="${crewMember.code}"/>
+<input type="hidden" id="switch_role_to" name="switch_role_to" value="blah"/>"
+</form>
+  
 </body>
 </html>

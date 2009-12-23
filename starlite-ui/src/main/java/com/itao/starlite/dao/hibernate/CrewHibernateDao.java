@@ -15,7 +15,6 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 	}
 
 	public CrewMember createCrewMember(String title, String firstName, String lastName) {
-		StringBuilder buf = new StringBuilder();
 		String[] nameParts = lastName.split(" ");
 		
 		String mainPart = "";

@@ -76,6 +76,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public Breadcrumb[] breadcrumbs;
 	public Tab[] tableTabs;
 	public String tab = "personal";
+	public String switch_role_to = "";//used to store temporary role switch to drive different form
 	public String tagArray = "[]";
 	private User user;
 	
@@ -228,7 +229,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		if(tab.equals("role")){
 			aircraftTypes = manager.getAircraftTypes();
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
-	        LOG.info(folder.getDocs());
+//	        LOG.info(folder.getDocs());
 	        licence = folder.getDocumentByTag("licence");
 	        medical = folder.getDocumentByTag("medical");
 	        crm     = folder.getDocumentByTag("CRM");
@@ -1111,6 +1112,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			crewMember = new CrewMember();
 		} else {
 			crewMember = manager.getCrewMemberByCode(id);
+			if (switch_role_to!="") {
+				crewMember.getRole().setPosition(switch_role_to);
+			}
 			if (actualsId == null) {
 				actuals = new CrewMember.FlightAndDutyActuals(
 						crewMember.getPayments().getMonthlyBaseRate(),
