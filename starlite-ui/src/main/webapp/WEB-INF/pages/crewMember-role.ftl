@@ -107,8 +107,10 @@ $("document").ready(function() {
       if($("#mediexpiry").val()     == ""){ errormsg += "Medical expiry, "; error=1;}
       if($("#crmexpiry").val()      == ""){ errormsg += "CRM expiry, "; error=1;}
       if($("#dgexpiry").val()       == ""){ errormsg += "DG Expiry, "; error=1;}
-      if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;}     
-      if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}            
+      if($("#licencenumber").val()  == ""){ errormsg += "licence number, "; error=1;} 
+      if($("#instructorExtra").css("display") != "none"){    
+        if($("#licenceexpiry").val()  == ""){ errormsg += "licence expiry, "; error=1;}
+      }            
       if(error==1){
          errormsg=errormsg.substring(0,errormsg.length-2);
          $("#msg-error").html(errormsg);        
@@ -116,6 +118,14 @@ $("document").ready(function() {
       }else{
          document.forms.roleform.submit(); 
       }                          
+   }
+   
+   function instructor(){
+     $("#instructorExtra").toggle();
+     if($("#instructorExtra").css("display") == "none"){
+      //blank out fields
+      $("#licenceexpiry").val("")
+     }
    }
 </script>
 
@@ -274,8 +284,14 @@ $("document").ready(function() {
 		<legend>Ratings (Pilots only)</legend>
 		 <div class="fm-opt">
 				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
-				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes"  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
-			</div>	
+				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes" onclick='instructor();return true;'  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
+			</div>
+			
+			<#if crewMember.role.instructor.number?if_exists == "yes" >
+			<div id="instructorExtra" >
+			<#else>
+			<div id="instructorExtra" style="display:none;">
+			</#if>	
 				<div class="fm-opt">
 				<label for="crewMember.role.instructor.type">Instructor for AC Type:</label>
 					<select name="crewMember.role.instructor.type">
@@ -297,6 +313,9 @@ $("document").ready(function() {
 				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
 			</div>
+			</div>
+			
+			
 			<div class="fm-opt">
 				<label for="crewMember.role.night">Night Rated:</label>
 				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
