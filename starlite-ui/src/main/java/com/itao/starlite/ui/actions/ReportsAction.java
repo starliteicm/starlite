@@ -159,11 +159,13 @@ public class ReportsAction extends ActionSupport implements UserAware {
 								crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 								groupMap.put("crew",crewMap);
 								
+								if("W".equals(day.getActivity())){
 								if(totalMap.containsKey(fullformat.format(day.getDate()))){
 									totalMap.put(fullformat.format(day.getDate()), totalMap.get(fullformat.format(day.getDate())) +1 );
 								}
 								else {
 									totalMap.put(fullformat.format(day.getDate()), 1 );									
+								}
 								}
 								
 								groupMap.put("total",totalMap);
@@ -175,12 +177,14 @@ public class ReportsAction extends ActionSupport implements UserAware {
 								crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 								groupMap.put("crew",crewMap);
 								
+								if("W".equals(day.getActivity())){
 								if(totalMap.containsKey(fullformat.format(day.getDate()))){
 									totalMap.put(fullformat.format(day.getDate()), totalMap.get(fullformat.format(day.getDate())) +1 );
 								}
 								else {
 									totalMap.put(fullformat.format(day.getDate()), 1 );									
 								}
+							    }
 								
 								groupMap.put("total",totalMap);
 								typeMap.put("ZAME",groupMap);
@@ -195,7 +199,9 @@ public class ReportsAction extends ActionSupport implements UserAware {
 							crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 							groupMap.put("crew",crewMap);
 							
+							if("W".equals(day.getActivity())){
 							totalMap.put(fullformat.format(day.getDate()), 1 );									
+							}
 							
 							groupMap.put("total",totalMap);
 							typeMap.put("ZAME",groupMap);
@@ -213,11 +219,13 @@ public class ReportsAction extends ActionSupport implements UserAware {
 								crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 								groupMap.put("crew",crewMap);
 								
+								if("W".equals(day.getActivity())){
 								if(totalMap.containsKey(fullformat.format(day.getDate()))){
 									totalMap.put(fullformat.format(day.getDate()), totalMap.get(fullformat.format(day.getDate())) +1 );
 								}
 								else {
 									totalMap.put(fullformat.format(day.getDate()), 1 );									
+								}
 								}
 								
 								groupMap.put("total",totalMap);
@@ -229,11 +237,13 @@ public class ReportsAction extends ActionSupport implements UserAware {
 								crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 								groupMap.put("crew",crewMap);
 								
+								if("W".equals(day.getActivity())){
 								if(totalMap.containsKey(fullformat.format(day.getDate()))){
 									totalMap.put(fullformat.format(day.getDate()), totalMap.get(fullformat.format(day.getDate())) +1 );
 								}
 								else {
 									totalMap.put(fullformat.format(day.getDate()), 1 );									
+								}
 								}
 								
 								groupMap.put("total",totalMap);
@@ -250,7 +260,9 @@ public class ReportsAction extends ActionSupport implements UserAware {
 							crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 							groupMap.put("crew",crewMap);
 							
+							if("W".equals(day.getActivity())){
 							totalMap.put(fullformat.format(day.getDate()), 1 );									
+							}
 							
 							groupMap.put("total",totalMap);
 							typeMap.put("Pilot",groupMap);
@@ -269,7 +281,9 @@ public class ReportsAction extends ActionSupport implements UserAware {
 						  dayMap.put(fullformat.format(day.getDate()), day);
 						  crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 						  groupMap.put("crew",crewMap);
-						  totalMap.put(fullformat.format(day.getDate()), 1 );	
+						  if("W".equals(day.getActivity())){
+						  totalMap.put(fullformat.format(day.getDate()), 1 );
+						  }
 						  groupMap.put("total",totalMap);
 						  typeMap.put("ZAME",groupMap);
 					  }
@@ -277,7 +291,9 @@ public class ReportsAction extends ActionSupport implements UserAware {
 						  dayMap.put(fullformat.format(day.getDate()), day);
 						  crewMap.put(day.getCrewMember().getPersonal().getFullName(),dayMap);
 						  groupMap.put("crew",crewMap);
+						  if("W".equals(day.getActivity())){
 						  totalMap.put(fullformat.format(day.getDate()), 1 );	
+						  }
 						  groupMap.put("total",totalMap);
 						  typeMap.put("Pilot",groupMap);
 					  }
