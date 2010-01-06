@@ -227,7 +227,7 @@ font-weight:normal;
 </form>
 <br/><br/>
 <form name="oncontract" id="oncontract" action="reports!days183.action">
-<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View On Contract</A></li>
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View 183 Days</A></li>
   <div class="fm-opt">
             <span style="color:red">*</span><input id="dateFrom" onfocus="this.blur();" name="dateFrom" type="text" class="date-pick" value=""/><span style="color:red" id="dateFromMsg"></span>
             <span style="color:red">*</span><input id="dateTo"   onfocus="this.blur();" name="dateTo"   type="text" class="date-pick" value=""/><span style="color:red" id="dateToMsg"></span>
