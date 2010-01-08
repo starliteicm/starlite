@@ -24,6 +24,7 @@ public interface CrewDayDao extends GenericDao<CrewDay, Integer> {
 	public List<CrewDay> getCrewDayByCharterByMonth(Charter c, Integer year, Integer month) ;
 	public CrewDay getCrewDay(Date date, CrewMember crewMember);
 	public List<CrewDay> getCrewDayByCharterBetween(Integer id, Date dateFrom,Date dateTo);
+	public List<CrewDay> getCrewDayByCrewMemberBetween(Integer id,Date dateFrom, Date dateTo);
 
 
 }

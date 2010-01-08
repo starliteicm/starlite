@@ -26,6 +26,7 @@ public class Aircraft {
 	
 	private String aircraftMaintenanceOrganisation;
 	private String livery;
+	private Integer engines;
 	
 	public Certificate getCertificateOfRegistration() {
 		if (certificateOfRegistration == null)
@@ -119,5 +120,11 @@ public class Aircraft {
 	}
 	public void setPerformanceCounter(String performanceCounter) {
 		this.performanceCounter = performanceCounter;
+	}
+	public Integer getEngines() {
+		return this.engines;
+	}
+	public void setEngines(Integer engines) {
+		this.engines = engines;
 	}
 }

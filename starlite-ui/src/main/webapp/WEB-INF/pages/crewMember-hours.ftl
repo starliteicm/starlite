@@ -42,7 +42,11 @@
     
     function changeType(sel,day){
       var selected = sel.options[sel.selectedIndex].value;
-      if(selected == "i"){
+      if(selected == "t"){
+        $("#"+day+"instruments").css("display","none");
+        $("#"+day+"position").css("display","none");
+      }
+      else if(selected == "i"){
         $("#"+day+"instruments").css("display","inline");
         $("#"+day+"position").css("display","none");
       }
@@ -261,7 +265,7 @@
 		
 		  <#assign crewDay = months.get(month).get(day) />
 		  
-		  <#assign visible = "visibility:hidden" />
+		  <#assign visible = "visibility:visible" />
 		  
 		  <#if crewDay.get("crewDay")?? >
 		  <input type="hidden" name="${month}-${day}_id" value='${crewDay.get("crewDay").id}'>
@@ -269,7 +273,7 @@
 		
 		  <td>${day}</td>
 		  <td>
-	  	  <select id="${month}-${day}_activity" name="${month}-${day}_activity" onchange="changeActivity(this,'${month}-${day}');">
+	  	  <select id="${month}-${day}_activity" name="${month}-${day}_activity" > <!-- onchange="changeActivity(this,'${month}-${day}');"> -->
 	 	    <option></option>
 		    <#if crewDay.get("crewDay")?? >
 		      <#if crewDay.get("crewDay").activity == "W">
@@ -354,29 +358,48 @@
               <option SELECTED value="n">Night</option>
               <option value="d">Day</option>
               <option value="i">Instruments</option>
+              <option value="t">Instructor</option>
             <#elseif crewDay.get("crewDay").type! == "d" >
               <option value="n">Night</option>
               <option SELECTED value="d">Day</option>
               <option value="i">Instruments</option>
+              <option value="t">Instructor</option>
             <#elseif crewDay.get("crewDay").type! == "i" >
               <option value="n">Night</option>
               <option value="d">Day</option>
               <option SELECTED value="i">Instruments</option>
+              <option value="t">Instructor</option>
+            <#elseif crewDay.get("crewDay").type! == "t" >
+              <option value="n">Night</option>
+              <option value="d">Day</option>
+              <option  value="i">Instruments</option>
+              <option SELECTED value="t">Instructor</option>
             <#else>
               <option value="n">Night</option>
               <option value="d">Day</option>
               <option value="i">Instruments</option>
+              <option value="t">Instructor</option>
             </#if>
           <#else>
             <option value="n">Night</option>
             <option value="d">Day</option>
             <option value="i">Instruments</option>
+            <option value="t">Instructor</option>
           </#if>
           
           
         </select>
         
-        <select name="${month}-${day}_position" id="${month}-${day}_position" style="display:inline;width:50px">
+        <select name="${month}-${day}_position" id="${month}-${day}_position"
+        <#if crewDay.get("crewDay")?? >
+        <#if crewDay.get("crewDay").type! != "i" && crewDay.get("crewDay").type! != "t">
+        style="display:inline;width:50px">
+        <#else>
+         style="display:none;width:50px">
+         </#if>
+         <#else>
+                style="display:inline;width:50px">
+        </#if>
           <option></option>
           <#if crewDay.get("crewDay")??>
             <#if crewDay.get("crewDay").position! == "Dual" >
@@ -404,7 +427,17 @@
           
         </select>
         
-        <select name="${month}-${day}_instruments" id="${month}-${day}_instruments" style="display:none;width:50px">
+        <select name="${month}-${day}_instruments" id="${month}-${day}_instruments" 
+         <#if crewDay.get("crewDay")??>
+         <#if crewDay.get("crewDay").type! == "i" >
+        style="display:inline;width:50px">
+        <#else>
+        style="display:none;width:50px">
+        </#if>
+        <#else>
+                style="display:none;width:50px">
+        </#if>
+        
           <option></option>
           <#if crewDay.get("crewDay")??>
             <#if crewDay.get("crewDay").instruments! == "Sim" >

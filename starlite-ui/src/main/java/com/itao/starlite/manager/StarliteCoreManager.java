@@ -516,4 +516,9 @@ public class StarliteCoreManager {
 		return exDao.findAll();
 	}
 
+	public List<CrewDay> getCrewDayByCrewMemberBetween(Integer id,Date dateFrom, Date dateTo) {
+		return crewDayDao.getCrewDayByCrewMemberBetween(id,dateFrom,dateTo);
+
+	}
+
 }

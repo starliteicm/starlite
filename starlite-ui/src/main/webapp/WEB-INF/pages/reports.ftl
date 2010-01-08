@@ -1,4 +1,4 @@
-<#setting number_format = "######" />
+<#setting number_format = "######.##" />
 <#include "/starlite.ftl">
 <html>
 <head>
@@ -47,9 +47,257 @@ font-weight:normal;
     return false;
   }
   
+  function validateHours(){
+    var err = 0;
+    
+    $("#dateFromHoursMsg").html("");
+    $("#dateToHoursMsg").html("");
+    
+    if($("#dateFromHours").val() == ""){
+      err = 1;
+      $("#dateFromHoursMsg").html("Required");
+    }
+    
+    if($("#dateToHours").val() == ""){
+      err = 1;
+      $("#dateToHoursMsg").html("Required");
+    }
+    
+    if(err == 0){
+      document.forms.hours.submit();
+    }
+    return false;
+  }
+  
 </script>
 
-<#if charterMap?exists >
+<#if enginetypes?exists >
+
+<li style="width:200px;height:30px;float:left;"><A href="reports.action" style="width:300px;height:20px;" >Back</A></li>
+<br/><br/>
+
+<table style="width:900px;">
+<tr>
+<td colspan="9" style="background:silver;font-weight:bold;width:70%;text-align:center;">
+<div >Summary of Hours Flown - ${crewMember.personal.fullName!} (${crewMember.code!})</div>
+</td>
+<td colspan="3" style="background:silver;font-weight:bold;width:30%;text-align:center;">
+<div >${dateFrom} - ${dateTo}</div>
+</td>
+</tr>
+
+<#assign singledual  = 0 />
+<#assign multidual   = 0 />
+<#assign totaldual   = 0 />
+<#assign singlecapt  = 0 />
+<#assign multicapt   = 0 />
+<#assign totalcapt   = 0 />
+<#assign singleco    = 0 />
+<#assign multico     = 0 />
+<#assign totalco     = 0 />
+<#assign multi       = 0 />
+<#assign single      = 0 />
+<#assign grandtotal  = 0 />
+
+<#assign alldaydual   = 0 />
+<#assign alldaycapt   = 0 />
+<#assign alldayco     = 0 />
+<#assign allnightdual = 0 />
+<#assign allnightcapt = 0 />
+<#assign allnightco   = 0 />
+<#assign alltotal     = 0 />
+<#assign allsim       = 0 />
+<#assign allact       = 0 />
+<#assign allinstrum   = 0 />
+<#assign allinstruct  = 0 />
+
+<#list enginetypes.keySet()! as enginetypekey>
+<#assign enginetype = enginetypes.get(enginetypekey)/>
+<tr><td colspan="12" style="border:none;">&nbsp;</td></tr>
+
+<tr style="text-align:center;">
+<td width="10%" style="border:none;">&nbsp;</td>
+<td style="border-right:2px solid black;" width="24%" colspan="3">DAY</td>
+<td style="border-right:2px solid black;" width="24%" colspan="3">NIGHT</td>
+<td width="8%" style="border:none;">&nbsp;</td>
+<td style="border-right:2px solid black;" width="24%" colspan="3">INSTRUMENT</td>
+<td width="10%" rowspan="2">INSTRUCTION</td>
+</tr>
+
+<tr style="text-align:center;">
+<td width="10%" >TYPE</td>
+<td width="8%" >DUAL</td>
+<td width="8%" >CAPT</td>
+<td style="border-right:2px solid black;" width="8%" >CO</td>
+<td width="8%" >DUAL</td>
+<td width="8%" >CAPT</td>
+<td style="border-right:2px solid black;" width="8%" >CO</td>
+<td style="border-right:2px solid black;" width="8%">TOTAL</td>
+<td width="8%">SIM</td>
+<td width="8%">ACT</td>
+<td style="border-right:2px solid black;" width="8%">TOTAL</td>
+</tr>
+
+<tr><td colspan="12" style="background-color:silver">${enginetypekey}</td></tr>
+
+<#assign daydual   = 0 />
+<#assign daycapt   = 0 />
+<#assign dayco     = 0 />
+<#assign nightdual = 0 />
+<#assign nightcapt = 0 />
+<#assign nightco   = 0 />
+<#assign total     = 0 />
+<#assign sim       = 0 />
+<#assign act       = 0 />
+<#assign instrum   = 0 />
+<#assign instruct  = 0 />
+
+<#list enginetype.keySet()! as aircraftKey>
+<#assign aircraft = enginetype.get(aircraftKey) >
+
+<#if aircraft.daydual?exists    ><#assign daydual   = daydual   + aircraft.daydual    /></#if>
+<#if aircraft.daycapt?exists    ><#assign daycapt   = daycapt   + aircraft.daycapt    /></#if>
+<#if aircraft.dayco?exists      ><#assign dayco     = dayco     + aircraft.dayco      /></#if>
+<#if aircraft.nightdual?exists  ><#assign nightdual = nightdual + aircraft.nightdual  /></#if>
+<#if aircraft.nightcapt?exists  ><#assign nightcapt = nightcapt + aircraft.nightcapt  /></#if>
+<#if aircraft.nightco?exists    ><#assign nightco   = nightco   + aircraft.nightco    /></#if>
+<#if aircraft.total?exists      ><#assign total     = total     + aircraft.total      /></#if>
+<#if aircraft.sim?exists        ><#assign sim       = sim       + aircraft.sim        /></#if>
+<#if aircraft.act?exists        ><#assign act       = act       + aircraft.act        /></#if>
+<#if aircraft.inst_total?exists ><#assign instrum   = instrum   + aircraft.inst_total /></#if>
+<#if aircraft.instruct?exists   ><#assign instruct  = instruct  + aircraft.instruct   /></#if>
+
+<tr style="text-align:center;">
+<td width="10%" >${aircraftKey!}</td>
+<td width="8%" >${aircraft.daydual!}</td>
+<td width="8%" >${aircraft.daycapt!}</td>
+<td style="border-right:2px solid black;" width="8%" >${aircraft.dayco!}</td>
+<td width="8%" >${aircraft.nightdual!}</td>
+<td width="8%" >${aircraft.nightcapt!}</td>
+<td style="border-right:2px solid black;" width="8%" >${aircraft.nightco!}</td>
+<td style="border-right:2px solid black;" width="8%" >${aircraft.total!}</td>
+<td width="8%" >${aircraft.sim!}</td>
+<td width="8%" >${aircraft.act!}</td>
+<td style="border-right:2px solid black;" width="8%" >${aircraft.inst_total!}</td>
+<td width="10%" >${aircraft.instruct!}</td>
+</tr>
+</#list>
+
+<#if enginetypekey == "Single Engine Type" >
+  <#assign singledual  = singledual + daydual + nightdual />
+  <#assign totaldual   = totaldual + singledual />
+  <#assign singlecapt  = singlecapt + daycapt + nightcapt />
+  <#assign totalcapt   = totalcapt + singlecapt />
+  <#assign singleco    = singleco + dayco + nightco />
+  <#assign totalco     = totalco + singleco />
+  <#assign single      = total />
+  <#assign grandtotal  = grandtotal + total />
+<#else>
+  <#assign multidual  = multidual + daydual + nightdual />
+  <#assign totaldual   = totaldual + multidual />
+  <#assign multicapt  = multicapt + daycapt + nightcapt />
+  <#assign totalcapt   = totalcapt + multicapt />
+  <#assign multico    = multico + dayco + nightco />
+  <#assign totalco     = totalco + multico />
+  <#assign multi      = total />
+  <#assign grandtotal  = grandtotal + total />
+</#if>
+
+<#assign alldaydual   = alldaydual   + daydual />
+<#assign alldaycapt   = alldaycapt   + daycapt />
+<#assign alldayco     = alldayco     + dayco />
+<#assign allnightdual = allnightdual + nightdual />
+<#assign allnightcapt = allnightcapt + nightcapt />
+<#assign allnightco   = allnightco   + nightco />
+<#assign alltotal     = alltotal     + total />
+<#assign allsim       = allsim       + sim />
+<#assign allact       = allact       + act />
+<#assign allinstrum   = allinstrum   + instrum />
+<#assign allinstruct  = allinstruct  + instruct />
+
+<tr style="text-align:center;border-top:2px solid black;">
+<td width="10%" >Total:</td>
+<td width="8%" >${daydual!}</td>
+<td width="8%" >${daycapt!}</td>
+<td style="border-right:2px solid black;" width="8%" >${dayco!}</td>
+<td width="8%" >${nightdual!}</td>
+<td width="8%" >${nightcapt!}</td>
+<td style="border-right:2px solid black;" width="8%" >${nightco!}</td>
+<td style="border-right:2px solid black;" width="8%" >${total!}</td>
+<td width="8%" >${sim!}</td>
+<td width="8%" >${act!}</td>
+<td style="border-right:2px solid black;" width="8%" >${instrum!}</td>
+<td width="10%" >${instruct!}</td>
+</tr>
+
+</#list>
+
+<tr style="text-align:center;border-top:2px solid black;">
+<td width="10%" >Grand Total:</td>
+<td width="8%" >${alldaydual!}</td>
+<td width="8%" >${alldaycapt!}</td>
+<td style="border-right:2px solid black;" width="8%" >${alldayco!}</td>
+<td width="8%" >${allnightdual!}</td>
+<td width="8%" >${allnightcapt!}</td>
+<td style="border-right:2px solid black;" width="8%" >${allnightco!}</td>
+<td style="border-right:2px solid black;" width="8%" >${alltotal!}</td>
+<td width="8%" >${allsim!}</td>
+<td width="8%" >${allact!}</td>
+<td style="border-right:2px solid black;" width="8%" >${allinstrum!}</td>
+<td width="10%" >${allinstruct!}</td>
+</tr>
+
+<tr><td colspan="12" style="border:none;">&nbsp;</td></tr>
+
+<tr style="text-align:center;">
+<td colspan="2" width="18%" >Single Dual</td>
+<td width="8%" >${singledual}</td>
+<td colspan="2" width="16%" >Multi Dual</td>
+<td width="8%" >${multidual}</td>
+<td colspan="2" width="16%" >Total Dual</td>
+<td width="8%" >${totaldual}</td>
+<td colspan="3" style="border:none;" width="26%" >&nbsp;</td>
+</tr>
+
+<tr style="text-align:center;">
+<td colspan="2" width="18%" >Single Capt</td>
+<td width="8%" >${singlecapt}</td>
+<td colspan="2" width="16%" >Multi Capt</td>
+<td width="8%" >${multicapt}</td>
+<td colspan="2" width="16%" >Total Capt</td>
+<td width="8%" >${totalcapt}</td>
+<td colspan="3" style="border:none;" width="26%" >&nbsp;</td>
+</tr>
+
+<tr style="text-align:center;">
+<td colspan="2" width="18%" >Single Co</td>
+<td width="8%" >${singleco}</td>
+<td colspan="2" width="16%" >Multi Co</td>
+<td width="8%" >${multico}</td>
+<td colspan="2" width="16%" >Total Co</td>
+<td width="8%" >${totalco}</td>
+<td colspan="3" style="border:none;" width="26%" >&nbsp;</td>
+</tr>
+
+<tr style="text-align:center;">
+<td colspan="2" width="18%" >Total Single</td>
+<td width="8%" >${single}</td>
+<td colspan="2" width="16%" >Total Multi</td>
+<td width="8%" >${multi}</td>
+<td colspan="6" style="border:none;" width="50%" >&nbsp;</td>
+</tr>
+
+<tr style="text-align:center;">
+<td colspan="2" width="18%" >Total</td>
+<td width="8%" >${grandtotal}</td>
+<td colspan="9" style="border:none;" width="74%" >&nbsp;</td>
+</tr>
+
+
+</table>
+
+
+<#elseif charterMap?exists >
 
 <li style="width:200px;height:30px;float:left;"><A href="reports.action" style="width:300px;height:20px;" >Back</A></li>
 <br/><br/>
@@ -231,6 +479,19 @@ font-weight:normal;
   <div class="fm-opt">
             <span style="color:red">*</span><input id="dateFrom" onfocus="this.blur();" name="dateFrom" type="text" class="date-pick" value=""/><span style="color:red" id="dateFromMsg"></span>
             <span style="color:red">*</span><input id="dateTo"   onfocus="this.blur();" name="dateTo"   type="text" class="date-pick" value=""/><span style="color:red" id="dateToMsg"></span>
+  </div>
+</form>
+<br/>
+<form name="hours" id="hours" action="reports!hours.action">
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateHours();" >View Hours Flown</A></li>
+  <div class="fm-opt">
+  <select style="float:left" name="id">
+  <#list crewMembers! as crew>
+  <option value="${crew.code?if_exists}" > ${crew.personal.fullName?if_exists}
+  </#list>
+  </select>
+            <span style="color:red">*</span><input id="dateFromHours" onfocus="this.blur();" name="dateFrom" type="text" class="date-pick" value=""/><span style="color:red" id="dateFromHoursMsg"></span>
+            <span style="color:red">*</span><input id="dateToHours"   onfocus="this.blur();" name="dateTo"   type="text" class="date-pick" value=""/><span style="color:red" id="dateToHoursMsg"></span>
   </div>
 </form>
 </#if>

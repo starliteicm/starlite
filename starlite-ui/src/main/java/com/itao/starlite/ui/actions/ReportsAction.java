@@ -15,6 +15,7 @@ import org.joda.time.DateMidnight;
 import com.google.inject.Inject;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.UserAware;
+import com.itao.starlite.model.AircraftType;
 import com.itao.starlite.model.Charter;
 import com.itao.starlite.model.CharterList;
 import com.itao.starlite.model.CrewDay;
@@ -35,13 +36,20 @@ public class ReportsAction extends ActionSupport implements UserAware {
 	private User user;
     
 	public List<CrewMember> crewMembers;
+	public List<CrewDay> crewDays;
 	
 	@SuppressWarnings("unchecked")
 	public TreeMap charterMap;
 	
+	@SuppressWarnings("unchecked")
+	public Map enginetypes;
+	
 	@Inject
 	private StarliteCoreManager manager;
 
+	public CrewMember crewMember;
+	public String id;	
+	
 	public String dateFrom;
 	public String dateTo;
 	public SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -71,10 +79,169 @@ public class ReportsAction extends ActionSupport implements UserAware {
 		return SUCCESS;
 	}
 	
+	public HashMap<String, Double> processTypes(CrewDay cd,HashMap<String,Double> typeMap){
+		if("d".equals(cd.getType())){
+			//DAY_DUAL
+			if("Dual".equals(cd.getPosition())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("daydual")){
+					flown = flown + typeMap.get("daydual");
+				}
+				typeMap.put("daydual",flown);
+			}
+			//DAY_CAPT
+			else if("Capt".equals(cd.getPosition())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("daycapt")){
+					flown = flown + typeMap.get("daycapt");
+				}
+				typeMap.put("daycapt",flown);
+			}
+			//DAY_CO
+			else if("Co".equals(cd.getPosition())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("dayco")){
+					flown = flown + typeMap.get("dayco");
+				}
+				typeMap.put("dayco",flown);
+			}
+			
+			//TOTAL
+			double flown = cd.getFlown();
+			if(typeMap.containsKey("total")){
+				flown = flown + typeMap.get("total");
+			}
+			typeMap.put("total",flown);
+		}
+		else if("n".equals(cd.getType())){
+		    //NIGHT_DUAL
+			if("Dual".equals(cd.getPosition())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("nightdual")){
+					flown = flown + typeMap.get("nightdual");
+				}
+				typeMap.put("nightdual",flown);
+			}
+			//NIGHT_CAPT
+			else if("Capt".equals(cd.getPosition())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("nightcapt")){
+					flown = flown + typeMap.get("nightcapt");
+				}
+				typeMap.put("nightcapt",flown);
+			}
+			//NIGHT_CO
+			else if("Co".equals(cd.getPosition())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("nightco")){
+					flown = flown + typeMap.get("nightco");
+				}
+				typeMap.put("nightco",flown);
+			}
+		
+		    //TOTAL
+			double flown = cd.getFlown();
+			if(typeMap.containsKey("total")){
+				flown = flown + typeMap.get("total");
+			}
+			typeMap.put("total",flown);
+		}
+		else if("i".equals(cd.getType())){
+		    //INST_SIM
+			if("sim".equals(cd.getInstruments())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("sim")){
+					flown = flown + typeMap.get("sim");
+				}
+				typeMap.put("sim",flown);
+			}
+			//INST_ACT
+			else if("act".equals(cd.getInstruments())){
+				double flown = cd.getFlown();
+				if(typeMap.containsKey("act")){
+					flown = flown + typeMap.get("act");
+				}
+				typeMap.put("act",flown);
+			}
+			
+		    //INST_TOTAL
+			double flown = cd.getFlown();
+			if(typeMap.containsKey("inst_total")){
+				flown = flown + typeMap.get("inst_total");
+			}
+			typeMap.put("inst_total",flown);
+		}
+		else if("t".equals(cd.getType())){
+		    //INSTRUCT
+			double flown = cd.getFlown();
+			if(typeMap.containsKey("instruct")){
+				flown = flown + typeMap.get("instruct");
+			}
+			typeMap.put("instruct",flown);
+		}
+		return typeMap;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String hours() throws Exception {
+		
+		LOG.info("Running Hours for "+id+" from "+dateFrom+" to "+dateTo);
+		
+		if (id != null) {
+			crewMember = manager.getCrewMemberByCode(id);
+			Date start = df.parse(dateFrom);
+			Date end = df.parse(dateTo);		
+			crewDays = manager.getCrewDayByCrewMemberBetween(new Integer(crewMember.getId()),start,end);
+			if(crewDays == null){crewDays = new ArrayList<CrewDay>();}
+			
+			TreeMap<String,HashMap<String,Double>> single = new TreeMap<String,HashMap<String,Double>>();
+			TreeMap<String,HashMap<String,Double>> multi  = new TreeMap<String,HashMap<String,Double>>();
+
+			for(CrewDay cd : crewDays){
+				if(cd.getAircraft() != null){
+					if(cd.getAircraft().getEngines() > 0){
+						if(multi.containsKey(cd.getAircraft().getRef())){
+							HashMap<String,Double> typeMap = multi.get(cd.getAircraft().getRef());
+							processTypes(cd,typeMap);
+							multi.put(cd.getAircraft().getRef(), typeMap);
+						}
+						else {
+							HashMap<String,Double> typeMap = new HashMap<String,Double>();
+							processTypes(cd,typeMap);
+							multi.put(cd.getAircraft().getRef(), typeMap);
+						}
+					}
+					else{
+						if(single.containsKey(cd.getAircraft().getRef())){
+							HashMap<String,Double> typeMap = single.get(cd.getAircraft().getRef());
+							processTypes(cd,typeMap);
+							single.put(cd.getAircraft().getRef(), typeMap);
+						}
+						else {
+							HashMap<String,Double> typeMap = new HashMap<String,Double>();
+							processTypes(cd,typeMap);
+							single.put(cd.getAircraft().getRef(), typeMap);
+						}
+					}
+				}
+			}
+			
+			
+			enginetypes = new LinkedHashMap();
+			enginetypes.put("Single Engine Type", single);
+			enginetypes.put("Multi Engine Type", multi);
+			
+			LOG.info(enginetypes);
+			
+			return SUCCESS;
+		}
+		return execute();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public String days183() throws Exception {
 		
-		LOG.info("Running from "+dateFrom+" to "+dateTo);
+		LOG.info("Running 183 from "+dateFrom+" to "+dateTo);
 		
 		//Setup maps
 		charterMap = new TreeMap<String,TreeMap<String,TreeMap>>();
