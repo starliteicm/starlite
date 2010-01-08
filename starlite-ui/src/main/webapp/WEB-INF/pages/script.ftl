@@ -40,6 +40,12 @@
 
 <form name="crewReportForm" action="${request.requestURL}">
 <input type="hidden" name="scriptName" value="${scriptName}"/>
+<#if pageContext["extraParams"]["month"]??>
+<input type="hidden" name="month" value="${pageContext["extraParams"]["month"]}"/>
+</#if>
+<#if pageContext["extraParams"]["year"]??>
+<input type="hidden" name="year" value="${pageContext["extraParams"]["year"]}"/>
+</#if>
 ${html!}
 </form>
 

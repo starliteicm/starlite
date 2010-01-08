@@ -54,6 +54,7 @@ def contract(manager, crew, allAircraft, charter, dateFrom, dateTo) {
 			if(crewDayMap.containsKey(df.format(cal.getTime()))){
 				Map crewDay = (Map) crewDayMap.get(df.format(cal.getTime()));
 				crewDay.put("end",cd.getDate());
+				crewDay.put("count",crewDay.get("count")+1);
 				crewDayMap.remove(df.format(cal.getTime()));
 				crewDayMap.put(df.format(cd.getDate()),crewDay);
 			}
@@ -61,6 +62,7 @@ def contract(manager, crew, allAircraft, charter, dateFrom, dateTo) {
 				Map crewDay = (Map) new HashMap();
 				crewDay.put("start",cd.getDate());
 				crewDay.put("end",cd.getDate());
+				crewDay.put("count",1);
 				crewDayMap.put(df.format(cd.getDate()),crewDay);
 			}
 		}	
@@ -102,9 +104,9 @@ def generate(manager, pageContext) {
 					reportRow["aircraft"] = aircraft.key
 					reportRow["firstName"] = crewday.value["crewMember"].personal.firstName
 					reportRow["lastName"] = crewday.value["crewMember"].personal.lastName
-					reportRow["date"] = cd.key
 					reportRow["from"] = rptDateFormat.format(cd.value["start"])
 					reportRow["to"] = rptDateFormat.format(cd.value["end"])
+					reportRow["count"] = cd.value["count"]
 					report.add(reportRow)
 				}
 			}
@@ -122,9 +124,9 @@ def generate(manager, pageContext) {
 			.column("aircraft").sort(1)
 			.column("firstName").sort(3)
             .column("lastName").sort(2)
-			.column("date").sort(4)
 			.column("from")
 			.column("to")
+			.column("count")
 			
 			
 	return tableBuilder.render();
