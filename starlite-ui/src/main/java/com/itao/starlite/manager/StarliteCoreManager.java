@@ -1,11 +1,13 @@
 package com.itao.starlite.manager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.joda.time.DateMidnight;
 
@@ -507,18 +509,25 @@ public class StarliteCoreManager {
 	}
 
 	public List<CrewDay> getCrewDayByCharterBetween(Integer id, Date dateFrom,Date dateTo) {
-		// TODO Auto-generated method stub
 		return crewDayDao.getCrewDayByCharterBetween(id,dateFrom,dateTo);
 	}
 
 	public List<ExchangeRate> getExchangeRates() {
-		// TODO Auto-generated method stub
 		return exDao.findAll();
 	}
 
 	public List<CrewDay> getCrewDayByCrewMemberBetween(Integer id,Date dateFrom, Date dateTo) {
 		return crewDayDao.getCrewDayByCrewMemberBetween(id,dateFrom,dateTo);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	public TreeMap getSumCrewDays() {
+		Calendar cal = Calendar.getInstance();
+		Date toDate = cal.getTime();
+		cal.add(Calendar.YEAR, -1);
+		Date fromDate = cal.getTime();
+		return crewDayDao.getSumCrewDays(fromDate, toDate);
 	}
 
 }

@@ -34,12 +34,15 @@ public class ReportsAction extends ActionSupport implements UserAware {
 	public String current="reports";
 
 	private User user;
-    
+	
 	public List<CrewMember> crewMembers;
 	public List<CrewDay> crewDays;
 	
 	@SuppressWarnings("unchecked")
 	public TreeMap charterMap;
+	
+	@SuppressWarnings("unchecked")
+	public TreeMap sumCrewDays;
 	
 	@SuppressWarnings("unchecked")
 	public Map enginetypes;
@@ -248,6 +251,9 @@ public class ReportsAction extends ActionSupport implements UserAware {
 		
 		//for each charter
 		CharterList charters = manager.getAllCharters();
+		
+		//get 183 days info
+		sumCrewDays = manager.getSumCrewDays();
 		
 	    Date start = df.parse(dateFrom);
 		Date end = df.parse(dateTo);

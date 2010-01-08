@@ -3,6 +3,8 @@ package com.itao.starlite.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
+
 import com.google.inject.ImplementedBy;
 import com.itao.persistence.GenericDao;
 import com.itao.starlite.dao.CrewDayDao;
@@ -25,6 +27,7 @@ public interface CrewDayDao extends GenericDao<CrewDay, Integer> {
 	public CrewDay getCrewDay(Date date, CrewMember crewMember);
 	public List<CrewDay> getCrewDayByCharterBetween(Integer id, Date dateFrom,Date dateTo);
 	public List<CrewDay> getCrewDayByCrewMemberBetween(Integer id,Date dateFrom, Date dateTo);
+	public TreeMap getSumCrewDays(Date dateFrom, Date dateTo);
 
 
 }

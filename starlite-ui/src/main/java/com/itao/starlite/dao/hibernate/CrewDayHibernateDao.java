@@ -2,6 +2,7 @@ package com.itao.starlite.dao.hibernate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.hibernate.Transaction;
 import org.joda.time.DateMidnight;
@@ -105,6 +106,28 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 		.setDate(1, dateFrom)
 		.setDate(2, dateTo)
 		.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public TreeMap getSumCrewDays(Date dateFrom, Date dateTo) {
+		
+		TreeMap<String,Integer> crewDays = new TreeMap<String,Integer>();
+		
+		List<CrewDay> crewList = getCurrentSession().createQuery("from CrewDay c where c.date >= ? AND c.date < ? order by c.date asc")
+		.setDate(0, dateFrom)
+		.setDate(1, dateTo)
+		.list();
+
+		for(CrewDay cd : crewList){
+			if("W".equals(cd.getActivity()) || "T".equals(cd.getActivity())){
+				Integer days = 1;
+				if(crewDays.containsKey(cd.getCrewMember().getPersonal().getFullName())){
+					days = days + crewDays.get(cd.getCrewMember().getPersonal().getFullName());
+				}
+				crewDays.put(cd.getCrewMember().getPersonal().getFullName(),days);
+			}
+		}
+		return crewDays;
 	}
 
 }

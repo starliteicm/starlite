@@ -315,6 +315,7 @@ font-weight:normal;
   
        <tr>
        <th style="width:150px;"><div style="width:150px;">${chartKey}</div></th>
+       <th style="width:100px;"><div style="width:100px;">183 Day Count</div></th>
        <#list years.keySet()! as year>
          <#assign months= years.get(year) />
          <#list months.keySet()! as month>
@@ -330,6 +331,7 @@ font-weight:normal;
        
        <tr>
        <th style="width:150px;"><div style="width:150px;">${aircraftKey}</div></th>
+       <th style="width:100px;"><div style="width:100px;">&nbsp;</div></th>
        <#list years.keySet()! as year>
          <#assign months= years.get(year) />
          <#list months.keySet()! as month>
@@ -357,6 +359,11 @@ font-weight:normal;
           <#assign crew=type.crew.get(crewKey) />
           <#assign totalW=0 />
           <#assign totalT=0 />
+          <#assign counter=0 />
+          
+          <#if sumCrewDays.get(crewKey)?exists>
+            <#assign counter=sumCrewDays.get(crewKey) />
+          </#if>
           
           <!--<tr>
           <td style="width:150px;background-color:${typeColor};"><div style="width:150px;">${crewKey}</div></td>
@@ -365,6 +372,7 @@ font-weight:normal;
           
           <tr>
           <td style="width:150px;background-color:${typeColor};"><div style="width:150px;">${crewKey}</div></td>
+          <td style="width:100px;background-color:${typeColor};"><div style="width:100px;">${counter}</div></td>
           <#list years.keySet()! as year>
             <#assign months= years.get(year) />
             <#list months.keySet()! as month>
@@ -382,7 +390,7 @@ font-weight:normal;
                 <#assign totalT=totalT+1 />
                 <td title="${date}"  <#if cd.day==1> style="border-right:2px solid black;" </#if>  > ${crewDay.activity!} </td>
                 <#else>
-                <td title="${date}"  <#if cd.day==1> style="border-right:2px solid black;" </#if>  > </td>
+                <td title="${date}"  <#if cd.day==1> style="border-right:2px solid black;" </#if>  > ${crewDay.activity!} </td>
                 </#if>
                 
                 <#else>
@@ -399,6 +407,8 @@ font-weight:normal;
         
         <tr style="background-color:${typeColor};">
         <td style="width:150px;background-color:${typeColor};"><div style="width:150px;">&nbsp;</div></td>
+        <td style="width:100px;background-color:${typeColor};"><div style="width:100px;">&nbsp;</div></td>
+        
         <#assign over=0 />
         <#assign totaltype=0 />
         <#list years.keySet()! as year>
