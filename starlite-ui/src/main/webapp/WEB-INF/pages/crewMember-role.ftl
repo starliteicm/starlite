@@ -184,9 +184,10 @@ $("document").ready(function() {
 			
 			</div>
 			<div class="fm-opt">
-			<label for="crewMember.role.positionSubcategory">Position Subcategory:</label>				
-   <input type="text" /> 
-   </div>								
+			<label for="crewMember.role.subposition">Position Subcategory:</label>				
+            <input name="crewMember.role.subpostition" type="text" value="${crewMember.role.subpostition!}" /> 
+            </div>
+            								
 			<div class="fm-opt">
 				<label for="crewMember.role.initialDate">Initial Date:</label>
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
@@ -247,8 +248,8 @@ $("document").ready(function() {
                 <input id="licenceFile" name="licenceFile" value="" type="file" />
                 <input name="licenceTags" value="licence" type="hidden" />
                 <#if licence?exists>
-                  <label for="crewMember.role.r1.number"/>&nbsp;</label>
-                  <div><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
+                  <label for="licenceUploadLink"/>&nbsp;</label>
+                  <div id="licenceUploadLink"><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
             </div>
 			<br/>
@@ -310,8 +311,8 @@ $("document").ready(function() {
 				</select>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
-				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
+				<label for="crewMember.role.r2.expiryDate"><span class="star">*</span>Expiry Date:</label>
+				<input name="crewMember.role.r2.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r2.expiryDate??>${crewMember.role.r2.expiryDate?string('dd/MM/yyyy')}</#if>" />
 			</div>
 			</div>
 			

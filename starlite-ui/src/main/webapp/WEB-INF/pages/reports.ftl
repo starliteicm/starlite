@@ -475,15 +475,31 @@ font-weight:normal;
     </select>
 </form>
 <br/><br/>
+
 <form name="profile" id="profile" action="crewMember!profile.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.profile.submit();" >View Profile</A></li>
 <select style="float:left" name="id">
 <#list crewMembers! as crew>
-<option value="${crew.code?if_exists}" > ${crew.personal.fullName?if_exists}
+<#if crew.code?exists >
+<option value="${crew.code!}" > ${crew.personal.fullName?if_exists} (${crew.code!})
+</#if>
 </#list>
 </select>
 </form>
 <br/><br/>
+
+<form name="required" id="required" action="crewMember!required.action">
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.required.submit();" >View Required</A></li>
+<select style="float:left" name="id">
+<#list crewMembers! as crew>
+<#if crew.code?exists >
+<option value="${crew.code!}" > ${crew.personal.fullName?if_exists} (${crew.code!})
+</#if>
+</#list>
+</select>
+</form>
+<br/><br/>
+
 <form name="oncontract" id="oncontract" action="reports!days183.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View 183 Days</A></li>
   <div class="fm-opt">
@@ -492,12 +508,15 @@ font-weight:normal;
   </div>
 </form>
 <br/>
+
 <form name="hours" id="hours" action="reports!hours.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateHours();" >View Hours Flown</A></li>
   <div class="fm-opt">
   <select style="float:left" name="id">
   <#list crewMembers! as crew>
-  <option value="${crew.code?if_exists}" > ${crew.personal.fullName?if_exists}
+  <#if crew.code?exists >
+    <option value="${crew.code!}" > ${crew.personal.fullName?if_exists} (${crew.code!})
+  </#if>
   </#list>
   </select>
             <span style="color:red">*</span><input id="dateFromHours" onfocus="this.blur();" name="dateFrom" type="text" class="date-pick" value=""/><span style="color:red" id="dateFromHoursMsg"></span>

@@ -246,6 +246,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		return "profile";
 	}
 	
+	public String required() throws Exception{
+		prepare();
+		LOG.info(crewMember.getId());
+		return "required";
+	}
+	
 	public String photo(){
 		return "photo";
 	}
