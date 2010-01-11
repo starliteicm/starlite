@@ -81,15 +81,15 @@ document.write("AM")
             
             <br/>
 			 
-   <div class="fm-opt">							
+			 <div class="fm-opt">                            
+                <label for="fname" style="height:auto;">Passport number:</label>
+                <div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>                
+                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>             
+            </div>
+            <div class="fm-opt">							
 				<label for="coi" style="height:auto;">Country of issue:</label>
 				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="coi">${crewMember.personal.passportCountry!}&nbsp;</div>				
                 <div class="field" style="visibility:hidden;width:300px;height:auto;" name="coi">${crewMember.personal.passportCountry!}&nbsp;</div>              
-			</div>
-   <div class="fm-opt">							
-				<label for="fname" style="height:auto;">Passport number:</label>
-				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>				
-                <div class="field" style="visibility:hidden;width:300px;height:auto;" name="lname">${crewMember.personal.passportNumber!}&nbsp;</div>             
 			</div>
    <div class="fm-opt">							
 				<label for="fname" style="height:auto;">Passport expiry date:</label>
@@ -100,24 +100,24 @@ document.write("AM")
 			<br/>
 			
 			<div class="fm-opt" >							
-				<label for="address1" style="height:auto;">Address 1:</label>
+				<label for="address1" style="height:auto;">Home Address 1:</label>
 				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address1">${crewMember.personal.address1!}&nbsp;</div>				
                 <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address1">${crewMember.personal.address1!}&nbsp;</div>                
 			</div>
    <div class="fm-opt">							
-				<label for="address2" style="height:auto;">Address 2:</label>
+				<label for="address2" style="height:auto;">Home Address 2:</label>
 				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address2">${crewMember.personal.address2!}&nbsp;</div>				
                 <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address2">${crewMember.personal.address2!}&nbsp;</div>                
 
 			</div>	
    <div class="fm-opt">							
-				<label for="address3" style="height:auto;">Address 3:</label>
+				<label for="address3" style="height:auto;">Home Address 3:</label>
 				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address3">${crewMember.personal.address3!}&nbsp;</div>				
                 <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address3">${crewMember.personal.address3!}&nbsp;</div>                
 
 			</div>	
    <div class="fm-opt">							
-				<label for="address4" style="height:auto;">Address 4:</label>
+				<label for="address4" style="height:auto;">Home Address 4:</label>
 				<div class="field" style="position:absolute;left:195px;width:150px;height:auto;" name="address4">${crewMember.personal.address4!}&nbsp;</div>				
                 <div class="field" style="visibility:hidden;width:300px;height:auto;" name="address4">${crewMember.personal.address4!}&nbsp;</div>                
 
@@ -275,7 +275,7 @@ document.write("AM")
             
             <#if crewMember.role.position?if_exists != "Base Manager">
             <div class="fm-opt">
-                <label for="crewMember.role.r1.number"/>Number:</label>
+                <label for="crewMember.role.r1.number"/>Licence Number:</label>
                 <div class="field" name="crewMember.role.r1.number" >${crewMember.role.r1.number!}&nbsp;</div>
             </div>
             <div class="fm-opt">
