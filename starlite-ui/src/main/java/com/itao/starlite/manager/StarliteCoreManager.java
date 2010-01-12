@@ -1,5 +1,7 @@
 package com.itao.starlite.manager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -528,6 +530,19 @@ public class StarliteCoreManager {
 		cal.add(Calendar.YEAR, -1);
 		Date fromDate = cal.getTime();
 		return crewDayDao.getSumCrewDays(fromDate, toDate);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public TreeMap getSumCrewDays(String fromDateStr , String toDateStr) {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			Date fromDate = df.parse(fromDateStr);
+			Date toDate = df.parse(toDateStr);
+			return crewDayDao.getSumCrewDays(fromDate, toDate);
+			
+		} catch (ParseException e) {
+			return getSumCrewDays();
+		}
 	}
 
 }

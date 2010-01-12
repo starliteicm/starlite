@@ -34,6 +34,8 @@ public class ScriptAction extends ActionSupport implements UserAware {
 	public String view = "HTML";
 	public String current = "reports";
 	public Map<String, Object> pageContext;
+	public String dateFrom;
+	public String dateTo;
 	
 	@Inject
 	private StarliteCoreManager manager;
@@ -55,6 +57,9 @@ public class ScriptAction extends ActionSupport implements UserAware {
 		
 		pageContext = new HashMap<String, Object>();
 		pageContext.put("extraParams", processParams(ServletActionContext.getRequest()));
+		
+		pageContext.put("dateFrom", dateFrom);
+		pageContext.put("dateTo", dateTo);
 		
 		pageContext.put("RESULT", SUCCESS);
 		pageContext.put("request", ServletActionContext.getRequest());

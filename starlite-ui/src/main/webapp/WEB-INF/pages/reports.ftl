@@ -25,6 +25,29 @@ font-weight:normal;
 
 <script>
 
+  function validateDays(){
+    var err = 0;
+    
+    $("#dateFromMsgDays").html("");
+    $("#dateToMsgDays").html("");
+    
+    if($("#dateFromDays").val() == ""){
+      err = 1;
+      $("#dateFromMsgDays").html("Required");
+    }
+    
+    if($("#dateToDays").val() == ""){
+      err = 1;
+      $("#dateToMsgDays").html("Required");
+    }
+    
+    if(err == 0){
+      document.forms.days.submit();
+    }
+    return false;
+  }
+
+
   function validateOnContract(){
     var err = 0;
     
@@ -315,7 +338,6 @@ font-weight:normal;
   
        <tr>
        <th style="width:150px;"><div style="width:150px;">${chartKey}</div></th>
-       <th style="width:100px;"><div style="width:100px;">183 Day Count</div></th>
        <#list years.keySet()! as year>
          <#assign months= years.get(year) />
          <#list months.keySet()! as month>
@@ -331,7 +353,6 @@ font-weight:normal;
        
        <tr>
        <th style="width:150px;"><div style="width:150px;">${aircraftKey}</div></th>
-       <th style="width:100px;"><div style="width:100px;">&nbsp;</div></th>
        <#list years.keySet()! as year>
          <#assign months= years.get(year) />
          <#list months.keySet()! as month>
@@ -361,10 +382,6 @@ font-weight:normal;
           <#assign totalT=0 />
           <#assign counter=0 />
           
-          <#if sumCrewDays.get(crewKey)?exists>
-            <#assign counter=sumCrewDays.get(crewKey) />
-          </#if>
-          
           <!--<tr>
           <td style="width:150px;background-color:${typeColor};"><div style="width:150px;">${crewKey}</div></td>
           <td colspan="${daycount}">${crew}</td>
@@ -372,7 +389,6 @@ font-weight:normal;
           
           <tr>
           <td style="width:150px;background-color:${typeColor};"><div style="width:150px;">${crewKey}</div></td>
-          <td style="width:100px;background-color:${typeColor};"><div style="width:100px;">${counter}</div></td>
           <#list years.keySet()! as year>
             <#assign months= years.get(year) />
             <#list months.keySet()! as month>
@@ -407,7 +423,6 @@ font-weight:normal;
         
         <tr style="background-color:${typeColor};">
         <td style="width:150px;background-color:${typeColor};"><div style="width:150px;">&nbsp;</div></td>
-        <td style="width:100px;background-color:${typeColor};"><div style="width:100px;">&nbsp;</div></td>
         
         <#assign over=0 />
         <#assign totaltype=0 />
@@ -454,12 +469,22 @@ font-weight:normal;
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a>
 	<#if notAuthorised>
 	<#else>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days On Contract</a>
+	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a>
 	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>
+	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>	
 	</#if>
   </ul>
+
+<form name="days" id="days" action="script.action">
+<input type="hidden" name="scriptName" value="183days.groovy"/>
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateDays();" >View 183 Days</A></li>
+  <div class="fm-opt">
+            <span style="color:red">*</span><input id="dateFromDays" onfocus="this.blur();" name="dateFrom" type="text" class="date-pick" value=""/><span style="color:red" id="dateFromMsgDays"></span>
+            <span style="color:red">*</span><input id="dateToDays"   onfocus="this.blur();" name="dateTo"   type="text" class="date-pick" value=""/><span style="color:red" id="dateToMsgDays"></span>
+  </div>
+</form>
+<br/>
 
 <form name="crewDoc" id="crewDoc" action="script.action">
     <input type="hidden" name="scriptName" value="crewDocumentAnalysis.groovy" />
@@ -501,7 +526,7 @@ font-weight:normal;
 <br/><br/>
 
 <form name="oncontract" id="oncontract" action="reports!days183.action">
-<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View 183 Days</A></li>
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View Days On Contract</A></li>
   <div class="fm-opt">
             <span style="color:red">*</span><input id="dateFrom" onfocus="this.blur();" name="dateFrom" type="text" class="date-pick" value=""/><span style="color:red" id="dateFromMsg"></span>
             <span style="color:red">*</span><input id="dateTo"   onfocus="this.blur();" name="dateTo"   type="text" class="date-pick" value=""/><span style="color:red" id="dateToMsg"></span>

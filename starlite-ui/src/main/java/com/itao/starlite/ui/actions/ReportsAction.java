@@ -252,9 +252,6 @@ public class ReportsAction extends ActionSupport implements UserAware {
 		//for each charter
 		CharterList charters = manager.getAllCharters();
 		
-		//get 183 days info
-		sumCrewDays = manager.getSumCrewDays();
-		
 	    Date start = df.parse(dateFrom);
 		Date end = df.parse(dateTo);
 		
