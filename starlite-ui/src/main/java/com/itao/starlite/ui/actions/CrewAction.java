@@ -11,6 +11,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 import org.apache.struts2.dispatcher.ServletRedirectResult;
+import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.util.ServletContextAware;
 import org.apache.struts2.views.jasperreports.JasperReportsResult;
 import org.jfree.util.Log;
@@ -49,6 +50,8 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -57,10 +60,10 @@ import java.io.Reader;
 @Results({
     @Result(name="crewList", value="crew.action", type=ServletRedirectResult.class),
     @Result(name="crewMember", value="crewMember!addFlightActuals.action?id=${cmId}&tab=flight&actualsId=${acId}", type=ServletRedirectResult.class),
-    @Result(name="payAdvice",    type=JasperReportsResult.class,   value="/jasperreports/Pay.jasper", params={"dataSource","crewMembers"})
+    @Result(name="payAdvice",    type=JasperReportsResult.class,   value="/jasperreports/Pay.jasper", params={"dataSource","crewMembers","documentName","PayAdvice" })
 })
 @Permissions("ManagerView")
-public class CrewAction extends ActionSupport implements UserAware, ServletContextAware {
+public class CrewAction extends ActionSupport implements UserAware, ServletContextAware, ServletResponseAware {
 	/**
 	 * 
 	 */
@@ -89,6 +92,11 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
     private MailService mailService;
     
     private ServletContext servletContext;
+    private HttpServletResponse response;
+    
+    public void setServletResponse(HttpServletResponse response){
+        this.response = response;
+    }
 	
 	
 	//testing for jasperreports
@@ -191,7 +199,8 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 		Log.info("Payments:"+crewMembers);
 		//test = crew;
 
-		
+		response.setHeader("Pragma", "public");
+		response.setHeader("Cache-Control", "maxage=1");
 		return "payAdvice";
 		
 	}
