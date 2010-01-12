@@ -119,7 +119,7 @@ public class CrewDayHibernateDao extends GenericHibernateDao<CrewDay, Integer> i
 		.list();
 
 		for(CrewDay cd : crewList){
-			if("W".equals(cd.getActivity()) || "T".equals(cd.getActivity())){
+			if("W".equals(cd.getActivity())){
 				Integer days = 1;
 				if(crewDays.containsKey(cd.getCrewMember().getPersonal().getFullName())){
 					days = days + crewDays.get(cd.getCrewMember().getPersonal().getFullName());
