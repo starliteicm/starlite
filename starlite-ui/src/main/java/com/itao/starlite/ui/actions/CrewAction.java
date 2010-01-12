@@ -319,6 +319,10 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 		column.setTitle("First Name");
 		row.addColumn(column);
 
+		column = factory.createColumn("role.position");
+		column.setTitle("Role");
+		row.addColumn(column);
+		
 		column = factory.createColumn("personal.mobilePhone");
 		column.setTitle("Mobile Phone");
 		row.addColumn(column);
