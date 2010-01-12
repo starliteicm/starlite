@@ -117,13 +117,28 @@
 		<dependency>
             <groupId>jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>2.0.5</version>
+            <version>3.5.3</version>
         </dependency>
+
+	<dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+
         <dependency>
-            <groupId>org.apache.struts</groupId>
-            <artifactId>struts2-jasperreports-plugin</artifactId>
-            <version>2.0.5</version>
+           <groupId>org.xhtmlrenderer</groupId>
+           <artifactId>core-renderer</artifactId>
+           <version>R8</version>
         </dependency>
+
+
+        <dependency>
+           <groupId>org.apache.struts</groupId>
+           <artifactId>struts2-jasperreports-plugin</artifactId>
+           <version>2.0.5</version>
+        </dependency> 
+
         
         <!-- hibernate -->
 		<dependency>
@@ -280,12 +295,7 @@
 			<artifactId>commons-collections</artifactId>
 			<version>3.2</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>net.java.dev.xhtmlrenderer</groupId>
-			<artifactId>xhtmlrenderer</artifactId>
-			<version>R8Pre2</version>
-		</dependency>
+
         
 	</dependencies>
 

@@ -22,6 +22,8 @@
 
 <#if pageContext["extraParams"]["month"]??>
 	<#assign currentDateParams="&month="+pageContext["extraParams"]["month"]+"&year="+pageContext["extraParams"]["year"]/>
+<#elseif dateFrom?exists >
+    <#assign currentDateParams="&dateFrom="+pageContext["dateFrom"]+"&dateTo="+pageContext["dateTo"]/>
 </#if>
 
 <div id="toolbar">
@@ -40,6 +42,16 @@
 
 <form name="crewReportForm" action="${request.requestURL}">
 <input type="hidden" name="scriptName" value="${scriptName}"/>
+<#if pageContext["extraParams"]["month"]??>
+<input type="hidden" name="month" value="${pageContext["extraParams"]["month"]}"/>
+</#if>
+<#if pageContext["extraParams"]["year"]??>
+<input type="hidden" name="year" value="${pageContext["extraParams"]["year"]}"/>
+</#if>
+<#if dateFrom?exists >
+<input type="hidden" name="dateFrom" value="${pageContext["dateFrom"]}"/>
+<input type="hidden" name="dateTo" value="${pageContext["dateTo"]}"/>
+</#if>
 ${html!}
 </form>
 

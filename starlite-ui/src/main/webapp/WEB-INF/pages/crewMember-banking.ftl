@@ -3,6 +3,50 @@
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
+  <@enableJQuery/>
+  
+  <style type="text/css"> 
+  
+    .star{
+       color:red;
+       }
+       
+     #msg-error{
+       font-size:12px;
+       color:red;
+       padding:5px;
+       text-align:center;       
+     }
+     
+  </style>
+
+<script language="javascript">
+
+   function validate(){            
+      var bankname   = $("#bankname").val();
+      var branchcode = $("#branchcode").val();
+      var address1   = $("#address1").val();
+      var address2   = $("#address2").val();
+      var accountname= $("#accountname").val();
+      var accountnumber= $("#accountnumber").val();
+      var swift      = $("#swift").val();
+      var error      = 0;
+      var errormsg = "<b> The following mandatory fields are blank: </b><br>";
+      if(bankname == "")   { errormsg += "bank name, "; error=1;}
+      if(branchcode == "") { errormsg += "branch code, "; error=1;}      
+      if(address1 == "")   { errormsg += "address 1, "; error=1;}
+      if(address2 == "")   { errormsg += "address 2, "; error=1;}
+      if(accountname == ""){ errormsg += "account name, "; error=1;}
+      if(accountnumber == ""){ errormsg += "account number, "; error=1;}
+      if(swift == "")      { errormsg += "SWIFT code, "; error=1;}
+      
+      if(error==1){$("#msg-error").html(errormsg); return false;
+      }else{
+      $("#msg-error").html(""); document.forms.bankingform.submit(); 
+      }                                     
+   }
+</script>
+  
 </head>
 
 <body>
@@ -35,7 +79,7 @@
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly">
 	<#else>
-	<form action="crewMember!save.action" method="POST" class="smart">
+	<form action="crewMember!save.action" name="bankingform" method="POST" class="smart">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -44,20 +88,20 @@
 		<fieldset>
 			<legend>Bank Details</legend>
 			<div class="fm-opt">
-				<label for="crewMember.banking.bankName">Bank Name:</label>
-				<input name="crewMember.banking.bankName" type="text" value="${crewMember.banking.bankName!}"/>
+				<label for="crewMember.banking.bankName"><span class="star">*</span>Bank Name:</label>
+				<input name="crewMember.banking.bankName" id="bankname" type="text" value="${crewMember.banking.bankName!}" />
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.banking.branchCode">Branch Code:</label>
-				<input name="crewMember.banking.branchCode" type="text" value="${crewMember.banking.branchCode!}"/>
+				<label for="crewMember.banking.branchCode"><span class="star">*</span>Branch Code:</label>
+				<input name="crewMember.banking.branchCode" id="branchcode" type="text" value="${crewMember.banking.branchCode!}" />
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.banking.address1">Address 1:</label>
-				<input name="crewMember.banking.address1" type="text" value="${crewMember.banking.address1!}"/>
+				<label for="crewMember.banking.address1"><span class="star">*</span>Address 1:</label>
+				<input name="crewMember.banking.address1" id="address1" type="text" value="${crewMember.banking.address1!}" />
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.banking.address2">Address 2:</label>
-				<input name="crewMember.banking.address2" type="text" value="${crewMember.banking.address2!}"/>
+				<label for="crewMember.banking.address2"><span class="star">*</span>Address 2:</label>
+				<input name="crewMember.banking.address2" id="address2" type="text" value="${crewMember.banking.address2!}" />
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.banking.address3">Address 3:</label>
@@ -77,20 +121,20 @@
 		<fieldset>
 			<legend>Account Details</legend>
 			<div class="fm-opt">
-				<label for="crewMember.banking.accountName">Account Name:</label>
-				<input name="crewMember.banking.accountName" type="text" value="${crewMember.banking.accountName!}"/>
+				<label for="crewMember.banking.accountName"><span class="star">*</span>Account Name:</label>
+				<input name="crewMember.banking.accountName" id="accountname" type="text" value="${crewMember.banking.accountName!}" />
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.banking.accountNumber">Account Number:</label>
-				<input name="crewMember.banking.accountNumber" type="text" value="${crewMember.banking.accountNumber!}"/>
+				<label for="crewMember.banking.accountNumber"><span class="star">*</span>Account Number:</label>
+				<input name="crewMember.banking.accountNumber" id="accountnumber" type="text" value="${crewMember.banking.accountNumber!}" />
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.banking.swift">SWIFT:</label>
-				<input name="crewMember.banking.swift" type="text" value="${crewMember.banking.swift!}"/>
+				<label for="crewMember.banking.swift"><span class="star">*</span>SWIFT:</label>
+				<input name="crewMember.banking.swift" id="swift" type="text" value="${crewMember.banking.swift!}" />
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.banking.iban">IBAN:</label>
-				<input name="crewMember.banking.iban" type="text" value="${crewMember.banking.iban!}"/>
+				<input name="crewMember.banking.iban" type="text" value="${crewMember.banking.iban!}" />
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.banking.bic">BIC:</label>
@@ -100,8 +144,9 @@
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>
-		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
-		<hr class="clear"/>
+		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+		<div id="msg-error"></div>
+  <hr class="clear"/>
 		</#if>
 	</form>
 </body>

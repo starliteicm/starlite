@@ -9,22 +9,24 @@
 	
 	var selectedEmail = ${memsSelected.size()};
 	var selectedDoc   = ${docsSelected.size()};
+
 	
 	function updateSelected(obj){
 	  //alert("here "+obj.className);
-	  if (obj.className == "email"){
+	  if (obj.className.indexOf("email") != -1){
 	    if (obj.checked == true){
 	      selectedEmail++;
 	    }
 	    else {
-	    if(selectedEmail > 0){
-	      selectedEmail--;
-	      }
+          if(selectedEmail > 0){
+            selectedEmail--;
+            }
 	    }
 	    var esn = document.getElementById("emailSelectNo");
 	    //alert(esn+" "+ selectedEmail);
 	    esn.innerHTML = ""+selectedEmail;
 	  }
+	  
 	  else{
 	  	if (obj.checked == true){
 	      selectedDoc++;
@@ -55,6 +57,174 @@
 			});
 			$('#wysiwyg').wysiwyg();
         });
+   function selectNone()//all crew
+   {
+      var count = document.emailForm.elements.length;
+      for (var i=0; i<count; i++)
+      {
+         if(document.emailForm.elements[i].name1 =="mems")
+         {
+            if(document.emailForm.elements[i].checked == true)
+               {
+                  document.emailForm.elements[i].checked = false; 
+                  selectedEmail--;
+               }
+         }  
+      }
+      var esn = document.getElementById("emailSelectNo");
+       esn.innerHTML = ""+selectedEmail;
+    }
+         
+   function selectAll()//all crew
+   {
+      var count = document.emailForm.elements.length;
+      for (var i=0; i<count; i++)
+      {
+         if(document.emailForm.elements[i].name1 =="mems")
+         {
+            if(document.emailForm.elements[i].checked == false)
+               {
+                  document.emailForm.elements[i].checked = true; 
+                  selectedEmail++;
+               }
+         }  
+      }
+      var esn = document.getElementById("emailSelectNo");
+	   esn.innerHTML = ""+selectedEmail;
+	}
+	function selectGroupPC(obj)//permanent crew
+   {
+      var count = document.emailForm.elements.length;
+         for (var i=0; i<count; i++)
+         { 
+            if( document.emailForm.elements[i].name1 =="mems"  && document.emailForm.elements[i].name3 =="Permanent")
+            {
+               if(document.emailForm.elements[i].checked == false)
+                  {
+                     document.emailForm.elements[i].checked = true; 
+                     selectedEmail++;
+                  }
+               else 
+                  {
+                     document.emailForm.elements[i].checked = false;
+                     selectedEmail--;
+                  }
+            }
+      }
+      var esn = document.getElementById("emailSelectNo");
+      esn.innerHTML = ""+selectedEmail;
+	}
+		function selectGroupFC(obj)//freelance crew
+   {
+      var count = document.emailForm.elements.length;
+         for (var i=0; i<count; i++)
+         { 
+            if( document.emailForm.elements[i].name1 =="mems"  && document.emailForm.elements[i].name3 =="Freelance")
+            {
+               if(document.emailForm.elements[i].checked == false)
+                  {
+                     document.emailForm.elements[i].checked = true; 
+                     selectedEmail++;
+                  }
+               else 
+                  {
+                     document.emailForm.elements[i].checked = false;
+                     selectedEmail--;
+                  }
+            }
+      }
+      var esn = document.getElementById("emailSelectNo");
+      esn.innerHTML = ""+selectedEmail;
+	}
+	
+	function selectGroupPP(obj)//PERMANENT PILOT
+   {
+      var count = document.emailForm.elements.length;
+         for (var i=0; i<count; i++)
+         { 
+            if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="Pilot"  && document.emailForm.elements[i].name3 =="Permanent")
+            {
+               if(document.emailForm.elements[i].checked == false)
+                  {
+                     document.emailForm.elements[i].checked = true; 
+                     selectedEmail++;
+                  }
+               else 
+                  {
+                     document.emailForm.elements[i].checked = false;
+                     selectedEmail--;
+                  }
+            }
+      }
+      var esn = document.getElementById("emailSelectNo");
+      esn.innerHTML = ""+selectedEmail;
+	}
+	function selectGroupFP(obj)//FREELANCE PILOT
+   {
+      var count = document.emailForm.elements.length;
+         for (var i=0; i<count; i++)
+         { 
+            if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="Pilot"  && document.emailForm.elements[i].name3 =="Freelance")
+            {
+               if(document.emailForm.elements[i].checked == false)
+                  {
+                     document.emailForm.elements[i].checked = true; 
+                     selectedEmail++;
+                  }
+               else 
+                  {
+                     document.emailForm.elements[i].checked = false;
+                     selectedEmail--;
+                  }
+            }
+      }
+      var esn = document.getElementById("emailSelectNo");
+      esn.innerHTML = ""+selectedEmail;
+	}
+   function selectGroupPA(obj)//permanent AME
+   {
+      var count = document.emailForm.elements.length;
+      for (var i=0; i<count; i++)
+      { 
+         if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="AME"  && document.emailForm.elements[i].name3 =="Permanent")
+         {
+            if(document.emailForm.elements[i].checked == false)
+               {
+                  document.emailForm.elements[i].checked = true; 
+                  selectedEmail++;
+               }
+            else 
+               {
+                  document.emailForm.elements[i].checked = false;
+                  selectedEmail--;
+               }
+         }
+      }
+      var esn = document.getElementById("emailSelectNo");
+      esn.innerHTML = ""+selectedEmail;
+	}
+	function selectGroupFA(obj)//freelance AME
+   {
+      var count = document.emailForm.elements.length;
+         for (var i=0; i<count; i++)
+         { 
+            if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="AME"  && document.emailForm.elements[i].name3 =="Freelance")
+            {
+               if(document.emailForm.elements[i].checked == false)
+                  {
+                     document.emailForm.elements[i].checked = true; 
+                     selectedEmail++;
+                  }
+               else 
+                  {
+                     document.emailForm.elements[i].checked = false;
+                     selectedEmail--;
+                  }
+            }
+      }
+      var esn = document.getElementById("emailSelectNo");
+      esn.innerHTML = ""+selectedEmail;
+	}
 	</script>
 	<style type="text/css">
     #tooltip.pretty {
@@ -83,9 +253,8 @@
 }
     </style>
 </head>
+
 <body>
-
-
 		<#macro treeSegment folder path rootPath>
 			<#if folder.subFolders?size &gt; 0 || folder.docs?size &gt; 0>
 			<ul>
@@ -115,7 +284,7 @@
 		<div class="heading"><span style="float:left;">Subject: (Email Subject)  </span><img class="tooltip" title=" - Email Subject: - please enter the subject to be used on the email sent out." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 		<div ><input type="text" value="${subject?if_exists}" name="subject" style="width:476px;margin-bottom:10px;border:1px solid silver;" /></div>
 		
-		<div class="heading"><span style="float:left;">To: (System) - [<span id="emailSelectNo">${memsSelected.size()}</span> selected] </span><img class="tooltip" title=" - System To: - Please check the boxes to the right of the member / members names you wish to send this mail to."  style="cursor:help;position:static;float:right;" src="images/icons/info.png"/>
+		<div class="heading"><span style="float:left;">To: (System) - [<span id="emailSelectNo">${memsSelected.size()}</span> selected] </span><img class="tooltip" title=" - System To: - Please check the boxes to the left of the member / members names you wish to send this mail to."  style="cursor:help;position:static;float:right;" src="images/icons/info.png"/>
 		</div>
 		
 		<div style="height:100px; width:460px; overflow:auto; padding:5px; margin-bottom:10px; border: 1px solid silver;">
@@ -123,20 +292,39 @@
 		<#list crew as member>
 		<#if member.personal.email?exists>
 		<#if memsSelected.contains(member.personal.email)>
-		<li title="${member.personal.email?if_exists}"><input type="checkbox" CHECKED class="email" onclick="updateSelected(this)" name="mems"  value="${member.personal.email?if_exists}" /> ${member.code} - (${member.personal.firstName?if_exists} ${member.personal.lastName?if_exists})</li>
+		<li title="${member.personal.email?if_exists}"><input type="checkbox" CHECKED class="email position" onclick="updateSelected(this)" name1="mems" name2="${member.role.position?if_exists}"  name3="${member.role.employment?if_exists}" value="${member.personal.email?if_exists}" /> ${member.code} - (${member.personal.firstName?if_exists} ${member.personal.lastName?if_exists})</li>
 		<#else>
-		<li title="${member.personal.email?if_exists}"><input type="checkbox" class="email" onclick="updateSelected(this)" name="mems"  value="${member.personal.email?if_exists}" /> ${member.code} - (${member.personal.firstName?if_exists} ${member.personal.lastName?if_exists})</li>
+		<li title="${member.personal.email?if_exists}"><input type="checkbox" class="email  position" onclick="updateSelected(this)" name1="mems"  name2="${member.role.position?if_exists}" name3="${member.role.employment?if_exists}" value="${member.personal.email?if_exists}" /> ${member.code} - (${member.personal.firstName?if_exists} ${member.personal.lastName?if_exists})</li>
 		</#if>
 		</#if>
 		</#list>
 		</ul>
 		</div>
-		  
+
 		
+		<div>Select:<br/>
+
+		<div style="width:200px;float:left"><input type="checkbox" name="PC" onclick="selectGroupPC(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Permanent Crew</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="PA" onclick="selectGroupPA(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Permanent AMEs</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="PP" onclick="selectGroupPP(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Permanent Pilots</div>
+		<br/>
+		<div style="width:200px;float:left"><input type="checkbox" name="FC" onclick="selectGroupFC(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Freelance Crew</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="FA" onclick="selectGroupFA(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Freelance AMEs</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="FP" onclick="selectGroupFP(this);var check=this;setTimeout(function(){check.checked=false;},500);"> All Freelance Pilots</div>
+		<br/>
+		<div style="width:200px;float:left"><input type="checkbox" name="FC" onclick="selectAll();var check=this;setTimeout(function(){check.checked=false;},500);"> All</div>
+		<div style="width:200px;float:left"><input type="checkbox" name="FC" onclick="selectNone();var check=this;setTimeout(function(){check.checked=false;},500);"> None</div>
+		</div>
+		<br/><br/>
 		<div class="heading"><span style="float:left;">Additional To: (Email Addresses)  </span><img class="tooltip" title="Additional To: Please enter the email address of people who you would like to include in this mailout but who are not on the system. Please comma / semicolon seperate any emails (e.g. to1@domain.com;to2@domain.com  to1@domain.com,to2@domain.com  )" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 		<div ><input type="text" name="emails" value="${emails?if_exists}" style="width:476px;margin-bottom:10px;border:1px solid silver;" /></div>
 			
-			<div class="heading"><span style="float:left;">Attach Documents: - [<span id="docSelectNo">${docsSelected.size()}</span> selected]</span><img class="tooltip" title=" - Attach Documents: - Please check the boxes to the right to select documents uploaded to the Distribution documents folder to be attached and sent with this mail" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
+	    <div class="heading"><span style="float:left;">Request a Read Reciept:  </span><img class="tooltip" title="Reciept - This will request a read reciept for this email to be sent to the from email supplied when the email has been opened, this will depend however on the recepients email browser, settings and selection when they recieve the email." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
+        <div style="padding:5px;border:1px solid silver;width:466px;margin-bottom:10px;" ><input type="checkbox" name="reciept" value="yes" style="" /> &nbsp; Check to send a read reciept request with this email. </div>
+            
+			
+			
+			<div class="heading"><span style="float:left;">Attach Documents: - [<span id="docSelectNo">${docsSelected.size()}</span> selected]</span><img class="tooltip" title=" - Attach Documents: - Please check the boxes to the left to select documents uploaded to the Distribution documents folder to be attached and sent with this mail" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 			
 			<div style="height:100px; width:460px; overflow:auto; padding:5px; margin-bottom:10px; border: 1px solid silver;">
 			<ul class="mktree" style="">

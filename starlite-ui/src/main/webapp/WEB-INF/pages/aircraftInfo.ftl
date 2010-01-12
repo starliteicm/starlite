@@ -36,6 +36,18 @@
 				<input name="aircraft.model" type="text" value="${aircraft.model!}"/>
 			</div>
 			<div class="fm-opt">
+                <label for="aircraft.engines">Engine:</label>
+                <select name="aircraft.engines">
+                <#if aircraft.engines?exists>
+                <option <#if aircraft.engines.equals(0)>selected</#if> value="0" >Single
+                <option <#if aircraft.engines gt 0>selected</#if> value="1" >Multi
+                <#else>
+                <option  value="0" >Single
+                <option  value="1" >Multi
+                </#if>
+                </select>
+            </div>
+			<div class="fm-opt">
 				<label for="aircraft.licence">Licence:</label>
 				<input name="aircraft.licence" type="text" value="${aircraft.licence!}"/>
 			</div>

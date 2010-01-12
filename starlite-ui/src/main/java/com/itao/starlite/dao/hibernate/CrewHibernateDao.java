@@ -15,7 +15,6 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 	}
 
 	public CrewMember createCrewMember(String title, String firstName, String lastName) {
-		StringBuilder buf = new StringBuilder();
 		String[] nameParts = lastName.split(" ");
 		
 		String mainPart = "";
@@ -51,5 +50,11 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 	@SuppressWarnings("unchecked")
 	public List<CrewMember> findCrewMembersByCodes(String codes){
 		return (List<CrewMember>) getCurrentSession().createQuery("from CrewMember cm where id in ("+codes+")").list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CrewMember> findAllCrewReadOnly() {
+		// TODO Auto-generated method stub
+		return (List<CrewMember>) getCurrentSession().createQuery("from CrewMember cm").setReadOnly(true).list();
 	}
 }

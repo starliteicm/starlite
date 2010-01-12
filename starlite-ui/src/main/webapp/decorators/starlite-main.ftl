@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
  "http://www.w3.org/TR/html4/strict.dtd">
 <html>
+<#setting number_format = "######" />
 
 <#if Session.userObj??>
 	<#assign user = Session.userObj>
@@ -42,7 +43,7 @@
 <body>
 </#if>
 
-<div name="logo" style="float:left;">
+<div name="logo" style="float:left;" id="logo">
 	<#if isManager>
 	<img style="float:left;position:absolute;z-index:100;" src="${request.contextPath}/images/starlite.png"/>
 	<#else>
@@ -76,7 +77,7 @@
 	      <#else>
 	      <li class="charters">
 	      </#if>
-	      <a href="charters.action">Charters</a></li>
+	      <a href="charters.action">Contract</a></li>
 	      <#if current?? && current=="crew">
 	      <li class="crew current">
 	      <#else>

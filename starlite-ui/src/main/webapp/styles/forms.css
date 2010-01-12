@@ -142,3 +142,15 @@ p#fm-intro {
 .checkbox {
 	border:none;
 }
+
+.profile-left{
+   float:left;
+   clear:left;
+   width:300px;   
+   }  
+
+.profile-right{
+   float:left;
+   margin-top:110px;     
+   width:300px;      
+   }

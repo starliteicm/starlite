@@ -21,7 +21,7 @@ public class ExpirableDateEditor implements CellEditor {
 	public Object getValue(Object arg0, String arg1, int arg2) {
 		Object value = new BasicCellEditor().getValue(arg0, arg1, arg2);
 		if (value == null)
-			return "";
+			return "X";
 		if (value instanceof Date) {
 			Date d = (Date)value;
 			DateMidnight expires = new DateMidnight(d);

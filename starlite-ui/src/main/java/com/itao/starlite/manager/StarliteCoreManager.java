@@ -1,10 +1,15 @@
 package com.itao.starlite.manager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.joda.time.DateMidnight;
 
@@ -16,6 +21,7 @@ import com.itao.starlite.dao.AircraftDao;
 import com.itao.starlite.dao.AircraftTypeDao;
 import com.itao.starlite.dao.CharterDao;
 import com.itao.starlite.dao.CrewDao;
+import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
 import com.itao.starlite.docs.manager.DocumentManager;
@@ -31,6 +37,7 @@ import com.itao.starlite.model.ApprovalStatus;
 import com.itao.starlite.model.Charter;
 import com.itao.starlite.model.CharterList;
 import com.itao.starlite.model.CombinedActuals;
+import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
@@ -42,6 +49,7 @@ public class StarliteCoreManager {
 	@Inject private CrewDao crewDao;
 	@Inject private AircraftDao aircraftDao;
 	@Inject private ActualsDao actualsDao;
+	@Inject private CrewDayDao crewDayDao;
 	@Inject private FlightAndDutyActualsDao flightAndDutyActualsDao;
 	@Inject private AircraftTypeDao aircraftTypeDao;
 	@Inject private ExchangeDao exDao;
@@ -141,6 +149,19 @@ public class StarliteCoreManager {
 	public List<CrewMember> getAllCrew() {
 		return crewDao.findAll();
 	}
+	
+	@Transactional
+	public List<CrewMember> getAllCrewReadOnly() {
+		return crewDao.findAllCrewReadOnly();
+	}
+
+	
+	@Transactional
+	public List<CrewMember> getAllCrewPlus() {
+		List<CrewMember> crewplusList = crewDao.findAll();
+		return crewplusList;
+	}
+	
 	
 	@Transactional
 	public List<CrewMember> getCrewMembersByCodes(String codes) {
@@ -432,11 +453,14 @@ public class StarliteCoreManager {
 		}
 	}
 
+
+	
 	@Transactional
 	public List<AircraftType> getAircraftTypes() {
 		return aircraftTypeDao.findAll();
 	}
 	
+	@Transactional
 	public void saveAircraftType(AircraftType a){
 		aircraftTypeDao.makePersistent(a);
 	}
@@ -469,6 +493,56 @@ public class StarliteCoreManager {
 			}
 		}
 		return perm;
+	}
+	
+	
+	@Transactional
+	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
+		return crewDayDao.getCrewDayByCrewMemberByMonth(cId, month, year);
+	}
+	
+	@Transactional
+	public void saveCrewDay(CrewDay c){
+		crewDayDao.makePersistent(c);
+	}
+
+	public CrewDay getCrewDay(Date date, CrewMember crewMember) {
+		return crewDayDao.getCrewDay(date, crewMember);
+	}
+
+	public List<CrewDay> getCrewDayByCharterBetween(Integer id, Date dateFrom,Date dateTo) {
+		return crewDayDao.getCrewDayByCharterBetween(id,dateFrom,dateTo);
+	}
+
+	public List<ExchangeRate> getExchangeRates() {
+		return exDao.findAll();
+	}
+
+	public List<CrewDay> getCrewDayByCrewMemberBetween(Integer id,Date dateFrom, Date dateTo) {
+		return crewDayDao.getCrewDayByCrewMemberBetween(id,dateFrom,dateTo);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public TreeMap getSumCrewDays() {
+		Calendar cal = Calendar.getInstance();
+		Date toDate = cal.getTime();
+		cal.add(Calendar.YEAR, -1);
+		Date fromDate = cal.getTime();
+		return crewDayDao.getSumCrewDays(fromDate, toDate);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public TreeMap getSumCrewDays(String fromDateStr , String toDateStr) {
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			Date fromDate = df.parse(fromDateStr);
+			Date toDate = df.parse(toDateStr);
+			return crewDayDao.getSumCrewDays(fromDate, toDate);
+			
+		} catch (ParseException e) {
+			return getSumCrewDays();
+		}
 	}
 
 }

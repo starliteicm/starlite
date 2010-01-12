@@ -7,10 +7,26 @@
 <body>
 
 <div id="complete" style="position:relative;left:100px;top:100px;padding:10px;">
-	<form action="doLogin" method="POST" style="width:400px; float:left; border:1px solid silver; border-bottom: 2px solid grey; border-right: 2px solid grey; padding:10px;">
+
+           
+
+	<form action="doLogin" method="POST" onsubmit="if(document.getElementById('agree').checked == 1){return true;}return false;" style="width:600px; float:left; border:1px solid silver; border-bottom: 2px solid grey; border-right: 2px solid grey; padding:10px;">
+	
+	<img style="position:absolute;left:470px;z-index:100;" src="images/starlite.png"/>
+    <img style="position:absolute;left:350px;z-index:101;" src="images/cri-logo.png"/>
+     
+	
 		<fieldset style="text-align:center;">
-			<legend>Please login to access this page</legend>
+		
+            
+		
+			<legend>
+			Please login to access this page 
+            </legend>
+            
+
 			<br/>
+			<div style="width:400px;">
 			<div class="fm-opt">
 				<label for="username" style="font-size:120%;">Username</label>
 				<input name="username" id="username" type="text"/>
@@ -19,10 +35,20 @@
 				<label for="password" style="font-size:120%;">Password</label>
 				<input name="password" id="password" type="password"/>
 			</div>
+			</div>
 			<!--div class="fm-opt" style="text-align:left;">
 				<label for="rememberMe">Remember Me?</label>
 				<input name="rememberMe" id="rememberMe" type="checkbox" class="checkbox" value="true"/>
 			</div-->
+			<br/>
+			
+			<p style="margin-left:50px;width:480px;padding:10px;border:1px dotted silver;overflow:auto;height:40px;">
+			Disclaimer:
+			
+			</p>
+			
+			<br/>
+			<input type="checkbox" name="agree" id="agree"> I have Read and Agree to the above statement
 			<br/>
 			<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/lock.png"/>Log In</button>
 		</fieldset>

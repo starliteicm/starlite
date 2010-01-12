@@ -16,10 +16,13 @@ import org.apache.struts2.ServletActionContext;
 
 import com.google.inject.Inject;
 import com.itao.jmesa.dsl.entities.Table;
+import com.itao.starlite.auth.User;
+import com.itao.starlite.auth.UserAware;
+import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.manager.StarliteCoreManager;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class ScriptAction extends ActionSupport {
+public class ScriptAction extends ActionSupport implements UserAware {
 	/**
 	 * GENERATED
 	 */
@@ -29,19 +32,34 @@ public class ScriptAction extends ActionSupport {
 	public String scriptName;
 	public String html;
 	public String view = "HTML";
-	
 	public String current = "reports";
-	
 	public Map<String, Object> pageContext;
+	public String dateFrom;
+	public String dateTo;
 	
 	@Inject
 	private StarliteCoreManager manager;
+	@Inject
+	public DocumentManager docManager;
 	
+	private User user;
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
+		
+		
 		pageContext = new HashMap<String, Object>();
 		pageContext.put("extraParams", processParams(ServletActionContext.getRequest()));
+		
+		pageContext.put("dateFrom", dateFrom);
+		pageContext.put("dateTo", dateTo);
 		
 		pageContext.put("RESULT", SUCCESS);
 		pageContext.put("request", ServletActionContext.getRequest());

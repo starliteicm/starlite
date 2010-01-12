@@ -16,4 +16,6 @@ public interface CrewDao extends GenericDao<CrewMember, Integer>{
 	public CrewMember findByName(String nameOrReg);
 
 	public List<CrewMember> findCrewMembersByCodes(String codes);
+	
+	public List<CrewMember> findAllCrewReadOnly();
 }

@@ -58,7 +58,7 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 		return super.execute();
 	}
 	
-	public File document;
+	public File   document;
 	public String documentContentType;
 	public String documentFileName;
 	
@@ -68,6 +68,7 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	public String shallReturn;
 	
 	public String upload() throws Exception {
+		LOG.info(tags+" "+folder+" "+shallReturn);
 		String[] tagsArray = tags.split(" ");
 		
 		Document doc = new Document();
@@ -90,6 +91,9 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	public String path;
 	public String delete() throws Exception {
 		documentManager.deleteDocument(path, user);
+		if (returnUrl != null)
+			return "redirect";
+		
 		returnUrl = ServletActionContext.getRequest().getHeader("referer");
 		return "redirect";
 	}

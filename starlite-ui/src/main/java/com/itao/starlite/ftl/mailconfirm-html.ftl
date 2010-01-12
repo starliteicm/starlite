@@ -22,7 +22,7 @@ If you have any enquires regarding your pay slip please contact:
 
 <br/><br/>
 <B>Dustyn Molver</B><br/>
-Tel: +1 284 494 9820<br/>
+Tel: +1 284 494 7667<br/>
 Fax: +1 284 6934<br/>  
 Email: dustyn@crewresource.biz<br/>
 <br/>

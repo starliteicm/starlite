@@ -1,5 +1,12 @@
 package com.itao.starlite.ui.actions;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,12 +14,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.ParentPackage;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 import org.apache.struts2.dispatcher.ServletRedirectResult;
+import org.apache.struts2.dispatcher.StreamResult;
+import org.jfree.util.Log;
 import org.joda.time.DateMidnight;
 
 import com.google.inject.Inject;
@@ -22,6 +33,7 @@ import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.auth.annotations.Permissions;
 import com.itao.starlite.docs.manager.BookmarkManager;
 import com.itao.starlite.docs.manager.DocumentManager;
+import com.itao.starlite.docs.model.Bookmark;
 import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
 import com.itao.starlite.docs.model.Tag;
@@ -32,9 +44,11 @@ import com.itao.starlite.model.Aircraft;
 import com.itao.starlite.model.AircraftType;
 import com.itao.starlite.model.ApprovalStatus;
 import com.itao.starlite.model.Charter;
+import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.CharterEntry;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
 import com.itao.starlite.ui.Breadcrumb;
@@ -49,6 +63,8 @@ import com.opensymphony.xwork2.Preparable;
 @ParentPackage("prepare")
 @Results({
     @Result(name="unauthorised", type=ServletRedirectResult.class, value="unauthorised.html"),
+    @Result(name="redirect-hours", type=ServletRedirectResult.class, value="crewMember.action?id=${id}&tab=hours&notificationMessage=Saved"),
+    @Result(name="photo", type=StreamResult.class, value="photo", params={"inputName","photo","contentType","image","contentDisposition","inline"} ),
     @Result(name="redirect-addFlightActuals", type=ServletRedirectResult.class, value="crewMember!addFlightActuals.action?id=${id}&tab=flight&actualsId=${actuals.id}&errorMessage=${errorMessage}&notificationMessage=${notificationMessage}")
 })
 @Permissions("ManagerView || OwnDetails")
@@ -56,17 +72,78 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public CrewMember crewMember;
 	public List<AircraftType> aircraftTypes;
 	public String id;	
-	
 	public String current="crew";
 	public Breadcrumb[] breadcrumbs;
-
 	public Tab[] tableTabs;
-
 	public String tab = "personal";
-
+	public String switch_role_to = "";//used to store temporary role switch to drive different form
 	public String tagArray = "[]";
-
 	private User user;
+	
+	public String docfolder;
+	public File document;
+	public String documentContentType;
+	public String documentFileName;
+	public String tags;
+	
+	public String currency;
+	public List<ExchangeRate> rates;
+	
+	public List<String>   passportsTags;
+	public List<File>     passports;
+	public List<String>   passportsContentType;
+	public List<String>   passportsFileName;
+	public List<String>   passportsId;
+	public List<String>   passportsCountry;
+	public List<String>   passportsNumber;
+	public List<String>   passportsExpiryDate;
+	public Map<String,Document> passportFiles;
+	
+	
+	public SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	public SimpleDateFormat mysqlFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public String dateFrom;
+	public String dateTo;
+	public String activity;
+	public String chart;
+	public String tail;
+	
+	public File   crmFile;
+	public String crmFileContentType;
+    public String crmFileFileName;
+	public String crmTags;
+	
+    public File   dgFile;
+	public String dgFileContentType;
+    public String dgFileFileName;
+    public String dgTags;
+    
+    public File   huetFile;
+	public String huetFileContentType;
+    public String huetFileFileName;
+    public String huetTags;
+    
+    public File   mediFile;
+	public String mediFileContentType;
+    public String mediFileFileName;
+    public String mediTags;
+    
+    public File   licenceFile;
+	public String licenceFileContentType;
+    public String licenceFileFileName;
+    public String licenceTags;
+    
+    public Document licence;
+    public Document medical;
+    public Document crm;
+    public Document dg;
+    public Document huet;
+    public Document photoFile;
+    
+    
+    @SuppressWarnings("unchecked")
+	public TreeMap<String, TreeMap> months;
+	public String hoursMonth;
 
 	@Inject
 	private StarliteCoreManager manager;
@@ -82,7 +159,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 	public int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
 	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
+	
 	@Override
 	public String execute() throws Exception {
 		//crewMember = manager.getCrewMember(id);
@@ -101,8 +178,29 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				readOnly = true;
 			}
 
-		if (tab.equals("personal"))
+		if (tab.equals("personal")){
+			
+			passportFiles = new HashMap<String,Document>();
+			folder = docManager.getFolderByPath("/crew/"+id, user);
+			
+			photoFile = folder.getDocumentByTag("photo");
+			
+			int count=0;
+			boolean morePassports = true;
+	       
+			while(morePassports){
+				 Document passport = folder.getDocumentByTag("passport"+count);
+				 if(passport != null){
+					 passportFiles.put("passport"+count,passport);
+				 }
+				 else{
+					 morePassports = false;
+				 }
+				 count++;
+			}
+			
 			return SUCCESS;
+		}
 
 		if (tab.toLowerCase().equals("review") && !user.hasPermission("ManagerEdit"))
 			notAuthorised = true;
@@ -125,12 +223,107 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		if (tab.equals("flight"))
 			return setupFlight();
 		
-		if(tab.equals("role"))
+		if (tab.equals("hours"))
+			return setupHours();
+		
+		if(tab.equals("role")){
 			aircraftTypes = manager.getAircraftTypes();
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+//	        LOG.info(folder.getDocs());
+	        licence = folder.getDocumentByTag("licence");
+	        medical = folder.getDocumentByTag("medical");
+	        crm     = folder.getDocumentByTag("CRM");
+	        dg      = folder.getDocumentByTag("DG");
+	        huet    = folder.getDocumentByTag("HUET");   
+		}
 		
 		return tab;
 	}
 
+	public String profile() throws Exception{
+		prepare();
+		LOG.info(crewMember.getId());
+		return "profile";
+	}
+	
+	public String required() throws Exception{
+		prepare();
+		LOG.info(crewMember.getId());
+		return "required";
+	}
+	
+	public String photo(){
+		return "photo";
+	}
+	
+	
+	public InputStream getPhoto(){
+	  try{
+	    folder = docManager.getFolderByPath("/crew/"+id, user);
+	    LOG.info(folder.getDocs());
+	    Document photo = folder.getDocumentByTag("photo");
+	    LOG.info("Name:"+photo.getName());
+	    LOG.info("Uuid:"+photo.getUuid());
+	    return (InputStream) docManager.getDocumentData(photo);
+	  }
+	  catch(Exception e){
+		  LOG.error(e);
+		  LOG.error(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+		  File def = new File(ServletActionContext.getServletContext().getRealPath("/images/icons/user.png"));
+		  try {
+			return new FileInputStream(def);
+		} catch (FileNotFoundException e1) {
+			LOG.error(e1);
+			return null;
+		}
+	  }
+	}
+	
+	public InputStream getCrmFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document crmFile = folder.getDocumentByTag("CRM");
+		    LOG.info("Name:"+crmFile.getName());
+		    LOG.info("Uuid:"+crmFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(crmFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+
+	public InputStream getDgFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document dgFile = folder.getDocumentByTag("DG");
+		    LOG.info("Name:"+dgFile.getName());
+		    LOG.info("Uuid:"+dgFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(dgFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	
+	public InputStream getHuetFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document huetFile = folder.getDocumentByTag("HUET");
+		    LOG.info("Name:"+huetFile.getName());
+		    LOG.info("Uuid:"+huetFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(huetFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}	
+	
 	public String tableHtml;
 	private String setupFlight() {
 		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
@@ -143,15 +336,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 					.link("crewMember!addFlightActuals.action?id="+id+"&tab=flight&actualsId=${id}")
 				.column("monthlyRate").withStyle("text-align:right")
 				.column("payMonthlyRate").as(YesNoCellEditor.class.getName())
-				.column("areaRate").withStyle("text-align:right")
+				.column("areaRate").withStyle("text-align:right").called("Daily")
 				.column("areaDays").called("Days")
-				.column("dailyRate").withStyle("text-align:right")
+				.column("discomfortTotal").called("Discomfort")
+				.column("dailyRate").withStyle("text-align:right").called("Training")
 				.column("dailyDays").called("Days")
 				.column("instructorRate").withStyle("text-align:right")
 				.column("instructorDays").called("Days")
-				.column("flightRate").withStyle("text-align:right")
+				.column("flightRate").withStyle("text-align:right").called("Travel")
 				.column("flightDays").called("Days")
 				.column("deductionTotal").called("Deductions")
+				.column("additionTotal").called("Contributions")
 				.column("total").called("Total Due").withStyle("text-align:right")
 				.column("paidDate").called("Date Paid").asDate("dd/MM/yyyy")
 				.column("paidAmount").called("Amount Paid").withStyle("text-align:right")
@@ -160,6 +355,202 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "flight";
 	}
+	
+	
+	public String saveRange() throws Exception{
+		prepare();
+		Aircraft aircraft =  null;
+		Charter charter = null;
+		
+		if(tail != null){
+			if(tail != ""){
+				aircraft = manager.getAircraft(new Integer(tail));
+			}
+		}
+		if(chart != null){
+			if(chart != ""){
+				charter  = manager.getCharter(new Integer(chart));
+			}
+		}
+		
+		try {
+			Date from = df.parse(dateFrom);
+			Date to   = df.parse(dateTo);
+			Calendar cal = Calendar.getInstance();
+		    cal.setTime(from);
+			
+			if(from.before(to)){
+				while(cal.getTime().before(to)){
+					
+					String date = mysqlFormat.format(cal.getTime());
+					CrewDay cd = null;
+					cd = manager.getCrewDay(cal.getTime(),crewMember);
+					if(cd == null){
+						cd = new CrewDay(null,date,activity,null,null,null,null,aircraft,charter,crewMember,null,null,null,null);
+					}
+					else {
+						cd.setActivity(activity);
+						cd.setAircraft(aircraft);
+						cd.setCharter(charter);
+					}
+					manager.saveCrewDay(cd);
+					cal.add(Calendar.DAY_OF_MONTH,1);
+				}
+			}	
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "redirect-hours";
+	}
+	
+	
+	public String saveHours() throws Exception{
+		prepare();
+		for(int i = 1; i < 32; i++){
+			
+			String day = ""+i;
+			if(i < 10){
+				day = "0"+day;
+			}
+			
+			String cDId        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_id");
+			String activity    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_activity");
+			String comment     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_comment");
+			String type        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_type");
+			String position    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_position");
+			String instruments =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_instruments");
+			String tail        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_tail");
+			String chart       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_charter");
+			String flown       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_flown");
+			String timein      =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timein");
+			String timeout     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timeout");
+			String hours       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_hours");
+			
+			LOG.info(hoursMonth+"-"+day+"|"+cDId+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|"+flown+"|"+timein+"|"+timeout+"|"+hours);
+			
+			Aircraft aircraft = null;
+			Charter charter = null;
+			
+			Integer crewDayId = null;
+			if (cDId != null) {
+				if(cDId != ""){
+					crewDayId = new Integer(cDId);
+				}
+			}
+			
+			if(activity != null){
+			if(activity != ""){
+				if(tail != null){
+					if(tail != ""){
+						aircraft = manager.getAircraft(new Integer(tail));
+					}
+				}
+				if(chart != null){
+					if(chart != ""){
+						charter  = manager.getCharter(new Integer(chart));
+					}
+				}
+				Double flownHours = new Double(0.0);
+				if(flown != null){
+					if(flown != ""){
+						flownHours = new Double(flown);
+					}
+				}
+				
+				manager.saveCrewDay(new CrewDay(crewDayId,hoursMonth+"-"+day,activity,comment,type,position,instruments,aircraft,charter,crewMember,flownHours,timein,timeout,hours));
+			}
+		    }
+			
+		}
+		
+		return "redirect-hours";
+	}
+	
+	@SuppressWarnings("unchecked")
+	private String setupHours() throws Exception{
+		
+		int startYear = 2009;
+		int startMonth = 1;
+		boolean moreMonths = true;
+		Calendar cal = Calendar.getInstance();
+		int currMonth = cal.get(Calendar.MONTH)+1;
+		int currYear = cal.get(Calendar.YEAR);
+		months = new TreeMap<String,TreeMap>(Collections.reverseOrder());
+		
+		while(moreMonths){
+		if(startYear < currYear){
+			for(int i=1; i< 13; i++){
+				if(i < 10){
+					months.put(""+startYear+"-0"+i,new TreeMap());
+				}
+				else{
+					months.put(""+startYear+"-"+i,new TreeMap());
+				}
+			}
+		}
+		else if (startYear == currYear) {
+			for(int i=1; i<=currMonth; i++){
+				if(i < 10){
+					months.put(""+startYear+"-0"+i,new TreeMap());
+				}
+				else{
+					months.put(""+startYear+"-"+i,new TreeMap());
+				}
+			}
+		}
+		else{
+			moreMonths = false;
+		}
+		startYear++;
+		}
+		
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		
+		if(hoursMonth != null){
+
+		
+		
+		SimpleDateFormat monthformat = new SimpleDateFormat("yyyy-MM");
+		SimpleDateFormat dayformat = new SimpleDateFormat("dd");
+		
+		cal = Calendar.getInstance();
+		cal.setTime(monthformat.parse(hoursMonth));
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		
+		String nowMonth = monthformat.format(cal.getTime());
+		
+		//LOG.info(nowMonth);	
+		List<CrewDay> crewDays = manager.getCrewDayByCrewMemberByMonth(new Integer(crewMember.getId()),new Integer(nowMonth.substring(0, 4)),new Integer(nowMonth.substring(5, nowMonth.length())));
+		Map<String,CrewDay> crewDayMap = new HashMap<String,CrewDay>();
+		for(CrewDay cd : crewDays){
+			crewDayMap.put(dayformat.format(cd.getDate()), cd);
+		}
+			
+			
+		TreeMap days = new TreeMap();
+			
+		while(nowMonth.equals(monthformat.format(cal.getTime()))){	
+				String day = dayformat.format(cal.getTime());
+				Map dayMap = new HashMap();
+				dayMap.put("day", cal.get(Calendar.DAY_OF_WEEK));
+				dayMap.put("crewDay", crewDayMap.get(day));
+				days.put(day,dayMap);
+				cal.add(Calendar.DAY_OF_MONTH, 1);
+				//LOG.info(day);
+		}
+		
+			
+		months.put(nowMonth,days);
+		
+		}
+		
+		//provide month list
+		return "hours";
+	}
+	
 
 	public String errorMessage;
 	public String notificationMessage;
@@ -173,6 +564,110 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String reason;
 	public double amount;
 	public double amountUSD;
+
+	
+	public String addAddition() throws Exception{
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			
+			LOG.info("amount:"+amount+" amountUSD:"+amountUSD);
+			
+			if(amountUSD == 0.0){
+				Addition add = new Addition();
+				add.setEntered(amount);
+				add.setCurrency(currency);
+				//LOG.info("RAND:"+amount);
+				add.setReason(reason);
+				//get xchange rate and convert amount (rand)
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
+				add.setExchangeRate(ex.getAmount());
+				//LOG.info("XCHANGE:"+ex.getAmount());
+				Money converted = ex.convert(amount);
+				add.setAmount(converted);
+				actuals.getAdditions().put(reason,add);
+			}
+			else {
+				Addition add = new Addition();
+				Money converted = new Money("USD",amountUSD);
+				LOG.info("USD:"+converted.getAmountAsDouble());
+				add.setReason(reason);
+				add.setCurrency(currency);
+				//get xchange rate and convert amount (rand)
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
+				Double exAmount = ex.getAmount();
+				ex.setAmount(1/exAmount);
+				add.setExchangeRate( 1/ exAmount);
+				LOG.info("XCHANGE RATE:"+(1/exAmount));
+				Money entered = ex.convert(converted.getAmountAsDouble());
+				ex.setAmount(exAmount);
+				LOG.info("ENTERED:"+entered);
+				add.setAmount(converted);
+				add.setEntered(entered.getAmountAsDouble());
+				actuals.getAdditions().put(reason,add);
+			}
+			
+			//LOG.info("XCHANGE converted:"+converted);
+			
+			//save actuals
+			try {
+				if (actuals.getId() == null) {
+					addFlightActuals();
+					notificationMessage = "Addition Saved - Actuals Added";
+				} else {
+					manager.saveFlightAndDutyActuals(actuals);
+					notificationMessage = "Addition Saved - Actuals saved";
+				}
+				crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+			} catch (ExistingRecordException e) {
+				errorMessage = e.getMessage();
+			}
+		}
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+		tab= "flight";
+		prepareTabs();
+		return "redirect-addFlightActuals";
+	}
+	
+	//remove a deduction from a crewMember
+	public String remAddition() throws Exception{
+		if (crewMember.getId() == null) {
+			errorMessage = "Unknown Crew Member";
+			return SUCCESS;
+		} else {
+			actuals.getAdditions().remove(reason);
+			try {
+				if (actuals.getId() == null) {
+					manager.addCrewFlightAndDutyActuals(crewMember.getCode(), actuals);
+					notificationMessage = "Addition Removed - Actuals added";
+				} else {
+					manager.saveFlightAndDutyActuals(actuals);
+					notificationMessage = "Addition Removed - Actuals saved";
+				}
+				crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+			} catch (ExistingRecordException e) {
+				errorMessage = e.getMessage();
+			}
+			//save actuals
+		}
+		allCharters=manager.getAllCharters().charterList;
+		allAircraft=manager.getAllAircraft().aircraftList;
+		
+		breadcrumbs = Breadcrumb.toArray(
+				new Breadcrumb("Crew", "crew.action"),
+				new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
+		);
+		tab= "flight";
+		prepareTabs();
+		return "addFlightActuals";
+	}
 	
 	//add a deduction to a crewMember
 	public String addDeduction() throws Exception{
@@ -180,13 +675,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
 		} else {
+			
+			LOG.info("amount:"+amount+" amountUSD:"+amountUSD);
+			
 			if(amountUSD == 0.0){
 				Deduction deduction = new Deduction();
-				deduction.setRand(amount);
+				deduction.setEntered(amount);
+				deduction.setCurrency(currency);
 				//LOG.info("RAND:"+amount);
 				deduction.setReason(reason);
 				//get xchange rate and convert amount (rand)
-				ExchangeRate ex =  manager.getExchangeRateByCode("ZAR", "USD");
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
 				deduction.setExchangeRate(ex.getAmount());
 				//LOG.info("XCHANGE:"+ex.getAmount());
 				Money converted = ex.convert(amount);
@@ -198,18 +697,18 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				Money converted = new Money("USD",amountUSD);
 				LOG.info("USD:"+converted.getAmountAsDouble());
 				deduction.setReason(reason);
+				deduction.setCurrency(currency);
 				//get xchange rate and convert amount (rand)
-				
-				ExchangeRate ex =  manager.getExchangeRateByCode("ZAR", "USD");
+				ExchangeRate ex =  manager.getExchangeRateByCode(currency, "USD");
 				Double exAmount = ex.getAmount();
 				ex.setAmount(1/exAmount);
 				deduction.setExchangeRate( 1/ exAmount);
 				LOG.info("XCHANGE RATE:"+(1/exAmount));
-				Money rand = ex.convert(converted.getAmountAsDouble());
+				Money entered = ex.convert(converted.getAmountAsDouble());
 				ex.setAmount(exAmount);
-				LOG.info("RAND:"+rand);
+				LOG.info("ENTERED:"+entered);
 				deduction.setAmount(converted);
-				deduction.setRand(rand.getAmountAsDouble());
+				deduction.setEntered(entered.getAmountAsDouble());
 				actuals.getDeductions().put(reason,deduction);
 			}
 			
@@ -287,6 +786,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		} else {
 			allCharters=manager.getAllCharters().charterList;
 			allAircraft=manager.getAllAircraft().aircraftList;
+			rates=manager.getExchangeRates();
 			
 			breadcrumbs = Breadcrumb.toArray(
 					new Breadcrumb("Crew", "crew.action"),
@@ -329,7 +829,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						int daily = parseInt(ServletActionContext.getRequest().getParameter("newEntryDaily"+i));
 						int flight = parseInt(ServletActionContext.getRequest().getParameter("newEntryFlight"+i));
 						int instructor = parseInt(ServletActionContext.getRequest().getParameter("newEntryInstructor"+i));
-						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor);
+						int discomfort = parseInt(ServletActionContext.getRequest().getParameter("newEntryDiscomfort"+i));
+						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor+", "+discomfort);
 
 						i++;
 
@@ -340,6 +841,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 							ce.setAreaDays(area);
 							ce.setDailyDays(daily);
 							ce.setFlightDays(flight);
+							ce.setDiscomfort(discomfort);
 							ce.setInstructorDays(instructor);
 							actuals.getEntries().put(key, ce);
 						}
@@ -445,8 +947,169 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 
 	public String save() throws Exception {
+		
+		LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
+		
+		//set passports
+		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
+		int index = 0;
+		if(passportsNumber != null){
+		for(String passportNumber : passportsNumber ){
+			
+			String passC  = passportsCountry.get(index);
+			String passE  = passportsExpiryDate.get(index);
+			String passId = passportsId.get(index);
+			
+			if((passportNumber != null)&&(!"".equals(passportNumber))&&(passC != null)&&(!"".equals(passC))&&(passE != null)&&(!"".equals(passE))){
+			CrewMember.Passport p = new CrewMember.Passport();
+			p.setPassportNumber(passportNumber);
+			p.setCountry(passC);
+			p.setExpiryDate(df.parse(passE));
+			if(passId != null){
+				if(!passId.equals("")){
+					p.id = new Integer(passId);
+				}
+			}
+			cmPassports.add(p);
+			}
+			index++;			
+		}
+		crewMember.setPassport(cmPassports);
+		}
+		
 		manager.saveCrewMember(crewMember);
-		return execute();
+		try{
+		  if(document != null){
+			LOG.info(tags+" "+docfolder);
+			String[] tagsArray = tags.split(" ");
+			Document doc = new Document();
+			doc.setName(documentFileName);
+			doc.setContentType(documentContentType);
+			Bookmark b = bookmarkManager.createBookmark(documentFileName, "Document", docfolder+"/"+documentFileName, tagsArray);
+			doc.setBookmark(b);
+			docManager.createDocument(doc, docfolder, new FileInputStream(document), user);
+		  }
+		}
+		catch(Exception e){
+			LOG.error(e);
+		}
+		
+	    boolean morePassports = true;
+	    int count = 0;
+	    if(passports != null){
+		while(morePassports){			
+			if(count < passports.size()){			
+			    File passport = passports.get(count);
+			    String passportTags = passportsTags.get(count);
+			    String passportFileName = passportsFileName.get(count);
+			    String passportContentType = passportsContentType.get(count);
+			    passportTags = passportTags + count;
+			    try{
+				    if(passport != null){
+					    LOG.info(passportTags+" "+docfolder);
+					    String[] tagsArray = passportTags.split(" ");
+					    Document doc = new Document();
+					    doc.setName(passportFileName);
+					    doc.setContentType(passportContentType);
+					    Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
+					    doc.setBookmark(b);
+					    docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
+				    }
+			    }
+			    catch(Exception e){
+			    	LOG.error(e);
+			    }
+			count++;
+			}
+			else{
+				morePassports = false;
+			}	
+		}
+	    }
+	    
+	    
+	    try{
+            if(licenceFile!= null){         
+                LOG.info(licenceTags+" "+docfolder);
+                String[] tagsArray = licenceTags.split(" ");
+                Document doc = new Document();
+                doc.setName(licenceFileFileName);                
+                doc.setContentType(licenceFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(licenceFileFileName, "Document", docfolder+"/"+ licenceFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(licenceFile), user);
+            }
+          }
+          catch(Exception e){
+                LOG.error(e);
+          }
+	    
+	    try{
+            if(crmFile!= null){         
+                LOG.info(crmTags+" "+docfolder);
+                String[] tagsArray = crmTags.split(" ");
+                Document doc = new Document();
+                doc.setName(crmFileFileName);                
+                doc.setContentType(crmFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(crmFileFileName, "Document", docfolder+"/"+ crmFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(crmFile), user);
+            }
+          }
+          catch(Exception e){
+                LOG.error(e);
+          }
+          
+          try{
+              if(mediFile!= null){         
+                  LOG.info(mediTags+" "+docfolder+docfolder+"/"+ mediFileFileName);
+                  String[] tagsArray = mediTags.split(" ");
+                  Document doc = new Document();
+                  doc.setName(mediFileFileName);                
+                  doc.setContentType(mediFileContentType);
+                  Bookmark b = bookmarkManager.createBookmark(mediFileFileName, "Document", docfolder+"/"+ mediFileFileName, tagsArray);
+                  doc.setBookmark(b);
+                  docManager.createDocument(doc, docfolder, new FileInputStream(mediFile), user);
+              }
+            }
+            catch(Exception e){
+                  LOG.error(e);
+            }
+          
+  	    try{
+            if(dgFile!= null){         
+                LOG.info(dgTags+" "+docfolder+" "+docfolder+"/"+ dgFileFileName);
+                String[] tagsArray = dgTags.split(" ");
+                Document doc = new Document();
+                doc.setName(dgFileFileName);
+                doc.setContentType(dgFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(dgFileFileName, "Document", docfolder+"/"+ dgFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(dgFile), user);
+            }
+          }
+          catch(Exception e){
+                LOG.error("DG error: "+e);
+                e.printStackTrace();
+          }
+  	      try{
+            if(huetFile!= null){         
+                LOG.info(huetTags+" "+docfolder+" "+docfolder+"/"+ huetFileFileName);
+                String[] tagsArray = huetTags.split(" ");
+                Document doc = new Document();
+                doc.setName(huetFileFileName);
+                doc.setContentType(huetFileContentType);
+                Bookmark b = bookmarkManager.createBookmark(huetFileFileName, "Document", docfolder+"/"+ huetFileFileName, tagsArray);
+                doc.setBookmark(b);
+                docManager.createDocument(doc, docfolder, new FileInputStream(huetFile), user);
+            }
+          }
+          catch(Exception e){
+        	  LOG.error("HUET error: "+e);
+              e.printStackTrace();
+          }
+          
+	return execute();
 	}
 
 	public Integer actualsId;
@@ -455,6 +1118,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			crewMember = new CrewMember();
 		} else {
 			crewMember = manager.getCrewMemberByCode(id);
+			if (switch_role_to!="") {
+				crewMember.getRole().setPosition(switch_role_to);
+			}
 			if (actualsId == null) {
 				actuals = new CrewMember.FlightAndDutyActuals(
 						crewMember.getPayments().getMonthlyBaseRate(),
@@ -486,15 +1152,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		Tab bankingTab = new Tab("Banking", "crewMember.action?tab=banking&id="+idStr, tab.equals("banking"));
 		Tab roleTab = new Tab("Role", "crewMember.action?tab=role&id="+idStr, tab.equals("role"));
 		Tab paymentsTab = new Tab("Payments", "crewMember.action?tab=payments&id="+idStr, tab.equals("payments"));
-		Tab documentsTab = new Tab("Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
+		Tab documentsTab = new Tab("Additional Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
 		Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
 		Tab flightAndDutyTab = new Tab("PDW", "crewMember.action?tab=flight&id="+idStr, tab.equals("flight"));
+		Tab hours = new Tab("On Contract", "crewMember.action?tab=hours&id="+idStr, tab.equals("hours"));
 		Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
 
 		if (user.hasPermission("ManagerView"))
-			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, documentsTab, reviewTab, assignmentsTab};
+			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, hours, documentsTab, reviewTab, assignmentsTab};
 		else
-			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, documentsTab};
+			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, hours, documentsTab};
 	}
 
     public String fromPage = "";

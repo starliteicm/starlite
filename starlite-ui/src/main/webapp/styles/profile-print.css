@@ -1,0 +1,27 @@
+div#tabs{
+   display:none;
+   }
+
+#logo{
+   display:none;
+   }
+
+.profile-left{
+   float:left;
+   clear:left;
+   width:300px;   
+   }  
+
+.profile-right{
+   float:left;
+   margin-top:110px;     
+   width:300px;      
+   }  
+
+#breadcrumbs{
+   display:none;
+   }  
+
+.button{
+   display:none;
+   }   

@@ -41,7 +41,7 @@ public class ChartersAction extends ActionSupport implements UserAware {
 	public String tableHtml;
 	public String current="charters";
 	
-	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Charters")};
+	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Contracts")};
 	
 	public User user;
 	
@@ -146,7 +146,7 @@ public class ChartersAction extends ActionSupport implements UserAware {
 	public String addCharter() {
 		if (!prepareAdd) {
 			if (charterCode == null || charterCode.trim().equals("")) {
-				errorMessage = "Charter code must be entered";
+				errorMessage = "Contract code must be entered";
 				return ERROR;
 			}
 			try {
@@ -156,7 +156,7 @@ public class ChartersAction extends ActionSupport implements UserAware {
 				createdCharter = c;
 				return "added";
 			} catch (Throwable t) {
-				errorMessage = "An unexpected error occured. Charter could not be added";
+				errorMessage = "An unexpected error occured. Contract could not be added";
 				return ERROR;
 			}
 		}

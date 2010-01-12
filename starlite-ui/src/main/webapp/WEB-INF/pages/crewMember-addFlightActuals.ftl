@@ -27,9 +27,11 @@
 			
 		var newRowIndex = 0;
 		var newDeductionRowIndex = 0;
+		var newAdditionRowIndex = 0;
 		
 		var noEntriesRowVisible;
 		var noDeductionsRowVisible;
+		var noAdditionsRowVisible;
 		
 		function getSelected(selection){
             for(i=0;i<selection.length;i++) {
@@ -40,8 +42,43 @@
             }
             return false;
         }
+        
+        function saveAddition(reason,currencyId,amountId,amountUSDId){
+          //alert(reason+" - "+amountId);
+          var amou = document.getElementById(amountId);
+          var amount = amou.value;
+          
+          var amouUSD = document.getElementById(amountUSDId);
+          var amountUSD = amouUSD.value;
+          
+          var cur = document.getElementById(currencyId);
+          var currency = getSelected(cur);
+          
+          var additionForm = document.forms.mainForm;
+          
+          if((0+amount > 0)||(0+amountUSD > 0)){
+              var action = "crewMember!addAddition.action";
+              additionForm.action          = action;
+              additionForm.amount.value    = amount;
+              additionForm.currency.value  = currency;
+              additionForm.amountUSD.value = amountUSD;
+              additionForm.reason.value    = reason;
+              additionForm.submit();
+          }
+          else if((0+amount == 0)||(0+amountUSD == 0)){
+              var action = "crewMember!remAddition.action";
+              additionForm.action       = action;
+              additionForm.reason.value = reason; 
+              additionForm.submit();        
+          }
+          else {
+            alert(amount+" is not a valid amount");
+          }
+          
+          return false;
+        }
 		
-		function saveDeduction(reason,amountId,amountUSDId){
+		function saveDeduction(reason,currencyId,amountId,amountUSDId){
 		  //alert(reason+" - "+amountId);
 		  var amou = document.getElementById(amountId);
 		  var amount = amou.value;
@@ -49,12 +86,16 @@
 		  var amouUSD = document.getElementById(amountUSDId);
 		  var amountUSD = amouUSD.value;
 		  
+		  var cur = document.getElementById(currencyId);
+		  var currency = getSelected(cur);
+		  
 		  var deductForm = document.forms.mainForm;
 		  
 		  if((0+amount > 0)||(0+amountUSD > 0)){
 		      var action = "crewMember!addDeduction.action";
               deductForm.action          = action;
               deductForm.amount.value    = amount;
+              deductForm.currency.value  = currency;
               deductForm.amountUSD.value = amountUSD;
               deductForm.reason.value    = reason;
               deductForm.submit();
@@ -71,12 +112,51 @@
 		  
 		  return false;
 		}
+
+        function saveNewAddition(reasonId,currencyId,amountId,amountUSDId){
+          //alert(reasonId+" - "+amountId);
+          var reas = document.getElementById(reasonId);
+          var amou = document.getElementById(amountId);
+          var cur = document.getElementById(currencyId);
+          var reason = getSelected(reas); 
+          var currency = getSelected(cur);
+          var amount = amou.value;
+          
+          var amouUSD = document.getElementById(amountUSDId);
+          var amountUSD = amouUSD.value;
+          
+          var additionForm = document.forms.mainForm;
+          
+          
+          if((0+amount > 0)||(0+amountUSD > 0)){
+              var action = "crewMember!addAddition.action";
+              additionForm.action          = action;
+              additionForm.amount.value    = amount;
+              additionForm.currency.value  = currency;
+              additionForm.amountUSD.value = amountUSD;
+              additionForm.reason.value    = reason;
+              additionForm.submit();
+          }
+          else if((0+amount == 0)||(0+amountUSD == 0)){
+              var action = "crewMember!remAddition.action";
+              additionForm.action       = action;
+              additionForm.reason.value = reason; 
+              additionForm.submit();        
+          }
+          else {
+            alert(amount+" is not a valid amount");
+          }
+          
+          return false;
+        }
 		
-		function saveNewDeduction(reasonId,amountId,amountUSDId){
+		function saveNewDeduction(reasonId,currencyId,amountId,amountUSDId){
 		  //alert(reasonId+" - "+amountId);
           var reas = document.getElementById(reasonId);
           var amou = document.getElementById(amountId);
+          var cur = document.getElementById(currencyId);
           var reason = getSelected(reas); 
+          var currency = getSelected(cur);
           var amount = amou.value;
           
           var amouUSD = document.getElementById(amountUSDId);
@@ -89,6 +169,7 @@
               var action = "crewMember!addDeduction.action";
               deductForm.action          = action;
               deductForm.amount.value    = amount;
+              deductForm.currency.value  = currency;
               deductForm.amountUSD.value = amountUSD;
               deductForm.reason.value    = reason;
               deductForm.submit();
@@ -112,6 +193,7 @@
 			var newRow = document.createElement("tr");
 			
 			var tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
 			var select = document.createElement("select");
 			select.setAttribute("name", "newEntryFirKey"+newRowIndex);
 			select.setAttribute("style", "width:100px;");
@@ -128,6 +210,7 @@
 			//do the same for aircraft here.
 			
 			var tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
 			var select = document.createElement("select");
 			select.setAttribute("name", "newEntrySecKey"+newRowIndex);
 			select.setAttribute("style", "width:100px;");
@@ -144,6 +227,7 @@
 			var tmpInput;
 			<#list ['Area', 'Daily', 'Flight', 'Instructor'] as field>
 			tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
 			tmpInput = document.createElement("input");
 			tmpInput.setAttribute("type", "text");
 			tmpInput.setAttribute("name", "newEntry${field}"+newRowIndex);
@@ -152,6 +236,20 @@
 			tmpTd.appendChild(tmpInput);
 			newRow.appendChild(tmpTd);
 			</#list>
+			
+			tmpTd = document.createElement("td");
+			tmpTd.setAttribute("style", "padding:5px;");
+			select = document.createElement("select");
+            select.setAttribute("name", "newEntryDiscomfort"+newRowIndex);
+            select.setAttribute("style", "width:40px;");
+            <#list [0,1,2,3,4,5,6,7,8,9] as field>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${field}');
+            tmpOption.appendChild(document.createTextNode('${field}'));
+            select.appendChild(tmpOption);
+            </#list>
+			tmpTd.appendChild(select);
+			newRow.appendChild(tmpTd);
 			
 			if (noEntriesRowVisible) {
 				entryTableBody.removeChild(document.getElementById("noEntriesRow"));
@@ -195,6 +293,22 @@
             tmpTd.appendChild(tmpInput);
             newRow.appendChild(tmpTd);
             
+            
+            tmpTd = document.createElement("td");
+            select = document.createElement("select");
+            select.setAttribute("name", "newDeductionCurrency"+newDeductionRowIndex);
+            select.setAttribute("id", "newDeductionCurrency"+newDeductionRowIndex);
+            select.setAttribute("style", "width:60px;");
+         
+            <#list rates as rate>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${rate.currencyCodeFrom}');
+            tmpOption.appendChild(document.createTextNode('${rate.currencyCodeFrom}'));
+            select.appendChild(tmpOption);
+            </#list>
+            tmpTd.appendChild(select);
+            newRow.appendChild(tmpTd);
+            
             var tmpInput;
             tmpTd = document.createElement("td");
             tmpInput = document.createElement("input");
@@ -211,7 +325,7 @@
             tmpInput = document.createElement("button");
             tmpInput.setAttribute("type", "button");
             tmpInput.setAttribute("value", "Save");
-            tmpInput.setAttribute("onclick", "saveNewDeduction('newDeductionFirKey"+newDeductionRowIndex+"','newDeductionAmount"+newDeductionRowIndex+"','newDeductionAmountUSD"+newDeductionRowIndex+"');return false;");
+            tmpInput.setAttribute("onclick", "saveNewDeduction('newDeductionFirKey"+newDeductionRowIndex+"','newDeductionCurrency"+newDeductionRowIndex+"','newDeductionAmount"+newDeductionRowIndex+"','newDeductionAmountUSD"+newDeductionRowIndex+"');return false;");
             tmpInput.setAttribute("class", "smooth");
             tmpInput.innerHTML = "<img src='images/icons/pencil.png'/>Save";
             tmpTd.appendChild(tmpInput);
@@ -223,6 +337,87 @@
             }
             deductionTableBody.appendChild(newRow);
             newDeductionRowIndex++;
+        }
+		
+		
+		function addRowAdditions() {
+				
+            var additionTableBody = document.getElementById("additionTableBody");
+            var newRow = document.createElement("tr");
+            
+            var tmpTd = document.createElement("td");
+            var select = document.createElement("select");
+            select.setAttribute("name", "newAdditionFirKey"+newAdditionRowIndex);
+            select.setAttribute("id", "newAdditionFirKey"+newAdditionRowIndex);
+            select.setAttribute("style", "width:100px;");
+            var tmpOption;
+            
+            
+            
+            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries","Pension"] as c>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${c}');
+            tmpOption.appendChild(document.createTextNode('${c}'));
+            select.appendChild(tmpOption);
+            </#list>
+            tmpTd.appendChild(select);
+            newRow.appendChild(tmpTd);
+          
+            var tmpInput;
+            tmpTd = document.createElement("td");
+            tmpInput = document.createElement("input");
+            tmpInput.setAttribute("type", "text");
+            tmpInput.setAttribute("name", "newAdditionAmount"+newAdditionRowIndex);
+            tmpInput.setAttribute("id", "newAdditionAmount"+newAdditionRowIndex);
+            tmpInput.setAttribute("value", "0");
+            tmpInput.setAttribute("style", "width:60px;");
+            tmpTd.appendChild(tmpInput);
+            newRow.appendChild(tmpTd);
+            
+            
+            tmpTd = document.createElement("td");
+            select = document.createElement("select");
+            select.setAttribute("name", "newAdditionCurrency"+newAdditionRowIndex);
+            select.setAttribute("id", "newAdditionCurrency"+newAdditionRowIndex);
+            select.setAttribute("style", "width:60px;");
+         
+            <#list rates as rate>
+            tmpOption = document.createElement("option");
+            tmpOption.setAttribute("value", '${rate.currencyCodeFrom}');
+            tmpOption.appendChild(document.createTextNode('${rate.currencyCodeFrom}'));
+            select.appendChild(tmpOption);
+            </#list>
+            tmpTd.appendChild(select);
+            newRow.appendChild(tmpTd);
+            
+            var tmpInput;
+            tmpTd = document.createElement("td");
+            tmpInput = document.createElement("input");
+            tmpInput.setAttribute("type", "text");
+            tmpInput.setAttribute("name", "newAdditionAmountUSD"+newAdditionRowIndex);
+            tmpInput.setAttribute("id", "newAdditionAmountUSD"+newAdditionRowIndex);
+            tmpInput.setAttribute("value", "0");
+            tmpInput.setAttribute("style", "width:60px;");
+            tmpTd.appendChild(tmpInput);
+            newRow.appendChild(tmpTd);
+            
+            var tmpInput;
+            tmpTd = document.createElement("td");
+            tmpInput = document.createElement("button");
+            tmpInput.setAttribute("type", "button");
+            tmpInput.setAttribute("value", "Save");
+            tmpInput.setAttribute("onclick", "saveNewAddition('newAdditionFirKey"+newAdditionRowIndex+"','newAdditionCurrency"+newAdditionRowIndex+"','newAdditionAmount"+newAdditionRowIndex+"','newAdditionAmountUSD"+newAdditionRowIndex+"');return false;");
+            tmpInput.setAttribute("class", "smooth");
+            tmpInput.innerHTML = "<img src='images/icons/pencil.png'/>Save";
+            tmpTd.appendChild(tmpInput);
+            newRow.appendChild(tmpTd);
+            
+            if (noAdditionsRowVisible) {
+                additionTableBody.removeChild(document.getElementById("noAdditionsRow"));
+                noAdditionsRowVisible = false;
+            }
+            additionTableBody.appendChild(newRow);
+            newAdditionRowIndex++;
         }
 		
 		
@@ -306,11 +501,11 @@
 		<fieldset>
 			<legend>Flight &amp; Duty</legend>
 			<div class="fm-opt">
-				<label for="actuals.areaRate.amountAsDouble">Area <@symbol "${actuals.areaRate.currency}"/></label>
+				<label for="actuals.areaRate.amountAsDouble">Daily <@symbol "${actuals.areaRate.currency}"/></label>
 				<input type="text" id="areaDays" onchange="onFormChange();" name="actuals.areaRate.amountAsDouble" style="width:50px;" value="${actuals.areaRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="actuals.dailyRate.amountAsDouble">Daily <@symbol "${actuals.dailyRate.currency}"/></label>
+				<label for="actuals.dailyRate.amountAsDouble">Training <@symbol "${actuals.dailyRate.currency}"/></label>
 				<input type="text" id="dailyDays" onchange="onFormChange();" name="actuals.dailyRate.amountAsDouble" style="width:50px;" value="${actuals.dailyRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
@@ -318,7 +513,7 @@
 				<input type="text" id="instructorDays" onchange="onFormChange();" name="actuals.instructorRate.amountAsDouble" style="width:50px;" value="${actuals.instructorRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="actuals.flightRate.amountAsDouble">Flight <@symbol "${actuals.flightRate.currency}"/></label>
+				<label for="actuals.flightRate.amountAsDouble">Travel <@symbol "${actuals.flightRate.currency}"/></label>
 				<input type="text" id="flightDays" onchange="onFormChange();" name="actuals.flightRate.amountAsDouble" style="width:50px;" value="${actuals.flightRate.amountAsDouble}"/>
 			</div>
 			<!--<input type="hidden" name="actuals.paidAmount.currencyCode" value="${crewMember.payments.currency}"/>
@@ -334,7 +529,7 @@
 		<fieldset>
 			<legend>Entries</legend>
 			<table>
-			<thead><tr><th>Charter</th><th>Aircraft</th><th>Area</th><th>Daily</th><th>Flight</th><th>Instructor</th></tr></thead>
+			<thead><tr><th style="padding:5px;">Charter</th><th style="padding:5px;">Aircraft</th><th style="padding:5px;">Daily</th><th style="padding:5px;">Training</th><th style="padding:5px;">Travel</th><th style="padding:5px;">Instructor</th><th style="padding:5px;">Discomfort</th></tr></thead>
 			<tbody id="entryTableBody">
 			<#if actuals.entries.isEmpty()>
 			<tr id="noEntriesRow"><td colspan="6">No Entries</td></tr>
@@ -345,15 +540,28 @@
 			<#list actuals.entries.keySet() as key>
 			<#assign entry=actuals.entries.get(key)/>
 			<#if entry.charter?exists>
-			<tr><td style="width:100px;">${entry.charter?if_exists}</td>
+			<tr><td style="width:100px;padding:5px;">${entry.charter?if_exists}</td>
 			<#else>
-		    <tr><td style="width:100px;">${key}</td>
+		    <tr><td style="width:100px;padding:5px;">${key}</td>
 			</#if>
-			<td style="width:100px;">${entry.aircraft?if_exists}&nbsp;</td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].areaDays' value="${entry.areaDays}"/></td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].dailyDays' value="${entry.dailyDays}"/></td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].flightDays' value="${entry.flightDays}"/></td>
-			<td><input style="width:40px;" type="text" name='actuals.entries["${key}"].instructorDays' value="${entry.instructorDays}"/></td>
+			<td style="width:100px;padding:5px;">${entry.aircraft?if_exists}&nbsp;</td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].areaDays' value="${entry.areaDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].dailyDays' value="${entry.dailyDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].flightDays' value="${entry.flightDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].instructorDays' value="${entry.instructorDays}"/></td>
+			<td style="padding:5px;">
+			<select style="width:40px;" name='actuals.entries["${key}"].discomfort' >
+			  <option>0</option>
+			  <option <#if entry.discomfort==1 >SELECTED</#if>>1</option>
+			  <option <#if entry.discomfort==2 >SELECTED</#if>>2</option>
+			  <option <#if entry.discomfort==3 >SELECTED</#if>>3</option>
+			  <option <#if entry.discomfort==4 >SELECTED</#if>>4</option>
+			  <option <#if entry.discomfort==5 >SELECTED</#if>>5</option>
+			  <option <#if entry.discomfort==6 >SELECTED</#if>>6</option>
+			  <option <#if entry.discomfort==7 >SELECTED</#if>>7</option>
+			  <option <#if entry.discomfort==8 >SELECTED</#if>>8</option>
+			  <option <#if entry.discomfort==9 >SELECTED</#if>>9</option>
+			</select>
 			</tr>
 			</#list>
 			</#if>
@@ -368,7 +576,7 @@
 		<fieldset>
             <legend>Deductions</legend>
             <table>
-            <thead><tr><th style="width:200px">Reason</th><th style="width:100px">Amount (ZAR)</th><th style="width:100px">Amount (USD)</th><th style="width:100px">&nbsp;</th></tr></thead>
+            <thead><tr><th style="width:200px">Reason</th><th style="width:100px">Amount</th><th style="width:100px">Currency</th><th style="width:100px">Amount (USD)</th><th style="width:100px">&nbsp;</th></tr></thead>
             <tbody id="deductionTableBody">
             <#if actuals.deductions.isEmpty()>
             <tr id="noDeductionsRow"><td colspan="3">No Deductions</td></tr>
@@ -383,9 +591,16 @@
             <#else>
             <tr><td style="width:200px;">${key}</td>
             </#if>
-            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key}AmountUSD').value = '';" type="text" name='Deduction${key}Amount' id='Deduction${key}Amount' value="${deduction.randStr}"/></td>
-            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key}Amount').value = '';" type="text" name='Deduction${key}AmountUSD' id='Deduction${key}AmountUSD' value="${deduction.USD}"/></td>
-            <td><button type="button" class="smooth" onclick="saveDeduction('${deduction.reason?if_exists}','Deduction${key}Amount','Deduction${key}AmountUSD');return false;" ><img src="images/icons/pencil.png"/>Save</button></td>
+            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key.replace(" ","_")}AmountUSD').value = '';" type="text" name='Deduction${key.replace(" ","_")}Amount' id='Deduction${key.replace(" ","_")}Amount' value="${deduction.enteredStr}"/></td>
+            <td>
+                <select style="width:60px;" id="Deduction${key.replace(" ","_")}Currency" name="Deduction${key.replace(" ","_")}Currency">
+                <#list rates as rate>
+                   <option <#if deduction.currency == rate.currencyCodeFrom >SELECTED</#if>  >${rate.currencyCodeFrom}</option>
+                </#list>
+                </select>
+            </td>
+            <td><input style="width:60px;" onfocus="document.getElementById('Deduction${key.replace(" ","_")}Amount').value = '';" type="text" name='Deduction${key.replace(" ","_")}AmountUSD' id='Deduction${key.replace(" ","_")}AmountUSD' value="${deduction.USD}"/></td>
+            <td><button type="button" class="smooth" onclick="saveDeduction('${deduction.reason?if_exists}','Deduction${key.replace(" ","_")}Currency','Deduction${key.replace(" ","_")}Amount','Deduction${key.replace(" ","_")}AmountUSD');return false;" ><img src="images/icons/pencil.png"/>Save</button></td>
             </tr>
             </#list>
             </#if>
@@ -397,6 +612,46 @@
         </fieldset>
 		
 		<br/>
+		
+		<fieldset>
+            <legend>Contributions</legend>
+            <table>
+            <thead><tr><th style="width:200px">Reason</th><th style="width:100px">Amount</th><th style="width:100px">Currency</th><th style="width:100px">Amount (USD)</th><th style="width:100px">&nbsp;</th></tr></thead>
+            <tbody id="additionTableBody">
+            <#if actuals.additions.isEmpty()>
+            <tr id="noAdditionsRow"><td colspan="3">No Contributions</td></tr>
+            <script>
+            noAdditionsRowVisible=true;
+            </script>
+            <#else>
+            <#list actuals.additions.keySet() as key>
+            <#assign addition=actuals.additions.get(key)/>
+            <#if addition.reason?exists>
+            <tr><td style="width:200px;">${addition.reason?if_exists}</td>
+            <#else>
+            <tr><td style="width:200px;">${key}</td>
+            </#if>
+            <td><input style="width:60px;" onfocus="document.getElementById('Addition${key.replace(" ","_")}AmountUSD').value = '';" type="text" name='Addition${key.replace(" ","_")}Amount' id='Addition${key.replace(" ","_")}Amount' value="${addition.enteredStr}"/></td>
+            <td>
+                <select style="width:60px;" id="Addition${key.replace(" ","_")}Currency" name="Addition${key.replace(" ","_")}Currency">
+                <#list rates as rate>
+                   <option <#if deduction.currency == rate.currencyCodeFrom >SELECTED</#if>  >${rate.currencyCodeFrom}</option>
+                </#list>
+                </select>
+            </td>
+            <td><input style="width:60px;" onfocus="document.getElementById('Addition${key.replace(" ","_")}Amount').value = '';" type="text" name='Addition${key.replace(" ","_")}AmountUSD' id='Addition${key.replace(" ","_")}AmountUSD' value="${addition.USD}"/></td>
+            <td><button type="button" class="smooth" onclick="saveAddition('${addition.reason?if_exists}','Addition${key.replace(" ","_")}Currency','Addition${key.replace(" ","_")}Amount','Addition${key.replace(" ","_")}AmountUSD');return false;" ><img src="images/icons/pencil.png"/>Save</button></td>
+            </tr>
+            </#list>
+            </#if>
+            </tbody>
+            </table>
+            <#if user.hasPermission("ManagerEdit")>
+            <a href="#" onclick="addRowAdditions();">Add New Contribution</a>
+            </#if>
+        </fieldset>
+        
+        <br/>
 		
 		<fieldset>
 			<legend>Payment</legend>
@@ -426,6 +681,7 @@
 			
 			
 	    <input type="hidden" name="amount" value="0" />
+	    <input type="hidden" name="currency" value="ZAR" />
 	    <input type="hidden" name="amountUSD" value="0" />
         <input type="hidden" name="reason" value="" />
 		</form>
