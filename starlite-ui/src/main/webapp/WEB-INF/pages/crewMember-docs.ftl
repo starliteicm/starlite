@@ -7,7 +7,7 @@
   <script type="text/javascript" src="js/jquery-1.2.3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="styles/jquery.autocomplete.css">
   <script type="text/javascript" src="js/jquery.autocomplete.multi.js"></script>
-  
+  <@enableHelp/>
   <script>
   		function showUploadPart() {
   			$("#uploadForm").css("display","block");
@@ -28,7 +28,9 @@
        		method="post">
        		<div style="float:left; width: 500px;">
 			<fieldset>
-				<legend>Upload Additional Document</legend>
+				<legend>Upload Additional Document<span>&nbsp;</span>  
+				<img class="tooltip" title=" - There is a 5MB Size Limit to documents" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+                </legend>
 				<div class="fm-opt">
 					<label for="document" style="width:40px;">File: </label>
 					<input name="document" id="document" type="file"/>

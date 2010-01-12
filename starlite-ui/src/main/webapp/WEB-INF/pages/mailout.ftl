@@ -319,6 +319,11 @@
 		<div class="heading"><span style="float:left;">Additional To: (Email Addresses)  </span><img class="tooltip" title="Additional To: Please enter the email address of people who you would like to include in this mailout but who are not on the system. Please comma / semicolon seperate any emails (e.g. to1@domain.com;to2@domain.com  to1@domain.com,to2@domain.com  )" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 		<div ><input type="text" name="emails" value="${emails?if_exists}" style="width:476px;margin-bottom:10px;border:1px solid silver;" /></div>
 			
+	    <div class="heading"><span style="float:left;">Request a Read Reciept:  </span><img class="tooltip" title="Reciept - This will request a read reciept for this email to be sent to the from email supplied when the email has been opened, this will depend however on the recepients email browser, settings and selection when they recieve the email." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
+        <div style="padding:5px;border:1px solid silver;width:466px;margin-bottom:10px;" ><input type="checkbox" name="reciept" value="yes" style="" /> &nbsp; Check to send a read reciept request with this email. </div>
+            
+			
+			
 			<div class="heading"><span style="float:left;">Attach Documents: - [<span id="docSelectNo">${docsSelected.size()}</span> selected]</span><img class="tooltip" title=" - Attach Documents: - Please check the boxes to the left to select documents uploaded to the Distribution documents folder to be attached and sent with this mail" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/></div>
 			
 			<div style="height:100px; width:460px; overflow:auto; padding:5px; margin-bottom:10px; border: 1px solid silver;">

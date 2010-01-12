@@ -22,6 +22,7 @@ import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.commons.mail.HtmlEmail;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.io.File;
@@ -68,6 +69,69 @@ public class MailService {
 		}  
     }
 
+    /**
+     * Convenience method for sending messages with attachments.
+     * 
+     * @param from
+     * @param subject
+     * @param emailAddresses
+     * @param rr request reciept
+     * @param attachments
+     * @param message
+     * @author Jonathan Elliott
+     */
+	public void sendAttachedMessage(String from, String subject, List<String> emailAddresses, boolean rr, Map<String, File> attachmentFiles,String message) {
+		for(String emailAddress : emailAddresses){
+			
+	    	try{
+	    		log.info("Sending attached Messsage to "+emailAddress+"");
+	  
+	  // Create the email message
+	  HtmlEmail email = new HtmlEmail();
+	  email.setHostName("mail.i-tao.com");
+	  email.addTo(emailAddress);
+   
+	  email.setAuthentication("starlite@i-tao.com", "g04way");
+      email.setFrom(from, "<Starlite> "+from);
+	  
+	  email.setSubject(subject);
+	  
+	  //request reciept
+	  if(rr){
+	    email.addHeader( "Return-Receipt-To","<Starlite> "+from);
+	    email.addHeader( "Read-Receipt-To","<Starlite> "+from);
+	    email.addHeader( "Disposition-Notification-To", "<Starlite> "+from);
+	  }
+	  
+	  email.setBounceAddress(from);
+	  
+      email.setHtmlMsg("<HTML>"+message+"</HTML>");
+      //email.setTextMsg(result);
+
+	  // add the attachments
+	  for(String attachmentFileName : attachmentFiles.keySet()){
+    	  EmailAttachment attachment = new EmailAttachment();
+    	  File attachmentFile = attachmentFiles.get(attachmentFileName);
+    	  attachment.setPath(attachmentFile.getAbsolutePath());
+    	  attachment.setDisposition(EmailAttachment.ATTACHMENT);
+    	  attachment.setDescription(attachmentFileName);
+    	  attachment.setName(attachmentFileName);
+    	  email.attach(attachment);
+    	  }
+
+	  // send the email
+	  //if(emailAddress.equals("jelliott@i-tao.com")){
+	  email.send();
+	  //}
+	  
+    } 
+    catch (Exception e) {
+        e.printStackTrace();
+        log.error("error: ("+freemarkerConfiguration.getTemplateLoader()+") "+e);
+    }
+	}
+	}
+    
     /**
      * Convenience method for sending messages with attachments.
      * 
@@ -346,5 +410,9 @@ public class MailService {
     	}
 
     }
+
+
+
+
     
 }

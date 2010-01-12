@@ -46,6 +46,7 @@ public class MailoutAction extends ActionSupport implements UserAware {
 	public String   subject;
 	public String   emails;
 	public String   message;
+	public String   reciept;
 
 	@Inject
 	private DocumentManager documentManager;
@@ -84,12 +85,15 @@ public class MailoutAction extends ActionSupport implements UserAware {
 		}
 		}
 		
-
+		boolean rr = false;
+		if("yes".equals(reciept)){
+			rr =true;
+		}
 		
 		Map<String,Boolean> notok = mailService.checkEmailAddrsOk(mems);
 		if(notok.size() == 0){
 			Map<String,File> attachmentFiles = mailService.getFilesForAttachment(this.docs,user);
-			mailService.sendAttachedMessage(from, subject, mems, attachmentFiles, message);
+			mailService.sendAttachedMessage(from, subject, mems, rr, attachmentFiles, message);
 			notificationMessage="Mail Sent";
 			clear();
 		}
