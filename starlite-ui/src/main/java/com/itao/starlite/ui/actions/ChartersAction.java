@@ -60,6 +60,7 @@ public class ChartersAction extends ActionSupport implements UserAware {
 
 		tableFacade.setColumnProperties("code", "client", "formattedStartDate", "formattedEndDate");
 		tableFacade.setItems(charters);
+		tableFacade.setMaxRows(300);
 		
 		Table table = tableFacade.getTable();
 		Column code = table.getRow().getColumn("code");
