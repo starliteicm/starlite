@@ -15,6 +15,10 @@ public class User {
 	private String password;
 	@ManyToMany(fetch=FetchType.EAGER)
 	private Set<Role> roles = new HashSet<Role>();
+	
+	@ManyToMany(fetch=FetchType.EAGER)
+	private Set<Permission> permissions = new HashSet<Permission>();
+	
 	public String getUsername() {
 		return username;
 	}
@@ -51,4 +55,63 @@ public class User {
 		pObj.setName(p);
 		return hasPermission(pObj);
 	}
+	
+	
+	public Set<Permission> getPermissions(){return permissions;}
+	public void setPermissions(Set<Permission> permissions){this.permissions = permissions;}
+	
+	public void copyPermissions(User u) {
+		// TODO Auto-generated method stub
+		this.permissions = u.permissions;
+	}
+	
+	public void clearPermissions(){
+		permissions = new HashSet<Permission>();
+	}
+	
+	
+	public void addPermission(String permissionName){
+		Permission p = new Permission();
+		p.setName(permissionName);
+		p.setDescription(permissionName);
+		boolean add = true;
+		for(Permission perm : permissions){
+		  if(permissionName.equals( perm.getName() )){
+			  add = false;
+		  }
+		}
+		if(add){
+		   permissions.add(p);
+		}
+	}
+	
+	public void remPermission(String permissionName){
+		Permission rem = null;
+		for(Permission perm : permissions){
+		  if(permissionName.equals( perm.getName() )){
+			  rem = perm;
+		  }
+		}
+		
+		if(rem != null){
+			permissions.remove(rem);
+		}
+	}
+	
+	public Boolean findPermission(String permissionName){
+		for(Permission perm : permissions){
+			if(perm.getName().equals(permissionName)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasRead(String permissionName){
+		return findPermission(permissionName+"Read");
+	}
+	public boolean hasWrite(String permissionName){
+		return findPermission(permissionName+"Write");
+	}
+	
 }

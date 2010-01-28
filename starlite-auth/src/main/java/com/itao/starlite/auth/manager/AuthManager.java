@@ -105,10 +105,21 @@ public class AuthManager {
 	}
 	
 	public User getSuperUser() {
-		return userDao.findById("jason");
+		return userDao.findById("ron");
 	}
 	
 	public User getUser(String username) {
 		return userDao.findById(username);
 	}
+	
+	public List<User> getUsers(){
+		return userDao.findAll();
+	}
+	
+	public void saveUser(User u){
+		User original = getUser(u.getUsername());
+		original.copyPermissions(u);
+		userDao.makePersistent(original);
+	}
+	
 }
