@@ -267,7 +267,7 @@ $("document").ready(function() {
 		</div>
 		<br/>
 		 <#if photoFile?exists>
-         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a style="width:auto;border:1px dotted silver;" href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="document!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
+         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a style="width:auto;border:1px dotted silver;" href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
         </#if>
 		<br/>
 		<div style="">
