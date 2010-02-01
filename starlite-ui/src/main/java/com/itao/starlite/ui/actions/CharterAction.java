@@ -431,17 +431,53 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 		if (id != null) {
 			idStr=""+id;
 		}
+		List<Tab> tabList = new ArrayList<Tab>();
+		
+	    
+		if(user.hasRead("contractAdmin")){
 		Tab administrative = new Tab("Administrative", "charter.action?id="+idStr, tab.equals("administrative"));
+		tabList.add(administrative);
+		}
+		if(user.hasRead("contractResources")){
 		Tab resources = new Tab("Resources", "charter.action?tab=resources&id="+idStr, tab.equals("resources"));
+		tabList.add(resources);
+		}
+		if(user.hasRead("contractPrice")){
 		Tab pricing = new Tab("Pricing", "charter.action?tab=pricing&id="+idStr, tab.equals("pricing"));
+		tabList.add(pricing);
+		}
+		if(user.hasRead("contractIns")){
 		Tab insurance = new Tab("Insurance", "charter.action?tab=insurance&id="+idStr, tab.equals("insurance"));
+		tabList.add(insurance);
+		}
+		if(user.hasRead("contractCost")){
 		Tab cost = new Tab("Cost", "charter.action?tab=cost&id="+idStr, tab.equals("cost"));
+		tabList.add(cost);
+		}
+		if(user.hasRead("contractHours")){
 		Tab hours = new Tab("Hours", "charter!hours.action?id="+idStr, tab.equals("hours"));
+		tabList.add(hours);
+		}
+		if(user.hasWrite("contractOnContract")){
 		Tab contract = new Tab("On Contract", "charter!contract.action?id="+idStr, tab.equals("contract"));
+		tabList.add(contract);
+		}
+		if(user.hasRead("contractDoc")){
 		Tab docs = new Tab("Documents", "charter!docs.action?id="+idStr, tab.equals("docs"));
-
+		tabList.add(docs);
+		}
+		if(user.hasRead("contractAssign")){
 		Tab assignments = new Tab("Assignments", "charter!assignments.action?id="+idStr, tab.equals("assignments"));
-		tableTabs = new Tab[] {administrative, resources, pricing, insurance, cost, hours,contract, docs, assignments};
+		tabList.add(assignments);
+		}
+		
+		tableTabs = new Tab[tabList.size()];
+		int count = 0;
+		for(Tab tab : tabList){
+			tableTabs[count] = tab;
+			count++;
+		}		
+		
 	}
 
 	public void setUser(User arg0) {

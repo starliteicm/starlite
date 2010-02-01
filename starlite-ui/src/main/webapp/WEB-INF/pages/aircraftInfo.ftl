@@ -8,6 +8,8 @@
 
 <body>
 	<@subTabs/>
+	<#assign currentUser = Session.userObj>
+	<#if currentUser.hasRead("aircraftInfo")>
 	<form action="aircraftInfo!save.action" method="POST" class="smart" style="clear:left;">
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="aircraft.id" value="${aircraft.id!}"/>
@@ -96,5 +98,6 @@
 		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
 		<hr class="clear"/>
 	</form>
+	</#if>
 </body>
 </html>

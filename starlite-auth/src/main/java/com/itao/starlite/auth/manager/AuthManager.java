@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.google.inject.Inject;
 import com.itao.starlite.auth.Authenticator;
+import com.itao.starlite.auth.Permission;
 import com.itao.starlite.auth.Role;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.dao.PermissionDao;
@@ -117,9 +118,15 @@ public class AuthManager {
 	}
 	
 	public void saveUser(User u){
-		User original = getUser(u.getUsername());
-		original.copyPermissions(u);
-		userDao.makePersistent(original);
+		System.out.println("Saving User: "+u.getUsername());
+		for(Permission p : u.getPermissions()){
+			System.out.println(p.getId()+":"+p.getName()+":"+p.getDescription());
+		}
+		userDao.makePersistent(u);
+	}
+
+	public Permission getPermission(String perm) {
+		return permissionDao.findByName(perm);
 	}
 	
 }

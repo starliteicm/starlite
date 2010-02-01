@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import org.jfree.util.Log;
 
 import com.google.inject.Inject;
+import com.itao.starlite.auth.Permission;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.auth.annotations.Permissions;
@@ -40,8 +41,10 @@ public class UserAction extends ActionSupport implements UserAware {
 	@Inject 
 	private AuthManager authManager;
 	
+	public String username;
 	public String id;
 	public User user;
+	public String newUser;
 	
 	@SuppressWarnings("unchecked")
 	public List users;
@@ -50,6 +53,11 @@ public class UserAction extends ActionSupport implements UserAware {
 	public String errorMessage;
 	public String notificationMessage;
 
+	
+	public String welcome(){
+		return "welcome";
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
@@ -77,14 +85,48 @@ public class UserAction extends ActionSupport implements UserAware {
 	}
 	
 	public String update() throws Exception{
-		user = authManager.getUser(id);
+		
+		if(permissions != null){
+		  for(String perm : permissions){
+			System.out.println("insert into permission (name,description) values ('"+perm+"','"+perm+"');");
+		  }
+		}
+		
+		System.out.println("User:"+username);
+		System.out.println("New User:"+newUser);
+		
+		if("1".equals(newUser)){
+			System.out.println("New User: "+username);
+			user = authManager.getUser(username);
+			if(user == null){
+			  String password = username + "123";
+			  String roleNames = "Manager";
+			  user = authManager.createUserWithRoles(username, password, roleNames);
+			  user = authManager.getUser(username);
+			  System.out.println("New User Created: "+username);
+			}
+			else{
+				System.out.println("New User Exists: "+username);
+				errorMessage = "User already Exists with that Username";
+				user = null;
+			}
+		}
+		else{
+		user = authManager.getUser(username);
+		}
+		
+		
 		if(user != null){
 			user.clearPermissions();
 			for(String perm : permissions){
-				user.addPermission(perm);
+				Permission p = authManager.getPermission(perm);
+				user.addPermission(p);
 			}
+			System.out.println("Saving User Permissions: "+username);
 			authManager.saveUser(user);
+			notificationMessage = "Permissions Updated";
 		}
+		
 		return execute();
 	}
 	

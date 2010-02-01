@@ -12,7 +12,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 @ParentPackage("prepare")
 @Results({
-	@Result(name="management", value="aircraft.action", type=ServletRedirectResult.class),
+	@Result(name="management", value="user!welcome.action", type=ServletRedirectResult.class),
     @Result(name="crew", value="crewMember.action?id=${user.username}", type=ServletRedirectResult.class)
 })
 @Permissions("")

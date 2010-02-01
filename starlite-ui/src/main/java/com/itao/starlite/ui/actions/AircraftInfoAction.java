@@ -1,5 +1,6 @@
 package com.itao.starlite.ui.actions;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -203,11 +204,28 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		if (id != null) {
 			idStr=id;
 		}
-		Tab information = new Tab("Information", "aircraftInfo.action?id="+idStr, tab.equals("information"));
-		Tab hours = new Tab("Hours", "aircraftInfo!hours.action?id="+idStr, tab.equals("hours"));
-		Tab docs = new Tab("Documents", "aircraftInfo!documents.action?id="+idStr, tab.equals("documents"));
-
-		tableTabs = new Tab[] {information, hours, docs};
+		
+		
+		List<Tab> tabList = new ArrayList<Tab>();
+		if(user.hasRead("aircraftInfo")){
+		  Tab information = new Tab("Information", "aircraftInfo.action?id="+idStr, tab.equals("information"));
+		  tabList.add(information);
+		}
+		if(user.hasRead("aircraftHours")){
+		  Tab hours = new Tab("Hours", "aircraftInfo!hours.action?id="+idStr, tab.equals("hours"));
+		  tabList.add(hours);
+		}
+		if(user.hasRead("aircraftDoc")){
+		  Tab docs = new Tab("Documents", "aircraftInfo!documents.action?id="+idStr, tab.equals("documents"));
+		  tabList.add(docs);
+		}
+		
+		tableTabs = new Tab[tabList.size()];
+		int count = 0;
+		for(Tab tab : tabList){
+			tableTabs[count] = tab;
+			count++;
+		}		
 	}
 	public void setUser(User arg0) {
 		this.user = arg0;

@@ -462,20 +462,24 @@ font-weight:normal;
 
 
 <#else>
+
+<#assign currentUser = Session.userObj>
+
   <ul>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=aircraftCharterMatrix.groovy&month=${month}&year=${year?c}">Aircraft/Charter Matrix</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=certificate.groovy">Certificates</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewMemberProfiles.groovy">Crew Member Profiles</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a>
+	<#if currentUser.hasRead("reportMatrix")><li style="width:200px;height:30px;"><a href="script.action?scriptName=aircraftCharterMatrix.groovy&month=${month}&year=${year?c}">Aircraft/Charter Matrix</a></#if>
+	<#if currentUser.hasRead("reportCert")><li style="width:200px;height:30px;"><a href="script.action?scriptName=certificate.groovy">Certificates</a></#if>
+	<#if currentUser.hasRead("reportMemberProfile")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewMemberProfiles.groovy">Crew Member Profiles</a></#if>
+	<#if currentUser.hasRead("reportLicence")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a></#if>
 	<#if notAuthorised>
 	<#else>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a>
-	<li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a>	
+	<#if currentUser.hasRead("reportWorked")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a></#if>
+	<#if currentUser.hasRead("reportDeduction")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a></#if>
+	<#if currentUser.hasRead("reportPayments")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a></#if>
+	<#if currentUser.hasRead("reportPaymentsAnalysis")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a></#if>	
 	</#if>
   </ul>
 
+<#if currentUser.hasRead("report183")>
 <form name="days" id="days" action="script.action">
 <input type="hidden" name="scriptName" value="183days.groovy"/>
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateDays();" >View 183 Days</A></li>
@@ -485,7 +489,9 @@ font-weight:normal;
   </div>
 </form>
 <br/>
+</#if>
 
+<#if currentUser.hasRead("reportDoc")>
 <form name="crewDoc" id="crewDoc" action="script.action">
     <input type="hidden" name="scriptName" value="crewDocumentAnalysis.groovy" />
 <li style="width:200px;height:30px;float:left;" ><A href="#" onclick="document.forms.crewDoc.submit();" >View Crew Document Report</A></li>
@@ -500,7 +506,9 @@ font-weight:normal;
     </select>
 </form>
 <br/><br/>
+</#if>
 
+<#if currentUser.hasRead("reportProfile")>
 <form name="profile" id="profile" action="crewMember!profile.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.profile.submit();" >View Profile</A></li>
 <select style="float:left" name="id">
@@ -512,7 +520,9 @@ font-weight:normal;
 </select>
 </form>
 <br/><br/>
+</#if>
 
+<#if currentUser.hasRead("reportRequired")>
 <form name="required" id="required" action="crewMember!required.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.required.submit();" >View Required</A></li>
 <select style="float:left" name="id">
@@ -524,7 +534,9 @@ font-weight:normal;
 </select>
 </form>
 <br/><br/>
+</#if>
 
+<#if currentUser.hasRead("reportOnContract")>
 <form name="oncontract" id="oncontract" action="reports!days183.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View Days On Contract</A></li>
   <div class="fm-opt">
@@ -533,7 +545,9 @@ font-weight:normal;
   </div>
 </form>
 <br/>
+</#if>
 
+<#if currentUser.hasRead("reportHours")>
 <form name="hours" id="hours" action="reports!hours.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateHours();" >View Hours Flown</A></li>
   <div class="fm-opt">
@@ -548,6 +562,9 @@ font-weight:normal;
             <span style="color:red">*</span><input id="dateToHours"   onfocus="this.blur();" name="dateTo"   type="text" class="date-pick" value=""/><span style="color:red" id="dateToHoursMsg"></span>
   </div>
 </form>
+</#if>
+
+
 </#if>
 <div style="height:120px;">&nbsp;</div>
 </body>

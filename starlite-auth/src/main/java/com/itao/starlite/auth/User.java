@@ -7,16 +7,18 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 public class User {
 	@Id
 	private String username;
 	private String password;
+	
 	@ManyToMany(fetch=FetchType.EAGER)
 	private Set<Role> roles = new HashSet<Role>();
 	
-	@ManyToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.LAZY)
 	private Set<Permission> permissions = new HashSet<Permission>();
 	
 	public String getUsername() {
@@ -69,6 +71,13 @@ public class User {
 		permissions = new HashSet<Permission>();
 	}
 	
+	public String permissionStr(){
+		String permStr = "";
+		for(Permission perm : permissions){
+			permStr = permStr +perm.getName()+"|";
+	    }
+		return permStr;
+	}
 	
 	public void addPermission(String permissionName){
 		Permission p = new Permission();
@@ -83,6 +92,10 @@ public class User {
 		if(add){
 		   permissions.add(p);
 		}
+	}
+	
+	public void addPermission(Permission p){
+		permissions.add(p);
 	}
 	
 	public void remPermission(String permissionName){
