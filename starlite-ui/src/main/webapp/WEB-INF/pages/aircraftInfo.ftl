@@ -10,7 +10,11 @@
 	<@subTabs/>
 	<#assign currentUser = Session.userObj>
 	<#if currentUser.hasRead("aircraftInfo")>
-	<form action="aircraftInfo!save.action" method="POST" class="smart" style="clear:left;">
+	<#if currentUser.hasWrite("aircraftInfo")>
+	  <form action="aircraftInfo!save.action" method="POST" class="smart" style="clear:left;">
+	<#else>
+	  <form action="#" onsubmit="return false;" method="POST" class="smart" style="clear:left;">
+	<#end>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="aircraft.id" value="${aircraft.id!}"/>
 		<input type="hidden" name="tab" value="administrative"/>
@@ -95,7 +99,9 @@
 		</fieldset>
 		</div>
 		<hr class="clear"/>
+		<#if currentUser.hasWrite("aircraftInfo")>
 		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+		</#if>
 		<hr class="clear"/>
 	</form>
 	</#if>
