@@ -27,11 +27,21 @@
 	${head}
 	<script>
 	 <#if current?if_exists != "Mailout">
-		setTimeout(function() {
+		var timer = setTimer();
+		
+		function setTimer(){
+		 timer = setTimeout(function() {
 			var timeoutTime = new Date();
 			//alert("Session Timed Out: " + timeoutTime);
 			window.location="${request.contextPath}/doLogin?logout=true";
 		}, 10*60*1000);
+		}
+		
+		function resetTimer(){
+		   clearTimeout(timer);
+		   setTimer();
+		}
+		
 	</#if>
 	</script>
 </head>
@@ -54,66 +64,93 @@
 <div id="complete" style="position:relative;top:10px">
 <div id="tabs">
 <#if isManager>
-    <ul class="tabs" style="width:900px;position:relative;margin-right:5%;border-bottom:none;left:150px;">
+    <ul class="tabs" style="width:940px;position:relative;margin-right:5%;border-bottom:none;left:150px;">
 <#else>
     <ul class="tabs" style="width:80%;position:relative;left:20%;border-bottom:none;left:150px;">
 </#if>
    
       <#if isManager>
+      	  
+      	  <#if user.hasRead("schedule")>
       	  <#if current?? && current=="schedule">
       		<li class="schedule current">
       	  <#else>
       		<li class="schedule">
       	  </#if>
       	  <a href="schedule.action">Schedule</a></li>
+      	  </#if>
+      	  
+      	  <#if user.hasRead("aircraft")>
           <#if current?? && current=="aircraft">
       	  <li class="aircraft current">
 	      <#else>
 	      <li class="aircraft">
 	      </#if>
 	      <a href="aircraft.action">Aircraft</a></li>
+	      </#if>
+	      
+	      <#if user.hasRead("contract")>
 	      <#if current?? && current=="charters">
 	      <li class="charters current">
 	      <#else>
 	      <li class="charters">
 	      </#if>
 	      <a href="charters.action">Contract</a></li>
+	      </#if>
+	      
+	      <#if user.hasRead("crew")>
 	      <#if current?? && current=="crew">
 	      <li class="crew current">
 	      <#else>
 	      <li class="crew">
 	      </#if>
 	      <a href="crew.action">Crew</a></li>
+	      </#if>
 	      
+	      <#if user.hasRead("doc")>
 	      <#if current?? && current=="search">
 	      <li class="search current">
 	      <#else>
 	      <li class="search">
 	      </#if>
 	      <a href="bookmarkSearch.action">Documents</a></li>
+	      </#if>
 	      
+	      <#if user.hasRead("reports")>
 	      <#if current?? && current=="reports">
 	      <li class="aircraft current">
 	      <#else>
 	      <li class="aircraft">
 	      </#if>
 	      <a href="reports.action">Reports</a></li>
+	      </#if>
 	      
+	      <#if user.hasWrite("mailout")>
 	      <#if current?? && current=="Mailout">
 	      <li class="search current">
 	      <#else>
 	      <li class="search">
 	      </#if>
 	      <a href="mailout.action">Mailout</a></li>
+	      </#if>
 	      
+	      <#if user.hasWrite("exchange")>
 	      <#if current?? && current=="Exchange">
           <li class="charters current">
           <#else>
           <li class="charters">
           </#if>
           <a href="exchange.action">Exchange</a></li>
+	      </#if>
 	      
-	      
+	      <#if user.hasWrite("user")>
+	      <#if current?? && current=="User">
+          <li class="aircraft current">
+          <#else>
+          <li class="aircraft">
+          </#if>
+          <a href="user.action">Users</a></li>
+	      </#if>
       
       <#else>
       <#if current?? && current=="crew">

@@ -1151,21 +1151,66 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		if (id != null) {
 			idStr=id;
 		}
+		
+		List<Tab> tabList = new ArrayList<Tab>();
+		
+		if(user.hasRead("crewPersonal")){
 		Tab personalTab = new Tab("Personal", "crewMember.action?id="+idStr, tab.equals("personal"));
+		tabList.add(personalTab);
+		}
+		
+		if(user.hasRead("crewBank")){
 		Tab bankingTab = new Tab("Banking", "crewMember.action?tab=banking&id="+idStr, tab.equals("banking"));
+		tabList.add(bankingTab);
+		}
+		
+		if(user.hasRead("crewRole")){
 		Tab roleTab = new Tab("Role", "crewMember.action?tab=role&id="+idStr, tab.equals("role"));
+		tabList.add(roleTab);
+		}
+		
+		if(user.hasRead("crewPay")){
 		Tab paymentsTab = new Tab("Payments", "crewMember.action?tab=payments&id="+idStr, tab.equals("payments"));
-		Tab documentsTab = new Tab("Additional Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
-		Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
+		tabList.add(paymentsTab);
+		}
+		
+		if(user.hasRead("crewPDW")){
 		Tab flightAndDutyTab = new Tab("PDW", "crewMember.action?tab=flight&id="+idStr, tab.equals("flight"));
+		tabList.add(flightAndDutyTab);
+		}
+		
+		if(user.hasWrite("crewCont")){
 		Tab hours = new Tab("On Contract", "crewMember.action?tab=hours&id="+idStr, tab.equals("hours"));
-		Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
+		tabList.add(hours);
+		}
+		
+		if(user.hasRead("crewDoc")){
+		Tab documentsTab = new Tab("Additional Documents", "crewMember!docs.action?tab=documents&id="+idStr, tab.equals("documents"));
+		tabList.add(documentsTab);
+		}
+		
+		if(user.hasRead("crewRev")){
+		if (user.hasPermission("ManagerView")){
+			Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
+			tabList.add(reviewTab);
+		}
+		}
+		
+		if(user.hasRead("crewAssign")){
+		if (user.hasPermission("ManagerView")){
+		    Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
+		    tabList.add(assignmentsTab);
+        }
+		}
 
-		if (user.hasPermission("ManagerView"))
-			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, hours, documentsTab, reviewTab, assignmentsTab};
-		else
-			tableTabs = new Tab[] {personalTab, bankingTab, roleTab, paymentsTab, flightAndDutyTab, hours, documentsTab};
+		tableTabs = new Tab[tabList.size()];
+		int count = 0;
+		for(Tab tab : tabList){
+			tableTabs[count] = tab;
+			count++;
+		}
 	}
+		
 
     public String fromPage = "";
 	public String assignments() {

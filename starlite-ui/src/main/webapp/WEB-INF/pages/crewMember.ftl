@@ -244,6 +244,9 @@ $("document").ready(function() {
 
 	<@subTabs/>
 		
+    <#assign currentUser = Session.userObj>
+    <#if currentUser.hasRead("crewPersonal")>
+		
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly" style="clear:left;">
 	<#else>
@@ -681,5 +684,8 @@ $("document").ready(function() {
   <hr class="clear"/>
 		</#if>
 	</form>
+	
+	</#if>
+	
 </body>
 </html>

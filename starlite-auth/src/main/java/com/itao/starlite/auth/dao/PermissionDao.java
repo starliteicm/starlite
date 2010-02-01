@@ -8,4 +8,6 @@ import com.itao.starlite.auth.dao.hibernate.PermissionHibernateDao;
 @ImplementedBy(PermissionHibernateDao.class)
 public interface PermissionDao extends GenericDao<Permission, Integer> {
 
+	public Permission findByName(String perm);
+
 }

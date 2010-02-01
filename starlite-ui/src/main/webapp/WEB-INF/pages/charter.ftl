@@ -6,6 +6,8 @@
 
 <body>
 	<@subTabs/>
+	<#assign currentUser = Session.userObj>
+    <#if currentUser.hasRead("contractAdmin")>
 	<form action="charter!save.action" method="POST" class="smart" style="clear:left;">
 		<input type="hidden" name="id" value="${charter.id!}"/>
 		<input type="hidden" name="charter.id" value="${charter.id!}"/>
@@ -135,5 +137,6 @@
 		<button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
 		<hr class="clear"/>
 	</form>
+	</#if>
 </body>
 </html>
