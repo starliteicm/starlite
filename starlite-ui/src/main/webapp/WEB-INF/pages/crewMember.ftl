@@ -3,6 +3,7 @@
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <@enableJQuery/>
+  <#assign currentUser = Session.userObj>
   <#if currentUser.hasWrite("crewPersonal")>    
   <@enableDatePickers/>
   </#if>
@@ -246,7 +247,7 @@ $("document").ready(function() {
 
 	<@subTabs/>
 		
-    <#assign currentUser = Session.userObj>
+    
     <#if currentUser.hasRead("crewPersonal")>
 	
 	<#if currentUser.hasWrite("crewPersonal")>	
