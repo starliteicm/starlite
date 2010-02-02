@@ -3,7 +3,9 @@
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <@enableJQuery/>
+  <#if currentUser.hasWrite("crewPersonal")>    
   <@enableDatePickers/>
+  </#if>
   <@enableHelp/>
 <script language="javascript">
   function validate(){            
@@ -395,15 +397,19 @@ $("document").ready(function() {
 		  </#if>
 		</div>
 		  <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
+          
           <div class="fm-opt">
           <label for="passports">
+          
+          <#if currentUser.hasWrite("crewPersonal")>
           <#if count == 1>
           <span class="star">*</span>
           </#if>
-          <#if currentUser.hasWrite("crewPersonal")>    Upload:</label>
+              Upload:</label>
           <input type="file" name="passports" value="" />
-          <input type="hidden" name="passportsTags" value="passport" /></#if>
-
+          <input type="hidden" name="passportsTags" value="passport" />
+           </#if>
+           
           <#assign passname = "passport"+passFileCount />
           <#if passportFiles.get(passname)?exists > 
           <#assign pass = passportFiles.get(passname)/>
@@ -438,11 +444,13 @@ $("document").ready(function() {
           <label for="passportsExpiryDate"><span class="star">*</span>Expiry Date:</label>
           <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
         </div>
+        <#if currentUser.hasWrite("crewPersonal")>    
         <div class="fm-opt">
           <label for="passports"><span class="star">*</span>Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
         </div>
+        </#if>
         <#elseif count == 1 >
         <div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
         
@@ -460,11 +468,13 @@ $("document").ready(function() {
           <label for="passportsExpiryDate">Expiry Date:</label>
           <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
         </div>
+        <#if currentUser.hasWrite("crewPersonal")>    
         <div class="fm-opt">
           <label for="passports">Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
         </div>
+        </#if>
         </#if>
         
         
