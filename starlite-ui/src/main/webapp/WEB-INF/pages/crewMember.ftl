@@ -400,9 +400,10 @@ $("document").ready(function() {
 		  <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
           
           <div class="fm-opt">
+          <#if currentUser.hasWrite("crewPersonal")>
           <label for="passports">
           
-          <#if currentUser.hasWrite("crewPersonal")>
+          
           <#if count == 1>
           <span class="star">*</span>
           </#if>
