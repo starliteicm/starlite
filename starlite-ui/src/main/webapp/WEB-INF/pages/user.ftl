@@ -385,17 +385,17 @@
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
-            <!--<div class="fm-opt"> 
+            <div class="fm-opt"> 
             <label for="">Crew Days On Contract</label> 
             <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportOnContractRead" value="reportOnContractRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
-            </div>-->
+            </div>
             
-            <div class="fm-opt"> 
+            <!--<div class="fm-opt"> 
             <label for="">Crew Days Worked</label> 
             <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportWorkedRead" value="reportWorkedRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
-            </div>
+            </div>-->
             
             <div class="fm-opt"> 
             <label for="">Hours Flown</label> 
