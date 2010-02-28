@@ -977,10 +977,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		crewMember.setPassport(cmPassports);
 		}
 		
-		if(crewMember.getCode() != null){
-		   manager.saveCrewMember(crewMember);
-		}
-		
+		manager.saveCrewMember(crewMember);
 		try{
 		  if(document != null){
 			LOG.info(tags+" "+docfolder);

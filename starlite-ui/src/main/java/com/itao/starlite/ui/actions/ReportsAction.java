@@ -193,7 +193,10 @@ public class ReportsAction extends ActionSupport implements UserAware {
 		if (id != null) {
 			crewMember = manager.getCrewMemberByCode(id);
 			Date start = df.parse(dateFrom);
-			Date end = df.parse(dateTo);		
+			Date end = df.parse(dateTo);
+			end.setHours(23);
+			end.setMinutes(59);
+			end.setSeconds(59);
 			crewDays = manager.getCrewDayByCrewMemberBetween(new Integer(crewMember.getId()),start,end);
 			if(crewDays == null){crewDays = new ArrayList<CrewDay>();}
 			
@@ -254,7 +257,9 @@ public class ReportsAction extends ActionSupport implements UserAware {
 		
 	    Date start = df.parse(dateFrom);
 		Date end = df.parse(dateTo);
-		
+		end.setHours(23);
+		end.setMinutes(59);
+		end.setSeconds(59);
 		
 		years  = new LinkedHashMap<String,LinkedHashMap<String,TreeMap>>();
 		

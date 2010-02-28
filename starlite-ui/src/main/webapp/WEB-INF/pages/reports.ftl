@@ -475,7 +475,8 @@ font-weight:normal;
 	<#if currentUser.hasRead("reportWorked")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a></#if>
 	<#if currentUser.hasRead("reportDeduction")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a></#if>
 	<#if currentUser.hasRead("reportPayments")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a></#if>
-	<#if currentUser.hasRead("reportPaymentsAnalysis")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a></#if>	
+	<#if currentUser.hasRead("reportPaymentsAnalysis")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a></#if>
+	<#if currentUser.hasRead("reportHours")><li style="width:200px;height:30px;"><a href="script.action?scriptName=hours.groovy">Crew Hours</a></#if> 	
 	</#if>
   </ul>
 
@@ -547,7 +548,7 @@ font-weight:normal;
 <br/>
 </#if>
 
-<#if currentUser.hasRead("reportHours")>
+<#if currentUser.hasRead("reportHoursFlown")>
 <form name="hours" id="hours" action="reports!hours.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateHours();" >View Hours Flown</A></li>
   <div class="fm-opt">

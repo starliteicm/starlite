@@ -62,7 +62,7 @@
       var count = document.emailForm.elements.length;
       for (var i=0; i<count; i++)
       {
-         if(document.emailForm.elements[i].name1 =="mems")
+         if(document.emailForm.elements[i].getAttribute("name1") =="mems")
          {
             if(document.emailForm.elements[i].checked == true)
                {
@@ -80,11 +80,13 @@
       var count = document.emailForm.elements.length;
       for (var i=0; i<count; i++)
       {
-         if(document.emailForm.elements[i].name1 =="mems")
+      
+         if(document.emailForm.elements[i].getAttribute("name1") =="mems")
          {
+           
             if(document.emailForm.elements[i].checked == false)
                {
-                  document.emailForm.elements[i].checked = true; 
+                  document.emailForm.elements[i].checked = "checked"; 
                   selectedEmail++;
                }
          }  
@@ -97,7 +99,7 @@
       var count = document.emailForm.elements.length;
          for (var i=0; i<count; i++)
          { 
-            if( document.emailForm.elements[i].name1 =="mems"  && document.emailForm.elements[i].name3 =="Permanent")
+            if( document.emailForm.elements[i].getAttribute("name1") =="mems"  && document.emailForm.elements[i].getAttribute("name3") != "Freelance")
             {
                if(document.emailForm.elements[i].checked == false)
                   {
@@ -119,7 +121,7 @@
       var count = document.emailForm.elements.length;
          for (var i=0; i<count; i++)
          { 
-            if( document.emailForm.elements[i].name1 =="mems"  && document.emailForm.elements[i].name3 =="Freelance")
+            if( document.emailForm.elements[i].getAttribute("name1") =="mems"  && document.emailForm.elements[i].getAttribute("name3") =="Freelance")
             {
                if(document.emailForm.elements[i].checked == false)
                   {
@@ -142,7 +144,7 @@
       var count = document.emailForm.elements.length;
          for (var i=0; i<count; i++)
          { 
-            if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="Pilot"  && document.emailForm.elements[i].name3 =="Permanent")
+            if( document.emailForm.elements[i].getAttribute("name1") =="mems" && document.emailForm.elements[i].getAttribute("name2")=="Pilot"  && document.emailForm.elements[i].getAttribute("name3") !="Freelance")
             {
                if(document.emailForm.elements[i].checked == false)
                   {
@@ -164,7 +166,7 @@
       var count = document.emailForm.elements.length;
          for (var i=0; i<count; i++)
          { 
-            if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="Pilot"  && document.emailForm.elements[i].name3 =="Freelance")
+            if( document.emailForm.elements[i].getAttribute("name1") =="mems" && document.emailForm.elements[i].getAttribute("name2")=="Pilot"  && document.emailForm.elements[i].getAttribute("name3") =="Freelance")
             {
                if(document.emailForm.elements[i].checked == false)
                   {
@@ -186,7 +188,7 @@
       var count = document.emailForm.elements.length;
       for (var i=0; i<count; i++)
       { 
-         if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="AME"  && document.emailForm.elements[i].name3 =="Permanent")
+         if( document.emailForm.elements[i].getAttribute("name1") =="mems" && document.emailForm.elements[i].getAttribute("name2")=="AME"  && document.emailForm.elements[i].getAttribute("name3") !="Freelance")
          {
             if(document.emailForm.elements[i].checked == false)
                {
@@ -208,7 +210,7 @@
       var count = document.emailForm.elements.length;
          for (var i=0; i<count; i++)
          { 
-            if( document.emailForm.elements[i].name1 =="mems" && document.emailForm.elements[i].name2=="AME"  && document.emailForm.elements[i].name3 =="Freelance")
+            if( document.emailForm.elements[i].getAttribute("name1") =="mems" && document.emailForm.elements[i].getAttribute("name2")=="AME"  && document.emailForm.elements[i].getAttribute("name3") =="Freelance")
             {
                if(document.emailForm.elements[i].checked == false)
                   {

@@ -3,10 +3,7 @@
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <@enableJQuery/>
-  <#assign currentUser = Session.userObj>
-  <#if currentUser.hasWrite("crewPersonal")>    
   <@enableDatePickers/>
-  </#if>
   <@enableHelp/>
 <script language="javascript">
   function validate(){            
@@ -247,19 +244,14 @@ $("document").ready(function() {
 
 	<@subTabs/>
 		
-    
+    <#assign currentUser = Session.userObj>
     <#if currentUser.hasRead("crewPersonal")>
-	
-	<#if currentUser.hasWrite("crewPersonal")>	
+		
 	<#if readOnly>
 	<form action="#" method="POST" class="smart readonly" style="clear:left;">
 	<#else>
 	<form action="crewMember!save.action" name="personalform" method="POST" class="smart" style="clear:left;" enctype="multipart/form-data">
 	</#if>
-	<#else>
-	<form action="#" method="POST" onsubmit="return false;" class="smart readonly" style="clear:left;">
-	</#if>
-	
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
 		<input type="hidden" name="tab" value="personal"/>
@@ -278,18 +270,16 @@ $("document").ready(function() {
 		</div>
 		<br/>
 		 <#if photoFile?exists>
-         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a style="width:auto;border:1px dotted silver;" href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
+         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a style="width:auto;border:1px dotted silver;" href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="document!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
         </#if>
 		<br/>
 		<div style="">
-		<#if currentUser.hasWrite("crewPersonal")>    
 		    <div class="fm-opt">
                 <label for="photo">Upload:</label>
                 <input name="document" type="file" value=""/>
                 <input type="hidden" name="tags" value="photo">
                 <input type="hidden" name="docfolder" value="/crew/${id!}"/>
             </div>
-        </#if>
 		</div>		
 		</fieldset>
 
@@ -398,27 +388,21 @@ $("document").ready(function() {
 		  </#if>
 		</div>
 		  <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
-          
           <div class="fm-opt">
-          <#if currentUser.hasWrite("crewPersonal")>
           <label for="passports">
-          
-          
           <#if count == 1>
           <span class="star">*</span>
           </#if>
-              Upload:</label>
+          Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
-           </#if>
-           
+
           <#assign passname = "passport"+passFileCount />
           <#if passportFiles.get(passname)?exists > 
           <#assign pass = passportFiles.get(passname)/>
           <#if pass?exists>
              <label for="passportsUploadedFile"/>&nbsp;</label>
-             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a>
-             <#if currentUser.hasWrite("crewPersonal")> <#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div></#if>
+             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div>
           </#if> 
           </#if>
           
@@ -446,13 +430,11 @@ $("document").ready(function() {
           <label for="passportsExpiryDate"><span class="star">*</span>Expiry Date:</label>
           <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
         </div>
-        <#if currentUser.hasWrite("crewPersonal")>    
         <div class="fm-opt">
           <label for="passports"><span class="star">*</span>Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
         </div>
-        </#if>
         <#elseif count == 1 >
         <div style="margin-top:20px;margin-left:10px;width:100%;border-top:1px dotted silver;">&nbsp;</div>      
         
@@ -470,13 +452,11 @@ $("document").ready(function() {
           <label for="passportsExpiryDate">Expiry Date:</label>
           <input type="text" name="passportsExpiryDate" class="date-pick" value="" />
         </div>
-        <#if currentUser.hasWrite("crewPersonal")>    
         <div class="fm-opt">
           <label for="passports">Upload:</label>
           <input type="file" name="passports" value="" />
           <input type="hidden" name="passportsTags" value="passport" />
         </div>
-        </#if>
         </#if>
         
         
@@ -698,12 +678,10 @@ $("document").ready(function() {
 		</fieldset>
 		</div>
 		<hr class="clear"/>
-		<#if currentUser.hasWrite("crewPersonal")>    
 		<#if !readOnly>
 		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save</button>
 		<div id="msg-error"></div>
   <hr class="clear"/>
-		</#if>
 		</#if>
 	</form>
 	
