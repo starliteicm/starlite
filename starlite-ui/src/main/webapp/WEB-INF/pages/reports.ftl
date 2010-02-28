@@ -511,7 +511,7 @@ font-weight:normal;
 
 <#if currentUser.hasRead("reportProfile")>
 <form name="profile" id="profile" action="crewMember!profile.action">
-<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.profile.submit();" >View Profile</A></li>
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.profile.submit();" >View Crew Profile Report</A></li>
 <select style="float:left" name="id">
 <#list crewMembers! as crew>
 <#if crew.code?exists >
@@ -525,7 +525,7 @@ font-weight:normal;
 
 <#if currentUser.hasRead("reportRequired")>
 <form name="required" id="required" action="crewMember!required.action">
-<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.required.submit();" >View Required</A></li>
+<li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.required.submit();" >View Required Information Report</A></li>
 <select style="float:left" name="id">
 <#list crewMembers! as crew>
 <#if crew.code?exists >
