@@ -11,7 +11,7 @@ public class PermissionHibernateDao extends GenericHibernateDao<Permission, Inte
 
 	public Permission findByName(String perm){
 		Transaction t = createTransactionIfRequired();
-		Permission p = (Permission) getCurrentSession().createQuery("from Permission p where p.name = ? ")
+		Permission p = (Permission) getCurrentSession().createQuery("from Permission p where p.name = ? Limit 1")
 			.setString(0, perm.toUpperCase())
 			.uniqueResult();
 		if (t != null)

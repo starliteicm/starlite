@@ -24,13 +24,6 @@
     //Styling
     var leg = document.getElementById("legend");
     leg.innerHTML = "User Administration - "+username+" [New Admin]";
-    $(".linkover").addClass("linkout");
-    $(".linkover").removeClass("linkover");
-    $(".linkselect").removeClass("linkselect");
-      
-    //Clear Checks
-    $(".adminSelect").removeAttr('checked');
-    $(".crewSelect").removeAttr('checked');
     
     //enable fields
     $(".adminSelect").removeAttr('disabled');
@@ -38,9 +31,10 @@
     
     //fields for saving
     $("#username").val(username);
-    $("#newUser").val("1");  
+    $("#newUser").val("1");
     
-    $(".default").attr('checked',true);  
+    alert($("#username").val());
+    
     
     }
     
@@ -244,63 +238,63 @@
           
             <div class="fm-opt">
             <label for=""><B>Crew</B></label>               
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewRead"  value="crewRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewRead"  value="crewRead" /> 
             <div style="width:100%;height:20px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt">
             <label for="">Personal</label>
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewPersonalRead"  onclick="if($('#crewPersonalWrite').is(':checked')){$('#crewPersonalWrite').attr('checked',$('#crewPersonalRead').is(':checked'));}" value="crewPersonalRead" /> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewPersonalWrite" onclick="if($('#crewPersonalWrite').is(':checked')){$('#crewPersonalRead').attr('checked','true');}" value="crewPersonalWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewPersonalRead"  onclick="if($('#crewPersonalWrite').is(':checked')){$('#crewPersonalWrite').attr('checked',$('#crewPersonalRead').is(':checked'));}" value="crewPersonalRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewPersonalWrite" onclick="if($('#crewPersonalWrite').is(':checked')){$('#crewPersonalRead').attr('checked','true');}" value="crewPersonalWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">Banking</label>
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewBankRead"  onclick="if($('#crewBankWrite').is(':checked')){$('#crewBankWrite').attr('checked',$('#crewBankRead').is(':checked'));}" value="crewBankRead" /> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewBankWrite" onclick="if($('#crewBankWrite').is(':checked')){$('#crewBankRead').attr('checked','true');}" value="crewBankWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewBankRead"  onclick="if($('#crewBankWrite').is(':checked')){$('#crewBankWrite').attr('checked',$('#crewBankRead').is(':checked'));}" value="crewBankRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewBankWrite" onclick="if($('#crewBankWrite').is(':checked')){$('#crewBankRead').attr('checked','true');}" value="crewBankWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">Role</label> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewRoleRead"  onclick="if($('#crewRoleWrite').is(':checked')){$('#crewRoleWrite').attr('checked',$('#crewRoleRead').is(':checked'));}" value="crewRoleRead" /> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewRoleWrite" onclick="if($('#crewRoleWrite').is(':checked')){$('#crewRoleRead').attr('checked','true');}" value="crewRoleWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewRoleRead"  onclick="if($('#crewRoleWrite').is(':checked')){$('#crewRoleWrite').attr('checked',$('#crewRoleRead').is(':checked'));}" value="crewRoleRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewRoleWrite" onclick="if($('#crewRoleWrite').is(':checked')){$('#crewRoleRead').attr('checked','true');}" value="crewRoleWrite" /> 
             </div>
             
             
             <div class="fm-opt"> 
             <label for="">Payments</label> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewPayRead"  onclick="if($('#crewPayWrite').is(':checked')){$('#crewPayWrite').attr('checked',$('#crewPayRead').is(':checked'));}" value="crewPayRead" /> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="crewPayWrite" onclick="if($('#crewPayWrite').is(':checked')){$('#crewPayRead').attr('checked','true');}" value="crewPayWrite" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="crewPayRead"  onclick="if($('#crewPayWrite').is(':checked')){$('#crewPayWrite').attr('checked',$('#crewPayRead').is(':checked'));}" value="crewPayRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="crewPayWrite" onclick="if($('#crewPayWrite').is(':checked')){$('#crewPayRead').attr('checked','true');}" value="crewPayWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">PDW</label> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewPDWRead"  onclick="if($('#crewPDWWrite').is(':checked')){$('#crewPDWWrite').attr('checked',$('#crewPDWRead').is(':checked'));}" value="crewPDWRead" /> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="crewPDWWrite" onclick="if($('#crewPDWWrite').is(':checked')){$('#crewPDWRead').attr('checked','true');}" value="crewPDWWrite" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="crewPDWRead"  onclick="if($('#crewPDWWrite').is(':checked')){$('#crewPDWWrite').attr('checked',$('#crewPDWRead').is(':checked'));}" value="crewPDWRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="crewPDWWrite" onclick="if($('#crewPDWWrite').is(':checked')){$('#crewPDWRead').attr('checked','true');}" value="crewPDWWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">On Contract</label> 
             <div style="width:55px;height:10px;float:left;">&nbsp;</div> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewContWrite" value="crewContWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewContWrite" value="crewContWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">Additional Documents</label> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewDocRead"  onclick="if($('#crewDocWrite').is(':checked')){$('#crewDocWrite').attr('checked',$('#crewDocRead').is(':checked'));}" value="crewDocRead" /> 
-            <input disabled="disabled" class="crewSelect default" name="permissions" type="checkbox" id="crewDocWrite" onclick="if($('#crewDocWrite').is(':checked')){$('#crewDocRead').attr('checked','true');}" value="crewDocWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewDocRead"  onclick="if($('#crewDocWrite').is(':checked')){$('#crewDocWrite').attr('checked',$('#crewDocRead').is(':checked'));}" value="crewDocRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewDocWrite" onclick="if($('#crewDocWrite').is(':checked')){$('#crewDocRead').attr('checked','true');}" value="crewDocWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">Review</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="crewRevRead"  onclick="if($('#crewRevWrite').is(':checked')){$('#crewRevWrite').attr('checked',$('#crewRevRead').is(':checked'));}" value="crewRevRead" /> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="crewRevWrite" onclick="if($('#crewRevWrite').is(':checked')){$('#crewRevRead').attr('checked','true');}" value="crewRevWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewRevRead"  onclick="if($('#crewRevWrite').is(':checked')){$('#crewRevWrite').attr('checked',$('#crewRevRead').is(':checked'));}" value="crewRevRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewRevWrite" onclick="if($('#crewRevWrite').is(':checked')){$('#crewRevRead').attr('checked','true');}" value="crewRevWrite" /> 
             </div>
             
             <div class="fm-opt"> 
             <label for="">Assignments</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="crewAssignRead"  onclick="if($('#crewAssignWrite').is(':checked')){$('#crewAssignWrite').attr('checked',$('#crewAssignRead').is(':checked'));}" value="crewAssignRead" /> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="crewAssignWrite" onclick="if($('#crewAssignWrite').is(':checked')){$('#crewAssignRead').attr('checked','true');}" value="crewAssignWrite" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewAssignRead"  onclick="if($('#crewAssignWrite').is(':checked')){$('#crewAssignWrite').attr('checked',$('#crewAssignRead').is(':checked'));}" value="crewAssignRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="crewAssignWrite" onclick="if($('#crewAssignWrite').is(':checked')){$('#crewAssignRead').attr('checked','true');}" value="crewAssignWrite" /> 
             </div>
             
           </div><br/><br/>
@@ -327,97 +321,97 @@
             <div>
             <div class="fm-opt">
             <label for=""><B>Reports</B> </label>               
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportsRead" value="reportsRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportsRead" value="reportsRead" /> 
             <div style="width:100%;height:20px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt">
             <label for="">Aircraft/Charter Matrix</label>
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportMatrixRead" value="reportMatrixRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportMatrixRead" value="reportMatrixRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Certificates</label>
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportCertRead" value="reportCertRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportCertRead" value="reportCertRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Member Profiles</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportMemberProfileRead" value="reportMemberProfileRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportMemberProfileRead" value="reportMemberProfileRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Licences</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportLicenceRead" value="reportLicenceRead" />
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportLicenceRead" value="reportLicenceRead" />
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Deductions</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportDeductionRead" value="reportDeductionRead" />
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportDeductionRead" value="reportDeductionRead" />
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Payments</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportPaymentsRead" value="reportPaymentsRead" />
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportPaymentsRead" value="reportPaymentsRead" />
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Payment Analysis</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportPaymentsAnalysisRead" value="reportPaymentsAnalysisRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportPaymentsAnalysisRead" value="reportPaymentsAnalysisRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Document Report</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportDocRead" value="reportDocRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportDocRead" value="reportDocRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Profile</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportProfileRead" value="reportProfileRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportProfileRead" value="reportProfileRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Required Information</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportRequiredRead" value="reportRequiredRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportRequiredRead" value="reportRequiredRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Days On Contract</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportOnContractRead" value="reportOnContractRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportOnContractRead" value="reportOnContractRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Crew Days Worked</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportWorkedRead" value="reportWorkedRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportWorkedRead" value="reportWorkedRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Hours Flown</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportHoursFlownRead" value="reportHoursFlownRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportHoursFlownRead" value="reportHoursFlownRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">183 Day Report</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="report183Read" value="report183Read" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="report183Read" value="report183Read" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
             <div class="fm-opt"> 
             <label for="">Hours</label> 
-            <input disabled="disabled" class="adminSelect default" name="permissions" type="checkbox" id="reportHoursRead" value="reportHoursRead" /> 
+            <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportHoursRead" value="reportHoursRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             

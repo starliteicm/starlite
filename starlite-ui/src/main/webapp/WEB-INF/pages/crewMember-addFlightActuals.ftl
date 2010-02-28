@@ -635,7 +635,7 @@
             <td>
                 <select style="width:60px;" id="Addition${key.replace(" ","_")}Currency" name="Addition${key.replace(" ","_")}Currency">
                 <#list rates as rate>
-                   <option <#if addition.currency == rate.currencyCodeFrom >SELECTED</#if>  >${rate.currencyCodeFrom}</option>
+                   <option <#if deduction.currency == rate.currencyCodeFrom >SELECTED</#if>  >${rate.currencyCodeFrom}</option>
                 </#list>
                 </select>
             </td>
