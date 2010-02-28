@@ -331,23 +331,23 @@
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
-            <div class="fm-opt"> 
+            <!--<div class="fm-opt"> 
             <label for="">Certificates</label>
             <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportCertRead" value="reportCertRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
-            </div>
+            </div>-->
             
-            <div class="fm-opt"> 
+            <!--<div class="fm-opt"> 
             <label for="">Crew Member Profiles</label> 
             <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportMemberProfileRead" value="reportMemberProfileRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
-            </div>
+            </div>-->
             
-            <div class="fm-opt"> 
+            <!--<div class="fm-opt"> 
             <label for="">Crew Licences</label> 
             <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportLicenceRead" value="reportLicenceRead" />
             <div style="width:100%;height:1px;">&nbsp;</div>
-            </div>
+            </div>-->
             
             <div class="fm-opt"> 
             <label for="">Crew Deductions</label> 
@@ -385,11 +385,11 @@
             <div style="width:100%;height:1px;">&nbsp;</div>
             </div>
             
-            <div class="fm-opt"> 
+            <!--<div class="fm-opt"> 
             <label for="">Crew Days On Contract</label> 
             <input disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="reportOnContractRead" value="reportOnContractRead" /> 
             <div style="width:100%;height:1px;">&nbsp;</div>
-            </div>
+            </div>-->
             
             <div class="fm-opt"> 
             <label for="">Crew Days Worked</label> 
@@ -436,7 +436,7 @@
           </div><br/><br/><br/>
 		   
 		   
-		   <div style="height:90px;">&nbsp;</div>
+		   <div style="height:190px;">&nbsp;</div>
 		
 		 <button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save Permissions</button>
 		
