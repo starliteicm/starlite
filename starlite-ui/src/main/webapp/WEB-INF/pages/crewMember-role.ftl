@@ -249,7 +249,7 @@ $("document").ready(function() {
                 <input name="licenceTags" value="licence" type="hidden" />
                 <#if licence?exists>
                   <label for="licenceUploadLink"/>&nbsp;</label>
-                  <div id="licenceUploadLink"><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="licenceUploadLink"><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
             </div>
 			<br/>
@@ -370,7 +370,7 @@ $("document").ready(function() {
                 <input name="mediTags" value="medical" type="hidden"/>
                 <#if medical?exists>
                   <label for="medicalUploadedFile"/>&nbsp;</label>
-                  <div id="medicalUploadedFile"><a href='${request.contextPath}${medical.bookmark.url!}'>${medical.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${medical.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="medicalUploadedFile"><a href='${request.contextPath}${medical.bookmark.url!}'>${medical.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${medical.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
             </div> 
             <br/>   
@@ -383,7 +383,7 @@ $("document").ready(function() {
                 <input name="crmTags" value="CRM" type="hidden"/>
                 <#if crm?exists>
                   <label for="crmUploadedFile"/>&nbsp;</label>
-                  <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
             </div>
             <br/>    
@@ -396,7 +396,7 @@ $("document").ready(function() {
                 <input name="dgTags" value="DG" type="hidden">
                 <#if dg?exists>
                   <label for="dgUploadedFile"/>&nbsp;</label>
-                  <div id="dgUploadedFile"><a href='${request.contextPath}${dg.bookmark.url!}'>${dg.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${dg.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="dgUploadedFile"><a href='${request.contextPath}${dg.bookmark.url!}'>${dg.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${dg.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if> 
 			</div>
 			<br/>   
@@ -409,7 +409,7 @@ $("document").ready(function() {
                 <input name="huetTags" value="HUET" type="hidden" />
                 <#if huet?exists>
                   <label for="huetUploadedFile"/>&nbsp;</label>
-                  <div id="huetUploadedFile"><a href='${request.contextPath}${huet.bookmark.url!}'>${huet.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${huet.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="huetUploadedFile"><a href='${request.contextPath}${huet.bookmark.url!}'>${huet.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${huet.bookmark.bookmarkedId}">x</a></#if></div>
                 </#if>
             </div>
             <br/>
