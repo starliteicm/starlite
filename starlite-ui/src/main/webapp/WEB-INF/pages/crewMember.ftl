@@ -270,7 +270,7 @@ $("document").ready(function() {
 		</div>
 		<br/>
 		 <#if photoFile?exists>
-         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a style="width:auto;border:1px dotted silver;" href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
+         <div id="photoUploadedFile" style="width:100%;text-align:center;"><a style="width:auto;border:1px dotted silver;" href='${request.contextPath}${photoFile.bookmark.url!}'>${photoFile.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${photoFile.bookmark.bookmarkedId}">x</a></#if></div>
         </#if>
 		<br/>
 		<div style="">
@@ -402,7 +402,7 @@ $("document").ready(function() {
           <#assign pass = passportFiles.get(passname)/>
           <#if pass?exists>
              <label for="passportsUploadedFile"/>&nbsp;</label>
-             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div>
+             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div>
           </#if> 
           </#if>
           
