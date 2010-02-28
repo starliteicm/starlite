@@ -471,7 +471,21 @@ $("document").ready(function() {
 			</div>
 			<br/>
 		</fieldset>
-		 
+		
+		<fieldset>
+            <legend>
+            Flight Hours Report 
+            </legend>
+		<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+                <label for="flighthoursFile">Upload:</label>
+                <input id="flighthoursFile" name="flighthoursFile" value="" type="file" />
+                <input name="flighthoursTags" value="flighthours" type="hidden" />
+                <#if flighthours?exists>
+                  <label for="flighthoursFile"/>&nbsp;</label>
+                  <div id="flighthoursFile"><a href='${request.contextPath}${flighthours.bookmark.url!}'>${flighthours.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${flighthours.bookmark.bookmarkedId}">x</a></#if></div>
+                </#if>
+            </div>
+		 </fieldset>
 		
 		<fieldset>
 			<legend>Last Base Check</legend>

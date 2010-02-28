@@ -123,6 +123,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String huetFileFileName;
     public String huetTags;
     
+    public File   flighthoursFile;
+    public String flighthoursFileContentType;
+    public String flighthoursFileFileName;
+    public String flighthoursTags;
+    
     public File   mediFile;
 	public String mediFileContentType;
     public String mediFileFileName;
@@ -139,6 +144,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document dg;
     public Document huet;
     public Document photoFile;
+    public Document flighthours;
     
     
     @SuppressWarnings("unchecked")
@@ -230,11 +236,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			aircraftTypes = manager.getAircraftTypes();
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 //	        LOG.info(folder.getDocs());
-	        licence = folder.getDocumentByTag("licence");
-	        medical = folder.getDocumentByTag("medical");
-	        crm     = folder.getDocumentByTag("CRM");
-	        dg      = folder.getDocumentByTag("DG");
-	        huet    = folder.getDocumentByTag("HUET");   
+	        licence     = folder.getDocumentByTag("licence");
+	        medical     = folder.getDocumentByTag("medical");
+	        crm         = folder.getDocumentByTag("CRM");
+	        dg          = folder.getDocumentByTag("DG");
+	        huet        = folder.getDocumentByTag("HUET");  
+	        flighthours = folder.getDocumentByTag("flighthours");
 		}
 		
 		return tab;
@@ -322,7 +329,22 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			  LOG.error(e);			  			 
 		  }
 		  return null;
-	}	
+	}
+	
+	public InputStream getFlighthoursFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document flighthoursFile = folder.getDocumentByTag("flighthours");
+		    LOG.info("Name:"+flighthoursFile.getName());
+		    LOG.info("Uuid:"+flighthoursFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(flighthoursFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
 	
 	public String tableHtml;
 	private String setupFlight() {
@@ -1108,6 +1130,22 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
         	  LOG.error("HUET error: "+e);
               e.printStackTrace();
           }
+          try{
+              if(flighthoursFile!= null){         
+                  LOG.info(flighthoursTags+" "+docfolder+" "+docfolder+"/"+ flighthoursFileFileName);
+                  String[] tagsArray = flighthoursTags.split(" ");
+                  Document doc = new Document();
+                  doc.setName(flighthoursFileFileName);
+                  doc.setContentType(flighthoursFileContentType);
+                  Bookmark b = bookmarkManager.createBookmark(flighthoursFileFileName, "Document", docfolder+"/"+ flighthoursFileFileName, tagsArray);
+                  doc.setBookmark(b);
+                  docManager.createDocument(doc, docfolder, new FileInputStream(flighthoursFile), user);
+              }
+            }
+            catch(Exception e){
+          	  LOG.error("flighthours error: "+e);
+                e.printStackTrace();
+            }
           
 	return execute();
 	}

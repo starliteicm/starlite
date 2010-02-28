@@ -63,6 +63,7 @@
 		  <#if tag.tag == "medical"><#assign hide=1/></#if>
 		  <#if tag.tag == "licence"><#assign hide=1/></#if>
 		  <#if tag.tag == "photo"><#assign hide=1/></#if>
+		  <#if tag.tag == "flighthours"><#assign hide=1/></#if>
 		  <#if tag.tag.indexOf("passport") != -1><#assign hide=1/></#if>
 		</#list>
 		

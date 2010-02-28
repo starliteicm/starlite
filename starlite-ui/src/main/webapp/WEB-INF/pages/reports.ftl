@@ -467,12 +467,12 @@ font-weight:normal;
 
   <ul>
 	<#if currentUser.hasRead("reportMatrix")><li style="width:200px;height:30px;"><a href="script.action?scriptName=aircraftCharterMatrix.groovy&month=${month}&year=${year?c}">Aircraft/Charter Matrix</a></#if>
-	<#if currentUser.hasRead("reportCert")><li style="width:200px;height:30px;"><a href="script.action?scriptName=certificate.groovy">Certificates</a></#if>
+	<!--<#if currentUser.hasRead("reportCert")><li style="width:200px;height:30px;"><a href="script.action?scriptName=certificate.groovy">Certificates</a></#if>
 	<#if currentUser.hasRead("reportMemberProfile")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewMemberProfiles.groovy">Crew Member Profiles</a></#if>
-	<#if currentUser.hasRead("reportLicence")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a></#if>
+	<#if currentUser.hasRead("reportLicence")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewLicences.groovy">Crew Licences</a></#if>-->
 	<#if notAuthorised>
 	<#else>
-	<#if currentUser.hasRead("reportWorked")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a></#if>
+	<!--<#if currentUser.hasRead("reportWorked")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a></#if>-->
 	<#if currentUser.hasRead("reportDeduction")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a></#if>
 	<#if currentUser.hasRead("reportPayments")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a></#if>
 	<#if currentUser.hasRead("reportPaymentsAnalysis")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a></#if>
