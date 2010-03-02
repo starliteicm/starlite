@@ -189,7 +189,7 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 
 
 				if(from.before(to)){
-					while(cal.getTime().before(to)){
+					while(!to.after(cal.getTime())){
 						String date = mysqlFormat.format(cal.getTime());
 						CrewDay cd = null;
 						cd = manager.getCrewDay(cal.getTime(),crewMember);
