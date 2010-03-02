@@ -4,7 +4,6 @@
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
-  <script type="text/javascript" src="js/jquery-1.2.3.min.js"></script>
   <link rel="stylesheet" type="text/css" href="styles/jquery.autocomplete.css">
   <script type="text/javascript" src="js/jquery.autocomplete.multi.js"></script>
   <@enableHelp/>

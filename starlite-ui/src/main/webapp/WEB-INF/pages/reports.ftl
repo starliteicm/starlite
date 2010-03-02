@@ -2,7 +2,6 @@
 <#include "/starlite.ftl">
 <html>
 <head>
-  <@enableJQuery/>
   <@enableDatePickers/>
 <style>
 table tr td {

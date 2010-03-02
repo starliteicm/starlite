@@ -62,6 +62,12 @@ function onInvokeAction(id) {
 	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.2.3.min.js"></script>	
 </#macro>
 
+<#macro enableJcarousel>
+    <script type="text/javascript" src="${request.contextPath}/js/jquery.jcarousel.pack.js"></script>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.jcarousel.css " />    
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/skin.css" />    
+</#macro>
+
 <#macro enableJwysiwyg>
     <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.wysiwyg.css">
 	<script type="text/javascript" src="${request.contextPath}/js/jquery.wysiwyg.js"></script>

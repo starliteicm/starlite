@@ -1,7 +1,6 @@
 <#include "/starlite.ftl">
 <html>
 <head>
-	<@enableJQuery/>
 	<@enableDatePickers/>
 </head>
 <body>

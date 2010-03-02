@@ -4,7 +4,7 @@
 <head>
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jmesa.css">
 
-<@enableJQuery/>
+
 <script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
 <script type="text/javascript">
         $(document).ready(function() {
