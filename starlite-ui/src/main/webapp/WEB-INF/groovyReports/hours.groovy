@@ -43,6 +43,8 @@ def generate(manager, pageContext) {
       
       for(conv in cm.role.conversions) {
         //Total PIC
+        if(conv.quantity != null){
+        
         if("Total PIC".equals(conv.number)){reportRow[conv.number]=new Double(conv.quantity)} 
         //Total Turbine
         else if("Total Turbine".equals(conv.number)){reportRow[conv.number]=new Double(conv.quantity)}
@@ -56,6 +58,8 @@ def generate(manager, pageContext) {
         else if("S330J".equals(conv.number)){reportRow[conv.number]=new Double(conv.quantity)}
         //S92
         else if("S92".equals(conv.number)){reportRow[conv.number]=new Double(conv.quantity)}
+        
+        }
       }
       
       report.add(reportRow)
