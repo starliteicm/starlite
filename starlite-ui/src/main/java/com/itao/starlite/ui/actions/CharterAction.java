@@ -186,6 +186,9 @@ public class CharterAction extends ActionSupport implements Preparable, UserAwar
 				Date to   = dateTo;
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(from);
+				to.setHours(23);
+			    to.setMinutes(59);
+			    to.setSeconds(59);
 
 
 				if(from.before(to)){

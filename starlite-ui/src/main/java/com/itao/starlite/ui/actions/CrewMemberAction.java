@@ -402,7 +402,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		    cal.setTime(from);
 			
 			if(from.before(to)){
-				while(cal.getTime().before(to)){
+				while(!to.after(cal.getTime())){
 					
 					String date = mysqlFormat.format(cal.getTime());
 					CrewDay cd = null;
