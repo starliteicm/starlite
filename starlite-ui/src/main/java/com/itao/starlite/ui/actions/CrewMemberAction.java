@@ -379,6 +379,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 	
 	
+	@SuppressWarnings("deprecation")
 	public String saveRange() throws Exception{
 		prepare();
 		Aircraft aircraft =  null;
@@ -400,6 +401,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			Date to   = df.parse(dateTo);
 			Calendar cal = Calendar.getInstance();
 		    cal.setTime(from);
+		    to.setHours(23);
+		    to.setMinutes(59);
+		    to.setSeconds(59);
 			
 			if(from.before(to)){
 				while(!to.after(cal.getTime())){
