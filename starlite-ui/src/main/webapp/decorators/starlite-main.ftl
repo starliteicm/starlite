@@ -216,14 +216,18 @@
     	</div>
   <div id="content">
   	<#if notificationMessage??>
+  	<#if notificationMessage != "">
   		<div class="notification">
   			${notificationMessage}
   		</div>
+    </#if>
   	</#if>
   	<#if errorMessage??>
+  	<#if errorMessage != "">
   		<div class="error">
   			${errorMessage}
   		</div>
+    </#if>
   	</#if>
     ${body}
   </div>

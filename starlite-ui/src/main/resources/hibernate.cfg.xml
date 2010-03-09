@@ -30,6 +30,9 @@
             <mapping class="com.itao.starlite.model.Charter"/>
             <mapping class="com.itao.starlite.model.Charter$Cost$ItemGroup"/>
             <mapping class="com.itao.starlite.model.Component"/>
+            <mapping class="com.itao.starlite.model.Component$ComponentHistory"/>
+            <mapping class="com.itao.starlite.model.Component$ComponentValuation"/>
+            <mapping class="com.itao.starlite.model.Component$ComponentLocation"/>
             <mapping class="com.itao.starlite.model.CrewDay"/>
             <mapping class="com.itao.starlite.model.CrewMember"/>
             <mapping class="com.itao.starlite.model.CrewMember$FlightAndDutyActuals"/>

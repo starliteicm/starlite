@@ -87,6 +87,14 @@ border-width:0;
 	background-image: url('../images/menu/tabrightGreen.png');
 }
 
+.Components .tabs li{
+    background-image: url('../images/menu/tableftGreen.png');
+}
+
+.Components .tabs a {
+    background-image: url('../images/menu/tabrightGreen.png');
+}
+
 .crew .tabs li {
 	background-image: url('../images/menu/tableftPurple.png');
 }
@@ -198,8 +206,16 @@ color:#000;
 	background-image: url('../images/breadcrumbsBGgreen.png');
 }
 
+.Components #breadcrumbs {
+    background-image: url('../images/breadcrumbsBGgreen.png');
+}
+
 .crew #breadcrumbs {
 	background-image: url('../images/breadcrumbsBGpurple.png');
+}
+
+.User #breadcrumbs {
+    background-image: url('../images/breadcrumbsBG.png');
 }
 
 .Exchange #breadcrumbs {
