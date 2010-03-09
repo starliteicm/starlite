@@ -5,7 +5,6 @@
 
 	<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/mktree.css">
 	<script type="text/javascript" src="${request.contextPath}/js/tree.js"></script>
-  	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.2.3.min.js"></script>
   	<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.autocomplete.css">
   	<script type="text/javascript" src="${request.contextPath}/js/jquery.autocomplete.multi.js"></script>
   	

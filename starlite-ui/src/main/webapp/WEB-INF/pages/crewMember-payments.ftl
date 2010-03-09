@@ -1,7 +1,6 @@
 <#include "/starlite.ftl">
 <html>
 <head>
-   <@enableJQuery/> 
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
   

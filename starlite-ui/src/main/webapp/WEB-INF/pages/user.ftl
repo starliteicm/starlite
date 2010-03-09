@@ -3,7 +3,6 @@
 
 <html>
 <head>
-	<@enableJQuery/>
 	<@enableHelp/>
 	<style type="text/css">
     fieldset div input {
@@ -418,25 +417,37 @@
           </div><br/>
 
           <div class="fm-opt">
-            <label for=""><B>Mailout</B>(NA)</label>      
+            <label for=""><B>Mailout</B></label>      
              <div style="width:55px;height:10px;float:left;">&nbsp;</div>         
             <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="mailoutWrite" value="mailoutWrite" /> 
           </div><br/><br/><br/>
           
           <div class="fm-opt">
-            <label for=""><B>Exchange</B>(NA)</label>  
+            <label for=""><B>Exchange</B></label>  
              <div style="width:55px;height:10px;float:left;">&nbsp;</div>             
             <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="exchangeWrite" value="exchangeWrite" /> 
           </div><br/><br/><br/>
           
           <div class="fm-opt">
-            <label for=""><B>User Admin</B>(NA)</label>     
+            <label for=""><B>User Admin</B></label>     
              <div style="width:55px;height:10px;float:left;">&nbsp;</div>          
             <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="userWrite" value="userWrite" /> 
           </div><br/><br/><br/>
 		   
+		   <div class="fm-opt">
+            <label for=""><B>Stores</B></label>     
+             <div style="width:55px;height:10px;float:left;">&nbsp;</div>          
+            <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="storesRead" value="storesRead" /> 
+          </div><br/><br/><br/>
+          
+          <div class="fm-opt">
+            <label for=""><B>Conponents</B></label>     
+             <div style="width:55px;height:10px;float:left;">&nbsp;</div>          
+            <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="componentsRead" value="componentsRead" /> 
+          </div><br/><br/>
 		   
-		   <div style="height:190px;">&nbsp;</div>
+           
+		   <div style="height:1px;">&nbsp;</div>
 		
 		 <button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/> Save Permissions</button>
 		

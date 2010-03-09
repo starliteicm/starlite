@@ -5,7 +5,7 @@
         <hibernate-configuration>
           <session-factory>
           	<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-          	<property name="connection.url">jdbc:mysql://localhost/starliteLive</property>
+          	<property name="connection.url">jdbc:mysql://localhost/starliteTest</property>
           	<property name="connection.username">root</property>
           	<property name="connection.password"></property>
           	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -29,6 +29,10 @@
 			<mapping class="com.itao.starlite.model.ApprovalGroup"/>
             <mapping class="com.itao.starlite.model.Charter"/>
             <mapping class="com.itao.starlite.model.Charter$Cost$ItemGroup"/>
+            <mapping class="com.itao.starlite.model.Component"/>
+            <mapping class="com.itao.starlite.model.Component$ComponentHistory"/>
+            <mapping class="com.itao.starlite.model.Component$ComponentValuation"/>
+            <mapping class="com.itao.starlite.model.Component$ComponentLocation"/>
             <mapping class="com.itao.starlite.model.CrewDay"/>
             <mapping class="com.itao.starlite.model.CrewMember"/>
             <mapping class="com.itao.starlite.model.CrewMember$FlightAndDutyActuals"/>
@@ -36,6 +40,7 @@
             <mapping class="com.itao.starlite.model.Document"/>
             <mapping class="com.itao.starlite.model.ExchangeRate"/>
 			<mapping class="com.itao.starlite.model.MonthlyInvoicedHours"/>
+			<mapping class="com.itao.starlite.model.Store"/>
             
             <mapping class="com.itao.starlite.scheduling.model.Allocation"/>
             

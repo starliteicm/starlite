@@ -3,7 +3,6 @@
 
 <html>
 <head>
-	<@enableJQuery/>
 	<@enableJwysiwyg/>
 	<script type="text/javascript" src="${request.contextPath}/js/tooltip.js"></script>
 	<script type="text/javascript" src="${request.contextPath}/js/jquery.dimensions.js"></script>

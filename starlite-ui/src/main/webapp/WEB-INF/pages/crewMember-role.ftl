@@ -3,7 +3,6 @@
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
   <link rel="stylesheet" type="text/css" href="styles/forms.css">
-  <@enableJQuery/>
   <@enableDatePickers/>
   <@enableCalculator/>
   <@enableHelp/>  
