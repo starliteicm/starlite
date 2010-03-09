@@ -1,6 +1,7 @@
 package com.itao.starlite.ui.actions;
 
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
@@ -38,6 +39,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	private User user;
 	
 	public String tableHtml;
+	public String locationTableHtml;
+	
 	public String notificationMessage;
 	public String errorMessage;
 	
@@ -52,6 +55,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	//Valuations
 	public Integer val;
+	public Integer valuationId;
 	public String valDate;
 	public String valTime;
 	public Double marketVal;
@@ -80,9 +84,11 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	//Locations
 	public Integer loc;
+	public Integer locationId;
 	public String location;
 	public String bin;
 	public Integer quantity;
+	public Integer locCurrent;
 	
 	
 	@Inject
@@ -99,6 +105,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		prepare();
 		if(component != null){
 			rates=manager.getExchangeRates();
+			createLocationTable();
 			return "edit";
 		}
 	    return "redirect-list";
@@ -126,11 +133,21 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			}
 			else if( loc != null){
 				//Save Location
-				
+				if((location!= null)&&(bin!= null)){
+					if((location.length() == 5)){
+						if(quantity.equals(0)){locCurrent = 0;}
+						component.updateLocation(locationId,location,bin,quantity,locCurrent);
+					}
+				}
 			}
 			else if( val != null ){
 				//Save Valuation
-			
+			    try {
+					component.updateValuation(valuationId, valDate,valTime,user.getUsername(),marketVal,marketCurrency,purchaseVal,purchaseCurrency,replacementVal,replacementCurrency);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			manager.saveComponent(component);
@@ -141,14 +158,61 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	}
 	
 	
+	public void createLocationTable(){
+		TableFacade tableFacade = TableFacadeFactory.createTableFacade("locationTable", ServletActionContext.getRequest());		
+		tableFacade.setColumnProperties("location","bin","quantity");
+		tableFacade.setItems(component.getLocations());
+		tableFacade.setMaxRows(100);
+		Table table = tableFacade.getTable();
+		table.getRow().setUniqueProperty("id");
+		tableFacade.setView(new PlainTableView());
+		tableHtml = tableFacade.render();
+	}
+	
 	public void createTable(){
-		TableFacade tableFacade = TableFacadeFactory.createTableFacade("storeTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("type","name", "number", "serial");
+		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","remainingHoursPercent");
 		
+		
+
 		tableFacade.setItems(components);
 		tableFacade.setMaxRows(100);
 		Table table = tableFacade.getTable();
 		table.getRow().setUniqueProperty("id");
+		
+		Column percentCol = table.getRow().getColumn("remainingHoursPercent");
+		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
+
+			public Object getValue(Object item, String property, int rowCount) {
+				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
+				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				HtmlBuilder html = new HtmlBuilder();
+				
+				try{
+					long valueLong = (Long) value;
+					if(valueLong >= 50){
+						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
+					}
+					else if(valueLong >= 20){
+						html.div().style("text-align:center;background-color:#FFFF99;font-weight:bold;").styleEnd();
+					}
+					else{
+						html.div().style("text-align:center;background-color:#FF9999;font-weight:bold;").styleEnd();	
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				if(value != null){
+				  html.append(value+" %");
+				  html.divEnd();
+				}
+				
+				return html.toString();
+			}
+			
+		});
 		
 		Column refCol = table.getRow().getColumn("number");
 		refCol.setTitle("Part Number");

@@ -1,5 +1,7 @@
 package com.itao.starlite.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.OrderBy;
 
 @Entity
 public class Component {
@@ -49,12 +52,27 @@ public class Component {
 	private Date expiryDate;
 	private Double expiryHours;
 	
+	private Double currentHours;
+	
 	//CALC
 	//currentHours
 	//Hours Remaining
 	//Days  Remaining
 	//Percentage
 	//Time since install
+	//lifeExpiresHours
+	
+	public Double getRemainingHours(){
+		return timeBetweenOverhaul - currentHours;
+	}
+	
+	public long getRemainingHoursPercent(){
+		return Math.round(((timeBetweenOverhaul - currentHours)/timeBetweenOverhaul)*100.0);
+	}
+	
+	public Double getLifeExpiresHours(){
+		return timeBetweenOverhaul + hoursOnInstall - hoursRun;
+	}
 	
 	private String condition;
 	private String serviceLifeLimited;
@@ -81,10 +99,11 @@ public class Component {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
+	@OrderBy(clause="date desc, time desc")
 	private List<ComponentHistory> history = new ArrayList<ComponentHistory>();
 	
 	@Entity()
-	public class ComponentHistory{
+	public static class ComponentHistory{
 		@Id
 		@GeneratedValue
 		private Integer id;
@@ -98,6 +117,10 @@ public class Component {
 		private String field;
 		private String from;
 		private String to;
+		private String description;
+		
+		public ComponentHistory(){};
+		
 		public void setId(Integer id) {
 			this.id = id;
 		}
@@ -140,16 +163,23 @@ public class Component {
 		public void setTo(String to) {
 			this.to = to;
 		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public String getDescription() {
+			return description;
+		}
 		
 	}
 	
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
+	@OrderBy(clause="date desc, time desc")
 	private List<ComponentValuation> valuations = new ArrayList<ComponentValuation>();
 	
 	@Entity()
-	public class ComponentValuation{
+	public static class ComponentValuation{
 		@Id
 		@GeneratedValue
 		private Integer id; 
@@ -168,6 +198,8 @@ public class Component {
 		
 		private Double purchaseVal;
 		private String purchaseCurrency;
+		
+		public ComponentValuation(){}
 		
 		public Integer getId() {
 			return id;
@@ -233,10 +265,11 @@ public class Component {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
+	@OrderBy(clause="location asc, bin asc")
 	private List<ComponentLocation> locations = new ArrayList<ComponentLocation>();
 	
 	@Entity()
-	public class ComponentLocation{
+	public static class ComponentLocation{
 		@Id
 		@GeneratedValue
 		private Integer id; 
@@ -244,6 +277,9 @@ public class Component {
 		private String location;
 		private String bin;
 		private Integer current;
+		private Integer quantity;
+		
+		public ComponentLocation(){}
 		
 		public void setLocation(String location) {
 			this.location = location;
@@ -268,6 +304,12 @@ public class Component {
 		}
 		public Integer getCurrent() {
 			return current;
+		}
+		public void setQuantity(Integer quantity) {
+			this.quantity = quantity;
+		}
+		public Integer getQuantity() {
+			return quantity;
 		}
 		
 	}
@@ -560,8 +602,69 @@ public class Component {
 		this.locations = locations;
 	}
 
-	public void addLocation(Integer locationId, String location, String bin, Integer quantity) {
-		// TODO Auto-generated method stub	
+	public void updateLocation(Integer locationId, String location, String bin, Integer quantity, Integer current) {
+		if(locationId != null){
+			for(ComponentLocation l : locations){
+				if(locationId.equals(l.getId())){
+					l.setCurrent(current);
+					l.setQuantity(quantity);
+				}
+			}
+		}
+		else{
+			ComponentLocation l = new ComponentLocation();
+			l.setLocation(location);
+			l.setBin(bin);
+			l.setCurrent(current);
+			l.setQuantity(quantity);
+			locations.add(l);
+		}
+	}
+
+	public void setCurrentHours(Double currentHours) {
+		this.currentHours = currentHours;
+	}
+
+	public Double getCurrentHours() {
+		return currentHours;
+	}
+
+	public void updateValuation(Integer componentLocationId, String valDate, String valTime,
+			String username, Double marketVal, String marketCurrency,
+			Double purchaseVal, String purchaseCurrency, Double replacementVal,
+			String replacementCurrency) throws ParseException {
+	
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+		
+		if(componentLocationId != null){
+			for(ComponentValuation val : valuations){
+				if(componentLocationId.equals(val.getId())){
+					val.setDate(df.parse(valDate));
+					val.setTime(tf.parse(valTime));
+					val.setUser(username);
+					val.setMarketVal(marketVal);
+					val.setMarketCurrency(marketCurrency);
+					val.setPurchaseVal(purchaseVal);
+					val.setPurchaseCurrency(purchaseCurrency);
+					val.setReplaceVal(replacementVal);
+					val.setReplaceCurrency(replacementCurrency);
+				}
+			}
+		}
+		else{
+		ComponentValuation val = new ComponentValuation();
+		val.setDate(df.parse(valDate));
+		val.setTime(tf.parse(valTime));
+		val.setUser(username);
+		val.setMarketVal(marketVal);
+		val.setMarketCurrency(marketCurrency);
+		val.setPurchaseVal(purchaseVal);
+		val.setPurchaseCurrency(purchaseCurrency);
+		val.setReplaceVal(replacementVal);
+		val.setReplaceCurrency(replacementCurrency);
+		valuations.add(val);
+		}
 	}
 
 }

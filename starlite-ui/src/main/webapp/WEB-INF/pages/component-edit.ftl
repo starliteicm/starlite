@@ -3,7 +3,17 @@
 
 <html>
 <head>
-  <script>
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jmesa.css">
+<script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+           addDropShadow('images/table/');
+        });
+        
+        function onSubmitWsColumn() {
+            document.getElementById("saveButton").disabled = false;
+        }
+
     function showTab(tab){
       $('.linkTab').removeClass("current");
       $('#'+tab+"Link").addClass("current");
@@ -129,6 +139,10 @@
             <input name="component.timeBetweenOverhaul" type="text" value="${component.timeBetweenOverhaul!}"/>
         </div>
         <div class="fm-opt">
+            <label for="component.currentHours">Current Hours:</label>
+            <input name="component.currentHours" type="text" value="${component.currentHours!}"/>
+        </div>
+        <div class="fm-opt">
             <label for="component.hoursRun">Hours Run:</label>
             <input name="component.hoursRun" type="text" value="${component.hoursRun!}"/>
         </div>
@@ -219,12 +233,13 @@
     </div>
      <!--LOCATION-->
     <div id="location" style="display:none;" class="tabContent">
-    <form action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    
+    <form style="clear:left;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="loc" value="1"/>
       
-      <div style="width:500px;float:left; height:300px;">
+      
       <fieldset>
       <legend>Component Location</legend>
       
@@ -245,15 +260,25 @@
       
       <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>  
       </fieldset>
-      </div>
+      </form>
       
-      <div style="width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;">
+
+      <form style="clear:none;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!edit.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+      <input type="hidden" name="id" value="${id!}"/>
+      <input type="hidden" name="component.id" value="${id!}"/>
+      <input type="hidden" name="loc" value="1"/>
+      <input type="hidden" name="subtab" value="location"/>
+      
       <fieldset>
       <legend>Component Locations</legend>
-      </fieldset>
-      </div>
       
-    </form>
+      <@jmesa id="locations"/>
+      
+      </fieldset>
+      </form>
+
+      
+    
     </div>
     
      <!--CONFIGURATION-->
