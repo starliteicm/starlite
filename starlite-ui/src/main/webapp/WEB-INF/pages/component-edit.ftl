@@ -137,6 +137,9 @@
             <li class="linkTab" class="current" id="componentLink">
             <a onclick="showTab('component');return false" href="#">Component</a></li>
             
+            
+            <#if id?exists >
+            
             <li class="linkTab" id="trackingLink">
             <a onclick="showTab('tracking');return false" href="#">Tracking</a></li>
             
@@ -151,6 +154,8 @@
             
             <li class="linkTab" id="historyLink">
             <a onclick="showTab('history');return false" href="#">History</a></li>
+            
+            </#if>
             
         </ul>
     </div>
@@ -260,12 +265,12 @@
     </div>
      <!--Valuation-->
     <div id="valuation" style="display:none;" class="tabContent">
-    <form action="component!save.action" autocomplete="off" method="POST" class="smart" onsubmit="return validateVal();" style="clear:left;">
+    <form style="width:500px;float:left; height:300px;" action="component!save.action" autocomplete="off" method="POST" class="smart" onsubmit="return validateVal();" >
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="val" value="1"/>
       
-      <div style="width:500px;float:left; height:300px;">
+      
       <fieldset>
       <legend>Component Valuation</legend>
       
@@ -316,16 +321,16 @@
       
       <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>  
       </fieldset>
-      </div>
+      </form>
       
-      <div style="width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;">
+      <form style="clear:none;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!edit.action" autocomplete="off" method="POST" class="smart" >
         <fieldset>
         <legend>Previous Valuations</legend>
         <@jmesa2 id="valuations" mytableHtml=valTableHtml />
         </fieldset>
-      </div>
+      </form>
 
-    </form>
+    
     </div>
      <!--LOCATION-->
     <div id="location" style="display:none;" class="tabContent">
