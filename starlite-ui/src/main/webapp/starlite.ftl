@@ -1,3 +1,35 @@
+<#macro jmesa2 id mytableHtml>
+ <#if tableTabs??>
+    <div class="tableTabs">
+        <ul class="tabs">
+        <#list tableTabs as tab>
+            <#if tab.current>
+            <li class="current">
+            <#else>
+            <li>
+            </#if>
+            <a href="${tab.url}">${tab.label}</a></li>
+        </#list>
+        </ul>
+    </div>
+    <hr class="clear"/>
+</#if>
+    
+<form name="${id}Form" action="${request.requestURL}${params!}">
+<div id="${id}">
+${mytableHtml?if_exists}
+</div>
+</form>
+
+<script type="text/javascript">
+function onInvokeAction(id) {
+    setExportToLimit(id, '');
+    createHiddenInputFieldsForLimitAndSubmit(id);
+}
+</script>
+</#macro>
+
+
 <#macro jmesa id>
  <#if tableTabs??>
     <div class="tableTabs">

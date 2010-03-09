@@ -6,6 +6,19 @@
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jmesa.css">
 <script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
 <script type="text/javascript">
+
+   function checkNum(obj){
+      if(isNaN(obj.value)){
+        obj.value="";
+        return false;
+      }
+      else if(obj.value*1 < 0 ){
+        obj.value="";
+        return false;
+      }
+      return true;
+    }
+
         $(document).ready(function() {
            addDropShadow('images/table/');
         });
@@ -19,6 +32,47 @@
       $('#'+tab+"Link").addClass("current");
       $('.tabContent').css("display","none");
       $('#'+tab).css("display","");
+    }
+    
+    function cancelEditLocation(obj){
+      $("#editMessage").html("");
+      $("#editMessage").css("display","none");
+      $("#locationId").val("");
+      $("#locCurrent").val("1");
+      $("#locationInput").val("");
+      $("#binInput").val("");
+      $("#qtyInput").val("1");
+      $("#cancelEditLoc").css("display","none");
+      $("#deleteEditLoc").css("display","none");
+      return true;
+    }
+    
+    function deleteEditLocation(obj){
+      if(confirm("Are you Sure you wish to Remove this Entry?")){
+        $("#locCurrent").val("0");
+        document.forms.locationForm.submit();
+      }
+      return true;
+    }
+    
+    function editLoc(locid,location,bin,qty){
+    
+      $("#editMessage").html("Editing "+location);
+      $("#editMessage").css("display","");
+      $("#locationId").val(locid);
+      $("#locCurrent").val("1");
+      $("#locationInput").val(location);
+      updateLocationMessage(location);
+      $("#binInput").val(bin);
+      updateBinMessage(bin);
+      $("#qtyInput").val(qty);
+      $("#cancelEditLoc").css("display","");
+      $("#deleteEditLoc").css("display","");
+      return true;
+    }
+    
+    function editVal(valid,date,time,mval,mcur,pval,pcur,rval,rcur){
+      return true;
     }
     
     function updateLocationMessage(location){
@@ -37,15 +91,38 @@
     function updateBinMessage(bin){
       var message = "Not Valid";
       
+      if(bin.length <= 10){
       if(bin.length % 2 == 0){
-        message = "Valid Store";
+        message = "Valid Bin Location";
+      }
       }
       
       $("#binMessage").val(message); 
       return true;  
     }
+    
+    
+    function validate(){return true;}
+    function validateTrack(){return true;}
+    
+    function validateLoc(){
+      var locMsg = $("#locationMessage").val();
+      var binMsg = $("#binMessage").val();
+      if(locMsg != "Not Valid"){
+        if(binMsg != "Not Valid"){
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    function validateVal(){return true;}
+    function validateConfig(){return true;}
 
   </script>
+  
+  <@enableDatePickers/>
+  <@enableTimePickers/>
   
 </head>
 <body>
@@ -56,21 +133,30 @@
 
     <div class="tableTabs">
         <ul class="tabs">
+            
             <li class="linkTab" class="current" id="componentLink">
             <a onclick="showTab('component');return false" href="#">Component</a></li>
+            
             <li class="linkTab" id="trackingLink">
             <a onclick="showTab('tracking');return false" href="#">Tracking</a></li>
+            
             <li class="linkTab" id="valuationLink">
             <a onclick="showTab('valuation');return false" href="#">Valuation</a></li>
+            
             <li class="linkTab" id="locationLink">
             <a onclick="showTab('location');return false" href="#">Location</a></li>
+            
             <li class="linkTab" id="configLink">
             <a onclick="showTab('config');return false" href="#">Configuration</a></li>
+            
+            <li class="linkTab" id="historyLink">
+            <a onclick="showTab('history');return false" href="#">History</a></li>
+            
         </ul>
     </div>
 
     <div id="component" class="tabContent">
-    <form action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    <form action="component!save.action" autocomplete="off" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
     <input type="hidden" name="id" value="${id!}"/>
     <input type="hidden" name="component.id" value="${id!}"/>
     
@@ -116,7 +202,7 @@
         </div>
         <div class="fm-opt">
             <label for="component.manufacturedDate">Manufactured Date:</label>
-            <input name="component.manufacturedDate" type="text" value="${component.manufacturedDate!}"/>
+            <input class="date-pick" name="component.manufacturedDate" type="text" <#if component.manufacturedDate?exists >value="${component.manufacturedDate?string('dd/MM/yyyy')}"<#else>value=""</#if>  />
         </div>
         
         
@@ -126,7 +212,7 @@
     </div>
     <!--TRACKING-->
     <div id="tracking" style="display:none;" class="tabContent">
-    <form action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    <form action="component!save.action" autocomplete="off" method="POST" class="smart" onsubmit="return validateTrack();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       
@@ -135,32 +221,32 @@
       <legend>Component Tracking</legend>
       
         <div class="fm-opt">
-            <label for="component.timeBetweenOverhaul">Time Between Overhaul:</label>
-            <input name="component.timeBetweenOverhaul" type="text" value="${component.timeBetweenOverhaul!}"/>
+            <label for="component.airframeHours">Airframe Hours:</label>
+            <input name="component.airframeHours" type="text" value="${component.airframeHours!}" onchange='checkNum(this);'/>
         </div>
         <div class="fm-opt">
-            <label for="component.currentHours">Current Hours:</label>
-            <input name="component.currentHours" type="text" value="${component.currentHours!}"/>
+            <label for="component.timeBetweenOverhaul">Time Between Overhaul:</label>
+            <input name="component.timeBetweenOverhaul" type="text" value="${component.timeBetweenOverhaul!}" onchange='checkNum(this);'/>
         </div>
         <div class="fm-opt">
             <label for="component.hoursRun">Hours Run:</label>
-            <input name="component.hoursRun" type="text" value="${component.hoursRun!}"/>
+            <input name="component.hoursRun" type="text" value="${component.hoursRun!}" onchange='checkNum(this);'/>
         </div>
         <div class="fm-opt">
             <label for="component.installDate">Install Date:</label>
-            <input name="component.installDate" type="text" value="${component.installDate!}"/>
+            <input class="date-pick" name="component.installDate" type="text" <#if component.installDate?exists >value="${component.installDate?string('dd/MM/yyyy')}"<#else>value=""</#if>/>
         </div>
         <div class="fm-opt">
             <label for="component.installTime">Install Time:</label>
-            <input name="component.installTime" type="text" value="${component.installTime!}"/>
+            <input name="installTime" class="time-pick" type="text" <#if component.installTime?exists >value="${component.installTime?string('HH:mm')}"<#else>value=""</#if> />
         </div>
         <div class="fm-opt">
             <label for="component.hoursOnInstall">hoursOnInstall:</label>
-            <input name="component.hoursOnInstall" type="text" value="${component.hoursOnInstall!}"/>
+            <input name="component.hoursOnInstall" type="text" value="${component.hoursOnInstall!}" onchange='checkNum(this);'/>
         </div>
         <div class="fm-opt">
             <label for="component.expiryDate">Expiry Date:</label>
-            <input name="component.expiryDate" type="text" value="${component.expiryDate!}"/>
+            <input class="date-pick" name="component.expiryDate" type="text" <#if component.expiryDate?exists >value="${component.expiryDate?string('dd/MM/yyyy')}"<#else>value=""</#if>/>
         </div>
         <div class="fm-opt">
             <label for="component.expiryHours">Expiry Hours:</label>
@@ -174,7 +260,7 @@
     </div>
      <!--Valuation-->
     <div id="valuation" style="display:none;" class="tabContent">
-    <form action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    <form action="component!save.action" autocomplete="off" method="POST" class="smart" onsubmit="return validateVal();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="val" value="1"/>
@@ -184,9 +270,18 @@
       <legend>Component Valuation</legend>
       
       <div class="fm-opt">
+            <label for="valDate">Date:</label>
+            <input class="date-pick" name="valDate" type="text" value=""/>
+      </div>
+      <div class="fm-opt">
+            <label for="valTime">Time:</label>
+            <input class="time-pick" name="valTime" type="text" value=""/>
+      </div>
+      
+      <div class="fm-opt">
          <label for="nvg">Market Value:</label> 
          <div>
-            <input type="text" name="marketVal" style="width:60px;" />
+            <input type="text" name="marketVal" style="width:60px;" onchange='checkNum(this);' />
             <select id="marketCurrency" name="marketCurrency" style="width:60px;">
             <#list rates?if_exists as rate>
                 <option>${rate.currencyCodeFrom}</option>
@@ -198,7 +293,7 @@
       <div class="fm-opt">
          <label for="nvg">Purchase Value:</label> 
          <div>
-            <input type="text" name="purchaseVal" style="width:60px;" />
+            <input type="text" name="purchaseVal" style="width:60px;" onchange='checkNum(this);' />
             <select id="purchaseCurrency" name="purchaseCurrency" style="width:60px;">
             <#list rates?if_exists as rate>
                 <option>${rate.currencyCodeFrom}</option>
@@ -210,7 +305,7 @@
       <div class="fm-opt">
          <label for="nvg">Replacement Value:</label> 
          <div>
-            <input type="text" name="replacementVal" style="width:60px;" />
+            <input type="text" name="replacementVal" style="width:60px;" onchange='checkNum(this);' />
             <select id="replacementCurrency" name="replacementCurrency" style="width:60px;">
             <#list rates?if_exists as rate>
                 <option>${rate.currencyCodeFrom}</option>
@@ -226,6 +321,7 @@
       <div style="width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;">
         <fieldset>
         <legend>Previous Valuations</legend>
+        <@jmesa2 id="valuations" mytableHtml=valTableHtml />
         </fieldset>
       </div>
 
@@ -234,36 +330,44 @@
      <!--LOCATION-->
     <div id="location" style="display:none;" class="tabContent">
     
-    <form style="clear:left;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    <form id="locationForm" name="locationForm" autocomplete="off" style="clear:left;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!save.action" method="POST" class="smart" onsubmit="return validateLoc();" >
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="loc" value="1"/>
+      <input type="hidden" id="locCurrent" name="locCurrent"  value="1"/>
+      <input type="hidden" id="locationId" name="locationId" value=""/>
       
       
       <fieldset>
       <legend>Component Location</legend>
       
+      <div id="editMessage" style="color:green;font-weight:bold;text-align:center;display:none;margin:10px;padding:10px;border:1px dashed silver;"></div>
+      
       <div class="fm-opt">
             <label for="location">Location:</label> 
-            <input type="text" value="" onkeypress="updateLocationMessage(this.value);" onkeyup="updateLocationMessage(this.value);" onchange="updateLocationMessage(this.value);" name="location"/>
+            <input id="locationInput" type="text" value="" onkeypress="updateLocationMessage(this.value);" onkeyup="updateLocationMessage(this.value);" onchange="updateLocationMessage(this.value);" name="location"/>
             <input type="text" value="Not Valid" DISABLED name="" id="locationMessage"/>
       </div>
       <div class="fm-opt">
             <label for="bin">Bin:</label> 
-            <input type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
+            <input id="binInput" type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
             <input type="text" value="Not Valid" DISABLED name="" id="binMessage"/>
       </div>
       <div class="fm-opt">
             <label for="quantity">Quantity:</label> 
-            <input type="text" value="1" name="quantity"/>
+            <input id="qtyInput" type="text" value="1" name="quantity" onchange='checkNum(this);'/>
       </div>
+      <br/>
       
-      <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>  
+      <button id="deleteEditLoc" onclick="deleteEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Remove</button>
+      <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+      <button id="cancelEditLoc" onclick="cancelEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Cancel</button>
+        
       </fieldset>
       </form>
       
 
-      <form style="clear:none;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!edit.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+      <form  autocomplete="off" style="clear:none;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!edit.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="loc" value="1"/>
@@ -283,7 +387,7 @@
     
      <!--CONFIGURATION-->
     <div id="config" style="display:none;" class="tabContent">
-    <form action="component!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    <form  autocomplete="off" action="component!save.action" method="POST" class="smart" onsubmit="return validateConfig();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="config" value="1"/>
@@ -347,21 +451,41 @@
             <input type="checkbox" style="width:30px;" value="1" <#if component.troop?exists >CHECKED</#if> name="troop"/>
        </div>
        <div class="fm-opt">
-            <label for="nvg">Ferry:</label>
+            <label for="ferry">Ferry:</label>
             <input type="checkbox" style="width:30px;" value="1" <#if component.ferry?exists >CHECKED</#if> name="ferry"/>
        </div>
        <div class="fm-opt">
-            <label for="nvg">FDR:</label>
+            <label for="fdr">FDR:</label>
             <input type="checkbox" style="width:30px;" value="1" <#if component.fdr?exists >CHECKED</#if> name="fdr"/>
        </div>
        <div class="fm-opt">
-            <label for="nvg">Air Con:</label>
+            <label for="air">Air Con:</label>
             <input type="checkbox" style="width:30px;" value="1" <#if component.air?exists >CHECKED</#if> name="air"/>
+       </div>
+      <div class="fm-opt">
+            <label for="mmel">MMEL:</label>
+            <input type="checkbox" style="width:30px;" value="1" <#if component.mmel?exists >CHECKED</#if> name="mmel"/>
        </div>
       
       </div>
       
       <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>  
+      </fieldset>
+      
+    </form>
+    </div>
+    
+    <!--History-->
+    <div id="history" style="display:none;" class="tabContent">
+    <form  autocomplete="off" action="component!save.action" method="POST" class="smart" onsubmit="return validateConfig();" style="clear:left;">
+      <input type="hidden" name="id" value="${id!}"/>
+      <input type="hidden" name="component.id" value="${id!}"/>
+      
+      <fieldset>
+      <legend>Component History</legend>
+        
+        <@jmesa2 id="history" mytableHtml=histTableHtml?if_exists />
+      
       </fieldset>
       
     </form>

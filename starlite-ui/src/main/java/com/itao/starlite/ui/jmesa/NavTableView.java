@@ -8,9 +8,11 @@ import org.jmesa.view.component.Column;
 import org.jmesa.view.html.HtmlBuilder;
 import org.jmesa.view.html.HtmlSnippets;
 import org.jmesa.view.html.HtmlView;
+import org.jmesa.view.html.toolbar.Toolbar;
 
-public class PlainTableView extends HtmlView {
+public class NavTableView extends HtmlView {
 	private List<String> colsToTotal;
+	
 	
 	private boolean showFilters = false;
 	
@@ -20,6 +22,9 @@ public class PlainTableView extends HtmlView {
 	
 	@Override
 	public Object render() {
+		
+		Toolbar tool = getToolbar();
+		
 		HtmlSnippets snippets = getHtmlSnippets();
 
 		HtmlBuilder html = new HtmlBuilder();
@@ -67,9 +72,9 @@ public class PlainTableView extends HtmlView {
 
 		html.append(snippets.footer());
 
-		//html.append(snippets.statusBar());
+		html.append(snippets.statusBar());
 		
-		//html.append(snippets.toolbar());
+		html.append(snippets.toolbar());
 		
 		if (showFilters)
 			html.append(snippets.filter());
@@ -84,7 +89,7 @@ public class PlainTableView extends HtmlView {
 
 	}
 
-	public PlainTableView showFilters() {
+	public NavTableView showFilters() {
 		showFilters = true;
 		return this;
 	}

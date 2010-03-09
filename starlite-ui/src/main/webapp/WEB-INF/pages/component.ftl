@@ -13,6 +13,12 @@
         function onSubmitWsColumn() {
             document.getElementById("saveButton").disabled = false;
         }
+        
+        function onInvokeExportAction(id) {
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/component.action?' + parameterString;
+        }
+</script>
 </script>
 <title>Components</title>
 </head>

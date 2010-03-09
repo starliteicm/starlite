@@ -577,4 +577,8 @@ public class StarliteCoreManager {
 		componentDao.makePersistent(component);
 	}
 
+	public Store findStore(String location) {
+		return storeDao.findByCode(location);
+	}
+
 }

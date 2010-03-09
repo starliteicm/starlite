@@ -3,6 +3,7 @@ package com.itao.starlite.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class Component {
 	private Date expiryDate;
 	private Double expiryHours;
 	
-	private Double currentHours;
+	private Double airframeHours;
 	
 	//CALC
 	//currentHours
@@ -63,11 +64,11 @@ public class Component {
 	//lifeExpiresHours
 	
 	public Double getRemainingHours(){
-		return timeBetweenOverhaul - currentHours;
+		return timeBetweenOverhaul - getCurrentHours();
 	}
 	
 	public long getRemainingHoursPercent(){
-		return Math.round(((timeBetweenOverhaul - currentHours)/timeBetweenOverhaul)*100.0);
+		return Math.round(((timeBetweenOverhaul - getCurrentHours())/timeBetweenOverhaul)*100.0);
 	}
 	
 	public Double getLifeExpiresHours(){
@@ -99,7 +100,6 @@ public class Component {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
-	@OrderBy(clause="date desc, time desc")
 	private List<ComponentHistory> history = new ArrayList<ComponentHistory>();
 	
 	@Entity()
@@ -121,6 +121,17 @@ public class Component {
 		
 		public ComponentHistory(){};
 		
+		public ComponentHistory(Date now, Date now2, String user,
+				String field, String from, String to, String desc) {
+			setDate(now);
+			setTime(now2);
+			setUser(user);
+			setField(field);
+			setFrom(from);
+			setTo(to);
+			setDescription(desc);
+		}
+
 		public void setId(Integer id) {
 			this.id = id;
 		}
@@ -175,7 +186,6 @@ public class Component {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
-	@OrderBy(clause="date desc, time desc")
 	private List<ComponentValuation> valuations = new ArrayList<ComponentValuation>();
 	
 	@Entity()
@@ -265,7 +275,6 @@ public class Component {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
-	@OrderBy(clause="location asc, bin asc")
 	private List<ComponentLocation> locations = new ArrayList<ComponentLocation>();
 	
 	@Entity()
@@ -282,6 +291,7 @@ public class Component {
 		public ComponentLocation(){}
 		
 		public void setLocation(String location) {
+			if(location != null){location = location.toUpperCase();}
 			this.location = location;
 		}
 		public String getLocation() {
@@ -604,29 +614,58 @@ public class Component {
 
 	public void updateLocation(Integer locationId, String location, String bin, Integer quantity, Integer current) {
 		if(locationId != null){
+			ComponentLocation toRem = null;
+			
 			for(ComponentLocation l : locations){
 				if(locationId.equals(l.getId())){
+					if(current != 0){
+					l.setLocation(location);
+					l.setBin(bin);
 					l.setCurrent(current);
 					l.setQuantity(quantity);
+					}
+					else{
+						toRem = l;
+					}
 				}
 			}
+			
+			if(toRem != null){
+				locations.remove(toRem);
+			}
+			
 		}
 		else{
+			boolean add = true;
+			
+			for(ComponentLocation l : locations){
+				if((location.equals(l.getLocation()))&&(bin.equals(l.getBin()))){
+					add = false;
+				}
+			}
+			
+			if(add){
 			ComponentLocation l = new ComponentLocation();
 			l.setLocation(location);
 			l.setBin(bin);
 			l.setCurrent(current);
 			l.setQuantity(quantity);
 			locations.add(l);
+			}
 		}
 	}
 
-	public void setCurrentHours(Double currentHours) {
-		this.currentHours = currentHours;
-	}
 
 	public Double getCurrentHours() {
-		return currentHours;
+		return airframeHours - hoursOnInstall + hoursRun ;
+	}
+
+	public void setAirframeHours(Double airframeHours) {
+		this.airframeHours = airframeHours;
+	}
+
+	public Double getAirframeHours() {
+		return airframeHours;
 	}
 
 	public void updateValuation(Integer componentLocationId, String valDate, String valTime,
@@ -635,7 +674,7 @@ public class Component {
 			String replacementCurrency) throws ParseException {
 	
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
 		
 		if(componentLocationId != null){
 			for(ComponentValuation val : valuations){
@@ -665,6 +704,24 @@ public class Component {
 		val.setReplaceCurrency(replacementCurrency);
 		valuations.add(val);
 		}
+	}
+	
+	public List<ComponentHistory> getChanges(Component c, String user){
+		
+		List<ComponentHistory> hist = new ArrayList<ComponentHistory>();
+		
+		Date now = Calendar.getInstance().getTime();
+		
+		if(this.getAir() != null){hist.add(new ComponentHistory(now,now,user,"air",""+c.getAir(),""+getAir(),"update"));}
+		else{if(c.getAir() != null){hist.add(new ComponentHistory(now,now,user,"air",""+c.getAir(),"blank","update"));}}
+
+		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"update"));}
+		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),"blank","update"));}}
+
+		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"update"));}
+		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),"blank","update"));}}
+
+		return hist;
 	}
 
 }

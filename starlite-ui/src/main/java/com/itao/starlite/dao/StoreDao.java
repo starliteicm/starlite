@@ -10,4 +10,6 @@ import com.itao.starlite.model.Store;
 @ImplementedBy(StoreHibernateDao.class)
 public interface StoreDao extends GenericDao<Store, Integer>{
 
+	public Store findByCode(String location);
+
 }

@@ -19,12 +19,12 @@ public class Store {
 		return code + seccode;
 	}
 	
-	public Store createStore(String locationIdentifier){
+	public static Store createStore(String locationIdentifier){
 		if(locationIdentifier != null){
 			if(locationIdentifier.length() == 5){
 				Store store = new Store();
 				store.setCode(locationIdentifier.substring(0, 2));
-				store.setSeccode(locationIdentifier.substring(3, 5));
+				store.setSeccode(locationIdentifier.substring(2, 5));
 				if("MS".equals(store.getCode())){store.setType("Mobile");}
 				else if("WS".equals(store.getCode())){store.setType("Workshop");}
 				else if("DR".equals(store.getCode())){store.setType("Depot");}
