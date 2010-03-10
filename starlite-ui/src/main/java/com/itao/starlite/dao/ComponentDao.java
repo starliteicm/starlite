@@ -10,4 +10,6 @@ import com.itao.starlite.model.Component;
 @ImplementedBy(ComponentHibernateDao.class)
 public interface ComponentDao extends GenericDao<Component, Integer>{
 
+	public List<Component> findByLocation(String location);
+
 }

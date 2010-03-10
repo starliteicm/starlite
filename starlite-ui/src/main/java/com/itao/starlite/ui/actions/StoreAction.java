@@ -9,6 +9,8 @@ import org.apache.struts2.config.Results;
 import org.apache.struts2.dispatcher.ServletRedirectResult;
 import org.jmesa.facade.TableFacade;
 import org.jmesa.facade.TableFacadeFactory;
+import org.jmesa.limit.ExportType;
+import org.jmesa.limit.Limit;
 import org.jmesa.view.component.Column;
 import org.jmesa.view.component.Table;
 import org.jmesa.view.editor.BasicCellEditor;
@@ -19,8 +21,10 @@ import com.google.inject.Inject;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.manager.StarliteCoreManager;
+import com.itao.starlite.model.Component;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.ui.Breadcrumb;
+import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
@@ -41,6 +45,7 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	
 	public Integer id;
 	public List<Store> stores;
+	public List<Component> components;
 	public Store store;
 	public String current="Stores";
 	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Stores")};
@@ -58,6 +63,19 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	public String edit(){
 		prepare();
 		if(store != null){
+			
+			components = manager.getComponents(store.getLocation());
+			
+			TableFacade tableFacade = createComponentTable();
+			
+			Limit limit = tableFacade.getLimit();
+			if (limit.isExported()) {
+			    tableFacade.render();
+			    return null;
+			} 
+	     	tableFacade.setView(new NavTableView());
+			tableHtml = tableFacade.render();
+			
 			return "edit";
 		}
 	    return "redirect-list";
@@ -113,6 +131,82 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		});
      	tableFacade.setView(new PlainTableView());
 		tableHtml = tableFacade.render();
+	}
+	
+     public TableFacade createComponentTable(){
+			
+		
+		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","remainingHoursPercent");		
+		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
+		
+		tableFacade.setItems(components);
+		tableFacade.setMaxRows(15);
+		
+		Limit limit = tableFacade.getLimit();
+		
+		
+		Table table = tableFacade.getTable();
+		table.setCaption("Components");
+		table.getRow().setUniqueProperty("id");
+		
+		if (!limit.isExported()) {
+		Column percentCol = table.getRow().getColumn("remainingHoursPercent");
+		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
+
+			public Object getValue(Object item, String property, int rowCount) {
+				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
+				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				HtmlBuilder html = new HtmlBuilder();
+				
+				try{
+					long valueLong = (Long) value;
+					if(valueLong >= 50){
+						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
+					}
+					else if(valueLong >= 20){
+						html.div().style("text-align:center;background-color:#FFFF99;font-weight:bold;").styleEnd();
+					}
+					else{
+						html.div().style("text-align:center;background-color:#FF9999;font-weight:bold;").styleEnd();	
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				if(value != null){
+				  html.append(value+" %");
+				  html.divEnd();
+				}
+				
+				return html.toString();
+			}
+			
+		});
+		}
+		
+		if (!limit.isExported()) {
+		Column refCol = table.getRow().getColumn("number");
+		refCol.setTitle("Part Number");
+		refCol.getCellRenderer().setCellEditor(new CellEditor() {
+
+			public Object getValue(Object item, String property, int rowCount) {
+				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
+				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				HtmlBuilder html = new HtmlBuilder();
+				html.a().href().quote().append("component!edit.action?id="+id).quote().close();
+				html.append(value);
+				html.aEnd();
+				return html.toString();
+			}
+			
+		});
+		}
+		
+		return tableFacade;
+		
+		
 	}
 	
 	public void prepare(){

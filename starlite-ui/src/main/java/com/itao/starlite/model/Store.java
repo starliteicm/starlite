@@ -21,6 +21,7 @@ public class Store {
 	
 	public static Store createStore(String locationIdentifier){
 		if(locationIdentifier != null){
+			locationIdentifier = locationIdentifier.toUpperCase();
 			if(locationIdentifier.length() == 5){
 				Store store = new Store();
 				store.setCode(locationIdentifier.substring(0, 2));
@@ -28,6 +29,7 @@ public class Store {
 				if("MS".equals(store.getCode())){store.setType("Mobile");}
 				else if("WS".equals(store.getCode())){store.setType("Workshop");}
 				else if("DR".equals(store.getCode())){store.setType("Depot");}
+				else if("ZS".equals(store.getCode())){store.setType("Aircraft");}
 				else{store.setType("Store");}
 				return store;
 			}	
@@ -51,6 +53,7 @@ public class Store {
 		return code;
 	}
 	public void setCode(String code) {
+		if(code != null){code = code.toUpperCase();}
 		this.code = code;
 	}
 	public String getDescription() {
@@ -60,6 +63,7 @@ public class Store {
 		this.description = description;
 	}
 	public void setSeccode(String seccode) {
+		if(seccode != null){seccode = seccode.toUpperCase();}
 		this.seccode = seccode;
 	}
 	public String getSeccode() {

@@ -581,4 +581,8 @@ public class StarliteCoreManager {
 		return storeDao.findByCode(location);
 	}
 
+	public List<Component> getComponents(String location) {
+		return componentDao.findByLocation(location);
+	}
+
 }

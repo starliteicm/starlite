@@ -3,6 +3,7 @@ package com.itao.starlite.ui.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
@@ -248,8 +249,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		refCol.getCellRenderer().setCellEditor(new CellEditor() {
 		public Object getValue(Object item, String property, int rowCount) {
 				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
-				Object date = new BasicCellEditor().getValue(item, "date", rowCount);
-				Object time = new BasicCellEditor().getValue(item, "time", rowCount);
+				Date date = (Date) new BasicCellEditor().getValue(item, "date", rowCount);
+				Date time = (Date) new BasicCellEditor().getValue(item, "time", rowCount);
 				Object mval = new BasicCellEditor().getValue(item, "marketVal", rowCount);
 				Object mcur = new BasicCellEditor().getValue(item, "marketCurrency", rowCount);
 				Object pval = new BasicCellEditor().getValue(item, "purchaseVal", rowCount);
@@ -257,8 +258,11 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				Object rval = new BasicCellEditor().getValue(item, "replaceVal", rowCount);
 				Object rcur = new BasicCellEditor().getValue(item, "replaceCurrency", rowCount);
 
+				SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
+				
 				HtmlBuilder html = new HtmlBuilder();
-				html.a().onclick("editVal('"+id+"','"+date+"','"+time+"','"+mval+"','"+mcur+"','"+pval+"','"+pcur+"','"+rval+"','"+rcur+"');return false;").href().quote().append("#").quote().close();
+				html.a().onclick("editVal('"+id+"','"+df.format(date)+"','"+tf.format(time)+"','"+mval+"','"+mcur+"','"+pval+"','"+pcur+"','"+rval+"','"+rcur+"');return false;").href().quote().append("#").quote().close();
 				html.append("Edit");
 				html.aEnd();
 				return html.toString();

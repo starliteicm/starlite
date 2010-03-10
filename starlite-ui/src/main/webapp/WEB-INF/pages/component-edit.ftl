@@ -71,7 +71,39 @@
       return true;
     }
     
+    function cancelEditVal(){
+      $("#editValMessage").html("");
+      $("#editValMessage").css("display","none");
+      $("#cancelEditValue").css("display","none");
+      $("#valuationId").val("");
+      $("#valDate").val("");
+      $("#valTime").val("");
+      $("#marketVal").val("");
+      $("#purchaseVal").val("");
+      $("#replacementVal").val("");
+      
+      $("#marketCurrency option[text=USD]").attr("selected","selected") ;
+      $("#purchaseCurrency option[text=USD]").attr("selected","selected") ;
+      $("#replacementCurrency option[text=USD]").attr("selected","selected") ;
+      
+      return true;
+    }
+    
     function editVal(valid,date,time,mval,mcur,pval,pcur,rval,rcur){
+      $("#editValMessage").html("Editing Valuation ("+date+" "+time+")");
+      $("#editValMessage").css("display","");
+      $("#cancelEditValue").css("display","");
+      $("#valDate").val(date);
+      $("#valTime").val(time);
+      $("#valuationId").val(valid);
+      $("#marketVal").val(mval);
+      $("#purchaseVal").val(pval);
+      $("#replacementVal").val(rval);
+      
+      $("#marketCurrency option[text=" + mcur +"]").attr("selected","selected") ;
+      $("#purchaseCurrency option[text=" + pcur +"]").attr("selected","selected") ;
+      $("#replacementCurrency option[text=" + rcur +"]").attr("selected","selected") ;
+      
       return true;
     }
     
@@ -269,25 +301,26 @@
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="val" value="1"/>
-      
+      <input type="hidden" name="valuationId" id="valuationId" value=""/>
       
       <fieldset>
       <legend>Component Valuation</legend>
       
       <div class="fm-opt">
             <label for="valDate">Date:</label>
-            <input class="date-pick" name="valDate" type="text" value=""/>
+            <input class="date-pick" id="valDate" name="valDate" type="text" value=""/>
       </div>
       <div class="fm-opt">
             <label for="valTime">Time:</label>
-            <input class="time-pick" name="valTime" type="text" value=""/>
+            <input class="time-pick" id="valTime" name="valTime" type="text" value=""/>
       </div>
       
       <div class="fm-opt">
          <label for="nvg">Market Value:</label> 
          <div>
-            <input type="text" name="marketVal" style="width:60px;" onchange='checkNum(this);' />
+            <input type="text" id="marketVal" name="marketVal" style="width:60px;" onchange='checkNum(this);' />
             <select id="marketCurrency" name="marketCurrency" style="width:60px;">
+            <option>USD
             <#list rates?if_exists as rate>
                 <option>${rate.currencyCodeFrom}</option>
             </#list>
@@ -298,8 +331,9 @@
       <div class="fm-opt">
          <label for="nvg">Purchase Value:</label> 
          <div>
-            <input type="text" name="purchaseVal" style="width:60px;" onchange='checkNum(this);' />
+            <input type="text" id="purchaseVal" name="purchaseVal" style="width:60px;" onchange='checkNum(this);' />
             <select id="purchaseCurrency" name="purchaseCurrency" style="width:60px;">
+            <option>USD
             <#list rates?if_exists as rate>
                 <option>${rate.currencyCodeFrom}</option>
             </#list>
@@ -310,16 +344,19 @@
       <div class="fm-opt">
          <label for="nvg">Replacement Value:</label> 
          <div>
-            <input type="text" name="replacementVal" style="width:60px;" onchange='checkNum(this);' />
+            <input type="text" id="replacementVal" name="replacementVal" style="width:60px;" onchange='checkNum(this);' />
             <select id="replacementCurrency" name="replacementCurrency" style="width:60px;">
+            <option>USD
             <#list rates?if_exists as rate>
                 <option>${rate.currencyCodeFrom}</option>
             </#list>
             </select>
          </div>
       </div>
-      
+      <br/>
       <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>  
+      <button id="cancelEditValue" onclick="cancelEditVal(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/cross.png"/>Cancel</button>
+      
       </fieldset>
       </form>
       
@@ -364,9 +401,9 @@
       </div>
       <br/>
       
-      <button id="deleteEditLoc" onclick="deleteEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Remove</button>
+      <button id="deleteEditLoc" onclick="deleteEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/delete.png"/>Remove</button>
       <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
-      <button id="cancelEditLoc" onclick="cancelEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Cancel</button>
+      <button id="cancelEditLoc" onclick="cancelEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/cross.png"/>Cancel</button>
         
       </fieldset>
       </form>

@@ -668,7 +668,7 @@ public class Component {
 		return airframeHours;
 	}
 
-	public void updateValuation(Integer componentLocationId, String valDate, String valTime,
+	public void updateValuation(Integer componentValuationId, String valDate, String valTime,
 			String username, Double marketVal, String marketCurrency,
 			Double purchaseVal, String purchaseCurrency, Double replacementVal,
 			String replacementCurrency) throws ParseException {
@@ -676,9 +676,9 @@ public class Component {
 		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
 		
-		if(componentLocationId != null){
+		if(componentValuationId != null){
 			for(ComponentValuation val : valuations){
-				if(componentLocationId.equals(val.getId())){
+				if(componentValuationId.equals(val.getId())){
 					val.setDate(df.parse(valDate));
 					val.setTime(tf.parse(valTime));
 					val.setUser(username);

@@ -3,7 +3,8 @@
 
 <html>
 <head>
-
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jmesa.css">
+<script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
 <script>
 
 function setCode(index){
@@ -22,6 +23,10 @@ function validate(){
     return true;
 }
 
+        function onInvokeExportAction(id) {
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/store!edit.action?id=${id!}&' + parameterString;
+        }
 </script>
 
 </head>
@@ -30,7 +35,7 @@ function validate(){
 <@subTabs/>
 <#assign currentUser = Session.userObj>
 
-    <form action="store!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+    <form action="store!save.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;width:1150px;">
     <input type="hidden" name="id" value="${id!}"/>
     <input type="hidden" name="store.id" value="${id!}"/>
     
@@ -56,23 +61,44 @@ function validate(){
             <label for="store.type">Type:</label>
             <select onchange="setCode(this.selectedIndex);" name="store.type">
                 <#if store.type?exists>
-                <option <#if store.type.equals("Store")>selected</#if> >Store
-                <option <#if store.type.equals("Mobile")>selected</#if> >Mobile
-                <option <#if store.type.equals("Workshop")>selected</#if> >Workshop
+                <option <#if store.type.equals("Aircraft")>selected</#if> >Aircraft
                 <option <#if store.type.equals("Depot")>selected</#if> >Depot
+                <option <#if store.type.equals("Mobile")>selected</#if> >Mobile
+                <option <#if store.type.equals("Store")>selected</#if> >Store
+                <option <#if store.type.equals("Workshop")>selected</#if> >Workshop 
                 <#else>
-                <option >Store
-                <option >Mobile
-                <option >Workshop
+                <option >Aircraft
                 <option >Depot
+                <option >Mobile
+                <option >Store
+                <option >Workshop
                 </#if>
             </select>
         </div>
         
         <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
         
+        </fieldset>
     
     </form>
+    
+    <#if id?exists>   
+    <br/> 
+    <form action="store!edit.action" method="POST" class="smart" style="clear:left;width:1150px;">
+    <input type="hidden" name="id" value="${id!}"/>
+    <input type="hidden" name="store.id" value="${id!}"/>
+    
+    <div style="padding-left:10px;">
+    <fieldset>
+        <legend>Store Components</legend>
+        
+        <@jmesa id="component"/>
+        
+    </fieldset>
+    </div>
+    
+    </form>
+    </#if>
 
 
 </body>
