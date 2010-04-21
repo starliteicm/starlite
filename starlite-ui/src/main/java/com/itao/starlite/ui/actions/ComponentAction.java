@@ -53,6 +53,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	public Integer id;
 	
+	public List<Store> stores;
 	public List<Component> components;
 	public List<ExchangeRate> rates;
 	
@@ -123,6 +124,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		prepare();
 		if(component != null){
 			rates=manager.getExchangeRates();
+			stores = manager.getStores();
 			createLocationTable();
 			createValuationTable();
 			return "edit";

@@ -27,6 +27,27 @@
             document.getElementById("saveButton").disabled = false;
         }
 
+    function changeAddLocation(selIndex){
+      if(selIndex < 1){
+        $("#locDiv").css("background-color","#FFFFFF");
+        $("#conLocDiv").css("background-color","#EEEEEE");
+        $("#binDiv").css("background-color","#FFFFFF");
+        $("#locationInput").css("background-color","#FFFFFF");
+        $("#conLocationInput").css("background-color","#EEEEEE");
+        $("#binInput").css("background-color","#FFFFFF");
+      }
+      else{
+        $("#locDiv").css("background-color","#EEEEEE");
+        $("#binDiv").css("background-color","#EEEEEE"); 
+        $("#conLocDiv").css("background-color","#FFFFFF");
+        $("#locationInput").css("background-color","#EEEEEE");
+        $("#conLocationInput").css("background-color","#FFFFFF");
+        $("#binInput").css("background-color","#EEEEEE");
+        
+      }
+      return true;
+    }
+
     function showTab(tab){
       $('.linkTab').removeClass("current");
       $('#'+tab+"Link").addClass("current");
@@ -109,24 +130,66 @@
     
     function updateLocationMessage(location){
       var message = "Not Valid";
+      location = location.toUpperCase();
+      var valid = 0;
       if(location.length == 5){
-        message = "Valid Store";
-        if(location.substring(0,2) == "ZS"){message = "Valid Aircraft";}
-        if(location.substring(0,2) == "MS"){message = "Valid Mobile Store";}
-        if(location.substring(0,2) == "WS"){message = "Valid Workshop Cycle";}
-        if(location.substring(0,2) == "DR"){message = "Valid Depot Cycle";}
+        
+        
+        
+        <#list stores as store>
+        if(location == "${store.location!}"){
+         valid = 2;
+         message = "Existing: ${store.description!}";
+        }
+        </#list>
+        
+        if(valid == 0){
+          valid = 1;
+          message = "Valid New Store";
+          if(location.substring(0,2) == "ZS"){message = "Valid New Aircraft";}
+          if(location.substring(0,2) == "MS"){message = "Valid New Mobile Store";}
+          if(location.substring(0,2) == "WS"){message = "Valid New Workshop Cycle";}
+          if(location.substring(0,2) == "DR"){message = "Valid New Depot Cycle";}
+        }
       }
-      $("#locationMessage").val(message); 
+      
+      $("#location").val(location);
+      $("#locationMessage").val(message);
+      
+      if(valid == 2){
+        //GREEN
+        $("#locationMessage").css("background-color","#66FF66")
+      }
+      else if(valid == 1){
+        //YELLOW
+        $("#locationMessage").css("background-color","#FFFF66")
+      }
+      else{
+        //RED
+        $("#locationMessage").css("background-color","#FF6666")
+      }
+       
       return true;  
     }
     
     function updateBinMessage(bin){
       var message = "Not Valid";
+      var valid = 0;
       
       if(bin.length <= 10){
       if(bin.length % 2 == 0){
         message = "Valid Bin Location";
+        valid = 1;
       }
+      }
+      
+      if(valid == 1){
+        //GREEN
+        $("#binMessage").css("background-color","#66FF66")
+      }
+      else{
+        //RED
+        $("#binMessage").css("background-color","#FF6666")
       }
       
       $("#binMessage").val(message); 
@@ -141,7 +204,10 @@
       var locMsg = $("#locationMessage").val();
       var binMsg = $("#binMessage").val();
       if(locMsg != "Not Valid"){
-        if(binMsg != "Not Valid"){
+        if(binMsg != "Not Valid"){         
+          if(locMsg.indexOf("Existing:") == -1){
+            return confirm("The Location entered does not currently exist, do you wish to create the store?");
+          }
           return true;
         }
       }
@@ -181,8 +247,8 @@
             <li class="linkTab" id="locationLink">
             <a onclick="showTab('location');return false" href="#">Location</a></li>
             
-            <li class="linkTab" id="configLink">
-            <a onclick="showTab('config');return false" href="#">Configuration</a></li>
+            <!--<li class="linkTab" id="configLink">
+            <a onclick="showTab('config');return false" href="#">Configuration</a></li>-->
             
             <li class="linkTab" id="historyLink">
             <a onclick="showTab('history');return false" href="#">History</a></li>
@@ -199,7 +265,7 @@
     
     <fieldset>
         <#if id?exists >
-        <legend>Edit Component</legend>
+        <legend>Edit Component - ${component.name!}</legend>
         <#else>
         <legend>Add Component</legend>
         </#if>
@@ -208,10 +274,10 @@
             <label for="component.type">Type:</label>
             <select onchange="" name="component.type">
                 <#if component.type?exists>
-                <option <#if component.type.equals("Class C")>selected</#if> >Class C
+                <option <#if component.type.equals("Class A")>selected</#if> >Class A
                 <option <#if component.type.equals("Class E")>selected</#if> >Class E
                 <#else>
-                <option >Class C
+                <option >Class A
                 <option >Class E
                 </#if>
             </select>
@@ -255,7 +321,7 @@
       
       
       <fieldset>
-      <legend>Component Tracking</legend>
+      <legend>Component Tracking - ${component.name!}</legend>
       
         <div class="fm-opt">
             <label for="component.airframeHours">Airframe Hours:</label>
@@ -304,7 +370,7 @@
       <input type="hidden" name="valuationId" id="valuationId" value=""/>
       
       <fieldset>
-      <legend>Component Valuation</legend>
+      <legend>Component Valuation - ${component.name!}</legend>
       
       <div class="fm-opt">
             <label for="valDate">Date:</label>
@@ -381,25 +447,34 @@
       
       
       <fieldset>
-      <legend>Component Location</legend>
+      <legend>Component Location - ${component.name!}</legend>
       
       <div id="editMessage" style="color:green;font-weight:bold;text-align:center;display:none;margin:10px;padding:10px;border:1px dashed silver;"></div>
       
-      <div class="fm-opt">
+      <div id="locDiv" class="fm-opt">
             <label for="location">Location:</label> 
             <input id="locationInput" type="text" value="" onkeypress="updateLocationMessage(this.value);" onkeyup="updateLocationMessage(this.value);" onchange="updateLocationMessage(this.value);" name="location"/>
-            <input type="text" value="Not Valid" DISABLED name="" id="locationMessage"/>
+            <input type="text" value="Not Valid" style="background-color:#FF6666" DISABLED name="" id="locationMessage"/>
       </div>
-      <div class="fm-opt">
+      <div id="binDiv" class="fm-opt">
             <label for="bin">Bin:</label> 
             <input id="binInput" type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
-            <input type="text" value="Not Valid" DISABLED name="" id="binMessage"/>
+            <input type="text" style="background-color:#66FF66" value="Valid Bin Location" DISABLED name="" id="binMessage"/>
       </div>
       <div class="fm-opt">
             <label for="quantity">Quantity:</label> 
             <input id="qtyInput" type="text" value="1" name="quantity" onchange='checkNum(this);'/>
       </div>
       <br/>
+      
+      <div id="conLocDiv" class="fm-opt" style="background-color:#EEEEEE;">
+            <label for="quantity">Add To Existing Location:</label> 
+            <select id="conLocationInput" style="background-color:#EEEEEE;" name="addLocation" onchange="changeAddLocation(addLocation.options.selectedIndex);">
+             <option>-
+             <option>Other Location
+            </select>
+      </div>
+      
       
       <button id="deleteEditLoc" onclick="deleteEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/delete.png"/>Remove</button>
       <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
@@ -428,7 +503,7 @@
     </div>
     
      <!--CONFIGURATION-->
-    <div id="config" style="display:none;" class="tabContent">
+    <!--<div id="config" style="display:none;" class="tabContent">
     <form  autocomplete="off" action="component!save.action" method="POST" class="smart" onsubmit="return validateConfig();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
@@ -515,7 +590,7 @@
       </fieldset>
       
     </form>
-    </div>
+    </div>-->
     
     <!--History-->
     <div id="history" style="display:none;" class="tabContent">
@@ -524,7 +599,7 @@
       <input type="hidden" name="component.id" value="${id!}"/>
       
       <fieldset>
-      <legend>Component History</legend>
+      <legend>Component History - ${component.name!}</legend>
         
         <@jmesa2 id="history" mytableHtml=histTableHtml?if_exists />
       
