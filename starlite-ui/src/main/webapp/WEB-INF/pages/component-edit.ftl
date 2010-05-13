@@ -471,7 +471,10 @@
             <label for="quantity">Add To Existing Location:</label> 
             <select id="conLocationInput" style="background-color:#EEEEEE;" name="addLocation" onchange="changeAddLocation(addLocation.options.selectedIndex);">
              <option>-
-             <option>Other Location
+             
+             <#list component.getLocations() as location>
+             <option value="${location.id}">${location.location} - ${location.bin}
+             </#list>
             </select>
       </div>
       

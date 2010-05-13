@@ -95,6 +95,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	//Locations
 	public Integer loc;
 	public Integer locationId;
+	public Integer addLocation;
 	public String location;
 	public String bin;
 	public Integer quantity;
@@ -168,8 +169,14 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 						
 					if((location.length() == 5)||(locCurrent == 0)){
 						if(quantity.equals(0)){locCurrent = 0;}
+						
+						if(addLocation != null){
+							locationId = addLocation;
+						}
 						//Record History of Location Move
 						component.updateLocation(locationId,location,bin,quantity,locCurrent);
+						
+						
 					}
 				}
 			}
