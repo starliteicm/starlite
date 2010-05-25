@@ -3,6 +3,8 @@ package com.itao.starlite.ui.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import com.itao.starlite.manager.StarliteCoreManager;
 import com.itao.starlite.model.Component;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Store;
+import com.itao.starlite.model.Component.ComponentHistory;
 import com.itao.starlite.ui.Breadcrumb;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
@@ -128,6 +131,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			stores = manager.getStores();
 			createLocationTable();
 			createValuationTable();
+			createHistoryTable();
 			return "edit";
 		}
 	    return "redirect-list";
@@ -282,9 +286,19 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		valTableHtml = tableFacade.render();
 	}
 	
+	 private List<ComponentHistory> sortDesc(List<ComponentHistory> history) {
+	        Collections.sort(history, new Comparator<ComponentHistory>() {
+				public int compare(ComponentHistory o1, ComponentHistory o2) {
+					return o2.getId().compareTo(o1.getId());
+				}
+
+			});
+	        return history;
+	    }
+	
 	public void createLocationTable(){
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("locationTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("location","bin","quantity","edit");
+		tableFacade.setColumnProperties("location","bin","quantity","batch","status","edit");
 		tableFacade.setItems(component.getLocations());
 		tableFacade.setMaxRows(100);
 		Table table = tableFacade.getTable();
@@ -309,6 +323,22 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 		tableFacade.setView(new PlainTableView());
 		tableHtml = tableFacade.render();
+	}
+	
+	public void createHistoryTable(){
+		List<ComponentHistory> history = sortDesc(component.getHistory());
+		TableFacade tableFacade = TableFacadeFactory.createTableFacade("historyTable", ServletActionContext.getRequest());		
+		tableFacade.setColumnProperties("id","date","time","type","field","location","fromVal","toVal","user","description");
+		tableFacade.setItems(history);
+		tableFacade.setMaxRows(100);
+		Table table = tableFacade.getTable();
+		table.getRow().setUniqueProperty("id");
+		
+		Column refCol = table.getRow().getColumn("field");
+		refCol.setTitle("Action");
+		
+		tableFacade.setView(new PlainTableView());
+		histTableHtml = tableFacade.render();
 	}
 	
 	public TableFacade createTable(){

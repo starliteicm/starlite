@@ -3,6 +3,8 @@ package com.itao.starlite.ui.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +27,11 @@ import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.manager.StarliteCoreManager;
 import com.itao.starlite.model.Component;
+import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Store;
+import com.itao.starlite.model.Component.ComponentHistory;
+import com.itao.starlite.model.Component.ComponentLocation;
 import com.itao.starlite.ui.Breadcrumb;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
@@ -60,10 +65,11 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 	//Locations
 	public Integer locationId;
 	public Integer locCurrent;
+	public String location;
 	public String bin;
 	public Integer quantity;
 	public String note;
-	
+	public String batch;
 	
 	
 	@Inject
@@ -78,35 +84,36 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 		return SUCCESS;
 	}
 	
+   
 	
 	public String create(){
+		System.out.println("Updating Component("+id+") Location - "+type);
 		
 		prepare();
 		
+		
         if("Purchase".equals(type)){
-        	component.updateLocation(type,locationId,bin,quantity,null);
+        	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,null,note);
         }
         else if("Repair".equals(type)){
-        	component.updateLocation(type,locationId,bin,quantity,locCurrent);
+        	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,locCurrent,note);
         }
         else if("Move".equals(type)){
-        	component.updateLocation(type,locationId,bin,quantity,locCurrent);
+        	component.updateLocation(user.getUsername(),type,null,location,bin,quantity,locCurrent,note);
 		}
 		else if("Reserve".equals(type)){
-			component.updateLocation(type,null,null,quantity,locCurrent);
-			
+			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);		
 		}
 		else if("Sell".equals(type)){
-			component.updateLocation(type,null,null,quantity,locCurrent);
-			
+			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);		
 		}
 		else if("Scrap".equals(type)){
-			component.updateLocation(type,null,null,quantity,locCurrent);
+			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);
 		}
 		else if("Consume".equals(type)){
-			component.updateLocation(type,null,null,quantity,locCurrent);
-			
+			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);			
 		}
+        manager.saveComponent(component);
 		
 		notificationMessage = "Transation Created";
 		return "redirect";
@@ -123,43 +130,6 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 	    return "redirect-list";
 	}
 
-	public String save(){
-		if(component != null){
-			
-		
-			if( loc != null){
-				//Save Location
-				if(((location!= null)&&(bin!= null))||(locCurrent == 0)) {
-					if((location.length() == 5)){
-						
-						Store locExists = manager.findStore(location);
-						if(locExists == null){
-							//Create Store
-							Store store = Store.createStore(location);
-							manager.saveStore(store);
-						}
-					}
-						
-					if((location.length() == 5)||(locCurrent == 0)){
-						if(quantity.equals(0)){locCurrent = 0;}
-						
-						if(addLocation != null){
-							locationId = addLocation;
-						}
-						//Record History of Location Move
-						component.updateLocation(locationId,location,bin,quantity,locCurrent);
-						
-						
-					}
-				}
-			}
-			
-			manager.saveComponent(component);
-			notificationMessage = "Component saved";
-			errorMessage = "";
-		}
-		return "redirect";
-	}
 	
 	public void createValuationTable(){
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("valuationTable", ServletActionContext.getRequest());		

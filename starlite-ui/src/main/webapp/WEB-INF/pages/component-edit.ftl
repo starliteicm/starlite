@@ -477,7 +477,7 @@
             <select id="conLocationInput" style="background-color:#EEEEEE;" name="addLocation" onchange="changeAddLocation(addLocation.options.selectedIndex);">
              <option>- 
              <#list component.getLocations() as location>
-             <option value="${location.id}">${location.location} - ${location.bin}
+             <option value="${location.id}">${location.location?if_exists} - ${location.bin?if_exists}
              </#list>
             </select>
       </div>

@@ -113,23 +113,26 @@ public class Component {
 		@Temporal(TemporalType.TIME)
 		private Date time;
 		private String user;
-		
+		private String type;
 		private String field;
-		private String from;
-		private String to;
+		private String fromVal;
+		private String toVal;
 		private String description;
+		private String location;
 		
 		public ComponentHistory(){};
 		
-		public ComponentHistory(Date now, Date now2, String user,
-				String field, String from, String to, String desc) {
+		public ComponentHistory(Date now, Date now2, String user, String type,
+				String field, String from, String to, String desc, String location) {
 			setDate(now);
 			setTime(now2);
 			setUser(user);
 			setField(field);
-			setFrom(from);
-			setTo(to);
+			setFromVal(from);
+			setToVal(to);
+			setType(type);
 			setDescription(desc);
+			setLocation(location);
 		}
 
 		public void setId(Integer id) {
@@ -162,23 +165,39 @@ public class Component {
 		public void setField(String field) {
 			this.field = field;
 		}
-		public String getFrom() {
-			return from;
+		public String getFromVal() {
+			return fromVal;
 		}
-		public void setFrom(String from) {
-			this.from = from;
+		public void setFromVal(String from) {
+			this.fromVal = from;
 		}
-		public String getTo() {
-			return to;
+		public String getToVal() {
+			return toVal;
 		}
-		public void setTo(String to) {
-			this.to = to;
+		public void setToVal(String to) {
+			this.toVal = to;
 		}
 		public void setDescription(String description) {
 			this.description = description;
 		}
 		public String getDescription() {
 			return description;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setLocation(String location) {
+			this.location = location;
+		}
+
+		public String getLocation() {
+			return location;
 		}
 		
 	}
@@ -283,6 +302,7 @@ public class Component {
 		@GeneratedValue
 		private Integer id; 
 		
+		private String batch;
 		private String location;
 		private String bin;
 		private Integer current;
@@ -329,6 +349,14 @@ public class Component {
 
 		public String getStatus() {
 			return status;
+		}
+
+		public void setBatch(String batch) {
+			this.batch = batch;
+		}
+
+		public String getBatch() {
+			return batch;
 		}
 		
 	}
@@ -721,26 +749,32 @@ public class Component {
 		
 		Date now = Calendar.getInstance().getTime();
 		
-		if(this.getAir() != null){hist.add(new ComponentHistory(now,now,user,"air",""+c.getAir(),""+getAir(),"update"));}
-		else{if(c.getAir() != null){hist.add(new ComponentHistory(now,now,user,"air",""+c.getAir(),"blank","update"));}}
+		if(this.getAir() != null){hist.add(new ComponentHistory(now,now,user,"update","air",""+c.getAir(),""+getAir(),"Component Update",null));}
+		else{if(c.getAir() != null){hist.add(new ComponentHistory(now,now,user,"update","air",""+c.getAir(),"blank","Component Update",null));}}
 
-		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"update"));}
-		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),"blank","update"));}}
+		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"update","airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"Component Update",null));}
+		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"update","airframeHours",""+c.getAirframeHours(),"blank","Component Update",null));}}
 
-		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"update"));}
-		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),"blank","update"));}}
+		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"update","airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"Component Update",null));}
+		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"update","airframeHours",""+c.getAirframeHours(),"blank","Component Update",null));}}
 
 		return hist;
 	}
 
-	public void updateLocation(String type, String location, String bin, Integer quantity, Integer current) {
+	public void updateLocation(String user, String type, String batch, String location, String bin, Integer quantity, Integer current, String note) {
 	
+		System.out.println("Updating Location - "+type);
+		
+		Date now = Calendar.getInstance().getTime();
+		
 		if("Purchase".equals(type)){
 			//Add to location
 			ComponentLocation l = null;
+			Integer previous = 0;
 			for(ComponentLocation loc : locations){
 				if((loc.location.equals(location))&&(loc.bin.equals(bin))){
 					l = loc; 
+					previous = loc.getQuantity();
 				}
 			}
 			//Add to new Location
@@ -749,27 +783,83 @@ public class Component {
 				l.setLocation(location);
 				l.setBin(bin);
 				l.setCurrent(current);
+				l.setBatch(batch);
 				l.setQuantity(quantity);
 				locations.add(l);
 			}
 			else {
 				l.setQuantity(l.getQuantity() + quantity);
+				l.setBatch(batch);
 			}
+			history.add(new ComponentHistory(now,now,user,"transaction","Purchase",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
 
         }
         else if("Repair".equals(type)){
         	//remove quantity from current location
         	ComponentLocation rem = null;
+        	Integer previous = 0;
 			for(ComponentLocation loc : locations){
 				if(loc.getId() ==  current){
 					rem = loc; 
+					previous = rem.getQuantity();
+					rem.setQuantity(rem.getQuantity() - quantity);
+					if(rem.getQuantity()<=0){
+						locations.remove(rem);
+						history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					}
 				}
 			}
+			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
 			for(ComponentLocation loc : locations){
-				if((loc.location.equals(location))&&(loc.bin.equals(bin))){
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.status.equals(status))){
 					l = loc; 
+					previous = loc.getQuantity();
+				}
+			}
+			//Add to new Location
+			if(l == null){
+				l = new ComponentLocation();
+				l.setLocation(location);
+				l.setBin(bin);
+				l.setStatus("Repair");
+				l.setCurrent(current);
+				l.setQuantity(quantity);
+				l.setBatch(batch);
+				locations.add(l);
+			}
+			else {
+				l.setQuantity(l.getQuantity() + quantity);
+				l.setBatch(batch);
+				l.setStatus("Repair");
+			}
+			
+			history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
+			
+        }
+        else if("Move".equals(type)){
+        	//remove quantity from current location
+        	ComponentLocation rem = null;
+        	Integer previous = 0;
+			for(ComponentLocation loc : locations){
+				if(loc.getId() ==  current){
+					rem = loc; 
+					previous = rem.getQuantity();
+					rem.setQuantity(rem.getQuantity() - quantity);
+					if(rem.getQuantity()<=0){
+						locations.remove(rem);
+						history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					}
+				}
+			}
+			previous = 0;
+        	//Add to location
+			ComponentLocation l = null;
+			for(ComponentLocation loc : locations){
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.status.equals(status))){
+					l = loc; 
+					previous = loc.getQuantity();
 				}
 			}
 			//Add to new Location
@@ -784,16 +874,95 @@ public class Component {
 			else {
 				l.setQuantity(l.getQuantity() + quantity);
 			}
-        }
-        else if("Move".equals(type)){
+			history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
+
 		}
-		else if("Reserve".equals(type)){			
+		else if("Reserve".equals(type)){
+        	//remove quantity from current location
+        	ComponentLocation rem = null;
+        	Integer previous = 0;
+			for(ComponentLocation loc : locations){
+				if(loc.getId() ==  current){
+					rem = loc; 
+					previous = rem.getQuantity();
+					rem.setQuantity(rem.getQuantity() - quantity);
+					if(rem.getQuantity()<=0){
+						locations.remove(rem);
+						history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					}
+				}
+
+			}
+			previous = 0;
+        	//Add to location
+			ComponentLocation l = null;
+			for(ComponentLocation loc : locations){
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.status.equals(status))){
+					l = loc; 
+					previous = loc.getQuantity();
+				}
+			}
+			//Add to new Location
+			if(l == null){
+				l = new ComponentLocation();
+				l.setLocation(location);
+				l.setBin(bin);
+				l.setStatus("Reserve");
+				l.setCurrent(current);
+				l.setQuantity(quantity);
+				locations.add(l);
+			}
+			else {
+				l.setQuantity(l.getQuantity() + quantity);
+			}
+			history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+
 		}
-		else if("Sell".equals(type)){			
+		else if("Sell".equals(type)){	
+			ComponentLocation rem = null;
+			for(ComponentLocation loc : locations){
+				if(loc.getId() ==  current){
+					rem = loc; 
+					Integer previous = rem.getQuantity();
+					rem.setQuantity(rem.getQuantity() - quantity);
+					if(rem.getQuantity()<=0){
+						locations.remove(rem);
+						history.add(new ComponentHistory(now,now,user,"transaction","Sell",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+
+					}
+				}
+			}
 		}
 		else if("Scrap".equals(type)){
+			ComponentLocation rem = null;
+			System.out.println("Current:"+current);
+			for(ComponentLocation loc : locations){
+				
+				if(loc.getId().equals(current)){	
+					rem = loc; 
+					Integer previous = rem.getQuantity();
+					rem.setQuantity(rem.getQuantity() - quantity);
+					System.out.println("Current:"+current+" =? "+loc.getId()+" previous:"+previous+" qty:"+rem.getQuantity());
+					if(rem.getQuantity()<=0){
+						locations.remove(rem);
+					}
+					history.add(new ComponentHistory(now,now,user,"transaction","Scrap",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+				}
+			}
 		}
-		else if("Consume".equals(type)){			
+		else if("Consume".equals(type)){	
+			ComponentLocation rem = null;
+			for(ComponentLocation loc : locations){
+				if(loc.getId() ==  current){
+					rem = loc; 
+					Integer previous = rem.getQuantity();
+					rem.setQuantity(rem.getQuantity() - quantity);
+					if(rem.getQuantity()<=0){
+						locations.remove(rem);
+						history.add(new ComponentHistory(now,now,user,"transaction","Consume",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					}
+				}
+			}
 		}
 		
 	}

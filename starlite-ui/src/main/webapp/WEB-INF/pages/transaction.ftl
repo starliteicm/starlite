@@ -14,7 +14,7 @@
         <label>Select Component:</label>
         <select name="id" style="width:600px;">
         <#list components as c>
-        <option value="${c.id}">${c.number} ${c.serial}
+        <option value="${c.id?if_exists}">${c.number?if_exists} ${c.serial?if_exists}
         </#list>
         </select>
         <span>(Part) (Serial)
@@ -52,8 +52,8 @@
     
     <#if type?exists>
     <div style="padding:10px;border:1px solid silver;width:1000px;">
-    <form name="transForm" id="transForm" action="transaction!create.action">
-    <input type="hidden" name="id" value="component.id">
+    <form name="transCreateForm" id="transCreateForm" action="transaction!create.action">
+    <input type="hidden" name="id" value="${component.id}">
     <input type="hidden" name="type" value="${type}">
     <fieldset>
         <legend>${type} - ${component.number} ${component.serial}</legend>
@@ -70,12 +70,14 @@
         </div>
         </#if>
         
+        
+        
         <#if type == "Move" || type == "Purchase" || type == "Repair" >
         <div class="fm-opt">
         <label>Destination Store:</label>
-        <select name="locationId" style="width:280px;">
+        <select name="location" style="width:280px;">
         <#list stores as c>
-        <option value="${c.id}">${c.location}
+        <option value="${c.location}">${c.location}
         </#list>
         </select>
         <input name="bin" style="width:310px;"/>
@@ -83,10 +85,17 @@
         </div>
         </#if>
         
+        <#if type == "Purchase" || type == "Repair" >
+        <div class="fm-opt">
+        <label>Batch:</label>
+        <input name="batch" type="text" />
+        </div>
+        </#if>
+        
         <#if component.type.equals("Class E")>
         <div class="fm-opt">
         <label>Quantity:</label>
-        <input name="quantity" type="text" / >
+        <input name="quantity" type="text" />
         </div>
         </#if>
         
@@ -96,7 +105,7 @@
         </div> 
         
         
-        <button style="position: relative; float: right; top: 4px;" class="smooth" onclick="document.forms.transForm.submit();" type="button"><img src="images/icons/accept.png"> Create Transaction</button>
+        <button style="position: relative; float: right; top: 4px;" class="smooth" onclick="document.forms.transCreateForm.submit();" type="button"><img src="images/icons/accept.png"> Create Transaction</button>
         
         
     </fieldset>
