@@ -180,6 +180,15 @@
           </#if>
           <a href="component.action">Components</a></li>
           </#if>
+          
+          <#if user.hasRead("transaction")>
+          <#if current?? && current=="Transactions">
+          <li class="aircraft current">
+          <#else>
+          <li class="aircraft">
+          </#if>
+          <a href="transaction.action">Transactions</a></li>
+          </#if>
       
       <#else>
       <#if current?? && current=="crew">

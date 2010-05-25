@@ -461,22 +461,27 @@
             <input id="binInput" type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
             <input type="text" style="background-color:#66FF66" value="Valid Bin Location" DISABLED name="" id="binMessage"/>
       </div>
+      <#if component.type.equals("Class E")>
       <div class="fm-opt">
             <label for="quantity">Quantity:</label> 
             <input id="qtyInput" type="text" value="1" name="quantity" onchange='checkNum(this);'/>
       </div>
+      <#else>
+      <input id="qtyInput" type="hidden" value="1" name="quantity"/>
+      </#if>
       <br/>
       
+      <#if component.type.equals("Class E")>
       <div id="conLocDiv" class="fm-opt" style="background-color:#EEEEEE;">
             <label for="quantity">Add To Existing Location:</label> 
             <select id="conLocationInput" style="background-color:#EEEEEE;" name="addLocation" onchange="changeAddLocation(addLocation.options.selectedIndex);">
-             <option>-
-             
+             <option>- 
              <#list component.getLocations() as location>
              <option value="${location.id}">${location.location} - ${location.bin}
              </#list>
             </select>
       </div>
+      </#if>
       
       
       <button id="deleteEditLoc" onclick="deleteEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/delete.png"/>Remove</button>

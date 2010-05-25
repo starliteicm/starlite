@@ -287,6 +287,7 @@ public class Component {
 		private String bin;
 		private Integer current;
 		private Integer quantity;
+		private String status;
 		
 		public ComponentLocation(){}
 		
@@ -320,6 +321,14 @@ public class Component {
 		}
 		public Integer getQuantity() {
 			return quantity;
+		}
+
+		public void setStatus(String status) {
+			this.status = status;
+		}
+
+		public String getStatus() {
+			return status;
 		}
 		
 	}
@@ -722,6 +731,71 @@ public class Component {
 		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"airframeHours",""+c.getAirframeHours(),"blank","update"));}}
 
 		return hist;
+	}
+
+	public void updateLocation(String type, String location, String bin, Integer quantity, Integer current) {
+	
+		if("Purchase".equals(type)){
+			//Add to location
+			ComponentLocation l = null;
+			for(ComponentLocation loc : locations){
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))){
+					l = loc; 
+				}
+			}
+			//Add to new Location
+			if(l == null){
+				l = new ComponentLocation();
+				l.setLocation(location);
+				l.setBin(bin);
+				l.setCurrent(current);
+				l.setQuantity(quantity);
+				locations.add(l);
+			}
+			else {
+				l.setQuantity(l.getQuantity() + quantity);
+			}
+
+        }
+        else if("Repair".equals(type)){
+        	//remove quantity from current location
+        	ComponentLocation rem = null;
+			for(ComponentLocation loc : locations){
+				if(loc.getId() ==  current){
+					rem = loc; 
+				}
+			}
+        	//Add to location
+			ComponentLocation l = null;
+			for(ComponentLocation loc : locations){
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))){
+					l = loc; 
+				}
+			}
+			//Add to new Location
+			if(l == null){
+				l = new ComponentLocation();
+				l.setLocation(location);
+				l.setBin(bin);
+				l.setCurrent(current);
+				l.setQuantity(quantity);
+				locations.add(l);
+			}
+			else {
+				l.setQuantity(l.getQuantity() + quantity);
+			}
+        }
+        else if("Move".equals(type)){
+		}
+		else if("Reserve".equals(type)){			
+		}
+		else if("Sell".equals(type)){			
+		}
+		else if("Scrap".equals(type)){
+		}
+		else if("Consume".equals(type)){			
+		}
+		
 	}
 
 }

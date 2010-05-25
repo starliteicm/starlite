@@ -445,6 +445,13 @@
              <div style="width:55px;height:10px;float:left;">&nbsp;</div>          
             <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="componentsRead" value="componentsRead" /> 
           </div><br/><br/>
+          
+          <div class="fm-opt">
+            <label for=""><B>Transactions</B></label>     
+             <div style="width:55px;height:10px;float:left;">&nbsp;</div>          
+            <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="transactionRead" value="transactionRead" /> 
+          </div><br/><br/><br/>
+          
 		   
            
 		   <div style="height:1px;">&nbsp;</div>
