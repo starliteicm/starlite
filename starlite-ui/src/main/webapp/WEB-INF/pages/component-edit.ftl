@@ -461,6 +461,7 @@
             <input id="binInput" type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
             <input type="text" style="background-color:#66FF66" value="Valid Bin Location" DISABLED name="" id="binMessage"/>
       </div>
+      <#if component.type?exists>
       <#if component.type.equals("Class E")>
       <div class="fm-opt">
             <label for="quantity">Quantity:</label> 
@@ -469,8 +470,10 @@
       <#else>
       <input id="qtyInput" type="hidden" value="1" name="quantity"/>
       </#if>
+      </#if>
       <br/>
       
+      <#if component.type?exists>
       <#if component.type.equals("Class E")>
       <div id="conLocDiv" class="fm-opt" style="background-color:#EEEEEE;">
             <label for="quantity">Add To Existing Location:</label> 
@@ -481,6 +484,7 @@
              </#list>
             </select>
       </div>
+      </#if>
       </#if>
       
       

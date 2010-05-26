@@ -97,6 +97,8 @@
         <label>Quantity:</label>
         <input name="quantity" type="text" />
         </div>
+        <#else>
+        <input type="hidden" name="quantity" value="1"/>
         </#if>
         
         <div class="fm-opt">

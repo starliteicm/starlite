@@ -1,5 +1,6 @@
 package com.itao.starlite.model;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class Component {
 	@Id
 	@GeneratedValue
 	private Integer id;
-	
+		
 	//INFO
 	private String type;
 	private String name;
@@ -67,12 +68,31 @@ public class Component {
 		return timeBetweenOverhaul - getCurrentHours();
 	}
 	
+	public String getRemainingHoursStr(){
+		DecimalFormat oneDigit = new DecimalFormat("#0.0");//format to 1 decimal place
+		Double tbo = timeBetweenOverhaul;
+		if(tbo == null){tbo= 0.0;}
+		Double ch = getCurrentHours();
+		if(ch == null){ch= 0.0;}
+		return oneDigit.format(0.0 + tbo - ch);
+	}
+	
 	public long getRemainingHoursPercent(){
 		return Math.round(((timeBetweenOverhaul - getCurrentHours())/timeBetweenOverhaul)*100.0);
 	}
 	
 	public Double getLifeExpiresHours(){
 		return timeBetweenOverhaul + hoursOnInstall - hoursRun;
+	}
+	public String getLifeExpiresHoursStr(){
+		DecimalFormat oneDigit = new DecimalFormat("#0.0");//format to 1 decimal place
+		Double tbo = timeBetweenOverhaul;
+		if(tbo == null){tbo= 0.0;}
+		Double hoi = hoursOnInstall;
+		if(hoi == null){hoi= 0.0;}
+		Double hr = hoursRun;
+		if(hr == null){hr= 0.0;}
+		return oneDigit.format(0.0 + tbo + hoi - hr);
 	}
 	
 	private String condition;
@@ -695,9 +715,29 @@ public class Component {
 
 
 	public Double getCurrentHours() {
-		return airframeHours - hoursOnInstall + hoursRun ;
+		Double afh = airframeHours;
+		if(afh == null){afh =0.0;}
+		Double hoi = hoursOnInstall;
+		if(hoi == null){hoi =0.0;}
+		Double hr = hoursRun;
+		if(hr == null){hr =0.0;}
+		Double result = 0.0 + afh - hoi + hr;
+		return result;
 	}
 
+	public String getCurrentHoursStr(){
+		DecimalFormat oneDigit = new DecimalFormat("#0.0");//format to 1 decimal place
+		Double afh = airframeHours;
+		if(afh == null){afh =0.0;}
+		Double hoi = hoursOnInstall;
+		if(hoi == null){hoi =0.0;}
+		Double hr = hoursRun;
+		if(hr == null){hr =0.0;}
+		Double result = 0.0 + afh - hoi + hr;
+		System.out.println(result);
+		return oneDigit.format(result);
+	}
+	
 	public void setAirframeHours(Double airframeHours) {
 		this.airframeHours = airframeHours;
 	}
