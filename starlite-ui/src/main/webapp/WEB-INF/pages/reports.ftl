@@ -472,6 +472,7 @@ font-weight:normal;
 	<#if notAuthorised>
 	<#else>
 	<!--<#if currentUser.hasRead("reportWorked")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDayByCharters.groovy&month=${month}&year=${year?c}">Crew Days Worked</a></#if>-->
+	<#if currentUser.hasRead("transaction")><li style="width:200px;height:30px;"><a href="script.action?scriptName=transactions.groovy&month=${month}&year=${year?c}">Component Transactions</a></#if>
 	<#if currentUser.hasRead("reportDeduction")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a></#if>
 	<#if currentUser.hasRead("reportPayments")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a></#if>
 	<#if currentUser.hasRead("reportPaymentsAnalysis")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a></#if>

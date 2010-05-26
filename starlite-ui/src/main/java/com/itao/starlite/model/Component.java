@@ -100,6 +100,7 @@ public class Component {
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@Fetch(FetchMode.SUBSELECT)
+	@OrderBy(clause="date desc")
 	private List<ComponentHistory> history = new ArrayList<ComponentHistory>();
 	
 	@Entity()
@@ -799,7 +800,7 @@ public class Component {
         	ComponentLocation rem = null;
         	Integer previous = 0;
 			for(ComponentLocation loc : locations){
-				if(loc.getId() ==  current){
+				if(loc.getId().equals(current)){
 					rem = loc; 
 					previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
@@ -843,7 +844,7 @@ public class Component {
         	ComponentLocation rem = null;
         	Integer previous = 0;
 			for(ComponentLocation loc : locations){
-				if(loc.getId() ==  current){
+				if(loc.getId().equals(current)){
 					rem = loc; 
 					previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
@@ -882,7 +883,7 @@ public class Component {
         	ComponentLocation rem = null;
         	Integer previous = 0;
 			for(ComponentLocation loc : locations){
-				if(loc.getId() ==  current){
+				if(loc.getId().equals(current)){
 					rem = loc; 
 					previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
@@ -921,7 +922,7 @@ public class Component {
 		else if("Sell".equals(type)){	
 			ComponentLocation rem = null;
 			for(ComponentLocation loc : locations){
-				if(loc.getId() ==  current){
+				if(loc.getId().equals(current)){
 					rem = loc; 
 					Integer previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
@@ -953,7 +954,7 @@ public class Component {
 		else if("Consume".equals(type)){	
 			ComponentLocation rem = null;
 			for(ComponentLocation loc : locations){
-				if(loc.getId() ==  current){
+				if(loc.getId().equals(current)){
 					rem = loc; 
 					Integer previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
