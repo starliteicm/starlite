@@ -150,6 +150,20 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
+		Column currentCol = table.getRow().getColumn("currentHours");
+		currentCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return ((Component) item).getCurrentHoursStr();
+					}
+		});
+		
+		Column remainingCol = table.getRow().getColumn("remainingHours");
+		remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return ((Component) item).getRemainingHoursStr();
+					}
+		});
+		
 		if (!limit.isExported()) {
 		Column percentCol = table.getRow().getColumn("remainingHoursPercent");
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
