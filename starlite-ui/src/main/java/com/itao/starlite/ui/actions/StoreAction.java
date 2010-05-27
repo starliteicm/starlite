@@ -150,17 +150,18 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
+		
 		Column currentCol = table.getRow().getColumn("currentHours");
 		currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
-						return ((Component) item).getCurrentHoursStr();
+						return (Number) new Double(((Component) item).getCurrentHoursStr());
 					}
 		});
 		
 		Column remainingCol = table.getRow().getColumn("remainingHours");
 		remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
-						return ((Component) item).getRemainingHoursStr();
+						return (Number) new Double( ((Component) item).getRemainingHoursStr() );
 					}
 		});
 		
@@ -175,10 +176,10 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 				
 				try{
 					long valueLong = (Long) value;
-					if(valueLong >= 50){
+					if(valueLong >= 25){
 						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
 					}
-					else if(valueLong >= 20){
+					else if(valueLong >= 10){
 						html.div().style("text-align:center;background-color:#FFFF99;font-weight:bold;").styleEnd();
 					}
 					else{

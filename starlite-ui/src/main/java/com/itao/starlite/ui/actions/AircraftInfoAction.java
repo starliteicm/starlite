@@ -87,6 +87,20 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		return execute();
 	}
 	
+	
+	public String components() throws Exception{
+		tab = "components";
+		tableHtml = "";
+		prepareTabs();
+		return "components";
+	}
+	
+	public String config() throws Exception{
+		tab = "config";
+		prepareTabs();
+		return "config";
+	}
+	
 	public String tableHtml;
 	public List<AircraftType> aircraftTypes;
 	public String hours() throws Exception {
@@ -215,10 +229,19 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		  Tab hours = new Tab("Hours", "aircraftInfo!hours.action?id="+idStr, tab.equals("hours"));
 		  tabList.add(hours);
 		}
+		if(user.hasRead("aircraftHours")){
+			  Tab hours = new Tab("Config", "aircraftInfo!config.action?id="+idStr, tab.equals("config"));
+			  tabList.add(hours);
+		}
+		if(user.hasRead("aircraftHours")){
+			  Tab hours = new Tab("Components", "aircraftInfo!components.action?id="+idStr, tab.equals("components"));
+			  tabList.add(hours);
+		}
 		if(user.hasRead("aircraftDoc")){
 		  Tab docs = new Tab("Documents", "aircraftInfo!documents.action?id="+idStr, tab.equals("documents"));
 		  tabList.add(docs);
 		}
+		
 		
 		tableTabs = new Tab[tabList.size()];
 		int count = 0;

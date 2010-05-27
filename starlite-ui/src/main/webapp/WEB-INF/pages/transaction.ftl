@@ -14,7 +14,7 @@
         <label>Select Component:</label>
         <select name="id" style="width:600px;">
         <#list components as c>
-        <option <#if c.id==component?if_exists.id?if_exists>SELECTED</#if> value="${c.id?if_exists}">${c.number?if_exists} ${c.serial?if_exists}
+        <option <#if component.id?exists><#if c.id==component.id>SELECTED</#if></#if> value="${c.id?if_exists}">${c.number?if_exists} ${c.serial?if_exists}
         </#list>
         </select>
         <span>(Part) (Serial)

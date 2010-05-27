@@ -70,6 +70,7 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 	public Integer quantity;
 	public String note;
 	public String batch;
+	public String value;
 	
 	
 	@Inject

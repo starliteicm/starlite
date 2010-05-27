@@ -359,19 +359,117 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
-		Column currentCol = table.getRow().getColumn("currentHours");
-		currentCol.getCellRenderer().setCellEditor(new CellEditor() {
+		Column type = table.getRow().getColumn("type");
+		if (!limit.isExported()) {
+			type.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
-						return ((Component) item).getCurrentHoursStr();
+						if((""+((Component) item).getType()).indexOf("Class") >= 0){
+							return (""+((Component) item).getType()).substring(5);
+						}
+						return ((Component) item).getType();
 					}
-		});
+			});
+		}
+		
+		Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
+		tbo.setTitle("TBO");
+		if (!limit.isExported()) {
+			tbo.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
+					}
+			});
+		}
+		else{			
+			tbo.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getTimeBetweenOverhaul() ;
+				}
+			});
+		}
+		
+		Column hoursRunCol = table.getRow().getColumn("hoursRun");
+		if (!limit.isExported()) {
+			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getHoursRun()+"</div>";
+					}
+			});
+		}
+		else{			
+			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getHoursRun() ;
+				}
+			});
+		}
+		
+		Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
+		if (!limit.isExported()) {
+			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
+					}
+			});
+		}
+		else{			
+			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getHoursOnInstall() ;
+				}
+			});
+		}
+		
+		Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
+		if (!limit.isExported()) {
+			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
+					}
+			});
+		}
+		else{			
+			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getLifeExpiresHours() ;
+				}
+			});
+		}
+		
+		
+		Column currentCol = table.getRow().getColumn("currentHours");
+		if (!limit.isExported()) {
+			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
+					}
+			});
+		}
+		else{			
+			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) new Double( ((Component) item).getCurrentHoursStr() );
+				}
+			});
+		}
+		
 		
 		Column remainingCol = table.getRow().getColumn("remainingHours");
-		remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
+		if (!limit.isExported()) {
+			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
-						return ((Component) item).getRemainingHoursStr();
+						return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
 					}
-		});
+			});
+		}
+		else{			
+			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) new Double( ((Component) item).getRemainingHoursStr() );
+				}
+			});
+		}
+		
 			
 			
 		if (!limit.isExported()) {
@@ -385,10 +483,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				
 				try{
 					long valueLong = (Long) value;
-					if(valueLong >= 50){
+					if(valueLong >= 25){
 						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
 					}
-					else if(valueLong >= 20){
+					else if(valueLong >= 10){
 						html.div().style("text-align:center;background-color:#FFFF99;font-weight:bold;").styleEnd();
 					}
 					else{

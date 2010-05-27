@@ -82,7 +82,13 @@ public class Component {
 	}
 	
 	public Double getLifeExpiresHours(){
-		return timeBetweenOverhaul + hoursOnInstall - hoursRun;
+		Double tbo = timeBetweenOverhaul;
+		if(tbo == null){tbo= 0.0;}
+		Double hoi = hoursOnInstall;
+		if(hoi == null){hoi= 0.0;}
+		Double hr = hoursRun;
+		if(hr == null){hr= 0.0;}
+        return tbo + hoi - hr;
 	}
 	public String getLifeExpiresHoursStr(){
 		DecimalFormat oneDigit = new DecimalFormat("#0.0");//format to 1 decimal place
