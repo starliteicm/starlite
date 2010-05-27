@@ -29,7 +29,7 @@ public class Component {
 	private Integer id;
 	
 	@Column(name = "active", nullable = false, columnDefinition = "int(1) default 1")
-	private Integer active;
+	private Integer active = 1;
 	
 	//INFO
 	private String type;
@@ -37,6 +37,7 @@ public class Component {
 	private String description;
 	private String number;
 	private String serial;
+	private String state;
 	
 	//MANUFACTURE
 	private String manufacturer;
@@ -1024,6 +1025,14 @@ public class Component {
 
 	public Integer getActive() {
 		return active;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getState() {
+		return state;
 	}
 
 }

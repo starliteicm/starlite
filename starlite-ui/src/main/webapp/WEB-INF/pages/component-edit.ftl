@@ -225,6 +225,18 @@
 </head>
 <body>
 
+
+    <form id="deactivateForm" name="deactivateForm" action="component!save.action" method="POST" />
+    <input type="hidden" name="id" value="${id!}"/>
+    <input type="hidden" name="component.id" value="${id!}"/>
+    <input type="hidden" name="component.active" value="0"/>
+    </form>
+    <form id="reactivateForm" name="deactivateForm" action="component!save.action" method="POST" />
+    <input type="hidden" name="id" value="${id!}"/>
+    <input type="hidden" name="component.id" value="${id!}"/>
+    <input type="hidden" name="component.active" value="1"/>
+    </form>
+
 <@subTabs/>
 <#assign currentUser = Session.userObj>
 
@@ -299,6 +311,24 @@
             <label for="component.serial">Serial Number:</label>
             <input name="component.serial" type="text" value="${component.serial!}"/>
         </div>
+        
+        <div class="fm-opt">
+            <label for="component.state">Status:</label>
+            <select onchange="" name="component.state">
+                <#if component.state?exists>
+                <option value="" <#if component.state.equals("")>selected</#if> >
+                <option value="DER" <#if component.state.equals("DER")>selected</#if> >Scrap (DER)
+                <option value="SER" <#if component.state.equals("SER")>selected</#if> >Serviceable (SER)
+                <option value="REP" <#if component.state.equals("REP")>selected</#if> >Repairable (REP)
+                <#else>
+                <option value="">
+                <option value="DER">Scrap (DER)
+                <option value="SER">Serviceable (SER)
+                <option value="REP">Repairable (REP)
+                </#if>
+            </select>
+        </div>
+        
         <div class="fm-opt">
             <label for="component.manufacturer">Manfucaturer:</label>
             <input name="component.manufacturer" type="text" value="${component.manufacturer!}"/>
@@ -308,8 +338,18 @@
             <input class="date-pick" name="component.manufacturedDate" type="text" <#if component.manufacturedDate?exists >value="${component.manufacturedDate?string('dd/MM/yyyy')}"<#else>value=""</#if>  />
         </div>
         
+        <#if id?exists>
+        <#if component.active == 1>
+        <button type="button" onclick="if(confirm('Are you sure you wish to deactivate this Component? It will no longer appear on lists for available components')){document.forms.deactivateForm.submit();}" class="smooth" style="width:120px;float:right; margin-right:10px; margin-bottom: 4px;"><img style="padding-right:5px;" src="images/icons/cross.png"/>Deactivate</button>
+        <div style="clear:both"></div>
+        <#else>
+        <button type="button" onclick="if(confirm('Are you sure you wish to reactivate this Componenet? It will now appear on lists for available components')){document.forms.reactivateForm.submit();}" class="smooth" style="width:120px;float:right; margin-right:10px; margin-bottom: 4px;"><img style="padding-right:5px;" src="images/icons/add.png"/>Reactivate</button>
+        <div style="clear:both"></div>
+        </#if>
+        </#if>
         
-        <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button> 
+        
+        <button type="submit" class="smooth" style="width:120px;float:right; margin-right:10px; margin-bottom: 4px;"><img style="padding-right:5px;" src="images/icons/pencil.png"/>Save</button> 
        </fieldset>
     </form>
     </div>

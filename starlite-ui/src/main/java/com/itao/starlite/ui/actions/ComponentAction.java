@@ -31,6 +31,7 @@ import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.model.Component.ComponentHistory;
 import com.itao.starlite.ui.Breadcrumb;
+import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
 import com.opensymphony.xwork2.ActionSupport;
@@ -47,6 +48,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	private static final long serialVersionUID = -3932501985283829578L;
 	private User user;
 	
+	public String tab = "active";
+	public Tab[] tableTabs;
 	public String tableHtml;
 	public String valTableHtml;
 	public String histTableHtml;
@@ -110,7 +113,25 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	@Override
 	public String execute() throws Exception {
+		prepareTabs();
 		components = manager.getComponents();
+		TableFacade tableFacade = createTable();
+		
+		Limit limit = tableFacade.getLimit();
+		if (limit.isExported()) {
+		    tableFacade.render();
+		    return null;
+		} 
+     	tableFacade.setView(new NavTableView());
+		tableHtml = tableFacade.render();
+		
+		return SUCCESS;
+	}
+	
+	public String deactive() throws Exception {
+		tab = "deactive";
+		prepareTabs();
+		components = manager.getComponentsDeactivated();
 		TableFacade tableFacade = createTable();
 		
 		Limit limit = tableFacade.getLimit();
@@ -339,6 +360,16 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 		tableFacade.setView(new PlainTableView());
 		histTableHtml = tableFacade.render();
+	}
+	
+	private void prepareTabs() {
+
+		Tab activeTab = new Tab("Active", "component.action", tab.equals("active"));
+		Tab deactiveTab = new Tab("Deactive", "component!deactive.action", tab.equals("deactive"));
+		
+		if (user.hasPermission("ManagerView"))
+			tableTabs = new Tab[] {activeTab, deactiveTab};
+		
 	}
 	
 	public TableFacade createTable(){

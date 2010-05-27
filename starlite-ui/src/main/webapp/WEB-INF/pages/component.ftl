@@ -15,8 +15,13 @@
         }
         
         function onInvokeExportAction(id) {
+            <#if tab="active">
             var parameterString = createParameterStringForLimit(id);
             location.href = '${request.contextPath}/component.action?' + parameterString;
+            <#else>
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/component!deactive.action?' + parameterString;
+            </#if>
         }
 </script>
 </script>

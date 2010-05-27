@@ -17,7 +17,7 @@ public class Store {
 	private String description;
 	
 	@Column(name = "active", nullable = false, columnDefinition = "int(1) default 1")
-	private Integer active;
+	private Integer active = 1;
 	
 	public String getLocation(){
 		return code + seccode;
