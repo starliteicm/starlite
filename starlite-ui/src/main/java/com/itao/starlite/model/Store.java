@@ -1,5 +1,6 @@
 package com.itao.starlite.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,6 +15,9 @@ public class Store {
 	private String code;
 	private String seccode;
 	private String description;
+	
+	@Column(name = "active", nullable = false, columnDefinition = "int(1) default 1")
+	private Integer active;
 	
 	public String getLocation(){
 		return code + seccode;
@@ -31,6 +35,7 @@ public class Store {
 				else if("DR".equals(store.getCode())){store.setType("Depot");}
 				else if("ZS".equals(store.getCode())){store.setType("Aircraft");}
 				else{store.setType("Store");}
+				store.setActive(1);
 				return store;
 			}	
 		}
@@ -68,6 +73,12 @@ public class Store {
 	}
 	public String getSeccode() {
 		return seccode;
+	}
+	public void setActive(Integer active) {
+		this.active = active;
+	}
+	public Integer getActive() {
+		return active;
 	}
 	
 }

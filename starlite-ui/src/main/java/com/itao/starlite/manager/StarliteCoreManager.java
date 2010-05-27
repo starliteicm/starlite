@@ -553,7 +553,11 @@ public class StarliteCoreManager {
 
 	//Stores
 	public List<Store> getStores(){
-		return storeDao.findAll();
+		return storeDao.findActive();
+	}
+	
+	public List<Store> getStoresDeactivated(){
+		return storeDao.findDeactive();
 	}
 	
 	public Store getStore(Integer id){
@@ -566,7 +570,11 @@ public class StarliteCoreManager {
 	
 	//Components
 	public List<Component> getComponents(){
-		return componentDao.findAll();
+		return componentDao.findActive();
+	}
+		
+	public List<Component> getComponentsDeactivated(){
+		return componentDao.findDeactive();
 	}
 	
 	public Component getComponent(Integer id){
@@ -584,5 +592,6 @@ public class StarliteCoreManager {
 	public List<Component> getComponents(String location) {
 		return componentDao.findByLocation(location);
 	}
+	
 
 }

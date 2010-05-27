@@ -12,4 +12,8 @@ public interface StoreDao extends GenericDao<Store, Integer>{
 
 	public Store findByCode(String location);
 
+	public List<Store> findActive();
+
+	public List<Store> findDeactive();
+
 }

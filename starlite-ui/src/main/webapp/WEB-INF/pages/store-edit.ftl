@@ -76,7 +76,17 @@ function validate(){
             </select>
         </div>
         
-        <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
+        <#if id?exists>
+        <#if store.active == 1>
+        <button type="button" onclick="if(confirm('Are you sure you wish to deactivate this Store? It will no longer appear on lists for available stores')){document.forms.deactivateForm.submit();}" class="smooth" style="width:120px;float:right; margin-right:10px; margin-bottom: 4px;"><img style="padding-right:5px;" src="images/icons/cross.png"/>Deactivate</button>
+        <div style="clear:both"></div>
+        <#else>
+        <button type="button" onclick="if(confirm('Are you sure you wish to reactivate this Store? It will now appear on lists for available stores')){document.forms.reactivateForm.submit();}" class="smooth" style="width:120px;float:right; margin-right:10px; margin-bottom: 4px;"><img style="padding-right:5px;" src="images/icons/add.png"/>Reactivate</button>
+        <div style="clear:both"></div>
+        </#if>
+        </#if>
+        
+        <button type="submit" class="smooth" style="width:120px;float:right; margin-right:10px; margin-bottom: 4px;"><img style="padding-right:5px;" src="images/icons/pencil.png"/>Save</button>
         
         </fieldset>
     
@@ -98,8 +108,21 @@ function validate(){
     </div>
     
     </form>
+    
+    <form id="deactivateForm" name="deactivateForm" action="store!save.action" method="POST" />
+    <input type="hidden" name="id" value="${id!}"/>
+    <input type="hidden" name="store.id" value="${id!}"/>
+    <input type="hidden" name="store.active" value="0"/>
+    </form>
+    <form id="reactivateForm" name="deactivateForm" action="store!save.action" method="POST" />
+    <input type="hidden" name="id" value="${id!}"/>
+    <input type="hidden" name="store.id" value="${id!}"/>
+    <input type="hidden" name="store.active" value="1"/>
+    </form>
+    
     </#if>
 
+    
 
 </body>
 </html>

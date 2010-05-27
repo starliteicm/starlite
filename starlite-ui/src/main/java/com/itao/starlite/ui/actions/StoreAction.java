@@ -24,6 +24,7 @@ import com.itao.starlite.manager.StarliteCoreManager;
 import com.itao.starlite.model.Component;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.ui.Breadcrumb;
+import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
 import com.opensymphony.xwork2.ActionSupport;
@@ -50,15 +51,39 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	public String current="Stores";
 	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Stores")};
 	
+	public String tab = "active";
+	public Tab[] tableTabs;
+	
 	@Inject
 	private StarliteCoreManager manager;
 	
 	@Override
 	public String execute() throws Exception {
 		stores = manager.getStores();
+		prepareTabs();
 		createTable();
 		return SUCCESS;
 	}
+	
+	public String deactive() throws Exception {
+		tab = "deactive";
+		prepareTabs();
+		stores = manager.getStoresDeactivated();
+		createTable();
+		return SUCCESS;
+	}
+	
+	private void prepareTabs() {
+
+		Tab activeTab = new Tab("Active", "store.action", tab.equals("active"));
+		Tab deactiveTab = new Tab("Deactive", "store!deactive.action", tab.equals("deactive"));
+		
+		if (user.hasPermission("ManagerView"))
+			tableTabs = new Tab[] {activeTab, deactiveTab};
+		
+	}
+	
+	
 	
 	public String edit(){
 		prepare();
@@ -136,7 +161,7 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
      public TableFacade createComponentTable(){
 			
 		
-		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
+ 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
 		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","remainingHoursPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 		
@@ -150,23 +175,135 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
+		Column type = table.getRow().getColumn("type");
+		if (!limit.isExported()) {
+			type.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if((""+((Component) item).getType()).indexOf("Class") >= 0){
+							return (""+((Component) item).getType()).substring(5);
+						}
+						return ((Component) item).getType();
+					}
+			});
+		}
+		
+		Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
+		tbo.setTitle("TBO");
+		if (!limit.isExported()) {
+			tbo.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getTimeBetweenOverhaul() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
+					}
+			});
+		}
+		else{			
+			tbo.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getTimeBetweenOverhaul() ;
+				}
+			});
+		}
+		
+		Column hoursRunCol = table.getRow().getColumn("hoursRun");
+		if (!limit.isExported()) {
+			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getHoursRun() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getHoursRun()+"</div>";
+					}
+			});
+		}
+		else{			
+			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getHoursRun() ;
+				}
+			});
+		}
+		
+		Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
+		if (!limit.isExported()) {
+			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getHoursOnInstall() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
+					}
+			});
+		}
+		else{			
+			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getHoursOnInstall() ;
+				}
+			});
+		}
+		
+		Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
+		if (!limit.isExported()) {
+			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getLifeExpiresHours() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
+					}
+			});
+		}
+		else{			
+			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getLifeExpiresHours() ;
+				}
+			});
+		}
+		
 		
 		Column currentCol = table.getRow().getColumn("currentHours");
-		currentCol.getCellRenderer().setCellEditor(new CellEditor() {
+		if (!limit.isExported()) {
+			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
-						return (Number) new Double(((Component) item).getCurrentHoursStr());
+						return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
 					}
-		});
+			});
+		}
+		else{			
+			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) new Double( ((Component) item).getCurrentHoursStr() );
+				}
+			});
+		}
+		
 		
 		Column remainingCol = table.getRow().getColumn("remainingHours");
-		remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						return (Number) new Double( ((Component) item).getRemainingHoursStr() );
-					}
-		});
-		
 		if (!limit.isExported()) {
+			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
+					}
+			});
+		}
+		else{			
+			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) new Double( ((Component) item).getRemainingHoursStr() );
+				}
+			});
+		}
+		
+			
+			
+		
 		Column percentCol = table.getRow().getColumn("remainingHoursPercent");
+		percentCol.setTitle("Remaining %");
+		if (!limit.isExported()) {
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {
@@ -201,14 +338,20 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		});
 		}
 		
-		if (!limit.isExported()) {
+		Column serialCol = table.getRow().getColumn("serial");
+		serialCol.setTitle("Serial No.");
+		
 		Column refCol = table.getRow().getColumn("number");
-		refCol.setTitle("Part Number");
+		refCol.setTitle("Part No.");
+		if (!limit.isExported()) {
 		refCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {
 				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				if(value == null){value="(blank)";}
+				if("".equals(value)){value="(blank)";}
+				System.out.println(value);
 				HtmlBuilder html = new HtmlBuilder();
 				html.a().href().quote().append("component!edit.action?id="+id).quote().close();
 				html.append(value);

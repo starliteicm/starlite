@@ -12,4 +12,8 @@ public interface ComponentDao extends GenericDao<Component, Integer>{
 
 	public List<Component> findByLocation(String location);
 
+	public List<Component> findActive();
+
+	public List<Component> findDeactive();
+
 }

@@ -376,6 +376,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		if (!limit.isExported()) {
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getTimeBetweenOverhaul() == null){
+							return "";
+						}
 						return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
 					}
 			});
@@ -392,6 +395,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		if (!limit.isExported()) {
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getHoursRun() == null){
+							return "";
+						}
 						return "<div style='text-align:right'>"+((Component) item).getHoursRun()+"</div>";
 					}
 			});
@@ -408,6 +414,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		if (!limit.isExported()) {
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getHoursOnInstall() == null){
+							return "";
+						}
 						return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
 					}
 			});
@@ -424,6 +433,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		if (!limit.isExported()) {
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getLifeExpiresHours() == null){
+							return "";
+						}
 						return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
 					}
 			});
@@ -472,8 +484,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 			
 			
-		if (!limit.isExported()) {
+		
 		Column percentCol = table.getRow().getColumn("remainingHoursPercent");
+		percentCol.setTitle("Remaining %");
+		if (!limit.isExported()) {
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {
@@ -508,14 +522,20 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		});
 		}
 		
-		if (!limit.isExported()) {
+		Column serialCol = table.getRow().getColumn("serial");
+		serialCol.setTitle("Serial No.");
+		
 		Column refCol = table.getRow().getColumn("number");
-		refCol.setTitle("Part Number");
+		refCol.setTitle("Part No.");
+		if (!limit.isExported()) {
 		refCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {
 				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				if(value == null){value="(blank)";}
+				if("".equals(value)){value="(blank)";}
+				System.out.println(value);
 				HtmlBuilder html = new HtmlBuilder();
 				html.a().href().quote().append("component!edit.action?id="+id).quote().close();
 				html.append(value);

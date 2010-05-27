@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,10 @@ public class Component {
 	@Id
 	@GeneratedValue
 	private Integer id;
-		
+	
+	@Column(name = "active", nullable = false, columnDefinition = "int(1) default 1")
+	private Integer active;
+	
 	//INFO
 	private String type;
 	private String name;
@@ -1012,6 +1016,14 @@ public class Component {
 			}
 		}
 		
+	}
+
+	public void setActive(Integer active) {
+		this.active = active;
+	}
+
+	public Integer getActive() {
+		return active;
 	}
 
 }

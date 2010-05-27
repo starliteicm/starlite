@@ -5,6 +5,7 @@ import java.util.List;
 import com.itao.persistence.GenericHibernateDao;
 import com.itao.starlite.dao.StoreDao;
 import com.itao.starlite.model.Aircraft;
+import com.itao.starlite.model.Component;
 import com.itao.starlite.model.Store;
 
 public class StoreHibernateDao extends GenericHibernateDao<Store, Integer> implements StoreDao {
@@ -19,6 +20,18 @@ public class StoreHibernateDao extends GenericHibernateDao<Store, Integer> imple
 			.uniqueResult();
 			}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Store> findActive() {
+		List<Store> stores = (List<Store>) getCurrentSession().createQuery("select s from Store s where s.active =1").list();
+		return stores;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Store> findDeactive() {
+		List<Store> stores = (List<Store>) getCurrentSession().createQuery("select s from Store s where s.active =0").list();
+		return stores;
 	}
 
 }
