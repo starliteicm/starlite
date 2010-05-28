@@ -80,24 +80,6 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public String replacementCurrency;
 	public String installTime;
 	
-	//Config
-	public Integer config;
-	public Integer nvg;
-	public Integer flir;
-	public Integer night;
-	public Integer floa;
-	public Integer indi;
-	public Integer tcas;
-	public Integer hoist;
-	public Integer cargo;
-	public Integer bambi;
-	public Integer vip;
-	public Integer troop;
-	public Integer ferry;
-	public Integer fdr;
-	public Integer air;
-	public Integer mmel;
-	
 	//Locations
 	public Integer loc;
 	public Integer locationId;
@@ -161,25 +143,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public String save(){
 		if(component != null){
 			
-			if(config != null){
-				//Save Config
-				component.setNvg(nvg);
-				component.setFlir(flir);
-				component.setNight(night);
-				component.setFloa(floa);
-				component.setIndi(indi);
-				component.setTcas(tcas);
-				component.setHoist(hoist);
-				component.setCargo(cargo);
-				component.setBambi(bambi);
-				component.setVip(vip);
-				component.setTroop(troop);
-				component.setFerry(ferry);
-				component.setFdr(fdr);
-				component.setAir(air);
-				component.setMmel(mmel);
-			}
-			else if( loc != null){
+
+			if( loc != null){
 				//Save Location
 				if(((location!= null)&&(bin!= null))||(locCurrent == 0)) {
 					if((location.length() == 5)){
@@ -377,7 +342,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 		
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","remainingHoursPercent");		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 		
 		tableFacade.setItems(components);
@@ -516,7 +481,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			
 			
 		
-		Column percentCol = table.getRow().getColumn("remainingHoursPercent");
+		Column percentCol = table.getRow().getColumn("remainingPercent");
 		percentCol.setTitle("Remaining %");
 		if (!limit.isExported()) {
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {

@@ -11,7 +11,7 @@
 </head>
 <body>
 	<@subTabs/>
-	<div style="clear:left; border: 1px solid silver; padding: 10px;">
+	<div style="clear:left; border: 1px solid silver; padding: 10px;overflow:auto;">
 	${tableHtml}
 	</div>
 </body>

@@ -69,6 +69,27 @@ public class Component {
 	//Time since install
 	//lifeExpiresHours
 	
+	 
+	
+	public Double getTotalDays(){
+		long milPerDay = 1000*60*60*24;
+		if(expiryDate != null){
+			if(installDate != null){
+				return	new Double((expiryDate.getTime() - installDate.getTime()) / milPerDay);
+			}
+		}
+		return null;
+	}
+	
+	public Double getRemainingDays(){
+		long milPerDay = 1000*60*60*24;
+		if(expiryDate != null){
+			Calendar cal = Calendar.getInstance();
+			return	new Double((expiryDate.getTime() - cal.getTime().getTime()) / milPerDay);
+		}
+		return null;
+	}
+	
 	public Double getRemainingHours(){
 		return timeBetweenOverhaul - getCurrentHours();
 	}
@@ -80,6 +101,22 @@ public class Component {
 		Double ch = getCurrentHours();
 		if(ch == null){ch= 0.0;}
 		return oneDigit.format(0.0 + tbo - ch);
+	}
+	
+	public long getRemainingPercent(){
+		long days = getRemainingDaysPercent();
+		long hours = getRemainingHoursPercent();
+		if(hours < days){
+			return hours;
+		}
+		return days;
+	}
+	
+	public long getRemainingDaysPercent(){
+		if((getRemainingDays() != null) && (getTotalDays() != null)){
+			return  Math.round((getRemainingDays() / getTotalDays()) * 100.0);
+		}
+		return 100;
 	}
 	
 	public long getRemainingHoursPercent(){
@@ -109,23 +146,6 @@ public class Component {
 	private String condition;
 	private String serviceLifeLimited;
 	
-	//CONFIG
-	private Integer nvg;
-	private Integer flir;
-	private Integer night;
-	private Integer floa;
-	private Integer indi;
-	private Integer tcas;
-	private Integer hoist;
-	private Integer cargo;
-	private Integer bambi;
-	private Integer vip;
-	private Integer troop;
-	private Integer ferry;
-	private Integer fdr;
-	private Integer air;
-	
-	private Integer mmel;
 	
 	private String status;
 	
@@ -529,125 +549,6 @@ public class Component {
 		this.serviceLifeLimited = serviceLifeLimited;
 	}
 
-	public Integer getNvg() {
-		return nvg;
-	}
-
-	public void setNvg(Integer nvg) {
-		this.nvg = nvg;
-	}
-
-	public Integer getFlir() {
-		return flir;
-	}
-
-	public void setFlir(Integer flir) {
-		this.flir = flir;
-	}
-
-	public Integer getNight() {
-		return night;
-	}
-
-	public void setNight(Integer night) {
-		this.night = night;
-	}
-
-	public Integer getFloa() {
-		return floa;
-	}
-
-	public void setFloa(Integer floa) {
-		this.floa = floa;
-	}
-
-	public Integer getIndi() {
-		return indi;
-	}
-
-	public void setIndi(Integer indi) {
-		this.indi = indi;
-	}
-
-	public Integer getTcas() {
-		return tcas;
-	}
-
-	public void setTcas(Integer tcas) {
-		this.tcas = tcas;
-	}
-
-	public Integer getHoist() {
-		return hoist;
-	}
-
-	public void setHoist(Integer hoist) {
-		this.hoist = hoist;
-	}
-
-	public Integer getCargo() {
-		return cargo;
-	}
-
-	public void setCargo(Integer cargo) {
-		this.cargo = cargo;
-	}
-
-	public Integer getBambi() {
-		return bambi;
-	}
-
-	public void setBambi(Integer bambi) {
-		this.bambi = bambi;
-	}
-
-	public Integer getVip() {
-		return vip;
-	}
-
-	public void setVip(Integer vip) {
-		this.vip = vip;
-	}
-
-	public Integer getTroop() {
-		return troop;
-	}
-
-	public void setTroop(Integer troop) {
-		this.troop = troop;
-	}
-
-	public Integer getFerry() {
-		return ferry;
-	}
-
-	public void setFerry(Integer ferry) {
-		this.ferry = ferry;
-	}
-
-	public Integer getFdr() {
-		return fdr;
-	}
-
-	public void setFdr(Integer fdr) {
-		this.fdr = fdr;
-	}
-
-	public Integer getAir() {
-		return air;
-	}
-
-	public void setAir(Integer air) {
-		this.air = air;
-	}
-
-	public Integer getMmel() {
-		return mmel;
-	}
-
-	public void setMmel(Integer mmel) {
-		this.mmel = mmel;
-	}
 
 	public String getStatus() {
 		return status;
@@ -801,9 +702,6 @@ public class Component {
 		
 		Date now = Calendar.getInstance().getTime();
 		
-		if(this.getAir() != null){hist.add(new ComponentHistory(now,now,user,"update","air",""+c.getAir(),""+getAir(),"Component Update",null));}
-		else{if(c.getAir() != null){hist.add(new ComponentHistory(now,now,user,"update","air",""+c.getAir(),"blank","Component Update",null));}}
-
 		if(this.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"update","airframeHours",""+c.getAirframeHours(),""+getAirframeHours(),"Component Update",null));}
 		else{if(c.getAirframeHours() != null){hist.add(new ComponentHistory(now,now,user,"update","airframeHours",""+c.getAirframeHours(),"blank","Component Update",null));}}
 

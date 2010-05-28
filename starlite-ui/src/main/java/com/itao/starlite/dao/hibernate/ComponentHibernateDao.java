@@ -18,13 +18,13 @@ public class ComponentHibernateDao extends GenericHibernateDao<Component, Intege
 
 	@SuppressWarnings("unchecked")
 	public List<Component> findActive() {
-		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =1").list();
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =1 order by c.name,c.number").list();
 		return components;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Component> findDeactive() {
-		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =0").list();
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =0 order by c.name,c.number").list();
 		return components;
 	}
 

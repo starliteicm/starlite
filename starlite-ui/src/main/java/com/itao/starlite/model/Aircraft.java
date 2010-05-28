@@ -28,6 +28,24 @@ public class Aircraft {
 	private String livery;
 	private Integer engines;
 	
+	//CONFIG
+	private Integer nvg;
+	private Integer flir;
+	private Integer night;
+	private Integer floa;
+	private Integer indi;
+	private Integer tcas;
+	private Integer hoist;
+	private Integer cargo;
+	private Integer bambi;
+	private Integer vip;
+	private Integer troop;
+	private Integer ferry;
+	private Integer fdr;
+	private Integer air;
+	
+	private Integer mmel;
+	
 	public Certificate getCertificateOfRegistration() {
 		if (certificateOfRegistration == null)
 			certificateOfRegistration = new Certificate();
@@ -127,4 +145,126 @@ public class Aircraft {
 	public void setEngines(Integer engines) {
 		this.engines = engines;
 	}
+	
+	public Integer getNvg() {
+		return nvg;
+	}
+
+	public void setNvg(Integer nvg) {
+		this.nvg = nvg;
+	}
+
+	public Integer getFlir() {
+		return flir;
+	}
+
+	public void setFlir(Integer flir) {
+		this.flir = flir;
+	}
+
+	public Integer getNight() {
+		return night;
+	}
+
+	public void setNight(Integer night) {
+		this.night = night;
+	}
+
+	public Integer getFloa() {
+		return floa;
+	}
+
+	public void setFloa(Integer floa) {
+		this.floa = floa;
+	}
+
+	public Integer getIndi() {
+		return indi;
+	}
+
+	public void setIndi(Integer indi) {
+		this.indi = indi;
+	}
+
+	public Integer getTcas() {
+		return tcas;
+	}
+
+	public void setTcas(Integer tcas) {
+		this.tcas = tcas;
+	}
+
+	public Integer getHoist() {
+		return hoist;
+	}
+
+	public void setHoist(Integer hoist) {
+		this.hoist = hoist;
+	}
+
+	public Integer getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(Integer cargo) {
+		this.cargo = cargo;
+	}
+
+	public Integer getBambi() {
+		return bambi;
+	}
+
+	public void setBambi(Integer bambi) {
+		this.bambi = bambi;
+	}
+
+	public Integer getVip() {
+		return vip;
+	}
+
+	public void setVip(Integer vip) {
+		this.vip = vip;
+	}
+
+	public Integer getTroop() {
+		return troop;
+	}
+
+	public void setTroop(Integer troop) {
+		this.troop = troop;
+	}
+
+	public Integer getFerry() {
+		return ferry;
+	}
+
+	public void setFerry(Integer ferry) {
+		this.ferry = ferry;
+	}
+
+	public Integer getFdr() {
+		return fdr;
+	}
+
+	public void setFdr(Integer fdr) {
+		this.fdr = fdr;
+	}
+
+	public Integer getAir() {
+		return air;
+	}
+
+	public void setAir(Integer air) {
+		this.air = air;
+	}
+
+	public Integer getMmel() {
+		return mmel;
+	}
+
+	public void setMmel(Integer mmel) {
+		this.mmel = mmel;
+	}
+
+	
 }

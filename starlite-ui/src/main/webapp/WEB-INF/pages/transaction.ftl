@@ -2,7 +2,24 @@
 <#setting number_format = "######.##########"/>
 
 <html>
-<head></head>
+<head>
+<link rel="stylesheet" type="text/css" href="styles/jmesa.css">
+<script type="text/javascript" src="js/jmesa.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+           addDropShadow('images/table/');
+        });
+        function onInvokeAction(id) {
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/transaction.action?' + parameterString;
+        }
+</script>
+<style>
+#componentTable{
+    width:950px;
+}
+</style>
+</head>
 <body>
 
     <div style="padding:10px;border:1px solid silver;width:1000px;">
@@ -10,41 +27,7 @@
     <fieldset>
         <legend>Component Transactions</legend>
         
-        <div class="fm-opt">
-        <label>Select Component:</label>
-        <select name="id" style="width:600px;">
-        <#list components as c>
-        <option <#if component.id?exists><#if c.id==component.id>SELECTED</#if></#if> value="${c.id?if_exists}">${c.number?if_exists} ${c.serial?if_exists}
-        </#list>
-        </select>
-        <span>(Part) (Serial)
-        </div>
-        
-        <div class="fm-opt">
-        <label>Transaction Type:</label>
-        <select name="type" style="width:150px;">
-        <#if type?exists>
-        <option <#if type=="Purchase">SELECTED</#if>>Purchase
-        <option <#if type=="Repair">SELECTED</#if>>Repair 
-        <option <#if type=="Move">SELECTED</#if>>Move 
-        <option <#if type=="Reserve">SELECTED</#if>>Reserve  
-        <option <#if type=="Sell">SELECTED</#if>>Sell 
-        <option <#if type=="Scrap">SELECTED</#if>>Scrap
-        <option <#if type=="Consume">SELECTED</#if>>Consume
-        <#else>
-        <option>Purchase
-        <option>Repair 
-        <option>Move 
-        <option>Reserve  
-        <option>Sell 
-        <option>Scrap
-        <option>Consume
-        </#if>
-        </select>
-        </div>
-        
-        <button style="position: relative; float: right; top: 4px;" class="smooth" onclick="document.forms.transForm.submit();" type="button"><img src="images/icons/accept.png"> Select Transaction Type</button>
-        
+        ${tableHtml}
         
     </fieldset>
     </form>
@@ -114,7 +97,7 @@
         </div> 
         
         
-        <button style="position: relative; float: right; top: 4px;" class="smooth" onclick="document.forms.transCreateForm.submit();" type="button"><img src="images/icons/accept.png"> Create Transaction</button>
+        <button id="createTransButton" style="position: relative; float: right; top: 4px;" class="smooth" onclick="document.forms.transCreateForm.submit();" type="button"><img src="images/icons/accept.png"> Create Transaction</button>
         
         
     </fieldset>
