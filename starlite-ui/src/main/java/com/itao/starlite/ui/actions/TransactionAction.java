@@ -129,7 +129,7 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
 		tableFacade.setColumnProperties("type","name", "number", "serial","state","action");
 		tableFacade.setItems(components);
-		tableFacade.setMaxRows(10000);
+		tableFacade.setMaxRows(15);
 		Table table = tableFacade.getTable();
 		table.getRow().setUniqueProperty("id");
 		

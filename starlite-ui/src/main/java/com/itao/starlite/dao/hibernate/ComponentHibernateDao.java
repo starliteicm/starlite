@@ -11,7 +11,7 @@ public class ComponentHibernateDao extends GenericHibernateDao<Component, Intege
 	@SuppressWarnings("unchecked")
 	public List<Component> findByLocation(String location){
 		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c "+
-				"LEFT JOIN c.locations cl where cl.location = ?")
+				"LEFT JOIN c.locations cl where cl.location = ? order by c.name,c.number")
 		.setString(0, location).list();
 		return components;
 	}
