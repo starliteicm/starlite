@@ -7,6 +7,10 @@
         $(document).ready(function() {
            addDropShadow('images/table/');
         });
+        function onInvokeExportAction(id) {
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/aircraftInfo!components.action?id=${id}&' + parameterString;
+        }
 </script>
 </head>
 <body>

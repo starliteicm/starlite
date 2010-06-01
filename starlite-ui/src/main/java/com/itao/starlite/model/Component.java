@@ -75,7 +75,7 @@ public class Component {
 		long milPerDay = 1000*60*60*24;
 		if(expiryDate != null){
 			if(installDate != null){
-				return	new Double((expiryDate.getTime() - installDate.getTime()) / milPerDay);
+				return	new Double((expiryDate.getTime() - manufacturedDate.getTime()) / milPerDay);
 			}
 		}
 		return null;
