@@ -120,7 +120,12 @@ public class Component {
 	}
 	
 	public long getRemainingHoursPercent(){
-		return Math.round(((timeBetweenOverhaul - getCurrentHours())/timeBetweenOverhaul)*100.0);
+		if((getTimeBetweenOverhaul() != null) && (getCurrentHours() != null)){
+			if(getTimeBetweenOverhaul() > 0){
+				return Math.round(((timeBetweenOverhaul - getCurrentHours())/timeBetweenOverhaul)*100.0);
+			}
+		}
+		return 100;
 	}
 	
 	public Double getLifeExpiresHours(){
