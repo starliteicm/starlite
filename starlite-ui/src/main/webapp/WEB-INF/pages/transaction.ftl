@@ -78,7 +78,13 @@
         <#if type == "Purchase" || type == "Sell" || type == "Consume" || type == "Scrap" >
         <div class="fm-opt">
         <label>Value:</label>
-        <input name="value" type="text" />
+        <input name="purchaseValue" type="text" />
+        <select id="purchaseCurrency" name="purchaseCurrency" style="width:60px;">
+            <option>USD
+            <#list rates?if_exists as rate>
+                <option>${rate.currencyCodeFrom}</option>
+            </#list>
+            </select>
         </div>
         </#if>
         

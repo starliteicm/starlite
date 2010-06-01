@@ -323,6 +323,12 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		Column refCol = table.getRow().getColumn("field");
 		refCol.setTitle("Action");
 		
+		Column fCol = table.getRow().getColumn("fromVal");
+		fCol.setTitle("From");
+		
+		Column tCol = table.getRow().getColumn("toVal");
+		tCol.setTitle("To");
+		
 		tableFacade.setView(new PlainTableView());
 		histTableHtml = tableFacade.render();
 	}

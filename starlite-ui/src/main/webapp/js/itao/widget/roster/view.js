@@ -925,8 +925,8 @@ ITAO.widget.roster.Bar = function(dateRange, roster, previous, i, userData) {
 			i=0;
 		}
 		
-		that.class = roster.getClass(i);
-		YAHOO.util.Dom.addClass(entireBar, that.class);
+		that.myclass = roster.getClass(i);
+		YAHOO.util.Dom.addClass(entireBar, that.myclass);
 		
 		if (length < 19) {
 			YAHOO.util.Dom.addClass(entireBar, "small");

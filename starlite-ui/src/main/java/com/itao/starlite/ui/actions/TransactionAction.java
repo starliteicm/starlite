@@ -3,6 +3,7 @@ package com.itao.starlite.ui.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -74,7 +75,8 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 	public Integer quantity;
 	public String note;
 	public String batch;
-	public String value;
+	public Double purchaseValue;
+	public String purchaseCurrency;
 	
 	@Inject
 	private StarliteCoreManager manager;
@@ -99,6 +101,17 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 		
         if("Purchase".equals(type)){
         	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,null,note);
+        	try {
+        		if(purchaseValue != null){
+        		Date now = Calendar.getInstance().getTime();
+        		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        		SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+				component.updateValuation(null, df.format(now),tf.format(now),user.getUsername(),null,null,purchaseValue,purchaseCurrency,null,null);
+        		}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         else if("Repair".equals(type)){
         	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,locCurrent,note);
@@ -110,13 +123,46 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);		
 		}
 		else if("Sell".equals(type)){
-			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);		
+			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);
+			try {
+        		if(purchaseValue != null){
+        		Date now = Calendar.getInstance().getTime();
+        		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        		SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+				component.updateValuation(null, df.format(now),tf.format(now),user.getUsername(),purchaseValue,purchaseCurrency,null,null,null,null);
+        		}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if("Scrap".equals(type)){
 			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);
+			try {
+        		if(purchaseValue != null){
+        		Date now = Calendar.getInstance().getTime();
+        		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        		SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+				component.updateValuation(null, df.format(now),tf.format(now),user.getUsername(),purchaseValue,purchaseCurrency,null,null,null,null);
+        		}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if("Consume".equals(type)){
-			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);			
+			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);
+			try {
+        		if(purchaseValue != null){
+        		Date now = Calendar.getInstance().getTime();
+        		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        		SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+				component.updateValuation(null, df.format(now),tf.format(now),user.getUsername(),purchaseValue,purchaseCurrency,null,null,null,null);
+        		}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
         manager.saveComponent(component);
 		
