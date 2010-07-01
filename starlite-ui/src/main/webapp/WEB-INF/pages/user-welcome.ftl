@@ -2,7 +2,8 @@
 <#setting number_format = "######.##########"/>
 
 <html>
-<head>
+<head></head>
 <body>
+Welcome ${user.username}
 </body>
 </html>

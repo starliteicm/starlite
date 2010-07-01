@@ -1,3 +1,35 @@
+<#macro jmesa2 id mytableHtml>
+ <#if tableTabs??>
+    <div class="tableTabs">
+        <ul class="tabs">
+        <#list tableTabs as tab>
+            <#if tab.current>
+            <li class="current">
+            <#else>
+            <li>
+            </#if>
+            <a href="${tab.url}">${tab.label}</a></li>
+        </#list>
+        </ul>
+    </div>
+    <hr class="clear"/>
+</#if>
+    
+<form name="${id}Form" action="${request.requestURL}${params!}">
+<div id="${id}">
+${mytableHtml?if_exists}
+</div>
+</form>
+
+<script type="text/javascript">
+function onInvokeAction(id) {
+    setExportToLimit(id, '');
+    createHiddenInputFieldsForLimitAndSubmit(id);
+}
+</script>
+</#macro>
+
+
 <#macro jmesa id>
  <#if tableTabs??>
     <div class="tableTabs">
@@ -60,6 +92,12 @@ function onInvokeAction(id) {
 
 <#macro enableJQuery>
 	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.2.3.min.js"></script>	
+</#macro>
+
+<#macro enableJcarousel>
+    <script type="text/javascript" src="${request.contextPath}/js/jquery.jcarousel.pack.js"></script>
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.jcarousel.css " />    
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/skin.css" />    
 </#macro>
 
 <#macro enableJwysiwyg>

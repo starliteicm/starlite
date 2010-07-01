@@ -64,3 +64,6 @@ insert into permission (name,description) values ('reportHoursRead','reportHours
 insert into permission (name,description) values ('mailoutWrite','mailoutWrite');
 insert into permission (name,description) values ('exchangeWrite','exchangeWrite');
 insert into permission (name,description) values ('userWrite','userWrite');
+
+insert into permission (name,description) values ('storesRead','storesRead');
+insert into permission (name,description) values ('componentsRead','componentsRead');

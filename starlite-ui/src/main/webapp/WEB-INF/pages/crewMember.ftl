@@ -2,7 +2,9 @@
 <html>
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
-  <@enableJQuery/>
+
+  <#assign currentUser = Session.userObj>  
+
   <@enableDatePickers/>
   <@enableHelp/>
 <script language="javascript">

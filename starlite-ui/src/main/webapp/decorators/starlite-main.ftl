@@ -1,3 +1,5 @@
+<#include "/starlite.ftl">
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
  "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -22,6 +24,15 @@
 	<link rel="stylesheet" type="text/css" href="https://secure.i-tao.com/scripts/yui/build/reset-fonts-grids/reset-fonts-grids.css">
 	<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/default.css">
 	<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/forms.css">
+
+    <@enableJQuery/>
+    <@enableJcarousel/>	
+    <script type="text/javascript"> 
+      $(document).ready(function() {
+        $('#mycarousel').jcarousel();
+      });
+    </script>
+    
 	
 	<title>${title}</title>
 	${head}
@@ -64,9 +75,9 @@
 <div id="complete" style="position:relative;top:10px">
 <div id="tabs">
 <#if isManager>
-    <ul class="tabs" style="width:940px;position:relative;margin-right:5%;border-bottom:none;left:150px;">
+    <ul class="tabs jcarousel-skin-tango" id="mycarousel" >
 <#else>
-    <ul class="tabs" style="width:80%;position:relative;left:20%;border-bottom:none;left:150px;">
+    <ul class="tabs jcarousel-skin-tango" id="mycarousel" >
 </#if>
    
       <#if isManager>
@@ -151,6 +162,33 @@
           </#if>
           <a href="user.action">Users</a></li>
 	      </#if>
+	      
+	      <#if user.hasRead("stores")>
+          <#if current?? && current=="Stores">
+          <li class="search current">
+          <#else>
+          <li class="search">
+          </#if>
+          <a href="store.action">Stores</a></li>
+          </#if>
+	      
+	      <#if user.hasRead("components")>
+          <#if current?? && current=="Components">
+          <li class="charters current">
+          <#else>
+          <li class="charters">
+          </#if>
+          <a href="component.action">Components</a></li>
+          </#if>
+          
+          <#if user.hasRead("transaction")>
+          <#if current?? && current=="Transactions">
+          <li class="aircraft current">
+          <#else>
+          <li class="aircraft">
+          </#if>
+          <a href="transaction.action">Transactions</a></li>
+          </#if>
       
       <#else>
       <#if current?? && current=="crew">
@@ -162,7 +200,7 @@
       </#if>
       
       <li style="float:right; margin-right:20px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
-      <li style="float:right;"><a href="${request.contextPath}/account.action">Account</a></li>
+      <li class="aircraft" style="float:right;"><a href="${request.contextPath}/account.action">Account</a></li>
     </ul>
   </div>
   <hr style="clear:left;display:none;"/>
@@ -187,14 +225,18 @@
     	</div>
   <div id="content">
   	<#if notificationMessage??>
+  	<#if notificationMessage != "">
   		<div class="notification">
   			${notificationMessage}
   		</div>
+    </#if>
   	</#if>
   	<#if errorMessage??>
+  	<#if errorMessage != "">
   		<div class="error">
   			${errorMessage}
   		</div>
+    </#if>
   	</#if>
     ${body}
   </div>

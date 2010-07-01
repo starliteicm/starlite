@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>${aircraft.ref!}</title>
-  <@enableJQuery/>
   <@enableDatePickers/>
 </head>
 

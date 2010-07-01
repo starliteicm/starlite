@@ -67,7 +67,10 @@ public class PlainTableView extends HtmlView {
 
 		html.append(snippets.footer());
 
-//		html.append(snippets.statusBar());
+		//html.append(snippets.statusBar());
+		
+		//html.append(snippets.toolbar());
+		
 		if (showFilters)
 			html.append(snippets.filter());
 

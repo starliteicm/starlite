@@ -19,7 +19,6 @@
 		<script type="text/javascript" src="js/itao/widget/roster/view.js"></script>
 		<script type="text/javascript" src="js/itao/widget/roster/controller.js"></script>
 		
-		<@enableJQuery/>
   	<@enableDatePickers/>
   	<link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jquery.autocomplete.css">
   	<script type="text/javascript" src="${request.contextPath}/js/jquery.autocomplete.js"></script>
