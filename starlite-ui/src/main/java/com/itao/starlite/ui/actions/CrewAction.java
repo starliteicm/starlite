@@ -238,7 +238,7 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 	@Override
 	public String execute() throws Exception {
 		crew = manager.getPermCrew();
-        sortCrewByName();
+                sortCrewByName();
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("crewTable", ServletActionContext.getRequest());
 		tableFacade.setItems(crew);
 		tableFacade.setMaxRows(300);
