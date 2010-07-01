@@ -336,7 +336,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	private void prepareTabs() {
 
 		Tab activeTab = new Tab("Active", "component.action", tab.equals("active"));
-		Tab deactiveTab = new Tab("Deactive", "component!deactive.action", tab.equals("deactive"));
+		Tab deactiveTab = new Tab("Inactive", "component!deactive.action", tab.equals("deactive"));
 		
 		if (user.hasPermission("ManagerView"))
 			tableTabs = new Tab[] {activeTab, deactiveTab};

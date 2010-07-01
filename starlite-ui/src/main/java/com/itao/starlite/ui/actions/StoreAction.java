@@ -76,7 +76,7 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	private void prepareTabs() {
 
 		Tab activeTab = new Tab("Active", "store.action", tab.equals("active"));
-		Tab deactiveTab = new Tab("Deactive", "store!deactive.action", tab.equals("deactive"));
+		Tab deactiveTab = new Tab("Inactive", "store!deactive.action", tab.equals("deactive"));
 
 		if (user.hasPermission("ManagerView"))
 			tableTabs = new Tab[] {activeTab, deactiveTab};
