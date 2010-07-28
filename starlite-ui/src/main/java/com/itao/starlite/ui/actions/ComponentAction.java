@@ -3,6 +3,7 @@ package com.itao.starlite.ui.actions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -183,7 +184,12 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			if(installTime != null){
 				try{
 					SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
-					component.setInstallTime(tf.parse(installTime));
+					Date install =  tf.parse(installTime);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(install);
+					cal.add(Calendar.SECOND, 1); 
+					//ADD a Second to stop java.sql error for 00:00:00 as this is not a valid time.
+					component.setInstallTime(cal.getTime());
 				}
 				catch(Exception e){
 					
