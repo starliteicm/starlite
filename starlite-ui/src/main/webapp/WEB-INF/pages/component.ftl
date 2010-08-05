@@ -32,6 +32,22 @@
 <#if user.hasPermission("UserAdmin")>
 <div id="toolbar">
     <a href="${request.contextPath}/component!edit.action"><img src="${request.contextPath}/images/icons/add.png"/>Add</a>
+    
+    <#if user.hasRead("compup")>
+    
+    <div style="margin-left:150px;">
+    <form action="component!upload.action" enctype="multipart/form-data" method="post">
+    <input type="file" style="float:left" name="document" id="document"/>
+    <select style="float:left;margin-left:10px;height:24px;" name="store" >
+    <#list stores as store>
+    <option value="${store.id}" >${store.location}</option>
+    </#list>
+    </select>
+    <button class="smooth" style="margin-left:10px;padding:2px 10px 2px 7px;" onclick="return confirm('Are you sure you wish to upload these components to this Store?')" type="submit"><img src="images/icons/arrow_up.png"/>Upload Components</button>
+    </form>
+    </div>
+    </#if>
+    
     <hr class="clear"/>
 </div>
 <br/>

@@ -1,6 +1,8 @@
 package com.itao.starlite.ui.actions;
 
 
+import java.io.File;
+import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 import org.apache.struts2.dispatcher.ServletRedirectResult;
+import org.jfree.util.Log;
 import org.jmesa.facade.TableFacade;
 import org.jmesa.facade.TableFacadeFactory;
 import org.jmesa.limit.ExportType;
@@ -22,6 +25,8 @@ import org.jmesa.view.component.Table;
 import org.jmesa.view.editor.BasicCellEditor;
 import org.jmesa.view.editor.CellEditor;
 import org.jmesa.view.html.HtmlBuilder;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.inject.Inject;
 import com.itao.starlite.auth.User;
@@ -90,6 +95,11 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public Integer quantity;
 	public Integer locCurrent;
 	
+	//Upload of Components
+	public File document;
+	public String documentContentType;
+	public String documentFileName;
+	
 	
 	@Inject
 	private StarliteCoreManager manager;
@@ -98,6 +108,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public String execute() throws Exception {
 		prepareTabs();
 		components = manager.getComponents();
+		stores = manager.getStores();
 		TableFacade tableFacade = createTable();
 		
 		Limit limit = tableFacade.getLimit();
@@ -109,6 +120,67 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		tableHtml = tableFacade.render();
 		
 		return SUCCESS;
+	}
+	
+	public String upload() throws Exception{
+		int uploaded = 0 ;
+		try{
+			if(document != null){
+				System.out.println("Reading File");
+				CSVReader reader = new CSVReader(new FileReader(document));
+				List<String[]> lines = reader.readAll();
+				for(String[] line : lines){
+					System.out.println(line);
+
+					try{
+						String _class = line[0];
+						String _part = line[1];
+						String _serial = line[2];
+						String _qty = line[3];
+						String _desc = line[4];
+						String _status = line[5];
+						String _batch = line[6]; //NOT USED
+						String _exp = line[7]; //NOT USED
+						String _manu = line[8];
+						String _loc = line[9]; //NOT USED Store is selected from drop down.
+						String _bin = line[10];
+
+						//DEFAULT CLASS TO E TYPE
+						if(!("A").equals(_class)){_class="E";}
+						
+						if(!("").equals(_part)){
+							//FIRST CHECK IF COMPONENT ALREADY EXISTS WITH PART + SERIAL
+							//IF YES... update the fields of this component and add qty to location
+							//IF NO... add the new component then add the qty to location
+							component = new Component();
+							component.setNumber(_part);
+							component.setSerial(_serial);
+							component.setName(_desc);
+							component.setDescription(_desc);
+							component.setStatus(_status);
+							component.setManufacturer(_manu);
+							//component.setExpiryDate(expiryDate)
+							manager.saveComponent(component);
+							component.updateLocation(locationId, "", _bin, new Integer(_qty), new Integer(0));
+							manager.saveComponent(component);
+							uploaded ++;
+						}
+						
+					}
+					catch(Exception e){
+						//oh well... this line wasnt formatted correctly.
+					}
+
+				}
+				notificationMessage = documentFileName+" Uploaded - "+lines.size()+" Lines Read - "+uploaded + " Components Uploaded";
+			}
+		}
+		catch(Exception e){
+			Log.error(e);
+			e.printStackTrace();
+			errorMessage = "File/Format Error - Unable to Upload";
+		}
+		return execute();
 	}
 	
 	public String deactive() throws Exception {
@@ -354,7 +426,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 		
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "qty", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 		
 		tableFacade.setItems(components);
@@ -504,6 +576,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				HtmlBuilder html = new HtmlBuilder();
 				
 				try{
+					if(value != null){
 					long valueLong = (Long) value;
 					if(valueLong >= 25){
 						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
@@ -513,6 +586,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					}
 					else{
 						html.div().style("text-align:center;background-color:#FF9999;font-weight:bold;").styleEnd();	
+					}
 					}
 				}
 				catch(Exception e){
@@ -543,7 +617,6 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
 				if(value == null){value="(blank)";}
 				if("".equals(value)){value="(blank)";}
-				System.out.println(value);
 				HtmlBuilder html = new HtmlBuilder();
 				html.a().href().quote().append("component!edit.action?id="+id).quote().close();
 				html.append(value);
@@ -558,6 +631,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 		
 	}
+	
+
+	
+
 	
 	
 	public void setUser(User arg0) {

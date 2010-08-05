@@ -88,25 +88,19 @@ public class UserAction extends ActionSupport implements UserAware {
 		
 		if(permissions != null){
 		  for(String perm : permissions){
-			System.out.println("insert into permission (name,description) values ('"+perm+"','"+perm+"');");
 		  }
 		}
 		
-		System.out.println("User:"+username);
-		System.out.println("New User:"+newUser);
 		
 		if("1".equals(newUser)){
-			System.out.println("New User: "+username);
 			user = authManager.getUser(username);
 			if(user == null){
 			  String password = username + "123";
 			  String roleNames = "Manager";
 			  user = authManager.createUserWithRoles(username, password, roleNames);
 			  user = authManager.getUser(username);
-			  System.out.println("New User Created: "+username);
 			}
 			else{
-				System.out.println("New User Exists: "+username);
 				errorMessage = "User already Exists with that Username";
 				user = null;
 			}
@@ -122,7 +116,6 @@ public class UserAction extends ActionSupport implements UserAware {
 				Permission p = authManager.getPermission(perm);
 				user.addPermission(p);
 			}
-			System.out.println("Saving User Permissions: "+username);
 			authManager.saveUser(user);
 			notificationMessage = "Permissions Updated";
 		}

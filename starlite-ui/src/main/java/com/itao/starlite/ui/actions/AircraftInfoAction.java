@@ -58,6 +58,7 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public String current="aircraft";
 	public Breadcrumb[] breadcrumbs;
 	public String notificationMessage;
+	public User user;
 	
 	public String id;
 	public Aircraft aircraft;
@@ -191,7 +192,6 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public List<Document> docs;
 	public String errorMessage;
 	public String tagArray;
-	private User user;
 	
 	public String documents() throws Exception {
 		if (id == null) {
@@ -284,7 +284,7 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public TableFacade createComponentTable(){    			
 
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "qty", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 
 		tableFacade.setItems(components);

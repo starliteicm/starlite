@@ -452,7 +452,12 @@
             <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="transactionRead" value="transactionRead" /> 
           </div><br/><br/><br/>
           
-		   
+		  <div class="fm-opt">
+            <label for=""><B>Upload Components</B></label>     
+             <div style="width:55px;height:10px;float:left;">&nbsp;</div>          
+            <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="compupRead" value="compupRead" /> 
+          </div><br/><br/><br/>
+          
            
 		   <div style="height:1px;">&nbsp;</div>
 		

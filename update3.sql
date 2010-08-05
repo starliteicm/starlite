@@ -1,0 +1,1 @@
+insert into permission (name,description) values ('compupRead','compupRead');

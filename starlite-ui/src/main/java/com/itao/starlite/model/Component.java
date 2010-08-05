@@ -81,6 +81,16 @@ public class Component {
 		return null;
 	}
 	
+	public Integer getQty(){
+		Integer qty = 0;
+		for(ComponentLocation l : locations){
+			if( l.getQuantity() != null ){
+				qty += l.getQuantity();
+			}
+		}
+		return qty;
+	}
+	
 	public Double getRemainingDays(){
 		long milPerDay = 1000*60*60*24;
 		if(expiryDate != null){
@@ -594,10 +604,12 @@ public class Component {
 			for(ComponentLocation l : locations){
 				if(locationId.equals(l.getId())){
 					if(current != 0){
-					l.setLocation(location);
-					l.setBin(bin);
-					l.setCurrent(current);
-					l.setQuantity(quantity);
+						if(location != ""){
+							l.setLocation(location);
+						}
+						l.setBin(bin);
+						l.setCurrent(current);
+						l.setQuantity(quantity);
 					}
 					else{
 						toRem = l;

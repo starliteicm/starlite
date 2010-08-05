@@ -117,7 +117,6 @@ public class CrewMember implements Cloneable {
 	}
 	
 	public List<Passport> getPassport(){
-	  System.out.println("GET:"+passport);
 	  
 	  if(passport == null){
 		  passport = new LinkedList<Passport>();
@@ -136,7 +135,6 @@ public class CrewMember implements Cloneable {
 	}
 	
 	public void setPassport(List<Passport> passports) {
-		System.out.println("SET:"+passports);
 		this.passport = passports;
 	}
 	
@@ -1326,7 +1324,6 @@ public class CrewMember implements Cloneable {
 						  emsum = emsum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
 						  emsum = emsum.multiply(e.getAreaDays());
 						  sum = sum.add(emsum);
-						  //System.out.println("Discomfort:"+e.getDiscomfort()+" Daily:"+e.getAreaDays()+" Total:"+sum.getAmountAsDouble());
 						}
 					}
 				}
@@ -1763,10 +1760,7 @@ public class CrewMember implements Cloneable {
     	this.total        = moneytotal.toString();
     	
     	this.paymentTotal = newtotalPaymentTotal.toString();
-    	
-    	
-    	//System.out.println("Adding paymenttotal for type("+paymentType+") :"+totalPaymentTotal+" + "+new Money(paytotal).toString()+" = "+ newtotalPaymentTotal.toString()+" ("+ this.paymentTotal+")");
-    	//System.out.println("setting total for type("+paymentType+") :"+_total+" ("+this.total+")");
+    	  	
     	return this;
     }
     

@@ -14,11 +14,19 @@
     <developerConnection>scm:svn:svn+ssh://192.168.168.28/svn/mainrepo/starlite/trunk</developerConnection>
 </scm>
 
+<repositories>
+<repository>
+		<id>java.net</id>
+		<name>Java.net Repository</name>
+		<url>http://download.java.net/maven/2/</url>
+	</repository>
+</repositories>
+
 <developers>
 <developer>
-<id>jason</id>
-<name>Jason Choy</name>
-<email>jchoy@i-tao.com</email>
+<id>jonathan</id>
+<name>Jonathan Elliott</name>
+<email>jelliott@i-tao.com</email>
 <organization>i-Tao</organization>
 </developer>
 </developers>
@@ -29,6 +37,7 @@
 		<name>Internal Release Repository</name>
 		<url>${internalServer.deploymentUrl}</url>
 	</repository>
+	
 	<snapshotRepository>
 		<id>apollo</id>
 		<name>Internal Snapshot Repository</name>
