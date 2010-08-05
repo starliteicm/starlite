@@ -153,6 +153,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							//IF YES... update the fields of this component and add qty to location
 							//IF NO... add the new component then add the qty to location
 							component = new Component();
+							component.setType(_class);
 							component.setNumber(_part);
 							component.setSerial(_serial);
 							component.setName(_desc);
