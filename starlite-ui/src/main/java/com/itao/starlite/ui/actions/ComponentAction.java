@@ -189,6 +189,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		tab = "deactive";
 		prepareTabs();
 		components = manager.getComponentsDeactivated();
+		stores = manager.getStores();
 		TableFacade tableFacade = createTable();
 		
 		Limit limit = tableFacade.getLimit();
