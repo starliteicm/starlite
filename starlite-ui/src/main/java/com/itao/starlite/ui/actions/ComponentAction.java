@@ -162,8 +162,11 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							component.setManufacturer(_manu);
 							//component.setExpiryDate(expiryDate)
 							manager.saveComponent(component);
-							component.updateLocation(null , location, _bin, new Integer(_qty), new Integer(0));
-							manager.saveComponent(component);
+							
+							if(new Integer(_qty) > 0){
+								component.updateLocation(null , location, _bin, new Integer(_qty), new Integer(0));
+								manager.saveComponent(component);
+							}
 							uploaded ++;
 						}
 						
