@@ -126,11 +126,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		int uploaded = 0 ;
 		try{
 			if(document != null){
-				System.out.println("Reading File");
 				CSVReader reader = new CSVReader(new FileReader(document));
 				List<String[]> lines = reader.readAll();
 				for(String[] line : lines){
-					System.out.println(line);
 
 					try{
 						String _class = line[0];
@@ -158,7 +156,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							component.setSerial(_serial);
 							component.setName(_desc);
 							component.setDescription(_desc);
-							component.setStatus(_status);
+							component.setState(_status);
 							component.setManufacturer(_manu);
 							//component.setExpiryDate(expiryDate)
 							manager.saveComponent(component);
