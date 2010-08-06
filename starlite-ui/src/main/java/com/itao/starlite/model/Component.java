@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -809,17 +810,23 @@ public class Component {
         	//remove quantity from current location
         	ComponentLocation rem = null;
         	Integer previous = 0;
+        	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
 			for(ComponentLocation loc : locations){
 				if(loc.getId().equals(current)){
 					rem = loc; 
 					previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
 					if(rem.getQuantity()<=0){
-						locations.remove(rem);
-						history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+						toRemove.add(rem);
 					}
 				}
 			}
+			for(ComponentLocation toRem : toRemove){
+				locations.remove(toRem);
+				history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+toRem.getQuantity(),note,toRem.getLocation()+" "+toRem.getBin()));
+            }
+			
+			
 			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
