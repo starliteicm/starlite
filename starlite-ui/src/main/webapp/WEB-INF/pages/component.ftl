@@ -53,7 +53,7 @@
 <br/>
 </#if>
 
-<@jmesa id="component"/>
+<@jmesa id="componentTable"/>
 
 </body>
 </html>

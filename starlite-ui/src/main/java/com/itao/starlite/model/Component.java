@@ -766,17 +766,23 @@ public class Component {
         	//remove quantity from current location
         	ComponentLocation rem = null;
         	Integer previous = 0;
+        	
+        	
 			for(ComponentLocation loc : locations){
 				if(loc.getId().equals(current)){
-					rem = loc; 
-					previous = rem.getQuantity();
-					rem.setQuantity(rem.getQuantity() - quantity);
-					if(rem.getQuantity()<=0){
-						locations.remove(rem);
-						history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					previous = loc.getQuantity();
+					loc.setQuantity(loc.getQuantity() - quantity);
+					if(loc.getQuantity()<=0){
+						rem = loc;
 					}
+					history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
 				}
 			}
+
+			if(rem != null){
+				locations.remove(rem);
+			}
+			
 			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
@@ -811,6 +817,7 @@ public class Component {
         	ComponentLocation rem = null;
         	Integer previous = 0;
         	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
+        	
 			for(ComponentLocation loc : locations){
 				if(loc.getId().equals(current)){
 					rem = loc; 
@@ -819,11 +826,11 @@ public class Component {
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
+					history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
 				}
 			}
 			for(ComponentLocation toRem : toRemove){
 				locations.remove(toRem);
-				history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+toRem.getQuantity(),note,toRem.getLocation()+" "+toRem.getBin()));
             }
 			
 			
@@ -855,18 +862,24 @@ public class Component {
         	//remove quantity from current location
         	ComponentLocation rem = null;
         	Integer previous = 0;
+        	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
+        	
 			for(ComponentLocation loc : locations){
 				if(loc.getId().equals(current)){
 					rem = loc; 
 					previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
 					if(rem.getQuantity()<=0){
-						locations.remove(rem);
-						history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+						toRemove.add(rem);
 					}
+					history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
 				}
-
 			}
+			
+			for(ComponentLocation toRem : toRemove){
+				locations.remove(toRem);
+            }
+			
 			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
@@ -889,27 +902,35 @@ public class Component {
 			else {
 				l.setQuantity(l.getQuantity() + quantity);
 			}
-			history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
-
+			history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
 		}
 		else if("Sell".equals(type)){	
+        	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
 			ComponentLocation rem = null;
+			Integer previous = 0;
+			
 			for(ComponentLocation loc : locations){
 				if(loc.getId().equals(current)){
 					rem = loc; 
-					Integer previous = rem.getQuantity();
+					previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
 					if(rem.getQuantity()<=0){
-						locations.remove(rem);
-						history.add(new ComponentHistory(now,now,user,"transaction","Sell",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
-
+						toRemove.add(rem);
 					}
+					history.add(new ComponentHistory(now,now,user,"transaction","Sell",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
 				}
 			}
+			
+			for(ComponentLocation toRem : toRemove){
+				locations.remove(toRem);
+            }
+			
+			
 		}
 		else if("Scrap".equals(type)){
 			ComponentLocation rem = null;
-			System.out.println("Current:"+current);
+        	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
+        	
 			for(ComponentLocation loc : locations){
 				
 				if(loc.getId().equals(current)){	
@@ -918,25 +939,36 @@ public class Component {
 					rem.setQuantity(rem.getQuantity() - quantity);
 					System.out.println("Current:"+current+" =? "+loc.getId()+" previous:"+previous+" qty:"+rem.getQuantity());
 					if(rem.getQuantity()<=0){
-						locations.remove(rem);
+						toRemove.add(rem);
 					}
 					history.add(new ComponentHistory(now,now,user,"transaction","Scrap",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
 				}
 			}
+			
+			for(ComponentLocation toRem : toRemove){
+				locations.remove(toRem);
+            }
+			
 		}
 		else if("Consume".equals(type)){	
 			ComponentLocation rem = null;
+        	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
 			for(ComponentLocation loc : locations){
 				if(loc.getId().equals(current)){
 					rem = loc; 
 					Integer previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
 					if(rem.getQuantity()<=0){
-						locations.remove(rem);
-						history.add(new ComponentHistory(now,now,user,"transaction","Consume",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+						toRemove.add(rem);
 					}
+					history.add(new ComponentHistory(now,now,user,"transaction","Consume",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
 				}
 			}
+			
+			for(ComponentLocation toRem : toRemove){
+				locations.remove(toRem);
+            }
+			
 		}
 		
 	}

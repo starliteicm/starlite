@@ -91,7 +91,7 @@ function onInvokeAction(id) {
 </#macro>
 
 <#macro enableJQuery>
-	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.2.3.min.js"></script>	
+	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.4.2.min.js"></script>	
 </#macro>
 
 <#macro enableJcarousel>

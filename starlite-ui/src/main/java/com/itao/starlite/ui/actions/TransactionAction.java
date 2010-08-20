@@ -208,7 +208,6 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 				html.img().src("images/icons/accept.png").close();
 				html.append("Select Transaction Type");
 				html.buttonEnd();
-				html.formEnd();
 				html.divEnd();
 				return html.toString();
 			}	
