@@ -13,6 +13,15 @@
         function onSubmitWsColumn() {
             document.getElementById("saveButton").disabled = false;
         }
+        function onInvokeExportAction(id) {
+            <#if tab="active">
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/store.action?' + parameterString;
+            <#else>
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/store!deactive.action?' + parameterString;
+            </#if>
+        }
 </script>
 <title>Stores</title>
 </head>
