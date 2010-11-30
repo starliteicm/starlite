@@ -6,8 +6,7 @@
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jmesa.css">
 <script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
 <script>
-
-function setCode(index){
+    function setCode(index){
     if(index == 1){
     $("#code").val("MS");
     }
@@ -17,16 +16,16 @@ function setCode(index){
     if(index == 3){
     $("#code").val("DR");
     }
-}
+    }
 
-function validate(){
+    function validate(){
     return true;
-}
-
-        function onInvokeExportAction(id) {
+    }
+    
+    function onInvokeExportAction(id) {
             var parameterString = createParameterStringForLimit(id);
             location.href = '${request.contextPath}/store!edit.action?id=${id!}&' + parameterString;
-        }
+    }
 </script>
 
 </head>
@@ -97,17 +96,16 @@ function validate(){
     <form action="store!edit.action" method="POST" class="smart" style="clear:left;width:1150px;">
     <input type="hidden" name="id" value="${id!}"/>
     <input type="hidden" name="store.id" value="${id!}"/>
+    </form>
     
     <div style="padding-left:10px;">
     <fieldset>
         <legend>Store Components</legend>
-        
         <@jmesa id="component"/>
-        
     </fieldset>
     </div>
     
-    </form>
+    
     
     <form id="deactivateForm" name="deactivateForm" action="store!save.action" method="POST" />
     <input type="hidden" name="id" value="${id!}"/>
