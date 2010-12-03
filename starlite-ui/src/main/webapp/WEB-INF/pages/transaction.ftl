@@ -41,7 +41,7 @@
     <fieldset>
         <legend>${type} - ${component.number} ${component.serial}</legend>
         
-        <#if type == "Move" || type == "Reserve" || type == "Sell" || type == "Scrap" || type == "Repair" >
+        <#if type == "Move" || type == "Reserve" || type == "Sell" || type == "Scrap" || type == "Consume" || type == "Repair" >
         <div class="fm-opt">
         <label>Current Location:</label>
         <select name="locCurrent" style="width:600px;">
