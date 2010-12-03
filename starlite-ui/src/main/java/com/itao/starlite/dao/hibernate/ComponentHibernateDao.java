@@ -28,4 +28,14 @@ public class ComponentHibernateDao extends GenericHibernateDao<Component, Intege
 		return components;
 	}
 
+	public Component getComponent(String _class, String _part, String _serial) {
+		// TODO Auto-generated method stub
+		Component component = (Component) getCurrentSession().createQuery("select c from Component c "+
+		" where c.type = ? and c.number=? and c.serial=? order by c.name,c.number")
+		.setString(0, _class)
+		.setString(1, _part)
+		.setString(2, _serial).uniqueResult();
+		 return component;
+	}
+
 }

@@ -148,13 +148,18 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 						String _bin = line[10];
 
 						//DEFAULT CLASS TO E TYPE
-						if(!("A").equals(_class)){_class="E";}
+						if(("A").equals(_class.toUpperCase())){_class="Class A";}
+						else{_class="Class E";}
+						
 						
 						if(!("").equals(_part)){
 							//FIRST CHECK IF COMPONENT ALREADY EXISTS WITH PART + SERIAL
+							component = manager.getComponent(_class,_part,_serial);
+							if(component == null){
+								component = new Component();
+							}
 							//IF YES... update the fields of this component and add qty to location
 							//IF NO... add the new component then add the qty to location
-							component = new Component();
 							component.setType(_class);
 							component.setNumber(_part);
 							component.setSerial(_serial);
@@ -162,9 +167,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							component.setDescription(_desc);
 							component.setState(_status);
 							component.setManufacturer(_manu);
-							//component.setExpiryDate(expiryDate)
+							//component.setExpiryDate(expiryDate) //Removed as Requested
 							manager.saveComponent(component);
-							
 							if(new Integer(_qty) > 0){
 								component.updateLocation(null , location, _bin, new Integer(_qty), new Integer(0));
 								manager.saveComponent(component);

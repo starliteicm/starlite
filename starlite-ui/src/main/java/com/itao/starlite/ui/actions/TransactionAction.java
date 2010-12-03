@@ -182,6 +182,12 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 		HtmlColumn type = (HtmlColumn) table.getRow().getColumn("type");
 		type.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
 		
+		HtmlColumn name = (HtmlColumn) table.getRow().getColumn("name");
+		name.setTitle("Description");
+		
+		HtmlColumn num = (HtmlColumn) table.getRow().getColumn("number");
+		num.setTitle("Part No.");
+		
 		HtmlColumn state = (HtmlColumn) table.getRow().getColumn("state");
 		state.setTitle("Status");
 		state.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());

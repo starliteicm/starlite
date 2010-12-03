@@ -16,4 +16,6 @@ public interface ComponentDao extends GenericDao<Component, Integer>{
 
 	public List<Component> findDeactive();
 
+	public Component getComponent(String _class, String _part, String _serial);
+
 }

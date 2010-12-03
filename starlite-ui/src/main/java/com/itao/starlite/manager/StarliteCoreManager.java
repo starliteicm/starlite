@@ -592,6 +592,11 @@ public class StarliteCoreManager {
 	public List<Component> getComponents(String location) {
 		return componentDao.findByLocation(location);
 	}
+
+	public Component getComponent(String _class, String _part, String _serial) {
+		// TODO Auto-generated method stub
+		return componentDao.getComponent(_class,_part, _serial) ;
+	}
 	
 
 }
