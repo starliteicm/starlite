@@ -25,6 +25,8 @@ import org.jmesa.view.component.Table;
 import org.jmesa.view.editor.BasicCellEditor;
 import org.jmesa.view.editor.CellEditor;
 import org.jmesa.view.html.HtmlBuilder;
+import org.jmesa.view.html.component.HtmlColumn;
+import org.jmesa.view.html.editor.DroplistFilterEditor;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -40,6 +42,7 @@ import com.itao.starlite.ui.Breadcrumb;
 import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
+import com.itao.starlite.ui.jmesa.SearchTableView;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
@@ -116,7 +119,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		    tableFacade.render();
 		    return null;
 		} 
-     	tableFacade.setView(new NavTableView());
+		tableFacade.setView(new SearchTableView());
+     	//tableFacade.setView(new NavTableView());
 		tableHtml = tableFacade.render();
 		
 		return SUCCESS;
@@ -197,7 +201,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		    tableFacade.render();
 		    return null;
 		} 
-     	tableFacade.setView(new NavTableView());
+		tableFacade.setView(new SearchTableView());
+     	//tableFacade.setView(new NavTableView());
 		tableHtml = tableFacade.render();
 		
 		return SUCCESS;
@@ -426,8 +431,6 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	public TableFacade createTable(){
 		
-		
-		
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
 		tableFacade.setColumnProperties("type","name", "number", "serial", "qty", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
@@ -442,8 +445,15 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
-		Column type = table.getRow().getColumn("type");
+		Column name = table.getRow().getColumn("name");
+		name.setTitle("Desc");
+		
+		
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn type = (HtmlColumn) table.getRow().getColumn("type");
+			type.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
 			type.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if((""+((Component) item).getType()).indexOf("Class") >= 0){
@@ -454,9 +464,11 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
-		tbo.setTitle("TBO");
+		
 		if (!limit.isExported()) {
+			HtmlColumn tbo = (HtmlColumn) table.getRow().getColumn("timeBetweenOverhaul");
+			tbo.setFilterable(false);
+			tbo.setTitle("TBO");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getTimeBetweenOverhaul() == null){
@@ -467,6 +479,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		else{			
+			Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getTimeBetweenOverhaul() ;
@@ -474,8 +487,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column hoursRunCol = table.getRow().getColumn("hoursRun");
+		
 		if (!limit.isExported()) {
+			HtmlColumn hoursRunCol = (HtmlColumn) table.getRow().getColumn("hoursRun");
+			hoursRunCol.setFilterable(false);
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getHoursRun() == null){
@@ -485,7 +500,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					}
 			});
 		}
-		else{			
+		else{		
+			Column hoursRunCol = table.getRow().getColumn("hoursRun");
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursRun() ;
@@ -493,8 +509,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
+		
 		if (!limit.isExported()) {
+			HtmlColumn hoursInstallCol = (HtmlColumn) table.getRow().getColumn("hoursOnInstall");
+			hoursInstallCol.setFilterable(false);
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getHoursOnInstall() == null){
@@ -504,7 +522,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					}
 			});
 		}
-		else{			
+		else{	
+			Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursOnInstall() ;
@@ -512,8 +531,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
+		
 		if (!limit.isExported()) {
+			HtmlColumn expiresCol = (HtmlColumn) table.getRow().getColumn("lifeExpiresHours");
+			expiresCol.setFilterable(false);
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getLifeExpiresHours() == null){
@@ -524,6 +545,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		else{			
+			Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getLifeExpiresHours() ;
@@ -532,15 +554,18 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		}
 		
 		
-		Column currentCol = table.getRow().getColumn("currentHours");
+		
 		if (!limit.isExported()) {
+			HtmlColumn currentCol = (HtmlColumn) table.getRow().getColumn("currentHours");
+			currentCol.setFilterable(false);
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
 					}
 			});
 		}
-		else{			
+		else{	
+			Column currentCol = table.getRow().getColumn("currentHours");
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getCurrentHoursStr() );
@@ -549,15 +574,17 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		}
 		
 		
-		Column remainingCol = table.getRow().getColumn("remainingHours");
 		if (!limit.isExported()) {
+			HtmlColumn remainingCol = (HtmlColumn) table.getRow().getColumn("remainingHours");
+			remainingCol.setFilterable(false);
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
 					}
 			});
 		}
-		else{			
+		else{		
+			Column remainingCol = table.getRow().getColumn("remainingHours");
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getRemainingHoursStr() );
@@ -565,12 +592,19 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-			
-			
-		
-		Column percentCol = table.getRow().getColumn("remainingPercent");
-		percentCol.setTitle("Remaining %");
 		if (!limit.isExported()) {
+		HtmlColumn totalDays = (HtmlColumn) table.getRow().getColumn("totalDays");
+		totalDays.setFilterable(false);
+		HtmlColumn remainingDays = (HtmlColumn) table.getRow().getColumn("remainingDays");
+		remainingDays.setFilterable(false);
+		}	
+		
+		
+		
+		if (!limit.isExported()) {
+			HtmlColumn percentCol = (HtmlColumn) table.getRow().getColumn("remainingPercent");
+			percentCol.setTitle("Remaining %");
+			percentCol.setFilterable(false);
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {

@@ -296,21 +296,23 @@
         </div>
         
         <div class="fm-opt">
-            <label for="component.name">Part Name:</label>
-            <input id="code" name="component.name" type="text" value="${component.name!}"/>
+            <label for="component.number">Part Number:</label>
+            <input name="component.number" type="text" value="${component.number!}"/>
         </div>
         <div class="fm-opt">
-            <label for="component.description">Part Description:</label>
+            <label for="component.description">Part Number (alt):</label>
             <input name="component.description" type="text" value="${component.description!}"/>
         </div>
         <div class="fm-opt">
-            <label for="component.number">Part Number:</label>
-            <input name="component.number" type="text" value="${component.number!}"/>
+            <label for="component.name">Part Description:</label>
+            <input id="code" name="component.name" type="text" value="${component.name!}"/>
         </div>
         <div class="fm-opt">
             <label for="component.serial">Serial Number:</label>
             <input name="component.serial" type="text" value="${component.serial!}"/>
         </div>
+        
+        
         
         <div class="fm-opt">
             <label for="component.state">Status:</label>
@@ -334,7 +336,7 @@
             <input name="component.manufacturer" type="text" value="${component.manufacturer!}"/>
         </div>
         <div class="fm-opt">
-            <label for="component.manufacturedDate">Manufactured Date:</label>
+            <label for="component.manufacturedDate">Shelf Life:</label>
             <input class="date-pick" name="component.manufacturedDate" type="text" <#if component.manufacturedDate?exists >value="${component.manufacturedDate?string('dd/MM/yyyy')}"<#else>value=""</#if>  />
         </div>
         

@@ -958,6 +958,7 @@ public class Component {
 					rem = loc; 
 					Integer previous = rem.getQuantity();
 					rem.setQuantity(rem.getQuantity() - quantity);
+					System.out.println("Current:"+current+" =? "+loc.getId()+" previous:"+previous+" qty:"+rem.getQuantity());
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
