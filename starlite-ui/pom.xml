@@ -298,9 +298,9 @@
 		
 		<!-- Open cvs -->
 		<dependency>
-			<groupId>net.sf.opencsv</groupId>
+			<groupId>au.com.bytecode.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
-			<version>2.0</version>
+			<version>1.8</version>
 		</dependency>
 		
 	</dependencies>

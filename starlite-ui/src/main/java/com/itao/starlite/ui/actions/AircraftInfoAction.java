@@ -61,6 +61,7 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public User user;
 	
 	public String id;
+	public String params;
 	public Aircraft aircraft;
 	public Tab[] tableTabs;
 	public String tab = "information";
@@ -111,6 +112,7 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		prepare();
 		prepareTabs();
 		components = manager.getComponents(aircraft.getRef().replaceAll("-", ""));
+		params = "id="+id;
 		TableFacade tableFacade = createComponentTable();
 
 		Limit limit = tableFacade.getLimit();

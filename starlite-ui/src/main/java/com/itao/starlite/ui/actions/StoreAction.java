@@ -40,7 +40,9 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	private static final long serialVersionUID = -3932501985283829578L;
 	private User user;
 
+	public String params;
 	public String tableHtml;
+	public String componentTable;
 	public String notificationMessage;
 	public String errorMessage;
 
@@ -99,8 +101,8 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 				return null;
 			} 
 			tableFacade.setView(new NavTableView());
-			tableHtml = tableFacade.render();
-
+			componentTable = tableFacade.render();
+			params = "id="+store.getId();
 			return "edit";
 		}
 		return "redirect-list";

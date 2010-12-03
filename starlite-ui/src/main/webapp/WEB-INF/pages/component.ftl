@@ -24,7 +24,6 @@
             </#if>
         }
 </script>
-</script>
 <title>Components</title>
 </head>
 <body>

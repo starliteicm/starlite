@@ -3,9 +3,10 @@
 
 <html>
 <head>
+
 <link rel="stylesheet" type="text/css" href="${request.contextPath}/styles/jmesa.css">
 <script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
-<script>
+<script type="text/javascript">
     function setCode(index){
     if(index == 1){
     $("#code").val("MS");
@@ -20,10 +21,6 @@
 
     function validate(){
     return true;
-    }
-    
-    function onInvokeAction(id){
-        createHiddenInputFieldsForLimitAndSubmit(id);
     }
     
     function onInvokeExportAction(id) {
@@ -97,20 +94,13 @@
     
     <#if id?exists>   
     <br/> 
-    <form action="store!edit.action" method="POST" class="smart" style="clear:left;width:1150px;">
-    <input type="hidden" name="id" value="${id!}"/>
-    <input type="hidden" name="store.id" value="${id!}"/>
-    
     <div style="padding-left:10px;">
     <fieldset>
         <legend>Store Components</legend>
-        
-        <@jmesa id="component"/>
-        
+        <@jmesa2 id="components" mytableHtml="${componentTable}" />
     </fieldset>
     </div>
-    
-    </form>
+
     
     <form id="deactivateForm" name="deactivateForm" action="store!save.action" method="POST" />
     <input type="hidden" name="id" value="${id!}"/>

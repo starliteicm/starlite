@@ -14,9 +14,6 @@
 </script>
 </head>
 <body>
-	<@subTabs/>
-	<div style="clear:left; border: 1px solid silver; padding: 10px;overflow:auto;">
-	${tableHtml}
-	</div>
+	<@jmesa2 id="components" mytableHtml="${tableHtml}" />
 </body>
 </html>
