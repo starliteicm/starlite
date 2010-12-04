@@ -38,7 +38,7 @@
                 <option value="true" <#if item.required?string = "true">SELECTED</#if>>Yes</option>
             </select>
             </td>
-            <td><input name="charter.insurance.items[${item_index}].limit.amountAsDouble" type="text" style="width:80px;" value="${item.limit.amountAsDouble!}"/></td>
+            <td><input name="charter.insurance.items[${item_index}].limit.amountAsDouble" type="text" style="width:80px;text-align:right;" value="${item.limit.amountAsDouble!}"/></td>
             <td><input name="charter.insurance.items[${item_index}].policyNumber" type="text" style="width:80px;" value="${item.policyNumber!}"/></td>
             <td><input name="charter.insurance.items[${item_index}].brokerDetails" type="text" style="width:80px;" value="${item.brokerDetails!}"/></td>
             <td><input name="charter.insurance.items[${item_index}].policyExpDate" type="text" style="width:70px;" value="<#if item.policyExpDate??>${item.policyExpDate?string('dd/MM/yyyy')}</#if>"/></td>

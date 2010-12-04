@@ -1,4 +1,5 @@
 <#include "/starlite.ftl">
+<#setting number_format = "######.##########"/>
 <html>
 <head>
   <title>${crewMember.personal.firstName!} ${crewMember.personal.lastName!}</title>
@@ -102,7 +103,7 @@ function validate(){
 				<#if readOnly>
 					<label>${crewMember.payments.monthlyBaseRate.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.monthlyBaseRate.amountAsDouble"  id = "monthly" type="text" style="width:76px;" value="${crewMember.payments.monthlyBaseRate.amountAsDouble!}"/>
+					<input name="crewMember.payments.monthlyBaseRate.amountAsDouble"  id = "monthly" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.monthlyBaseRate.amountAsDouble!}"/>
 				</#if>
 			</div>
 		</fieldset>
@@ -115,7 +116,7 @@ function validate(){
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.areaAllowance.amountAsDouble" id = "daily" type="text" style="width:76px;" value="${crewMember.payments.areaAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.areaAllowance.amountAsDouble" id = "daily" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.areaAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 
@@ -124,7 +125,7 @@ function validate(){
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.instructorAllowance.amountAsDouble" id = "instructor" type="text" style="width:76px;" value="${crewMember.payments.instructorAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.instructorAllowance.amountAsDouble" id = "instructor" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.instructorAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 
@@ -133,7 +134,7 @@ function validate(){
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.dailyAllowance.amountAsDouble" id ="training" type="text" style="width:76px;" value="${crewMember.payments.dailyAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.dailyAllowance.amountAsDouble" id ="training" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.dailyAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 
@@ -142,7 +143,7 @@ function validate(){
 				<#if readOnly>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
 				<#else>
-					<input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
+					<input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
 		</fieldset>

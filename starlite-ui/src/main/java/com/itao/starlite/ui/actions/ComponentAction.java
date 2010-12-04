@@ -513,6 +513,26 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
+		if (!limit.isExported()) {
+			HtmlColumn hoursRunCol = (HtmlColumn) table.getRow().getColumn("qty");
+			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getQty() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getQty()+"</div>";
+					}
+			});
+		}
+		else{		
+			Column hoursRunCol = table.getRow().getColumn("qty");
+			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					return (Number) ((Component) item).getQty() ;
+				}
+			});
+		}
+		
 		
 		if (!limit.isExported()) {
 			HtmlColumn hoursInstallCol = (HtmlColumn) table.getRow().getColumn("hoursOnInstall");
@@ -599,8 +619,37 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		if (!limit.isExported()) {
 		HtmlColumn totalDays = (HtmlColumn) table.getRow().getColumn("totalDays");
 		totalDays.setFilterable(false);
+		totalDays.getCellRenderer().setCellEditor(new CellEditor() {
+			public Object getValue(Object item, String property, int rowCount) {
+				try{
+					Object val = ((Component) item).getTotalDays();
+					if(val == null){
+						val = "";
+					}
+					return "<div style='text-align:right'>"+val+"</div>";
+				}
+				catch(Exception e){
+					return "";
+				}
+			}
+		});
+		
 		HtmlColumn remainingDays = (HtmlColumn) table.getRow().getColumn("remainingDays");
 		remainingDays.setFilterable(false);
+		remainingDays.getCellRenderer().setCellEditor(new CellEditor() {
+			public Object getValue(Object item, String property, int rowCount) {
+				try{
+					Object val = ((Component) item).getRemainingDays();
+					if(val == null){
+						val = "";
+					}
+					return "<div style='text-align:right'>"+val+"</div>";
+				}
+				catch(Exception e){
+					return "";
+				}
+			}			
+		});
 		}	
 		
 		

@@ -507,7 +507,7 @@
       <#if component.type.equals("Class E")>
       <div class="fm-opt">
             <label for="quantity">Quantity:</label> 
-            <input id="qtyInput" type="text" value="1" name="quantity" onchange='checkNum(this);'/>
+            <input id="qtyInput" type="text" value="1" name="quantity" style="text-align:right;" onchange='checkNum(this);'/>
       </div>
       <#else>
       <input id="qtyInput" type="hidden" value="1" name="quantity"/>
