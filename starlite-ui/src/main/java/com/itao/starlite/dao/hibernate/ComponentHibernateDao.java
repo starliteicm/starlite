@@ -13,6 +13,11 @@ public class ComponentHibernateDao extends GenericHibernateDao<Component, Intege
 		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c "+
 				"LEFT JOIN c.locations cl where cl.location = ? order by c.name,c.number")
 		.setString(0, location).list();
+		
+		for(Component c : components){
+			c.location = location;
+		}
+		
 		return components;
 	}
 

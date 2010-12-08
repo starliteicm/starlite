@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -62,6 +63,9 @@ public class Component {
 	
 	private Double airframeHours;
 	
+	@Transient
+	public String location;
+	
 	//CALC
 	//currentHours
 	//Hours Remaining
@@ -83,10 +87,22 @@ public class Component {
 	}
 	
 	public Integer getQty(){
+		if(location == ""){
+			location = null;
+		}
 		Integer qty = 0;
 		for(ComponentLocation l : locations){
-			if( l.getQuantity() != null ){
-				qty += l.getQuantity();
+			if(location != null){
+				if( l.getLocation() == location ){
+					if( l.getQuantity() != null ){
+						qty += l.getQuantity();
+					}
+				}
+			}
+			else {
+				if( l.getQuantity() != null ){
+					qty += l.getQuantity();
+				}
 			}
 		}
 		return qty;
