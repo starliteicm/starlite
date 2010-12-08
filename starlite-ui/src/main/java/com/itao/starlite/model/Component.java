@@ -91,9 +91,11 @@ public class Component {
 			location = null;
 		}
 		Integer qty = 0;
+		System.out.println("finding "+name+" in "+location);
 		for(ComponentLocation l : locations){
 			if(location != null){
-				if( l.getLocation() == location ){
+				System.out.println(l.getLocation()+" =? "+location);
+				if( location.equals(l.getLocation()) ){
 					if( l.getQuantity() != null ){
 						qty += l.getQuantity();
 					}
