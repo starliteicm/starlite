@@ -25,7 +25,11 @@ import com.itao.starlite.dao.CrewDao;
 import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
+import com.itao.starlite.dao.JobHistoryDao;
+import com.itao.starlite.dao.JobStatusDao;
+import com.itao.starlite.dao.JobTicketDao;
 import com.itao.starlite.dao.StoreDao;
+import com.itao.starlite.dao.JobTaskDao;
 import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.docs.model.Folder;
 import com.itao.starlite.exceptions.CannotCreateCrewMemberException;
@@ -43,11 +47,20 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
+import com.itao.starlite.model.JobHistory;
+import com.itao.starlite.model.JobStatus;
+import com.itao.starlite.model.JobTask;
+import com.itao.starlite.model.JobTicket;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
 import com.itao.starlite.scheduling.model.Assignable;
 import com.wideplay.warp.persist.Transactional;
-
+/**
+ * <p>Injects (persistance) the classes for Hibernate.</p>
+ * @author [Creator] i-tao
+ * @author [Modifier] Celeste Groenewald
+ *
+ */
 public class StarliteCoreManager {
 	@Inject private CharterDao charterDao;
 	@Inject private CrewDao crewDao;
@@ -59,6 +72,11 @@ public class StarliteCoreManager {
 	@Inject private FlightAndDutyActualsDao flightAndDutyActualsDao;
 	@Inject private AircraftTypeDao aircraftTypeDao;
 	@Inject private ExchangeDao exDao;
+	@Inject private JobTaskDao jobTaskDao;
+	@Inject private JobTicketDao jobTicketDao;	
+	@Inject private JobStatusDao jobStatusDao;
+	@Inject private JobHistoryDao jobHistoryDao;
+	
 	
 	@Inject private AuthManager authManager;
 	@Inject private DocumentManager docManager;
@@ -230,6 +248,10 @@ public class StarliteCoreManager {
 	@Transactional
 	public Aircraft getAircraftByReg(String reg) {
 		return aircraftDao.findByReg(reg);
+	}
+	@Transactional
+	public List<Aircraft> getAllAircraftRegs() {
+		return aircraftDao.getAllAircraftRefs();
 	}
 	
 	@Transactional
@@ -592,11 +614,53 @@ public class StarliteCoreManager {
 	public List<Component> getComponents(String location) {
 		return componentDao.findByLocation(location);
 	}
-
-	public Component getComponent(String _class, String _part, String _serial) {
-		// TODO Auto-generated method stub
-		return componentDao.getComponent(_class,_part, _serial) ;
+	
+	//JobTask
+	@Transactional
+	public List<JobTask> getAllTasks(){
+		return jobTaskDao.findAllTasks();
+	}
+	@Transactional
+	public JobTask saveJobTask(JobTask newTask) {
+		
+		return jobTaskDao.makePersistent(newTask);
+	}	
+	
+	//JobTicket
+	@Transactional
+	public List<JobTicket> getAllTicketsByUser(String username){
+		return jobTicketDao.findAllTicketsPerUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllNonOpenTicketsByUser(String username){
+		return jobTicketDao.findAllNonOpenTicketsPerUser(username);
 	}
 	
+	@Transactional
+	public JobTicket saveJobTicket(JobTicket job) {
+		
+		return jobTicketDao.makePersistent(job);
+	}
+	
+	@Transactional
+	public JobTicket getJobTicketByID(String ID) {
+		return jobTicketDao.findJobTicketByID(ID);
+	}
+	
+   //JobStatus
+	@Transactional
+	public JobStatus getJobStatusValue(String jobStatusValue){
+		return jobStatusDao.findJobStatusValue(jobStatusValue);
+	}
+	
+	//JobHistory
+	@Transactional
+	public JobHistory saveJobHistory(JobHistory history) {
+		return jobHistoryDao.makePersistent(history);
+	}
 
+	@Transactional
+	public List<JobHistory> getAllJobHistoryForUser(String username) {
+		return jobHistoryDao.findAllHistoryTicketsPerUser(username);
+	}
 }

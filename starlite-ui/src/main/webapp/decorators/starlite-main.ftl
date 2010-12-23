@@ -13,6 +13,10 @@
 	<#assign domain = "starlite">
 </#if>
 
+<#if request.serverName?matches(".*local.*")>
+	<#assign domain = "starlite">
+</#if>
+
 <#if request.serverName?matches(".*cri.*")>
 	<#assign domain = "cri">
 </#if>
@@ -82,6 +86,16 @@
    
       <#if isManager>
       	  
+      	  <#if user.hasRead("hanger")>
+      	  <#assign domain = "starlite">
+          <#if current?? && current=="Hanger">
+          <li class="charters current">
+          <#else>
+          <li class="charters">
+          </#if>
+          <a href="hanger.action">Hanger</a></li>
+          </#if>
+      	           
       	  <#if user.hasRead("schedule")>
       	  <#if current?? && current=="schedule">
       		<li class="schedule current">
@@ -191,6 +205,18 @@
           </#if>
       
       <#else>
+      
+      <#if user.hasRead("hanger")>
+      <#assign domain = "starlite">
+          <#if current?? && current=="Hanger">
+          <li class="charters current">
+          <#else>
+          <li class="charters">
+          </#if>
+          <a href="hanger.action">Hanger</a></li>
+          
+          </#if>
+          
       <#if current?? && current=="crew">
       <li class="crew current">
       <#else>

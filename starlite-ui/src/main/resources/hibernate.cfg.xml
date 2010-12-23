@@ -7,7 +7,7 @@
           	<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
           	<property name="connection.url">jdbc:mysql://localhost/starliteTest</property>
           	<property name="connection.username">root</property>
-          	<property name="connection.password"></property>
+          	<property name="connection.password">password</property>
           	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
           	<property name="hbm2ddl.auto">update</property>
           	
@@ -41,6 +41,15 @@
             <mapping class="com.itao.starlite.model.ExchangeRate"/>
 			<mapping class="com.itao.starlite.model.MonthlyInvoicedHours"/>
 			<mapping class="com.itao.starlite.model.Store"/>
+			<mapping class="com.itao.starlite.model.MyTest"/>
+			<mapping class="com.itao.starlite.model.JobStatus"/>
+			<mapping class="com.itao.starlite.model.JobStatusBtnImage"/>
+			<mapping class="com.itao.starlite.model.JobStatusBtnImageDefaults"/>
+			<mapping class="com.itao.starlite.model.JobStatusButton"/>
+			<mapping class="com.itao.starlite.model.JobTask"/>
+			<mapping class="com.itao.starlite.model.JobTicket"/>
+			<mapping class="com.itao.starlite.model.JobHistory"/>
+			
             
             <mapping class="com.itao.starlite.scheduling.model.Allocation"/>
             
