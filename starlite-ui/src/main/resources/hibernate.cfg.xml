@@ -41,7 +41,6 @@
             <mapping class="com.itao.starlite.model.ExchangeRate"/>
 			<mapping class="com.itao.starlite.model.MonthlyInvoicedHours"/>
 			<mapping class="com.itao.starlite.model.Store"/>
-			<mapping class="com.itao.starlite.model.MyTest"/>
 			<mapping class="com.itao.starlite.model.JobStatus"/>
 			<mapping class="com.itao.starlite.model.JobStatusBtnImage"/>
 			<mapping class="com.itao.starlite.model.JobStatusBtnImageDefaults"/>
