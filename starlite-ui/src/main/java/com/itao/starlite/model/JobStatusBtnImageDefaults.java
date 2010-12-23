@@ -31,19 +31,19 @@ public class JobStatusBtnImageDefaults
 	@Column(nullable = false, columnDefinition="int(5) default 30")
 	private  int defaultOnImageHeight = 30;
 	
-	@Column(nullable = false, columnDefinition="varchar(300) default 'green_light.png'")
+	@Column(nullable = false, columnDefinition="varchar(255) default 'green_light.png'")
     private String defaultOffImageWIP="green_light.png"; // image filename i.e. \\images\\green_light.png
-	@Column(nullable = false, columnDefinition="varchar(300) default 'green_dark.png'")
+	@Column(nullable = false, columnDefinition="varchar(255) default 'green_dark.png'")
     private String defaultOnImageWIP="green_dark.png"; // image filename i.e.  \\images\\green_dark.png
 
-	@Column(nullable = false, columnDefinition="varchar(300) default 'orange_light.png'")
+	@Column(nullable = false, columnDefinition="varchar(255) default 'orange_light.png'")
     private String defaultOffImageSUSPENDED="orange_light.png"; 
-	@Column(nullable = false, columnDefinition="varchar(300) default 'orange_dark.png'")
+	@Column(nullable = false, columnDefinition="varchar(255) default 'orange_dark.png'")
     private String defaultOnImageSUSPENDED="orange_dark.png"; 
 
-	@Column(nullable = false, columnDefinition="varchar(300) default 'blue_light.png'")
+	@Column(nullable = false, columnDefinition="varchar(255) default 'blue_light.png'")
     private String defaultOffImageCLOSED="blue_light.png"; 
-	@Column(nullable = false, columnDefinition="varchar(300) default 'blue_dark.png'")
+	@Column(nullable = false, columnDefinition="varchar(255) default 'blue_dark.png'")
     private String defaultOnImageCLOSED="blue_dark.png"; 
 
 	
