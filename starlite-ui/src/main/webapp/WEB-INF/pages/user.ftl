@@ -2,6 +2,7 @@
 <#setting number_format = "######.##########"/>
 
 <html>
+<!-- Modifier: Celeste Groenewald -->
 <head>
 	<@enableHelp/>
 	<style type="text/css">
@@ -458,6 +459,13 @@
             <input style="float:left" disabled="disabled" class="adminSelect" name="permissions" type="checkbox" id="compupRead" value="compupRead" /> 
           </div><br/><br/><br/>
           
+           <div>
+            <div class="fm-opt">
+            <label for=""><B>Hanger Management</B></label>               
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="hangerRead"  onclick="if($('#hangerWrite').is(':checked')){$('#hangerWrite').attr('checked',$('#hangerRead').is(':checked'));}" value="hangerRead" /> 
+            <input disabled="disabled" class="crewSelect" name="permissions" type="checkbox" id="hangerWrite" onclick="if($('#hangerWrite').is(':checked')){$('#hangerRead').attr('checked','true');}"   value="hangerWrite" /> 
+            </div>
+          </div><br/><br/>
            
 		   <div style="height:1px;">&nbsp;</div>
 		
