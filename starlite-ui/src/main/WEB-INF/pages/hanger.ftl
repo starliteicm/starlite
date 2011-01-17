@@ -112,7 +112,7 @@ table.pretty caption {
 </head>
 <body>
 <#assign domain = "starlite">
-<#if user.hasPermission("UserAdmin")>
+
 
 <div id="toolbar">
         
@@ -196,7 +196,7 @@ table.pretty caption {
      </form>
     </div> 
   
-  </#if>
+
 </div>
 <br/>
 </#if>
