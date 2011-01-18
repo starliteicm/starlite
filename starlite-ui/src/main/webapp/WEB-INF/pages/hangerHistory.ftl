@@ -114,9 +114,10 @@ table.pretty caption {
 </head>
 <body>
 
-<#if user.hasPermission("UserAdmin")>
+
 <div id="toolbar">
         
+ <#if user.hasPermission("hangerRead")>
    
     <div style="margin-left:150px;">
     <!--<form action="hangerHistory.action" enctype="multipart/form-data" method="post">
@@ -135,10 +136,12 @@ table.pretty caption {
     <div style="margin-left:150px;">
     <@jmesa id="JobTicket"/>
     </div> 
+ 
+ </#if>
   
 </div>
 <br/>
-</#if>
+
  
 </body>
 </html>

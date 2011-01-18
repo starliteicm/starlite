@@ -69,6 +69,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	public String selectedValue = "none";
 	public String newTask="none";
 	
+	public boolean isNotACrewMember = false;
+	
 	
 		
 	/*-----------------------------------------------------------------*/
@@ -96,6 +98,12 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		this.jobTicketsForUser = manager.getAllTicketsByUser(this.user.getUsername());
 		this.currentUser = manager.getCrewMemberByCode(this.user.getUsername());
 		
+		if (this.currentUser == null)
+		{
+			this.errorMessage = "Please note: You are currently not a member of Crew and can therefore not use all of the functionality of this Hanger Management module. Please contact your local administrator, if you feel you need access to this module.";
+			this.isNotACrewMember = true;
+		}
+		
 		//Make sure that the status values are present for the buttons.
 		initTaskList();
 		
@@ -113,6 +121,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	private void initTaskList()
 	/*-----------------------------------------------------------------*/	
 	{
+		if (this.jobTicketsForUser != null)
+		{
 		JobStatus wip = manager.getJobStatusValue("WIP");
 		JobStatus suspended = manager.getJobStatusValue("SUSPENDED");	
 		JobStatus closed = manager.getJobStatusValue("CLOSED");
@@ -122,7 +132,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		     JobTicket temp = this.jobTicketsForUser.get(i);
 		     List<JobStatusButton> buttons = temp.getJobStatusButtons();
 		     
-		     if (buttons.size() < 3)
+		     if (buttons.size() <= 2)
 		     {
 		       
 		     JobStatusButton button = new JobStatusButton();
@@ -144,6 +154,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		     this.manager.saveJobTicket(temp);
 		     }
 		}
+		}
 	}//initTaskList()
     /*-----------------------------------------------------------------*/
 	/**
@@ -160,6 +171,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		JobTicket z = new JobTicket();
 		List tickets = new ArrayList();
 		
+		
+		// check if the user is a CrewMember
+		if (this.isNotACrewMember == false)
+		{	
 		//Build the matrix
 		//Go through the aircrafts
 		for (int i =0; i<this.aircrafts.size(); i++)
@@ -257,7 +272,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	
 		//make the matrix available to hanger.ftl
 		this.jobTicketMatrix = tickets;
-
+		}
 		return "redirect-list";
 	}//initTableForTasks()
 	/*-----------------------------------------------------------------*/

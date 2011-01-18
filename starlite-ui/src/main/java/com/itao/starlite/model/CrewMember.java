@@ -46,7 +46,7 @@ import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
  * @author Jonathan Elliott
  */
 @Entity
-public class CrewMember implements Cloneable {
+public class CrewMember implements Cloneable, Comparable {
 	@Id
 	@GeneratedValue
 	private Integer id;
@@ -2019,5 +2019,30 @@ public class CrewMember implements Cloneable {
 			throw(e);
 		}
     }
-    
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		
+		    CrewMember temp = (CrewMember)arg0;
+		    final int BEFORE = -1;
+		    final int EQUAL = 0;
+		    final int AFTER = 1;
+
+		    if (temp.getPersonal() != null)
+		    {
+		    	if (this.getPersonal().getFullName() != null)
+		    	{
+		    		if (( this.getPersonal().getFullName().compareTo(temp.getPersonal().getFullName() )==0)) return EQUAL; 
+		    		if (( this.getPersonal().getFullName().compareTo(temp.getPersonal().getFullName() )== -1)) return BEFORE;
+		    		if (( this.getPersonal().getFullName().compareTo(temp.getPersonal().getFullName() )== 1)) return AFTER;
+		    	}
+		    	else
+		    	{return AFTER;}
+		    }
+		    else
+		    {	return AFTER; }
+
+		return EQUAL;
+	}
 }

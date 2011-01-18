@@ -112,16 +112,21 @@ table.pretty caption {
 </head>
 <body>
 <#assign domain = "starlite">
-<#if user.hasPermission("UserAdmin")>
 
-<div id="toolbar">
+
+<div id="toolbar">   
+
+  
         
    <#if user.hasPermission("hangerRead")>
+   
+   <#if (isNotACrewMember = false) >
     <div style="margin-left:150px;">
     <form action="hangerHistory.action" enctype="multipart/form-data" method="post">
     <button class="smooth" style="margin-left:10px;padding:2px 10px 2px 7px;" onclick="Test('Button One')" type="submit"><img src="images/icons/view_icon.png"/>View Job History</button>
     </form>
-    
+   </#if>
+       
     <#if user.hasPermission("hangerWrite")>
     <div style="margin-left:250px;" >
     <form action="hanger!saveTask.action" enctype="multipart/form-data" method="post">
@@ -139,7 +144,9 @@ table.pretty caption {
 
 
     
+        
     <div style="margin-left:0px;">
+    <#if (isNotACrewMember = false) >
     <form action="hanger!updateStatus.action" enctype="multipart/form-data" method="post">
     
     <div style="margin-left:133px;">
@@ -194,12 +201,13 @@ table.pretty caption {
     </div>
     </div>
      </form>
+     </#if>
     </div> 
   
   </#if>
 </div>
 <br/>
-</#if>
+
  
 </body>
 </html>

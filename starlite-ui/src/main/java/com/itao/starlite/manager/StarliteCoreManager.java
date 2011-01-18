@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import org.joda.time.DateMidnight;
 
 import com.google.inject.Inject;
+import com.itao.persistence.GenericDao;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.manager.AuthManager;
 import com.itao.starlite.dao.ActualsDao;
@@ -24,7 +25,11 @@ import com.itao.starlite.dao.ComponentDao;
 import com.itao.starlite.dao.CrewDao;
 import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
+import com.itao.starlite.dao.FlightActualStatusDao;
+import com.itao.starlite.dao.FlightActualsDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
+import com.itao.starlite.dao.FlightLogDao;
+import com.itao.starlite.dao.FlightPlanDao;
 import com.itao.starlite.dao.JobHistoryDao;
 import com.itao.starlite.dao.JobStatusDao;
 import com.itao.starlite.dao.JobTicketDao;
@@ -47,6 +52,10 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
+import com.itao.starlite.model.FlightActualStatus;
+import com.itao.starlite.model.FlightActuals;
+import com.itao.starlite.model.FlightLog;
+import com.itao.starlite.model.FlightPlan;
 import com.itao.starlite.model.JobHistory;
 import com.itao.starlite.model.JobStatus;
 import com.itao.starlite.model.JobTask;
@@ -76,10 +85,15 @@ public class StarliteCoreManager {
 	@Inject private JobTicketDao jobTicketDao;	
 	@Inject private JobStatusDao jobStatusDao;
 	@Inject private JobHistoryDao jobHistoryDao;
+	@Inject private FlightPlanDao flightPlanDao;
+	@Inject private FlightActualsDao flightActualsDao;
+	@Inject private FlightActualStatusDao flightActualStatusDao;
+	@Inject private FlightLogDao flightLogDao;
 	
 	
 	@Inject private AuthManager authManager;
 	@Inject private DocumentManager docManager;
+	
 	
 	
 	
@@ -663,4 +677,71 @@ public class StarliteCoreManager {
 	public List<JobHistory> getAllJobHistoryForUser(String username) {
 		return jobHistoryDao.findAllHistoryTicketsPerUser(username);
 	}
+	
+	//FlightPlan
+	@Transactional
+	public FlightPlan saveFlightPlan(FlightPlan flightPlan) {
+		return flightPlanDao.makePersistent(flightPlan);
+	}
+	@Transactional
+	public List<FlightPlan> findFlightPlan(String customer, String invoiceNo,
+			String flightNo, String flightDate, String takeOffTime) {
+		return flightPlanDao.findFlightPlan(customer, invoiceNo, flightNo, flightDate, takeOffTime);
+	}
+	@Transactional
+	public List<FlightPlan> findAllFlightPlans() {
+		return flightPlanDao.findAllFlightPlans();
+	}
+	@Transactional
+	public FlightPlan findFlightPlanById(Integer id) {
+		return flightPlanDao.findFlightPlanById(id);
+	}
+	
+	//FlightLog
+	@Transactional
+	public FlightLog findFlightLogById(Integer id) {
+		return flightLogDao.findFlightLogById(id);
+	}
+	
+	//FlightActuals
+	@Transactional
+	public FlightActuals saveFlightActuals(FlightActuals flightActual) {
+		return flightActualsDao.makePersistent(flightActual);
+	}
+	@Transactional
+	public FlightActuals findFlightActualsFlightPlan(String aircraft, String aircraftType,String flightDate) {
+		return flightActualsDao.findFlightActualFlightPlan(aircraft, aircraftType, flightDate);
+	}
+	@Transactional
+	public List<FlightActuals> findAllFlightActuals() {
+		return flightActualsDao.findAllFlightActuals();
+	}
+	@Transactional
+	public FlightActuals findFlightActualsByID(int id) {
+		return flightActualsDao.findFlightActualsByID(id);
+	}
+	@Transactional
+	public FlightActuals findFlightActualsByPlanID(int id) {
+		return flightActualsDao.findFlightActualsByPlanID(id);
+	}
+	@Transactional
+	public List<FlightActuals> findMismatchedFlightActuals()
+	{
+		return flightActualsDao.findMismatchedFlightActuals();
+	}
+	@Transactional
+	public void deleteMismatchedFlightActual(Integer id) {
+		FlightActuals cm = flightActualsDao.findFlightActualsByID(id);
+		if (cm != null)
+			flightActualsDao.makeTransient(cm);
+	}
+	
+	
+	//FlightActualStatus
+	@Transactional
+	public FlightActualStatus findStatusValueByID(int id) {
+		return flightActualStatusDao.findStatusValueByID(id);
+	}
+	
+	
 }

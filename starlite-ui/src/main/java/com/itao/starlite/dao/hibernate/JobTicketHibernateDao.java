@@ -23,16 +23,30 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 	@Override
 	public List<JobTicket> findAllTicketsPerUser(String username)
 	{
+		List<JobTicket> list = null;
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
+		if (persons.isEmpty() == false)
+		{
 		int personid = persons.get(0);
-		return (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id in (1,2,3)").setParameter(0, personid).list();
+		
+		list = (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id in (1,2,3)").setParameter(0, personid).list();
+		}
+		return (list);
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<JobTicket> findAllNonOpenTicketsPerUser(String username) {
+	public List<JobTicket> findAllNonOpenTicketsPerUser(String username) 
+	{
+		List<JobTicket> list = null;
+		
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
+		
+		if (persons.isEmpty() == false)
+		{
 		int personid = persons.get(0);
-		return (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id in (2,3,4)").setParameter(0, personid).list();
+		list = (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id in (2,3,4)").setParameter(0, personid).list(); 
+		}
+		return list;
 	}
 
 	
