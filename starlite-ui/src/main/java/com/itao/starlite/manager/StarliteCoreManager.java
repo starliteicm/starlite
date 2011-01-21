@@ -678,6 +678,11 @@ public class StarliteCoreManager {
 		return jobHistoryDao.findAllHistoryTicketsPerUser(username);
 	}
 	
+	public Component getComponent(String _class, String _part, String _serial){
+	    // TODO Auto-generated method stub
+	    return componentDao.getComponent(_class,_part, _serial) ;
+	}
+	
 	//FlightPlan
 /*	@Transactional
 	public FlightPlan saveFlightPlan(FlightPlan flightPlan) {
