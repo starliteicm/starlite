@@ -1990,7 +1990,7 @@ public class CrewMember implements Cloneable {
 				//clones.add(cm);
 				}
 			}
-            if(fda.getDeductions().size() != 0){	
+            if(fda.getAdditions().size() != 0){	
 				for(String key: fda.getAdditions().keySet()){
 					Addition d = fda.getAdditions().get(key);
 				String type = ""+d.getReason();
