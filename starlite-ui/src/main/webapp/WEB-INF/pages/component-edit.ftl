@@ -311,6 +311,10 @@
             <label for="component.serial">Serial Number:</label>
             <input name="component.serial" type="text" value="${component.serial!}"/>
         </div>
+        <div class="fm-opt">
+            <label for="component.batchNo">Batch Number:</label>
+            <input name="component.batchNo" type="text" value="${component.batchNo!}"/>
+        </div>
         
         
         

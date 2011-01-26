@@ -65,6 +65,8 @@ public class Component {
 	
 	@Transient
 	public String location;
+	@Transient
+	public String batchNo;
 	
 	//CALC
 	//currentHours
@@ -74,6 +76,18 @@ public class Component {
 	//Time since install
 	//lifeExpiresHours
 	
+	public String getBatchNo()
+	{
+		batchNo = this.locations.get(0).getBatch();
+		
+		return(this.batchNo);
+	}
+	
+	public void setBatchNo(String batchNo)
+	{
+		this.batchNo = batchNo;
+		this.locations.get(0).setBatch(batchNo);
+	}
 	 
 	
 	public Double getTotalDays(){
@@ -616,7 +630,7 @@ public class Component {
 		this.locations = locations;
 	}
 
-	public void updateLocation(Integer locationId, String location, String bin, Integer quantity, Integer current) {
+	public void updateLocation(Integer locationId, String location, String bin, Integer quantity, Integer current, String batch) {
 		if(locationId != null){
 			ComponentLocation toRem = null;
 			
@@ -629,6 +643,8 @@ public class Component {
 						l.setBin(bin);
 						l.setCurrent(current);
 						l.setQuantity(quantity);
+						//also save the batch no
+						l.setBatch(batch);						
 					}
 					else{
 						toRem = l;
@@ -656,6 +672,8 @@ public class Component {
 			l.setBin(bin);
 			l.setCurrent(current);
 			l.setQuantity(quantity);
+			//also save batchNo
+			l.setBatch(batch);
 			locations.add(l);
 			}
 		}

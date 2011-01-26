@@ -25,8 +25,6 @@ import org.jmesa.view.component.Table;
 import org.jmesa.view.editor.BasicCellEditor;
 import org.jmesa.view.editor.CellEditor;
 import org.jmesa.view.html.HtmlBuilder;
-import org.jmesa.view.html.component.HtmlColumn;
-import org.jmesa.view.html.editor.DroplistFilterEditor;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -38,11 +36,11 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.model.Component.ComponentHistory;
+import com.itao.starlite.model.Component.ComponentLocation;
 import com.itao.starlite.ui.Breadcrumb;
 import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
-import com.itao.starlite.ui.jmesa.SearchTableView;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
@@ -109,6 +107,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	@Override
 	public String execute() throws Exception {
+				
 		prepareTabs();
 		components = manager.getComponents();
 		stores = manager.getStores();
@@ -119,8 +118,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		    tableFacade.render();
 		    return null;
 		} 
-		tableFacade.setView(new SearchTableView());
-     	//tableFacade.setView(new NavTableView());
+     	tableFacade.setView(new NavTableView());
 		tableHtml = tableFacade.render();
 		
 		return SUCCESS;
@@ -146,6 +144,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 						String _manu = line[8];
 						String _loc = line[9]; //NOT USED Store is selected from drop down.
 						String _bin = line[10];
+						
+						//Ignore the header line
+						if (_class.compareToIgnoreCase("Class") != 0)
+						{
 
 						//DEFAULT CLASS TO E TYPE
 						if(("A").equals(_class.toUpperCase())){_class="Class A";}
@@ -154,9 +156,11 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 						
 						if(!("").equals(_part)){
 							//FIRST CHECK IF COMPONENT ALREADY EXISTS WITH PART + SERIAL
-							component = manager.getComponent(_class,_part,_serial);
+							component = manager.getComponent(_class,_part,_serial,_bin);
+							
 							if(component == null){
 								component = new Component();
+								component.setActive(1);
 							}
 							//IF YES... update the fields of this component and add qty to location
 							//IF NO... add the new component then add the qty to location
@@ -167,14 +171,16 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							component.setDescription(_desc);
 							component.setState(_status);
 							component.setManufacturer(_manu);
+						
 							//component.setExpiryDate(expiryDate) //Removed as Requested
 							manager.saveComponent(component);
-							if(new Integer(_qty) > 0){
-								component.updateLocation(null , location, _bin, new Integer(_qty), new Integer(0));
+							if(new Integer(_qty) >= 0){
+								component.updateLocation(null , location, _bin, new Integer(_qty), new Integer(0),_batch);
 								manager.saveComponent(component);
 							}
 							uploaded ++;
 						}
+						}// if (_class = "Class")
 						
 					}
 					catch(Exception e){
@@ -193,6 +199,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		return execute();
 	}
 	
+	
 	public String deactive() throws Exception {
 		tab = "deactive";
 		prepareTabs();
@@ -205,8 +212,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		    tableFacade.render();
 		    return null;
 		} 
-		tableFacade.setView(new SearchTableView());
-     	//tableFacade.setView(new NavTableView());
+     	tableFacade.setView(new NavTableView());
 		tableHtml = tableFacade.render();
 		
 		return SUCCESS;
@@ -249,7 +255,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							locationId = addLocation;
 						}
 						//Record History of Location Move
-						component.updateLocation(locationId,location,bin,quantity,locCurrent);
+						//component.updateLocation(locationId,location,bin,quantity,locCurrent);
+						String batchNo = component.getBatchNo();
+						component.updateLocation(locationId,location,bin,quantity,locCurrent,batchNo);
 						
 						
 					}
@@ -435,6 +443,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	public TableFacade createTable(){
 		
+		
+		
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
 		tableFacade.setColumnProperties("type","name", "number", "serial", "qty", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
@@ -449,15 +459,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
-		Column name = table.getRow().getColumn("name");
-		name.setTitle("Desc");
-		
-		
-		
-		
+		Column type = table.getRow().getColumn("type");
 		if (!limit.isExported()) {
-			HtmlColumn type = (HtmlColumn) table.getRow().getColumn("type");
-			type.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
 			type.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if((""+((Component) item).getType()).indexOf("Class") >= 0){
@@ -468,11 +471,9 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		
+		Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
+		tbo.setTitle("TBO");
 		if (!limit.isExported()) {
-			HtmlColumn tbo = (HtmlColumn) table.getRow().getColumn("timeBetweenOverhaul");
-			tbo.setFilterable(false);
-			tbo.setTitle("TBO");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getTimeBetweenOverhaul() == null){
@@ -483,7 +484,6 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		else{			
-			Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getTimeBetweenOverhaul() ;
@@ -491,10 +491,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		
+		Column hoursRunCol = table.getRow().getColumn("hoursRun");
 		if (!limit.isExported()) {
-			HtmlColumn hoursRunCol = (HtmlColumn) table.getRow().getColumn("hoursRun");
-			hoursRunCol.setFilterable(false);
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getHoursRun() == null){
@@ -504,8 +502,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					}
 			});
 		}
-		else{		
-			Column hoursRunCol = table.getRow().getColumn("hoursRun");
+		else{			
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursRun() ;
@@ -513,30 +510,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
+		Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
 		if (!limit.isExported()) {
-			HtmlColumn hoursRunCol = (HtmlColumn) table.getRow().getColumn("qty");
-			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						if(((Component) item).getQty() == null){
-							return "";
-						}
-						return "<div style='text-align:right'>"+((Component) item).getQty()+"</div>";
-					}
-			});
-		}
-		else{		
-			Column hoursRunCol = table.getRow().getColumn("qty");
-			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {			
-					return (Number) ((Component) item).getQty() ;
-				}
-			});
-		}
-		
-		
-		if (!limit.isExported()) {
-			HtmlColumn hoursInstallCol = (HtmlColumn) table.getRow().getColumn("hoursOnInstall");
-			hoursInstallCol.setFilterable(false);
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getHoursOnInstall() == null){
@@ -546,8 +521,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					}
 			});
 		}
-		else{	
-			Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
+		else{			
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursOnInstall() ;
@@ -555,10 +529,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		
+		Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
 		if (!limit.isExported()) {
-			HtmlColumn expiresCol = (HtmlColumn) table.getRow().getColumn("lifeExpiresHours");
-			expiresCol.setFilterable(false);
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getLifeExpiresHours() == null){
@@ -569,7 +541,6 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		else{			
-			Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getLifeExpiresHours() ;
@@ -578,18 +549,15 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		}
 		
 		
-		
+		Column currentCol = table.getRow().getColumn("currentHours");
 		if (!limit.isExported()) {
-			HtmlColumn currentCol = (HtmlColumn) table.getRow().getColumn("currentHours");
-			currentCol.setFilterable(false);
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
 					}
 			});
 		}
-		else{	
-			Column currentCol = table.getRow().getColumn("currentHours");
+		else{			
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getCurrentHoursStr() );
@@ -598,17 +566,15 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		}
 		
 		
+		Column remainingCol = table.getRow().getColumn("remainingHours");
 		if (!limit.isExported()) {
-			HtmlColumn remainingCol = (HtmlColumn) table.getRow().getColumn("remainingHours");
-			remainingCol.setFilterable(false);
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
 					}
 			});
 		}
-		else{		
-			Column remainingCol = table.getRow().getColumn("remainingHours");
+		else{			
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getRemainingHoursStr() );
@@ -616,48 +582,12 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
+			
+			
+		
+		Column percentCol = table.getRow().getColumn("remainingPercent");
+		percentCol.setTitle("Remaining %");
 		if (!limit.isExported()) {
-		HtmlColumn totalDays = (HtmlColumn) table.getRow().getColumn("totalDays");
-		totalDays.setFilterable(false);
-		totalDays.getCellRenderer().setCellEditor(new CellEditor() {
-			public Object getValue(Object item, String property, int rowCount) {
-				try{
-					Object val = ((Component) item).getTotalDays();
-					if(val == null){
-						val = "";
-					}
-					return "<div style='text-align:right'>"+val+"</div>";
-				}
-				catch(Exception e){
-					return "";
-				}
-			}
-		});
-		
-		HtmlColumn remainingDays = (HtmlColumn) table.getRow().getColumn("remainingDays");
-		remainingDays.setFilterable(false);
-		remainingDays.getCellRenderer().setCellEditor(new CellEditor() {
-			public Object getValue(Object item, String property, int rowCount) {
-				try{
-					Object val = ((Component) item).getRemainingDays();
-					if(val == null){
-						val = "";
-					}
-					return "<div style='text-align:right'>"+val+"</div>";
-				}
-				catch(Exception e){
-					return "";
-				}
-			}			
-		});
-		}	
-		
-		
-		
-		if (!limit.isExported()) {
-			HtmlColumn percentCol = (HtmlColumn) table.getRow().getColumn("remainingPercent");
-			percentCol.setTitle("Remaining %");
-			percentCol.setFilterable(false);
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {
@@ -740,7 +670,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			component = new Component();
 		}
 		else {
-			component = manager.getComponent(id);
+			component = manager.getComponent(id);			
 		}
 	}
 	
