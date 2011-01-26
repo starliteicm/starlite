@@ -47,7 +47,7 @@ import com.opensymphony.xwork2.Preparable;
 @Results({
 	@Result(name="redirect", type=ServletRedirectResult.class, value="component!edit.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}"),
 	@Result(name="redirect-list", type=ServletRedirectResult.class, value="component.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
-})
+}) 
 public class ComponentAction extends ActionSupport implements UserAware, Preparable {
 	/**
 	 * 
@@ -156,7 +156,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 						
 						if(!("").equals(_part)){
 							//FIRST CHECK IF COMPONENT ALREADY EXISTS WITH PART + SERIAL
-							component = manager.getComponent(_class,_part,_serial,_bin);
+							component = manager.getComponent(_class,_part,_serial);
 							
 							if(component == null){
 								component = new Component();
