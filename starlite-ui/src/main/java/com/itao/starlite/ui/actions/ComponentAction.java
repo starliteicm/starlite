@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -65,6 +66,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public String errorMessage;
 	
 	public Integer id;
+	public boolean newComponent = false;
 	
 	public List<Store> stores;
 	public List<Component> components;
@@ -93,8 +95,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public Integer addLocation;
 	public String location;
 	public String bin;
+	public String batch;
 	public Integer quantity;
 	public Integer locCurrent;
+	
 	
 	//Upload of Components
 	public File document;
@@ -218,7 +222,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		return SUCCESS;
 	}
 	
-	public String edit(){
+	public String edit()
+	{
+		//if id == null, then adding a new component, so should hide the batchNo Field.
+		if (id==null){this.newComponent = true;}
 		prepare();
 		if(component != null){
 			rates=manager.getExchangeRates();
@@ -256,8 +263,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 						}
 						//Record History of Location Move
 						//component.updateLocation(locationId,location,bin,quantity,locCurrent);
-						String batchNo = component.getBatchNo();
-						component.updateLocation(locationId,location,bin,quantity,locCurrent,batchNo);
+						component.updateLocation(locationId,location,bin,quantity,locCurrent,batch);
 						
 						
 					}
@@ -287,6 +293,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					
 				}
 			}
+			
 			
 			manager.saveComponent(component);
 			notificationMessage = "Component saved";
@@ -396,9 +403,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				Object loc = new BasicCellEditor().getValue(item, "location", rowCount);
 				Object bin = new BasicCellEditor().getValue(item, "bin", rowCount);
 				Object qty = new BasicCellEditor().getValue(item, "quantity", rowCount);
+				Object batch = new BasicCellEditor().getValue(item, "batch", rowCount);
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
 				HtmlBuilder html = new HtmlBuilder();
-				html.a().onclick("editLoc('"+id+"','"+loc+"','"+bin+"','"+qty+"');return false;").href().quote().append("#").quote().close();
+				html.a().onclick("editLoc('"+id+"','"+loc+"','"+bin+"','"+batch+"','"+qty+"');return false;").href().quote().append("#").quote().close();
 				html.append("Edit");
 				html.aEnd();
 				return html.toString();
@@ -670,7 +678,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			component = new Component();
 		}
 		else {
-			component = manager.getComponent(id);			
+			component = manager.getComponent(id);	
+			
 		}
 	}
 	

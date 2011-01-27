@@ -35,6 +35,7 @@
         $("#locationInput").css("background-color","#FFFFFF");
         $("#conLocationInput").css("background-color","#EEEEEE");
         $("#binInput").css("background-color","#FFFFFF");
+        $("#batchInput").css("background-color","#FFFFFF");
       }
       else{
         $("#locDiv").css("background-color","#EEEEEE");
@@ -43,6 +44,7 @@
         $("#locationInput").css("background-color","#EEEEEE");
         $("#conLocationInput").css("background-color","#FFFFFF");
         $("#binInput").css("background-color","#EEEEEE");
+        $("#batchInput").css("background-color","#EEEEEE");
         
       }
       return true;
@@ -62,6 +64,7 @@
       $("#locCurrent").val("1");
       $("#locationInput").val("");
       $("#binInput").val("");
+      $("#batchInput").val("");
       $("#qtyInput").val("1");
       $("#cancelEditLoc").css("display","none");
       $("#deleteEditLoc").css("display","none");
@@ -76,7 +79,7 @@
       return true;
     }
     
-    function editLoc(locid,location,bin,qty){
+    function editLoc(locid,location,bin,batch,qty){
     
       $("#editMessage").html("Editing "+location);
       $("#editMessage").css("display","");
@@ -86,6 +89,8 @@
       updateLocationMessage(location);
       $("#binInput").val(bin);
       updateBinMessage(bin);
+      $("#batchInput").val(batch);
+      updateBatchMessage(batch);
       $("#qtyInput").val(qty);
       $("#cancelEditLoc").css("display","");
       $("#deleteEditLoc").css("display","");
@@ -196,6 +201,27 @@
       return true;  
     }
     
+    function updateBatchMessage(batch){
+      var message = "Free Edit Field";
+      var valid = 0;
+      
+      if(batch.length >= 0){
+           valid = 1;
+      
+      }
+      
+      if(valid == 1){
+        //GREEN
+        $("#batchMessage").css("background-color","#66FF66")
+      }
+      else{
+        //RED
+        $("#batchMessage").css("background-color","#FF6666")
+      }
+      
+      $("#batchMessage").val(message); 
+      return true;  
+    }
     
     function validate(){return true;}
     function validateTrack(){return true;}
@@ -221,6 +247,7 @@
   
   <@enableDatePickers/>
   <@enableTimePickers/>
+  <@enableHelp/>
   
 </head>
 <body>
@@ -311,10 +338,8 @@
             <label for="component.serial">Serial Number:</label>
             <input name="component.serial" type="text" value="${component.serial!}"/>
         </div>
-        <div class="fm-opt">
-            <label for="component.batchNo">Batch Number:</label>
-            <input name="component.batchNo" type="text" value="${component.batchNo!}"/>
-        </div>
+        
+       
         
         
         
@@ -342,6 +367,11 @@
         <div class="fm-opt">
             <label for="component.manufacturedDate">Shelf Life:</label>
             <input class="date-pick" name="component.manufacturedDate" type="text" <#if component.manufacturedDate?exists >value="${component.manufacturedDate?string('dd/MM/yyyy')}"<#else>value=""</#if>  />
+        </div>
+        
+         <div class="fm-opt">
+            <label for="component.batchNo">Batch Number:</label>
+            <img class="tooltip" title="<b>Batch Numbers</b><br /><br />Batch Numbers are created by either using Transactions or by creating the class E component and then editing the Location fields."  style="background-color:transparent;cursor:help;"  src="images/icons/info.png"/>
         </div>
         
         <#if id?exists>
@@ -507,6 +537,12 @@
             <input id="binInput" type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
             <input type="text" style="background-color:#66FF66" value="Valid Bin Location" DISABLED name="" id="binMessage"/>
       </div>
+      <div id="binDiv" class="fm-opt">
+            <label for="batch">Batch:</label> 
+            <input id="batchInput" type="text" value="" onkeypress="updateBatchMessage(this.value);" onkeyup="updateBatchMessage(this.value);" onchange="updateBatchMessage(this.value);" name="batch"/>
+            <input type="text" style="background-color:#66FF66" value="Valid Batch Number" DISABLED name="" id="batchMessage"/>
+      </div>
+      
       <#if component.type?exists>
       <#if component.type.equals("Class E")>
       <div class="fm-opt">
@@ -530,6 +566,7 @@
              </#list>
             </select>
       </div>
+      <img class="tooltip" title="<b>Warning!</b><br />It will not add the quantities, it will override the quantities. Please use the Move Transaction to move components."  style="background-color:transparent;cursor:help;"  src="images/icons/info.png"/>
       </#if>
       </#if>
       

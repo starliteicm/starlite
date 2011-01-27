@@ -76,20 +76,8 @@ public class Component {
 	//Time since install
 	//lifeExpiresHours
 	
-	public String getBatchNo()
-	{
-		batchNo = this.locations.get(0).getBatch();
-		
-		return(this.batchNo);
-	}
-	
-	public void setBatchNo(String batchNo)
-	{
-		this.batchNo = batchNo;
-		this.locations.get(0).setBatch(batchNo);
-	}
-	 
-	
+
+
 	public Double getTotalDays(){
 		long milPerDay = 1000*60*60*24;
 		if(expiryDate != null){
