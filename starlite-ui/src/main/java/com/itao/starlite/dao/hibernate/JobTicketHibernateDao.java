@@ -48,7 +48,51 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 		}
 		return list;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<JobTicket> findAllWIPTicketsByUser(String username) {
+        List<JobTicket> list = null;
+		
+		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
+		
+		if (persons.isEmpty() == false)
+		{
+		int personid = persons.get(0);
+		list = (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id = 2").setParameter(0, personid).list(); 
+		}
+		return list;
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<JobTicket> findAllSUSPENDEDTicketsByUser(String username) {
+        List<JobTicket> list = null;
+		
+		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
+		
+		if (persons.isEmpty() == false)
+		{
+		int personid = persons.get(0);
+		list = (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id = 3").setParameter(0, personid).list(); 
+		}
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<JobTicket> findAllCLOSEDTicketsByUser(String username) {
+List<JobTicket> list = null;
+		
+		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
+		
+		if (persons.isEmpty() == false)
+		{
+		int personid = persons.get(0);
+		list = (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id = 4").setParameter(0, personid).list(); 
+		}
+		return list;
+	}
 	
 	@Override
 	public void insertNewJobTicket(JobTicket jobTicket) 
@@ -59,13 +103,35 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 
 	
 	@SuppressWarnings("unchecked")
-	public JobTicket findJobTicketByID(String ID) 
+	public JobTicket findJobTicketByID(Integer id) 
 	{
 		
-		List<JobTicket> tempList = getCurrentSession().createQuery("from JobTicket where jobTicketID = ? ").setParameter(0, Integer.valueOf(ID)).list();
+		List<JobTicket> tempList = getCurrentSession().createQuery("from JobTicket where jobTicketID = ? ").setParameter(0, id).list();
 		JobTicket temp = (JobTicket)tempList.get(0);
 		return temp;	
 	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean userHasWIPTickets(String username) 
+	{
+		boolean WIPTickets = false;
+		List<JobTicket> list = null;
+		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
+		
+		//check if user exists
+		if (persons.isEmpty() == false)
+		{
+			int personid = persons.get(0);
+			list = (List<JobTicket>) getCurrentSession().createQuery("from JobTicket where assignedto_id = ? and jobticketstatus_jobstatus_id = 2").setParameter(0, personid).list();
+			if (list.isEmpty() == false)
+			{
+				WIPTickets = true;
+			}
+		}
+		return (WIPTickets);
+	}
+	
+	
 
 	
 

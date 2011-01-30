@@ -52,10 +52,6 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
-//import com.itao.starlite.model.FlightActualStatus;
-//import com.itao.starlite.model.FlightActuals;
-//import com.itao.starlite.model.FlightLog;
-//import com.itao.starlite.model.FlightPlan;
 import com.itao.starlite.model.JobHistory;
 import com.itao.starlite.model.JobStatus;
 import com.itao.starlite.model.JobTask;
@@ -268,6 +264,7 @@ public class StarliteCoreManager {
 		return aircraftDao.getAllAircraftRefs();
 	}
 	
+	
 	@Transactional
 	public Map<String, Aircraft> getAircraftsById(List<String> ids) {
 		Map<String, Aircraft> aircraftMap = new HashMap<String, Aircraft>();
@@ -286,6 +283,7 @@ public class StarliteCoreManager {
 		al.aircraftList.addAll(aircraft);
 		return al;
 	}
+	
 	
 	@Transactional
 	public Aircraft saveAircraft(Aircraft a) {
@@ -629,10 +627,21 @@ public class StarliteCoreManager {
 		return componentDao.findByLocation(location);
 	}
 	
+	public Component getComponent(String _class, String _part, String _serial)
+	{
+       return componentDao.getComponent(_class,_part, _serial) ;
+	}
+ 
+
+
+	
 	//JobTask
 	@Transactional
 	public List<JobTask> getAllTasks(){
 		return jobTaskDao.findAllTasks();
+	}
+	public JobTask getJobTaskByValue(String jobTaskValue){
+		return jobTaskDao.findJobTaskByValue(jobTaskValue);
 	}
 	@Transactional
 	public JobTask saveJobTask(JobTask newTask) {
@@ -649,6 +658,23 @@ public class StarliteCoreManager {
 	public List<JobTicket> getAllNonOpenTicketsByUser(String username){
 		return jobTicketDao.findAllNonOpenTicketsPerUser(username);
 	}
+	@Transactional
+	public List<JobTicket> getAllWIPTicketsByUser(String username){
+		return jobTicketDao.findAllWIPTicketsByUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllSUSPENDEDTicketsByUser(String username){
+		return jobTicketDao.findAllSUSPENDEDTicketsByUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllCLOSEDTicketsByUser(String username){
+		return jobTicketDao.findAllCLOSEDTicketsByUser(username);
+	}
+	@Transactional
+	public boolean userHasWIPTickets(String username)
+	{
+		return jobTicketDao.userHasWIPTickets(username);
+	}
 	
 	@Transactional
 	public JobTicket saveJobTicket(JobTicket job) {
@@ -657,14 +683,22 @@ public class StarliteCoreManager {
 	}
 	
 	@Transactional
-	public JobTicket getJobTicketByID(String ID) {
-		return jobTicketDao.findJobTicketByID(ID);
+	public JobTicket getJobTicketByID(Integer id) {
+		return jobTicketDao.findJobTicketByID(id);
 	}
 	
    //JobStatus
 	@Transactional
 	public JobStatus getJobStatusValue(String jobStatusValue){
 		return jobStatusDao.findJobStatusValue(jobStatusValue);
+	}
+	@Transactional
+	public JobStatus getJobStatusByID(Integer id){
+		return jobStatusDao.findJobStatusByID(id);
+	}
+	@Transactional
+	public List<JobStatus> getAllJobStatusValues(){
+		return jobStatusDao.getAllJobStatusValues();
 	}
 	
 	//JobHistory
@@ -678,10 +712,6 @@ public class StarliteCoreManager {
 		return jobHistoryDao.findAllHistoryTicketsPerUser(username);
 	}
 	
-	public Component getComponent(String _class, String _part, String _serial){
-	    // TODO Auto-generated method stub
-	    return componentDao.getComponent(_class,_part, _serial) ;
-	}
 	
 	//FlightPlan
 /*	@Transactional
@@ -748,5 +778,5 @@ public class StarliteCoreManager {
 		return flightActualStatusDao.findStatusValueByID(id);
 	}
 	
-*/	
+*/
 }

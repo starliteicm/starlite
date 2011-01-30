@@ -27,7 +27,7 @@ import javax.persistence.TemporalType;
 
 
 @Entity
-public class JobHistory implements Cloneable {
+public class JobHistory implements Cloneable, Comparable {
 	@Id
 	@GeneratedValue
 	private Integer jobhistoryID;
@@ -182,6 +182,24 @@ public class JobHistory implements Cloneable {
 			throw(e);
 		}
     }
+
+
+
+	@Override
+	public int compareTo(Object arg0) {
+
+		JobHistory temp = (JobHistory)arg0;
+	    final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+
+		if (( this.jobhistoryID == temp.getJobhistoryID())) return EQUAL; 
+		if (( this.jobhistoryID > temp.getJobhistoryID())) return BEFORE;
+		if (( this.jobhistoryID < temp.getJobhistoryID())) return AFTER;
+		
+		
+		return 0;
+	}
 
 
 	

@@ -91,6 +91,14 @@
 				<label for="aircraft.certificateOfAirworthiness.expiryDate">Expiry Date:</label>
 				<input name="aircraft.certificateOfAirworthiness.expiryDate" class="date-pick" type="text" value="<#if aircraft.certificateOfAirworthiness.expiryDate??>${aircraft.certificateOfAirworthiness.expiryDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
+			<div class="fm-opt">
+            <label for="AMOResponsible">AMO Responsible</label> 
+            <input type="checkbox" style="width:30px;" value="${aircraft.AMOResponsible!}" <#if aircraft.AMOResponsible?exists >CHECKED</#if>  name="aircraft.AMOResponsible"/>
+            </div>
+            <div class="fm-opt">
+            <label for="invoicingTracked">Used for invoicing</label> 
+            <input type="checkbox" style="width:30px;" value="${aircraft.invoicingTracked!}" <#if aircraft.invoicingTracked?exists >CHECKED</#if>  name="aircraft.invoicingTracked"/>
+            </div>
 		</fieldset>
 		</div>
 		<hr class="clear"/>

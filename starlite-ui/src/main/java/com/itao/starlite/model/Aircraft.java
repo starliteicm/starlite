@@ -44,6 +44,10 @@ public class Aircraft {
 	private Integer fdr;
 	private Integer air;
 	
+	//AMO & INVOICING
+	private Integer AMOResponsible;
+	private Integer invoicingTracked;
+	
 	private Integer mmel;
 	
 	public Certificate getCertificateOfRegistration() {
@@ -146,6 +150,18 @@ public class Aircraft {
 		this.engines = engines;
 	}
 	
+	public Integer getAMOResponsible() {
+		return AMOResponsible;
+	}
+	public void setAMOResponsible(Integer responsible) {
+		AMOResponsible = responsible;
+	}
+	public Integer getInvoicingTracked() {
+		return invoicingTracked;
+	}
+	public void setInvoicingTracked(Integer invoicingTracked) {
+		this.invoicingTracked = invoicingTracked;
+	}
 	public Integer getNvg() {
 		return nvg;
 	}

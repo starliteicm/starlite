@@ -41,13 +41,16 @@
             <mapping class="com.itao.starlite.model.ExchangeRate"/>
 			<mapping class="com.itao.starlite.model.MonthlyInvoicedHours"/>
 			<mapping class="com.itao.starlite.model.Store"/>
+			<mapping class="com.itao.starlite.model.MyTest"/>
 			<mapping class="com.itao.starlite.model.JobStatus"/>
-			<mapping class="com.itao.starlite.model.JobStatusBtnImage"/>
-			<mapping class="com.itao.starlite.model.JobStatusBtnImageDefaults"/>
-			<mapping class="com.itao.starlite.model.JobStatusButton"/>
 			<mapping class="com.itao.starlite.model.JobTask"/>
 			<mapping class="com.itao.starlite.model.JobTicket"/>
 			<mapping class="com.itao.starlite.model.JobHistory"/>
+			<mapping class="com.itao.starlite.model.FlightActuals"/>
+			<mapping class="com.itao.starlite.model.FlightLog"/>
+			<mapping class="com.itao.starlite.model.FlightActualStatus"/>
+			<mapping class="com.itao.starlite.model.FlightPlan"/>
+			
 			
             
             <mapping class="com.itao.starlite.scheduling.model.Allocation"/>

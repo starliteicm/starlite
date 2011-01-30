@@ -1,5 +1,8 @@
 package com.itao.starlite.ui.actions;
 
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.Result;
@@ -21,6 +24,7 @@ import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.manager.StarliteCoreManager;
 import com.itao.starlite.model.Aircraft;
 import com.itao.starlite.model.CrewMember;
+import com.itao.starlite.model.JobHistory;
 import com.itao.starlite.model.JobTask;
 import com.itao.starlite.model.JobTicket;
 import com.itao.starlite.ui.Breadcrumb;
@@ -35,7 +39,7 @@ import com.opensymphony.xwork2.Preparable;
  *
  */
 @Results({
-	@Result(name="redirect-list", type=ServletRedirectResult.class, value="hangerHistory.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
+	@Result(name="redirect-list", type=ServletRedirectResult.class, value="hangerHistory.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
 	
 })
 public class HangerHistoryAction extends ActionSupport implements UserAware, Preparable {
@@ -43,7 +47,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 	private static final long serialVersionUID = -3932501985283829578L;
 	private User user;
 	
-	public String tab = "active";
+	public String tab = "tickets";
+	
 	public Tab[] tableTabs;
 	public String tableHtml;
 	public String valTableHtml;
@@ -59,7 +64,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 	public List<JobTask> jobTasks;
 	public List<JobTicket> jobTicketsForUser;
 	
-	public String current="HangerHistory";
+	public String current="tickets";
 	public JobTicket jobTicket = null;
 	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Hanger Management")};
 	
@@ -84,159 +89,32 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 	public String execute() throws Exception
 	/*-----------------------------------------------------------------*/
 	{
+		this.tab = "tickets";
+		this.current = "tickets";
 		//Set the breadcrumbs for the current activity
 		this.breadcrumbs = new Breadcrumb[]{
 				new Breadcrumb("<a href='hanger.action'>Hanger Management</a>"),
-				new Breadcrumb("<a href='hangerHistory.action'>History</a>")};
+				new Breadcrumb("<a href='hangerHistory.action?id="+id+"'>Ticket</a>")};
 		
 		this.errorMessage="";
 		this.notificationMessage="";
 		
 		//set the first tab ("Tickets") as active
 		prepareTabs();
-		Tab view = (Tab)this.tableTabs[0];
-	    view.setCurrent(true);
+		prepare();
+		
 		
 		//get all the ticket info for the current user
 		this.jobTicketsForUser = manager.getAllTicketsByUser(this.user.getUsername());		
 		this.currentUser = manager.getCrewMemberByCode(this.user.getUsername());
 		
 		//create and display the table with all the user's tickets
-		try
-		{
-        TableFacade tableFacade = createTable();
 		
-		
-		Limit limit = tableFacade.getLimit();
-		if (limit.isExported()) {
-		    tableFacade.render();
-		    return null;
-		} 
-		//sets the view to include search boxes
-     	tableFacade.setView(new SearchTableView());
-		tableHtml = tableFacade.render();
-		}
-		catch (Exception ex)
-		{
-			this.errorMessage="ERROR: Possible Reason: " + ex.getMessage().toString();
-			return "redirect-list";
-		}
 		
 		return SUCCESS;
 	}// execute()
     /*-----------------------------------------------------------------*/
-	/**
-	 * <p>Creates the main Job Ticket table. </p>
-	 * <p>Search Boxes are included in the execute() section</p>
-	 * <p>Export Functionality is currently not working</p>
-	 * <p>Filter Boxes at the bottom of the table is set, but usage is unknown.</p>
-	 */
-	/*-----------------------------------------------------------------*/
-	public TableFacade createTable(){
-	/*-----------------------------------------------------------------*/	
-		//JobTicket is the name of the table as created via hibernate in JobTicket.class
-		TableFacade tableFacade = TableFacadeFactory.createTableFacade("JobTicket", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("jobTicketID","aircraft","jobTask","assignedTo","jobTicketStatus","jobTicketID");
-		//tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
-		
-		//get all non-open tickets for the current user
-		List<JobTicket> tableTicketList = manager.getAllNonOpenTicketsByUser(this.user.getUsername());
-		tableFacade.setItems(tableTicketList);
-		tableFacade.setMaxRows(15);
-		Table table = tableFacade.getTable();
-		table.getRow().setUniqueProperty("jobTicketID");
-    	Limit limit = tableFacade.getLimit();
-		
-    	//Define Columns for the table
-    	Column ticketID =  table.getRow().getColumn("jobTicketID");
-		ticketID.setTitle("Job Ticket ID");
-	    
-		//Aircraft
-		Column aircraft = table.getRow().getColumn("aircraft");
-		aircraft.setTitle("Aircraft");
-		if (!limit.isExported()) {
-			aircraft.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						if((""+((JobTicket) item).getAircraft().getRef()).indexOf("Class") >= 0)
-						{
-							return (""+((JobTicket) item).getAircraft().getRef());
-						}
-						return ((JobTicket) item).getAircraft().getRef();
-					}
-			});
-		}
-		
-		//JobTask
-		Column jobtask = table.getRow().getColumn("jobTask");
-		jobtask.setTitle("Job Task");
-		if (!limit.isExported()) {
-			jobtask.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						if((""+((JobTicket) item).getJobTask().getJobTaskValue()).indexOf("Class") >= 0){
-							return (""+((JobTicket) item).getJobTask().getJobTaskValue());
-						}
-						return ((JobTicket) item).getJobTask().getJobTaskValue();
-					}
-			});
-		}
-		
-		//AME
-		Column assignedto = table.getRow().getColumn("assignedTo");
-		assignedto.setTitle("AME");
-		if (!limit.isExported()) {
-			assignedto.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						if((""+((JobTicket) item).getAssignedTo().getCode()).indexOf("Class") >= 0){
-							return (""+((JobTicket) item).getAssignedTo().getCode());
-						}
-						return ((JobTicket) item).getAssignedTo().getCode();
-					}
-			});
-		}
-		
-		//Current Status
-		Column jobTicketStatus =  table.getRow().getColumn("jobTicketStatus");
-		jobTicketStatus.setTitle("Current Status");
-		if (!limit.isExported()) {
-			jobTicketStatus.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						if((""+((JobTicket) item).getJobTicketStatus().getJobStatusValue()).indexOf("Class") >= 0){
-							return (""+((JobTicket) item).getJobTicketStatus().getJobStatusValue());
-						}
-						return ((JobTicket) item).getJobTicketStatus().getJobStatusValue();
-					}
-			});
-		}
-		
-	    //The View History Button
-		Column refCol = table.getRow().getColumn("jobTicketID");
-		refCol.setTitle("History");
-		if (!limit.isExported()) {
-		refCol.getCellRenderer().setCellEditor(new CellEditor() {
-			public Object getValue(Object item, String property, int rowCount) {
-				
-				Object id = new BasicCellEditor().getValue(item, "jobTicketID", rowCount);
-				Object value = new BasicCellEditor().getValue(item, property, rowCount);
-				
-				if(value == null){value="(blank)";}
-				if("".equals(value)){value="(blank)";}
-								
-				HtmlBuilder html = new HtmlBuilder();
-				html.a().href().quote().append("hangerHistory!viewHistoryOfUser.action?id="+id).quote().close();
-				html.append("View History");
-				html.aEnd();
-				return html.toString();
-			}
-			
-		});
-		}
 	
-		tableFacade.setView(new PlainTableView());
-		histTableHtml = tableFacade.render();
-
-		return tableFacade;
-		
-	}//createTable()
 	/*-----------------------------------------------------------------*/
 	/**
 	 * <p>Tab that will allow the user to view the History of a selected ticket</p> 
@@ -245,12 +123,16 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 	public String viewHistoryOfUser()
 	/*-----------------------------------------------------------------*/	
 	{
+		this.tab = "history";
+		this.current = "history";
 		//Prepare the tabs and set the breadcrumbs
         prepareTabs();
+        prepare();
+        
         this.breadcrumbs = new Breadcrumb[]{
 				new Breadcrumb("<a href='hanger.action'>Hanger Management</a>"),
-				new Breadcrumb("<a href='hangerHistory.action'>History</a>"),
-				new Breadcrumb("<a href='hangerHistory!viewHistoryOfUser.action'>View</a>")
+				new Breadcrumb("<a href='hangerHistory.action?id="+id+"'>Ticket</a>"),
+				new Breadcrumb("<a href='hangerHistory!viewHistoryOfUser.action?id="+id+"'>History</a>")
 				};
 		
         //Set the current History tab to active
@@ -264,9 +146,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 		this.jobTicketsForUser = manager.getAllTicketsByUser(this.user.getUsername());		
 		this.currentUser = manager.getCrewMemberByCode(this.user.getUsername());
         
-		//get the selected ticket	
-		prepare();
-		
+				
 		//if a ticket was selected, create the table to display info
 		if (this.jobTicket != null)
 		{
@@ -280,6 +160,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
      	tableFacade.setView(new PlainTableView());
 		tableHtml = tableFacade.render();
 		}
+		
 		return SUCCESS;
 	}//viewHistoryOfUser()
     /*-----------------------------------------------------------------*/
@@ -288,15 +169,23 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 	 * under the Tickets Tab.</p> 
 	 */
 	/*-----------------------------------------------------------------*/
+	@SuppressWarnings("unchecked")
 	public TableFacade createHistoryTable()
     /*-----------------------------------------------------------------*/
 	{
+		this.tab = "history";
+		this.current = "history";
+		
 		//JobTicketHistory is the table created via hibernate in JobHistory.class 	    
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("JobTicketHistory", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("jobhistoryID","jobAircraft","jobTaskValue","assignedTo","jobStatus","jobTimeStamp");		
+		tableFacade.setColumnProperties("jobAircraft","jobTaskValue","assignedTo","jobStatus","jobTimeStamp");		
 		//tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
-					
+	    
+		List<JobHistory> historyList = this.jobTicket.getJobTicketHistory();
+		Collections.sort(historyList);
+		
 		tableFacade.setItems(this.jobTicket.getJobTicketHistory());
+		
 		tableFacade.setMaxRows(15);
 		Limit limit = tableFacade.getLimit();
 		
@@ -306,8 +195,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 		//Columns
 		
 		//Job History ID
-		Column id = table.getRow().getColumn("jobhistoryID");
-		id.setTitle("Job History ID");
+		//Column id = table.getRow().getColumn("jobhistoryID");
+		//id.setTitle("Job History ID");
 		
 		//Aircraft Name
 		Column aircraft = table.getRow().getColumn("jobAircraft");
@@ -326,10 +215,39 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 		jobStatus.setTitle("jobStatus");
 		
 		//The modify timestamp
+		//Column jobTimeStamp = table.getRow().getColumn("jobTimeStamp");
+		//jobTimeStamp.setTitle("Timestamp");
+			
 		Column jobTimeStamp = table.getRow().getColumn("jobTimeStamp");
 		jobTimeStamp.setTitle("Timestamp");
-			
-		tableFacade.setView(new PlainTableView());
+		if (!limit.isExported()) {
+			jobTimeStamp.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((JobHistory) item).getJobTimeStamp() == null){
+							return "";
+						}
+						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+						Date date = ((JobHistory) item).getJobTimeStamp();
+						//df.format(date);
+						return df.format(date); 
+					}
+			});
+		}
+		else{			
+			jobTimeStamp.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+					Date date = ((JobHistory) item).getJobTimeStamp();
+					//df.format(date);
+					return df.format(date); 
+				}
+			});
+		}
+		
+		
+		
+		
+		tableFacade.setView(new SearchTableView());
 		histTableHtml = tableFacade.render();
 		
 		
@@ -351,8 +269,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 	
 	private void prepareTabs() {
 
-		Tab jobs = new Tab("Tickets", "hangerHistory.action", tab.equals("active"));
-		Tab history = new Tab("History", "hangerHistory!viewHistoryOfUser.action", tab.equals("history"));
+		Tab jobs = new Tab("Ticket", "hangerHistory.action?id="+id, tab.equals("tickets"));
+		Tab history = new Tab("History", "hangerHistory!viewHistoryOfUser.action?id="+id, tab.equals("history"));
 		
 		//if (user.hasPermission("ManagerView"))
 			tableTabs = new Tab[] {jobs,history};
@@ -372,7 +290,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 			this.jobTicket = new JobTicket();
 		}
 		else {
-			this.jobTicket = manager.getJobTicketByID(String.valueOf(id));
+			this.jobTicket = manager.getJobTicketByID(id);
 		}
 	}
 

@@ -18,6 +18,18 @@ public class JobTaskHibernateDao extends GenericHibernateDao<JobTask, Integer> i
 		return (List<JobTask>) getCurrentSession().createQuery("from JobTask").list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public JobTask findJobTaskByValue(String jobTaskValue) {
+		List<JobTask> tempTasks  = (List<JobTask>) getCurrentSession().createQuery("from JobTask where jobTaskValue = ?").setParameter(0,jobTaskValue).list();
+		JobTask firstTask = null;
+		if (tempTasks.isEmpty() == false)
+		{
+			firstTask = (JobTask)tempTasks.get(0);
+		}
+		return (firstTask);
+	}
+
 	
 
 }

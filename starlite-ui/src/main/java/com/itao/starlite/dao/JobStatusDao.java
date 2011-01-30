@@ -17,5 +17,7 @@ import com.itao.starlite.model.JobStatus;
 public interface JobStatusDao extends GenericDao<JobStatus, Integer>{
 
 	public JobStatus findJobStatusValue(String valuename);
+	public List<JobStatus> getAllJobStatusValues();
+	public JobStatus findJobStatusByID(Integer id);
 	
 }
