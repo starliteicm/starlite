@@ -46,10 +46,7 @@
 			<mapping class="com.itao.starlite.model.JobTask"/>
 			<mapping class="com.itao.starlite.model.JobTicket"/>
 			<mapping class="com.itao.starlite.model.JobHistory"/>
-			<mapping class="com.itao.starlite.model.FlightActuals"/>
-			<mapping class="com.itao.starlite.model.FlightLog"/>
-			<mapping class="com.itao.starlite.model.FlightActualStatus"/>
-			<mapping class="com.itao.starlite.model.FlightPlan"/>
+			
 			
 			
             
