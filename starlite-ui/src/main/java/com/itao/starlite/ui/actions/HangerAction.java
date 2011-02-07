@@ -3,6 +3,7 @@ package com.itao.starlite.ui.actions;
 
 import groovy.swing.factory.CollectionFactory;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -43,7 +44,7 @@ import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
 import com.itao.starlite.ui.jmesa.SearchTableView;
-//import com.itao.starlite.ui.jmesa.SimpleTableView;
+
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
@@ -70,11 +71,13 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	public String tableHtml;
 	public String valTableHtml;
 	public String histTableHtml;
+	public String componentTable;
 	
 	public String notificationMessage;
 	public String errorMessage;
 	
 	public Integer id;
+	public List<JobTicket> tickets;
 	
 	public List<Aircraft> aircrafts;
 	public List<JobTask> jobTasks;
@@ -109,6 +112,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	
 		
 	/*-----------------------------------------------------------------*/
+	@SuppressWarnings("unchecked")
 	/**
 	 * <p>The default function called when none is specified. Within Hanger Management it
 	 * it will:</p>
@@ -130,8 +134,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 
 		//get all the information to work with
 		this.jobTasks = manager.getAllTasks();
+		Collections.sort(this.jobTasks);
 	    this.aircrafts = manager.getAllAircraftRegs();
-		this.jobTicketsForUser = manager.getAllTicketsByUser(this.user.getUsername());
+	    Collections.sort(this.aircrafts);
+		//this.jobTicketsForUser = manager.getAllTicketsByUser(this.user.getUsername());
 		this.currentUser = manager.getCrewMemberByCode(this.user.getUsername());
 		
 		if (this.currentUser == null)
@@ -245,7 +251,13 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 				CrewMember assignedTo = manager.getCrewMemberByCode(this.user.getUsername());
 				
 				newJobTicket.createJobTicket(tempJobTask, tempAircraft, assignedTo, assignedTo, manager, this.taskToPerform);
+				//save ticket to get id of ticket and status
 				this.jobTicket = manager.saveJobTicket(newJobTicket);
+				//determine action for dates and history
+	    		//update history and add to ticket
+				this.jobTicket = setDatesForAction(0,this.jobTicket);
+				//save new dates for ticket and history
+				this.jobTicket = manager.saveJobTicket(this.jobTicket);
 				
 			}
 			catch(Exception ex)
@@ -400,26 +412,58 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		//a valid status change
 		//get ticket current values
 		String previousStatus = ticket.getJobTicketStatus().getJobStatusValue();
-		JobStatus status = manager.getJobStatusByID(newStatus);
-		String selectedStatus = status.getJobStatusValue();
+		JobStatus status = null;
+		String selectedStatus = "";
+		if (newStatus != 0)
+		{
+			//if not a new ticket, then get the status value
+			status = manager.getJobStatusByID(newStatus);
+			selectedStatus = status.getJobStatusValue();
+		}
+		else
+		{
+			//don't compare new ticket's status
+			selectedStatus = "";
+		}
+		
+		 
 		
 		JobHistory history = new JobHistory();
+		history.setParentTicketNo(id);
+		history.setCaptureEdit(0);
 		history.setJobAircraft(ticket.getAircraft().getRef());
 		history.setJobTaskValue(ticket.getJobTask().getJobTaskValue());
 		history.setAssignedTo(ticket.getAssignedTo().getCode());
+		
+		float totalHours = ticket.getTotalTicketHours();
 
 		//changed from OPEN to WIP
 		if ((previousStatus.compareTo("OPEN") == 0) && (selectedStatus.compareTo("WIP")==0))
 		{
+			//OPEN is not used, so no hours calculated. Kept here for future use.
 			ticket.setStartTime(new Date());
 			ticket.setJobTicketStatus(status);
+			ticket.setTotalTicketHours(0.0F);
+			history.setTotalTaskHours(ticket.getTotalTicketHours());
 			history.setJobTimeStamp(ticket.getStartTime());
 			history.setJobStatus(selectedStatus);
+			
 		}
 		else if ((previousStatus.compareTo("WIP") == 0) && (selectedStatus.compareTo("SUSPENDED")==0))
 		{
 			//changed from WIP to SUSPENDED
 			ticket.setEndTime(new Date());
+			Date startTime = ticket.getStartTime();
+			Date endTime = ticket.getEndTime();
+			float startHours = (float)startTime.getTime();
+			float endHours = (float)endTime.getTime();
+			float difference = (float)endHours - startHours;
+			float hours = (difference / (1000 * 60 * 60));
+			totalHours += hours; 
+			
+			ticket.setTotalTicketHours(totalHours);
+			history.setTotalTaskHours(hours);
+			
 			history.setJobTimeStamp(ticket.getEndTime());
 			history.setJobStatus(selectedStatus);
 			ticket.setJobTicketStatus(status);
@@ -428,6 +472,18 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		{
 			//changed from WIP to CLOSED
 			ticket.setEndTime(new Date());
+			
+			Date startTime = ticket.getStartTime();
+			Date endTime = ticket.getEndTime();
+			float startHours = (float)startTime.getTime();
+			float endHours = (float)endTime.getTime();
+			float difference = (float)endHours - startHours;
+			float hours = (difference / (1000 * 60 * 60));
+			totalHours += hours; 
+			
+			ticket.setTotalTicketHours(totalHours);
+			history.setTotalTaskHours(hours);
+			
 			history.setJobTimeStamp(ticket.getEndTime());
 			history.setJobStatus(selectedStatus);
 			ticket.setJobTicketStatus(status);
@@ -437,6 +493,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			//changed from SUSPENDED to WIP
 			ticket.setStartTime(new Date());
 			ticket.setEndTime(null);
+			//no end time so set the hours to zero
+			history.setTotalTaskHours(0.0F);
 			history.setJobTimeStamp(ticket.getStartTime());
 			history.setJobStatus(selectedStatus);
 			ticket.setJobTicketStatus(status);
@@ -447,9 +505,33 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			//changed from SUSPENDED to CLOSED
 			ticket.setStartTime(new Date());
 			ticket.setEndTime(new Date());
+			//if it goes directly to closed, then there is no time to calculate
+			history.setTotalTaskHours(0.0F);
 			history.setJobTimeStamp(ticket.getEndTime());
 			history.setJobStatus(selectedStatus);
 			ticket.setJobTicketStatus(status);
+		}
+		else if ((previousStatus.compareTo("WIP") == 0) && (selectedStatus.compareTo("")==0))
+		{
+			//Created a ticket that went straight into WIP
+			ticket.setStartTime(new Date());
+			//ticket.setEndTime(new Date());
+			history.setTotalTaskHours(0.0F);
+			history.setJobTimeStamp(ticket.getStartTime());
+			history.setJobStatus(previousStatus);
+				
+		}
+		
+			
+	    if ((previousStatus.compareTo("SUSPENDED") == 0) && (selectedStatus.compareTo("")==0))
+		{
+			//Created a ticket that went straight into WIP
+			ticket.setStartTime(new Date());
+			ticket.setEndTime(ticket.getStartTime());
+			history.setTotalTaskHours(0.0F);
+			history.setJobTimeStamp(ticket.getStartTime());
+			history.setJobStatus(previousStatus);
+				
 		}
 		//add History to ticket
 		ticket.addJobHistory(history);
@@ -669,7 +751,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		
 		
 		
-		tableFacade.setView(new SearchTableView());
+		tableFacade.setView(new PlainTableView());
 		tableHtml = tableFacade.render();
 				
 		
@@ -677,30 +759,26 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	}
     /*-----------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
-	public String viewSuspendedTickets()
+	public TableFacade viewSuspendedTickets()
 	/*-----------------------------------------------------------------*/
 	{
 		current="suspendedTickets";
 		tab="suspendedTickets";
 		prepareTabs();
 		
-		List<JobTicket> tickets = manager.getAllSUSPENDEDTicketsByUser(this.user.getUsername());
-		this.jobStatusList = manager.getAllJobStatusValues();
+		//this.tickets = manager.getAllSUSPENDEDTicketsByUser(this.user.getUsername());
+		//this.jobStatusList = manager.getAllJobStatusValues();
 				
 		Collections.sort(tickets);
 		//Collections.reverse(tickets);
 		
 		
-		TableFacade tableFacade = TableFacadeFactory.createTableFacade("JobTicketSuspend", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("jobTicketID", "aircraft", "jobTask", "jobSubTask","jobStatus","jobStatusChange","View" );		
-		//tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
+		TableFacade tableFacade = TableFacadeFactory.createTableFacade("suspendedTickets", ServletActionContext.getRequest());		
+		tableFacade.setColumnProperties("jobTicketID", "aircraft", "jobTask", "jobSubTask","jobStatus","jobStatusChange","totalTicketHours","View" );		
+		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 		
 		tableFacade.setItems(tickets);
 		tableFacade.setMaxRows(15);
-		
-		
-
-		
 		Limit limit = tableFacade.getLimit();
 		
 		
@@ -873,35 +951,85 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			});
 		}
 		
+		Column taskHRS = table.getRow().getColumn("totalTicketHours");
+		taskHRS.setTitle("Total Ticket Hours");
+		if (!limit.isExported()) {
+			taskHRS.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((JobTicket) item).getTotalTicketHours() == null){
+							return "";
+						}
+						String hours="";
+						String mins="";
+						try{
+							String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
+							String hrs = time.substring(0, time.indexOf("."));
+							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
+							float minsFloat = Float.valueOf(minsDec) * 60;
+							int mins1 = Math.round(minsFloat);
+							if (mins1 < 10){mins="0"+mins1+"mins";}
+							else {mins = ""+mins1+"mins";}
+							hours = ""+hrs+"hrs&nbsp;";
+							
+							}
+							catch (Exception ex){return "";}
+							
+					    return "<div style='text-align:right'>" + hours+mins+"</div>";
+					}
+			});
+		}
+		else{			
+			taskHRS.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					String hours="";
+					String mins="";
+					try{
+						String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
+						String hrs = time.substring(0, time.indexOf("."));
+						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
+						float minsFloat = Float.valueOf(minsDec) * 60;
+						int mins1 = Math.round(minsFloat);
+						if (mins1 < 10){mins="0"+mins1+"mins";}
+						else {mins = ""+mins1+"mins";}
+						hours = ""+hrs+"hrs&nbsp;";
+						
+						}
+						catch (Exception ex){return "";}
+						
+				    return "<div style='text-align:right'>" + hours+mins+"</div>";
+				}
+			});
+		}
 		
 		
 		
 		
-		tableFacade.setView(new SearchTableView());
-		tableHtml = tableFacade.render();
+		//tableFacade.setView(new SearchTableView());
+		//tableHtml = tableFacade.render();
 				
 		//this.jobTicket.getJobTicketStatus().get;
-	return "suspendedTickets";
+	//return "suspendedTickets";
+		return tableFacade;
 	}
     /*-----------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
-	public String viewClosedTickets()
+	public TableFacade viewClosedTickets()
 	/*-----------------------------------------------------------------*/
 	{
 		current="closedTickets";
 		tab="closedTickets";
 		prepareTabs();
 		
-		List<JobTicket> tickets = manager.getAllCLOSEDTicketsByUser(this.user.getUsername());
-		this.jobStatusList = manager.getAllJobStatusValues();
+		//List<JobTicket> tickets = manager.getAllCLOSEDTicketsByUser(this.user.getUsername());
+		//this.jobStatusList = manager.getAllJobStatusValues();
 				
 		Collections.sort(tickets);
 		//Collections.reverse(tickets);
 		
 		
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("JobTicketClosed", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("jobTicketID", "aircraft", "jobTask", "jobSubTask","jobStatus","View" );		
-		//tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
+		tableFacade.setColumnProperties("jobTicketID", "aircraft", "jobTask", "jobSubTask","jobStatus","totalTicketHours","View" );		
+		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 		
 		tableFacade.setItems(tickets);
 		tableFacade.setMaxRows(15);
@@ -1045,14 +1173,64 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		}
 		
 		
+		Column taskHRS = table.getRow().getColumn("totalTicketHours");
+		taskHRS.setTitle("Total Ticket Hours");
+		if (!limit.isExported()) {
+			taskHRS.getCellRenderer().setCellEditor(new CellEditor() {
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((JobTicket) item).getTotalTicketHours() == null){
+							return "";
+						}
+						String hours="";
+						String mins="";
+						try{
+							String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
+							String hrs = time.substring(0, time.indexOf("."));
+							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
+							float minsFloat = Float.valueOf(minsDec) * 60;
+							int mins1 = Math.round(minsFloat);
+							if (mins1 < 10){mins="0"+mins1+"mins";}
+							else {mins = ""+mins1+"mins";}
+							hours = ""+hrs+"hrs&nbsp;";
+							
+							}
+							catch (Exception ex){return "";}
+							
+					    return "<div style='text-align:right'>" + hours+mins+"</div>";
+					}
+			});
+		}
+		else{			
+			taskHRS.getCellRenderer().setCellEditor(new CellEditor() {
+				public Object getValue(Object item, String property, int rowCount) {			
+					String hours="";
+					String mins="";
+					try{
+						String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
+						String hrs = time.substring(0, time.indexOf("."));
+						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
+						float minsFloat = Float.valueOf(minsDec) * 60;
+						int mins1 = Math.round(minsFloat);
+						if (mins1 < 10){mins="0"+mins1+"mins";}
+						else {mins = ""+mins1+"mins";}
+						hours = ""+hrs+"hrs&nbsp;";
+						
+						}
+						catch (Exception ex){return "";}
+						
+				    return "<div style='text-align:right'>" + hours+mins+"</div>";
+				}
+			});
+		}
 		
 		
 		
-		tableFacade.setView(new SearchTableView());
-		tableHtml = tableFacade.render();
+		//tableFacade.setView(new SearchTableView());
+		//tableHtml = tableFacade.render();
 				
 		//this.jobTicket.getJobTicketStatus().get;
-	return "closedTickets";
+	//return "closedTickets";
+		return tableFacade;
 	}
     /*-----------------------------------------------------------------*/
 	public String admin()
@@ -1065,14 +1243,46 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	return "admin";
 	}
     /*-----------------------------------------------------------------*/
-	
-	
+	public String editSuspend(){
+		prepare();
+		tickets = manager.getAllSUSPENDEDTicketsByUser(this.user.getUsername());
 
-	
-	public String edit(){
+			TableFacade tableFacade = viewSuspendedTickets();
+
+			Limit limit = tableFacade.getLimit();
+			if (limit.isExported()) {
+				tableFacade.render();
+				return null;
+			} 
+			tableFacade.setView(new SearchTableView());
+			tableHtml = tableFacade.render();
+			
 		
-	    return "redirect-list";
+			return "edit";
+		
 	}
+	/*------------------------------------------------------------------*/
+    public String editClosed(){
+		prepare();
+		tickets = manager.getAllCLOSEDTicketsByUser(this.user.getUsername());
+
+			TableFacade tableFacade = this.viewClosedTickets();
+
+			Limit limit = tableFacade.getLimit();
+			if (limit.isExported()) {
+				tableFacade.render();
+				return null;
+			} 
+			tableFacade.setView(new SearchTableView());
+			tableHtml = tableFacade.render();
+			
+		
+			return "edit";
+		
+	}
+	/*-----------------------------------------------------------------*/
+    
+	
 
 	public String save(){
 		
@@ -1080,16 +1290,24 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	}
 	
 	
-	private void prepareTabs() {
+	private void prepareTabs() 
+	{
 
 		Tab newJobTab = new Tab("New Job", "hanger.action", tab.equals("newJob"));
 		Tab currentWIPTab = new Tab("WIP Jobs", "hanger!viewWIPTickets.action", tab.equals("WIPTickets"));
-		Tab currentSuspendedTab = new Tab("SUSPENDED Jobs", "hanger!viewSuspendedTickets.action", tab.equals("suspendedTickets"));
-		Tab currentClosedTab = new Tab("CLOSED Jobs", "hanger!viewClosedTickets.action", tab.equals("closedTickets"));
+		Tab currentSuspendedTab = new Tab("SUSPENDED Jobs", "hanger!editSuspend.action", tab.equals("suspendedTickets"));
+		Tab currentClosedTab = new Tab("CLOSED Jobs", "hanger!editClosed.action", tab.equals("closedTickets"));
 		Tab adminTab = new Tab("Administration", "hanger!admin.action", tab.equals("admin"));
+		//Tab editTab = new Tab("Edit Hours", "hanger!editHours.action", tab.equals("editHours"));
 	
-		tableTabs = new Tab[] {newJobTab, currentWIPTab, currentSuspendedTab,currentClosedTab, adminTab };
-
+		if (user.hasPermission("hangerRead"))
+		{
+		tableTabs = new Tab[] {newJobTab, currentWIPTab, currentSuspendedTab,currentClosedTab};
+		}
+		if (user.hasPermission("hangerWrite"))
+		{
+			tableTabs = new Tab[] {newJobTab, currentWIPTab, currentSuspendedTab,currentClosedTab, adminTab};
+		}
 		
 	}
 	
@@ -1103,6 +1321,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		return user;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void prepare()
 	{
 		if (aircraft == null)
@@ -1118,8 +1337,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		
 		if (this.aircrafts == null)
 		{this.aircrafts = new ArrayList<Aircraft>();}
+		else {Collections.sort(this.aircrafts);}
 		if (this.jobTasks == null)
 		{this.jobTasks = new ArrayList<JobTask>();}
+		else {this.jobTasks = manager.getAllTasks();Collections.sort(this.jobTasks);}
 		
 		
 		if (id == null) 

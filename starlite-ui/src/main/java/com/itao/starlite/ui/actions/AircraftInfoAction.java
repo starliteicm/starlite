@@ -70,6 +70,7 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public String tab = "information";
 
 	public List<Component> components;
+	public List<String> YNSelection = new ArrayList<String>();
 	
 	
 	
@@ -80,7 +81,9 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	private BookmarkManager bookmarkManager;
 	
 	@Override
-	public String execute() throws Exception {
+	public String execute() throws Exception 
+	{
+		prepare();
 		breadcrumbs = Breadcrumb.toArray(
 			new Breadcrumb("Aircraft", "aircraft.action"),
 			new Breadcrumb(aircraft.getRef())
@@ -99,10 +102,16 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 			aircraft = manager.getAircraftByReg(id);
 			aircraftTypes = manager.getAircraftTypes();
 		}
+		if (this.YNSelection.isEmpty())
+		{
+			this.YNSelection.add("Yes");
+			this.YNSelection.add("No");
+		}
 	}
 	
-	public String save() throws Exception {
-		manager.saveAircraft(aircraft);
+	public String save() throws Exception 
+	{
+		this.aircraft =  manager.saveAircraft(aircraft);
 		tab = "information";
 		notificationMessage ="Aircraft Saved";
 		return "redirect";

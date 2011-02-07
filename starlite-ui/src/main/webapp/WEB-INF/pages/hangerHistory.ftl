@@ -75,7 +75,7 @@ color: #FFFFFF;
     <div style="float:left;padding:5px;margin-left:10px;margin-top:0px;border:1px solid silver;width:1000px;height:300px;valign:left;">
     <div style="margin-left:0px;" >
 	
-	<form action="hanger!saveTicket.action" enctype="multipart/form-data" method="post">
+	<form action="hangerHistory!updateTicket.action?id=${id!}" enctype="multipart/form-data" method="post">
      
         <div style="float:left; width: 360px;">
 	    <fieldset>
@@ -129,12 +129,39 @@ color: #FFFFFF;
 	    </div>
         <div class="fm-opt">
 	       <div style="margin-left:-35px;" >
-			<label style="text" for="jobTicket.jobSubTask">Total Ticket Hours:</label>
-			<input name="jobTicket.jobSubTask" type="text" value="Not Calculated yet" readonly="readonly"  STYLE=" background-color: #F2F2F2;" size="${block}"/>
+			<label style="text" for="hours">Total Hours Worked:</label>
+			<input name="hours" type="text" value="${time!}" readonly="readonly"  STYLE=" background-color: #F2F2F2;text-align:right;" size="${block}"/>
 		   </div>	
 	    </div>
-	     </fieldset>
+	    
+	    <#if user.hasPermission("hangerWrite")>
+	    <div class="fm-opt">
+	       <div style="margin-left:-35px;" >
+			<label style="text" for="newHours">New Hours:</label>
+			<input name="newHours" type="text" value="${newHours!}"  STYLE=" background-color: #FFFFFF;text-align:right;" size="${block}"/>
+		   </div>	
+	    </div>
+	    <div class="fm-opt">
+	       <div style="margin-left:-35px;" >
+			<label style="text" for="newMins">New Minutes</label>
+			<input name="newMins" type="text" value="${newMins!}"   STYLE=" background-color: #FFFFFF;text-align:right;" size="${block}"/>
+		   </div>
+		<div class="fm-opt">
+	       <div style="margin-left:-35px;" >
+			<label style="text" for="reasonForUpdate">Reason for update:</label>
+			<input name="reasonForUpdate" type="text" value="${reasonForUpdate!}"  STYLE=" background-color: #FFFFFF;text-align:right;" size="${block}"/>
+		   </div>		
+	    </div>
+	
+	    <div style="margin-left:197px;" >
+	        <button class="smooth" style="margin-left:10px;padding:2px 10px 2px 7px;" onclick="return confirm('Would you like to save these changes?')" type="submit"><img src="images/icons/add.png"/>Submit</button>
+	    </div>
+	    </#if>
+	        
+	    </fieldset>
 	     </div>
+    
+         
     </form>
     
     </div>
@@ -147,6 +174,10 @@ color: #FFFFFF;
      <@jmesa id="JobTicketHistory"/>     
    </#if>
    
+    <!-- History EDIT TAB -->
+    <#if current="editHistory">
+     <@jmesa id="JobTicketHistoryEdit"/>     
+   </#if>
    
    </#if>
 

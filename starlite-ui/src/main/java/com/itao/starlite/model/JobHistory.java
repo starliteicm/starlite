@@ -38,6 +38,7 @@ public class JobHistory implements Cloneable, Comparable {
 	@Column(nullable=false)
 	private String jobTaskValue;
 	
+	
 	@Column(nullable=false)
 	private String jobAircraft;
 	
@@ -48,7 +49,49 @@ public class JobHistory implements Cloneable, Comparable {
 	@Column(nullable=false)
 	private String jobStatus;
 	
-    public JobHistory() {}
+	@Column(nullable = true, columnDefinition="FLOAT(10,2) default 0.0")
+	private Float totalTaskHours = 0.0F;
+	
+	@Column(nullable = true, columnDefinition="varchar(50) default ''")
+	private String changedBy = "";
+	
+	@Column(nullable = true, columnDefinition="varchar(250) default ''")
+	private String changedByReason = "";
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date changedByDate;
+	
+	@Column(nullable = true, columnDefinition="varchar(50) default ''")
+	private String changedByOldValue = "";
+	
+	@Column(nullable = true, columnDefinition="varchar(50) default ''")
+	private String changedByNewValue = "";
+	
+	@Column(nullable = true, columnDefinition="varchar(250) default ''")
+	private String subTaskValue = "";
+	
+	@Column(nullable = true, columnDefinition="int(20)")
+	private Integer parentTicketNo;
+	
+	@Column(nullable = true, columnDefinition="int(5) default 0")
+	private Integer captureEdit;
+	
+	
+	
+	
+    public Float getTotalTaskHours() {
+		return totalTaskHours;
+	}
+
+
+
+	public void setTotalTaskHours(Float totalTaskHours) {
+		this.totalTaskHours = totalTaskHours;
+	}
+
+
+
+	public JobHistory() {}
 	
 
 
@@ -171,6 +214,102 @@ public class JobHistory implements Cloneable, Comparable {
 		this.jobStatus = jobStatus;
 	}
 
+
+
+
+	public String getChangedBy() {
+		return changedBy;
+	}
+
+
+
+	public void setChangedBy(String changedBy) {
+		this.changedBy = changedBy;
+	}
+
+
+
+	public String getChangedByReason() {
+		return changedByReason;
+	}
+
+
+
+	public void setChangedByReason(String changedByReason) {
+		this.changedByReason = changedByReason;
+	}
+
+
+
+	public Date getChangedByDate() {
+		return changedByDate;
+	}
+
+
+
+	public void setChangedByDate(Date changedByDate) {
+		this.changedByDate = changedByDate;
+	}
+
+
+
+	public String getChangedByOldValue() {
+		return changedByOldValue;
+	}
+
+
+
+	public void setChangedByOldValue(String changedByOldValue) {
+		this.changedByOldValue = changedByOldValue;
+	}
+
+
+
+	public String getChangedByNewValue() {
+		return changedByNewValue;
+	}
+
+
+
+	public void setChangedByNewValue(String changedByNewValue) {
+		this.changedByNewValue = changedByNewValue;
+	}
+
+
+
+	public String getSubTaskValue() {
+		return subTaskValue;
+	}
+
+
+
+	public void setSubTaskValue(String subTaskValue) {
+		this.subTaskValue = subTaskValue;
+	}
+
+
+
+	public Integer getParentTicketNo() {
+		return parentTicketNo;
+	}
+
+
+
+	public void setParentTicketNo(Integer parentTicketNo) {
+		this.parentTicketNo = parentTicketNo;
+	}
+
+
+
+	public Integer getCaptureEdit() {
+		return captureEdit;
+	}
+
+
+
+	public void setCaptureEdit(Integer captureEdit) {
+		this.captureEdit = captureEdit;
+	}
 
 
 

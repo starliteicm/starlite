@@ -18,4 +18,9 @@ public interface JobHistoryDao extends GenericDao<JobHistory, Integer>{
 
 	public List<JobHistory> findAllHistoryTicketsPerUser(String username);
 	
+	public List<JobHistory> findAllNonEditHistroryTicketsByParentID(Integer parentTicketNo);
+	
+	
+	public List<JobHistory> findAllEDITHrsTicketsByParentID(Integer parentTicketNo);
+	
 }

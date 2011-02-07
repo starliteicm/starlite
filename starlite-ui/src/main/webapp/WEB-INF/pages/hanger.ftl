@@ -9,23 +9,19 @@
 
 <script type="text/javascript" src="${request.contextPath}/js/jmesa.js"></script>
 <script type="text/javascript">
-        $(document).ready(function() {
-           addDropShadow('images/table/');
-        });
-        
-        function onSubmitWsColumn() {
-            document.getElementById("saveButton").disabled = false;
-        }
-        
-        function onInvokeExportAction(ticketID) {
-            //For the Table Export Buttons to CSV and Excel
-            //Currently not working
-            
+      function onInvokeExportAction(id) 
+         {
+           <#if tab = "suspendedTickets">
             var parameterString = createParameterStringForLimit(id);
-            location.href = '${request.contextPath}/hanger.action?' + parameterString;
-        }
+            location.href = '${request.contextPath}/hanger!editSuspend.action?id=${id!}&' + parameterString;
+            </#if>
+            <#if tab = "closedTickets">
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/hanger!editClosed.action?id=${id!}&' + parameterString;
+            </#if>
+    }
 </script>
-</script>
+
 
 <style  type="text/css" >
 
@@ -36,7 +32,7 @@ tr,td {text-align:left;}
 
 .buttonStyle {
 display: inline;
-background-color: transparent;
+background-color: #FFFFFF;
 background-repeat: no-repeat;
 margin: 0px auto;
 padding: 0px 0px 0 0;
@@ -76,6 +72,8 @@ color: #FFFFFF;
     <div style="margin-left:0px;" >
 	
 	<form action="hanger!saveTicket.action" enctype="multipart/form-data" method="post">
+	<input type="hidden" name="id" value="${id!}"/>
+	<input type="hidden" name="ticket.jobTicketID" value="${id!}"/>
      
 	    <fieldset>
 		<legend>New Job Ticket</legend>
@@ -130,12 +128,14 @@ color: #FFFFFF;
    
    <!-- SUSPENDED TAB -->
    <#if current="suspendedTickets">
-      <@jmesa id="JobTicketSUSPEND"/>
+      <@jmesa id="suspendedTickets"/>   
+     
    </#if>
    
    <!-- CLOSED TAB -->
    <#if current="closedTickets">
-      <@jmesa id="JobTicketCLOSED"/>
+       <@jmesa id="closedTickets"/>
+      
    </#if>
    
    </#if>

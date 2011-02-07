@@ -30,6 +30,10 @@ import com.itao.starlite.dao.ExchangeDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
 //import com.itao.starlite.dao.FlightLogDao;
 //import com.itao.starlite.dao.FlightPlanDao;
+//import com.itao.starlite.model.FlightActualStatus;
+//import com.itao.starlite.model.FlightActuals;
+//import com.itao.starlite.model.FlightPlan;
+//import com.itao.starlite.model.FlightLog;
 import com.itao.starlite.dao.JobHistoryDao;
 import com.itao.starlite.dao.JobStatusDao;
 import com.itao.starlite.dao.JobTicketDao;
@@ -81,10 +85,10 @@ public class StarliteCoreManager {
 	@Inject private JobTicketDao jobTicketDao;	
 	@Inject private JobStatusDao jobStatusDao;
 	@Inject private JobHistoryDao jobHistoryDao;
-//	@Inject private FlightPlanDao flightPlanDao;
-//	@Inject private FlightActualsDao flightActualsDao;
-//	@Inject private FlightActualStatusDao flightActualStatusDao;
-//	@Inject private FlightLogDao flightLogDao;
+	//@Inject private FlightPlanDao flightPlanDao;
+	//@Inject private FlightActualsDao flightActualsDao;
+	//@Inject private FlightActualStatusDao flightActualStatusDao;
+	//@Inject private FlightLogDao flightLogDao;
 	
 	
 	@Inject private AuthManager authManager;
@@ -523,18 +527,37 @@ public class StarliteCoreManager {
 		}
 		return adhoc;
 	}
+	public List<CrewMember> getAdHocCrewInactive() {
+		List<CrewMember> all = getAllCrew();
+		List<CrewMember> adhoc = new ArrayList<CrewMember>();
+		for(CrewMember c : all){
+			if("Freelance (Inactive)".equals(c.getRole().getEmployment())){
+				adhoc.add(c);
+			}
+		}
+		return adhoc;
+	}
 
 	public List<CrewMember> getPermCrew() {
 		List<CrewMember> all = getAllCrew();
 		List<CrewMember> perm = new ArrayList<CrewMember>();
 		for(CrewMember c : all){
-			if(!"Freelance".equals(c.getRole().getEmployment())){
+			if("Permanent".equals(c.getRole().getEmployment())){
 				perm.add(c);
 			}
 		}
 		return perm;
 	}
-	
+	public List<CrewMember> getPermCrewInactive() {
+		List<CrewMember> all = getAllCrew();
+		List<CrewMember> perm = new ArrayList<CrewMember>();
+		for(CrewMember c : all){
+			if("Permanent (Inactive)".equals(c.getRole().getEmployment())){
+				perm.add(c);
+			}
+		}
+		return perm;
+	}
 	
 	@Transactional
 	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
@@ -712,9 +735,21 @@ public class StarliteCoreManager {
 		return jobHistoryDao.findAllHistoryTicketsPerUser(username);
 	}
 	
+	@Transactional
+	public List<JobHistory> getAllEditHrsTicketsByParentID(Integer parentTicketID) {
+		return jobHistoryDao.findAllEDITHrsTicketsByParentID(parentTicketID);
+	}
+	
+	@Transactional
+	public List<JobHistory> getAllNonEditHistroryTicketsByParentID(Integer parentTicketID) {
+		return jobHistoryDao.findAllNonEditHistroryTicketsByParentID(parentTicketID);
+	}
+	
+	
+/*	
 	
 	//FlightPlan
-/*	@Transactional
+	@Transactional
 	public FlightPlan saveFlightPlan(FlightPlan flightPlan) {
 		return flightPlanDao.makePersistent(flightPlan);
 	}
@@ -778,5 +813,6 @@ public class StarliteCoreManager {
 		return flightActualStatusDao.findStatusValueByID(id);
 	}
 	
-*/
+	*/
+
 }

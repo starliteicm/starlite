@@ -1,11 +1,12 @@
 package com.itao.starlite.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Aircraft {
+public class Aircraft implements Comparable {
 	@Id
 	@GeneratedValue
 	private Integer id;
@@ -45,8 +46,10 @@ public class Aircraft {
 	private Integer air;
 	
 	//AMO & INVOICING
-	private Integer AMOResponsible;
-	private Integer invoicingTracked;
+	@Column(nullable = false, columnDefinition="varchar(10) default 'No'")
+	private String AMOResponsible;
+	@Column(nullable = false, columnDefinition="varchar(10) default 'No'")
+	private String invoicingTracked;
 	
 	private Integer mmel;
 	
@@ -150,16 +153,16 @@ public class Aircraft {
 		this.engines = engines;
 	}
 	
-	public Integer getAMOResponsible() {
+	public String getAMOResponsible() {
 		return AMOResponsible;
 	}
-	public void setAMOResponsible(Integer responsible) {
+	public void setAMOResponsible(String responsible) {
 		AMOResponsible = responsible;
 	}
-	public Integer getInvoicingTracked() {
+	public String getInvoicingTracked() {
 		return invoicingTracked;
 	}
-	public void setInvoicingTracked(Integer invoicingTracked) {
+	public void setInvoicingTracked(String invoicingTracked) {
 		this.invoicingTracked = invoicingTracked;
 	}
 	public Integer getNvg() {
@@ -280,6 +283,19 @@ public class Aircraft {
 
 	public void setMmel(Integer mmel) {
 		this.mmel = mmel;
+	}
+	@Override
+	public int compareTo(Object arg0) {
+		 Aircraft temp = (Aircraft)arg0;
+		    final int BEFORE = -1;
+		    final int EQUAL = 0;
+		    final int AFTER = 1;
+
+		    if (( this.ref.compareTo(temp.getRef() )==0)) return EQUAL;
+		    if (( this.ref.compareTo(temp.getRef() )== -1)) return BEFORE;
+		    if (( this.ref.compareTo(temp.getRef() )== 1)) return AFTER;
+
+		return EQUAL;
 	}
 
 	

@@ -1,4 +1,5 @@
 package com.itao.starlite.model;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import java.util.Date;
@@ -70,6 +71,8 @@ public class JobTicket implements Comparable{
 	
 	@Column(nullable = false, columnDefinition="varchar(100) default 'no description available'")
 	private String jobSubTask="";
+	@Column(nullable = false, columnDefinition="FLOAT(10,4) default 0.00")
+	private Float totalTicketHours = 0.00F;
 	
 	
 	
@@ -213,6 +216,17 @@ public class JobTicket implements Comparable{
 
 	public void setJobSubTask(String jobSubTask) {
 		this.jobSubTask = jobSubTask;
+	}
+
+	public Float getTotalTicketHours() 
+	{
+		Float hours = this.totalTicketHours;
+		DecimalFormat twoDForm = new DecimalFormat("#.###");
+		return Float.valueOf(twoDForm.format(hours));
+	}
+
+	public void setTotalTicketHours(Float totalTicketHours) {
+		this.totalTicketHours = totalTicketHours;
 	}
 
 	/**
