@@ -48,6 +48,7 @@ import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
+import com.itao.starlite.model.CrewMember.Role;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.CharterEntry;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
@@ -60,7 +61,7 @@ import com.opensymphony.xwork2.Preparable;
 
 
 @SuppressWarnings("serial")
-@ParentPackage("prepare")
+
 @Results({
     @Result(name="unauthorised", type=ServletRedirectResult.class, value="unauthorised.html"),
     @Result(name="redirect-hours", type=ServletRedirectResult.class, value="crewMember.action?id=${id}&tab=hours&notificationMessage=Saved"),
@@ -79,6 +80,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String switch_role_to = "";//used to store temporary role switch to drive different form
 	public String tagArray = "[]";
 	private User user;
+	public Role role;
 	
 	public String docfolder;
 	public File document;
@@ -146,6 +148,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document photoFile;
     public Document flighthours;
     
+    public String subPosition;
+    
     
     @SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
@@ -170,7 +174,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String execute() throws Exception {
 		//crewMember = manager.getCrewMember(id);
 		if (!user.hasPermission("ManagerView") && !user.getUsername().equalsIgnoreCase(id))
-			return "unauthorised";
+			return "";
 		breadcrumbs = Breadcrumb.toArray(
 			new Breadcrumb("Crew", "crew.action"),
 			new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
@@ -446,14 +450,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			String type        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_type");
 			String position    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_position");
 			String instruments =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_instruments");
-			String tail        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_tail");
+			String tail        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_registration");
 			String chart       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_charter");
 			String flown       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_flown");
-			String timein      =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timein");
+			
+		    String timein      =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timein");
 			String timeout     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timeout");
 			String hours       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_hours");
 			
 			LOG.info(hoursMonth+"-"+day+"|"+cDId+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|"+flown+"|"+timein+"|"+timeout+"|"+hours);
+			//LOG.info(hoursMonth+"-"+day+"|"+cDId+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|");
 			
 			Aircraft aircraft = null;
 			Charter charter = null;
@@ -477,7 +483,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						charter  = manager.getCharter(new Integer(chart));
 					}
 				}
-				Double flownHours = new Double(0.0);
+			Double flownHours = new Double(0.0);
 				if(flown != null){
 					if(flown != ""){
 						flownHours = new Double(flown);
@@ -974,7 +980,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 	public String save() throws Exception {
 		
-		LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
+		//LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
 		
 		//set passports
 		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
@@ -1003,7 +1009,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		crewMember.setPassport(cmPassports);
 		}
 		
-		manager.saveCrewMember(crewMember);
+		this.crewMember = manager.saveCrewMember(crewMember);
 		try{
 		  if(document != null){
 			LOG.info(tags+" "+docfolder);
@@ -1155,11 +1161,17 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 
 	public Integer actualsId;
-	public void prepare() throws Exception {
+
+/*-----------------------------------------------------*/	
+	public void prepare() throws Exception
+/*-----------------------------------------------------*/	
+	{
 		if (id == null) {
 			crewMember = new CrewMember();
+			this.role = new Role();
 		} else {
 			crewMember = manager.getCrewMemberByCode(id);
+			this.role = crewMember.getRole();
 			if (switch_role_to!="") {
 				crewMember.getRole().setPosition(switch_role_to);
 			}
@@ -1184,7 +1196,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 		}
 	}
-
+	/*-----------------------------------------------------*/
 	private void prepareTabs() {
 		String idStr = "";
 		if (id != null) {
@@ -1230,14 +1242,14 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		if(user.hasRead("crewRev")){
 		if (user.hasPermission("ManagerView")){
-			Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
+			Tab reviewTab = new Tab("Comments", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
 			tabList.add(reviewTab);
 		}
 		}
 		
 		if(user.hasRead("crewAssign")){
 		if (user.hasPermission("ManagerView")){
-		    Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
+		    Tab assignmentsTab = new Tab("Rostering", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
 		    tabList.add(assignmentsTab);
         }
 		}

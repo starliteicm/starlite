@@ -733,6 +733,7 @@ public class CrewMember implements Cloneable, Comparable {
 		private String department;
 		private String manager;
 		private String position;
+		private String subPosition;
 		private String primaryLocation;
 		@Temporal(TemporalType.DATE)
 		private Date initialDate;
@@ -783,6 +784,14 @@ public class CrewMember implements Cloneable, Comparable {
 
 		public void setPosition(String position) {
 			this.position = position;
+		}
+
+		public String getSubPosition() {
+			return subPosition;
+		}
+
+		public void setSubPosition(String subPosition) {
+			this.subPosition = subPosition;
 		}
 
 		public String getPrimaryLocation() {
@@ -918,7 +927,7 @@ public class CrewMember implements Cloneable, Comparable {
 //			getConversions().add(index, conversion);
 //		}
 
-		private Role() {}
+		public Role() {}
 
 		public void setCompany(String company) {
 			this.company = company;
@@ -1615,7 +1624,9 @@ public class CrewMember implements Cloneable, Comparable {
 			role = new Role();
 		return role;
 	}
-
+	public void setRole(Role role) {
+		this.role = role;
+	}
 	public Payments getPayments() {
 		if (payments == null)
 			payments = new Payments();

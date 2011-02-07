@@ -161,7 +161,7 @@ $("document").ready(function() {
 	<#if readOnly>
 	<form action="#" method="POST" name="roleform" id="roleform" class="smart readonly" >
 	<#else>
-	<form action="crewMember!save.action" name="roleform" id="roleform" method="POST" class="smart" enctype="multipart/form-data">
+	<form autocomplete="false" action="crewMember!save.action?id=${id}" name="roleform" id="roleform" method="POST" class="smart" enctype="multipart/form-data">
 	</#if>
 		<input type="hidden" name="id" value="${id!}"/>
 		<input type="hidden" name="crewMember.id" value="${crewMember.code!}"/>
@@ -183,8 +183,8 @@ $("document").ready(function() {
 			
 			</div>
 			<div class="fm-opt">
-			<label for="crewMember.role.subposition">Position Subcategory:</label>				
-            <input name="crewMember.role.subpostition" type="text" value="${crewMember.role.subpostition!}" /> 
+			<label for="role.subPosition">Position Subcategory:</label>				
+            <input name="role.subPostition" type="text" value="${role.subPostition!}" /> 
             </div>
             								
 			<div class="fm-opt">
@@ -192,14 +192,16 @@ $("document").ready(function() {
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
-                <label for="crewMember.role.exDate">Expiry Date:</label>
+                <label for="crewMember.role.exDate">Review Date:</label>
                 <input name="crewMember.role.exDate" type="text" class="date-pick" value="<#if crewMember.role.exDate??>${crewMember.role.exDate?string('dd/MM/yyyy')}</#if>"/>
             </div>
 			<div class="fm-opt">
 				<label for="crewMember.role.employment"><span class="star">*</span>Employment Status:</label>
 				<select name="crewMember.role.employment" id="empstatus" />
 					<option value="Permanent" <#if crewMember.role.employment?if_exists == "Permanent">selected</#if>>Permanent
+					<option value="Permanent (Inactive)" <#if crewMember.role.employment?if_exists == "Permanent (Inactive)">selected</#if>>Permanent (Inactive)
 					<option value="Freelance" <#if crewMember.role.employment?if_exists == "Freelance">selected</#if>>Freelance
+					<option value="Freelance (Inactive)" <#if crewMember.role.employment?if_exists == "Freelance (Inactive)">selected</#if>>Freelance (Inactive)
 				</select>
 			</div>
 			<!--<div class="fm-opt">
@@ -417,75 +419,13 @@ $("document").ready(function() {
     </#if>
     
 		</div>
-		
+
+
+
 		<div style="float:left; width: 500px;">	                               
-        <#if crewMember.role.position?if_exists == "Pilot">               
-		<fieldset>
-			<legend>
-			Hours (Pilots only) 
-			<img class="tooltip" title="To Add a Type: select a type from the dropdown and press save <br/><br/> To Remove a Type: select the empty option of the Type you wish to remove and save <br/><br/> You are unable to add more<br/> than one of the same type"  style="background-color:white;cursor:help;position:absolute;padding:10px;padding-top:0px;"  src="images/icons/info.png"/>
-			</legend>
-			<div class="fm-opt" style="position:relative;right:-340px;">  
-			Total Hours
-			</div>
-			<#assign i=0/> 
-			<#list crewMember.role.conversions as conversion>
-			<div class="fm-opt">
-			    <label for="crewMember.role.conversions[${i}].number">Hours:</label>
-			    <select name="crewMember.role.conversions[${i}].number">
-			    <option>
-                <option <#if conversion.number.equals("Total PIC")>selected</#if>>Total PIC
-                <option <#if conversion.number.equals("Total Turbine")>selected</#if>>Total Turbine
-                <option <#if conversion.number.equals("NVG")>selected</#if>>NVG
-                <option <#if conversion.number.equals("Offshore")>selected</#if>>Offshore
-                <option <#if conversion.number.equals("Undersling")>selected</#if> >Undersling
-				<#list aircraftTypes?if_exists as aircraftType>
-				<option <#if conversion.number.equals(aircraftType.name)>selected</#if> >${aircraftType.name!}
-				</#list>
-				</select>
-				<input class="imageCalc" style="width:50px;" name="crewMember.role.conversions[${i}].quantity" type="text" value="${conversion.quantity!}"/>
-			</div>
-			
-			<#assign i=i+1/>
-			</#list>
-			<#list 0..0 as j>
-			<div class="fm-opt">
-				<label for="crewMember.role.conversions[${i+j}].number">Add Type:</label>
-				<select name="crewMember.role.conversions[${i+j}].number">
-				<option>
-				<option>Total PIC
-				<option>Total Turbine
-				<option>NVG
-				<option>Offshore
-				<option>Undersling
-				<#list aircraftTypes?if_exists as aircraftType>
-				<option>${aircraftType.name!}
-				</#list>
-				</select>
-			</div>
-			</#list>
-			<div class="fm-opt" style="margin-left:104px">
-				<span>Total Hours For All Types:</span>
-			    <input class="imageCalc" style="width:50px;margin-left:70px;" name="crewMember.role.totalHours" type="text" value="${crewMember.role.totalHours!}"/>
-			</div>
-			<br/>
-		</fieldset>
-		
-		<fieldset>
-            <legend>
-            Flight Hours Report 
-            </legend>
-		<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
-                <label for="flighthoursFile">Upload:</label>
-                <input id="flighthoursFile" name="flighthoursFile" value="" type="file" />
-                <input name="flighthoursTags" value="flighthours" type="hidden" />
-                <#if flighthours?exists>
-                  <label for="flighthoursFile"/>&nbsp;</label>
-                  <div id="flighthoursFile"><a href='${request.contextPath}${flighthours.bookmark.url!}'>${flighthours.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${flighthours.bookmark.bookmarkedId}">x</a></#if></div>
-                </#if>
-            </div>
-		 </fieldset>
-		
+        <#if crewMember.role.position?if_exists == "Pilot">   
+        
+
 		<fieldset>
 			<legend>Last Base Check</legend>
 			<div class="fm-opt">
@@ -503,7 +443,7 @@ $("document").ready(function() {
 			</div>
 		</fieldset>
 		</#if>
-			
+	
 		</div>
 		<hr class="clear"/>
 		<#if !readOnly>                                  
