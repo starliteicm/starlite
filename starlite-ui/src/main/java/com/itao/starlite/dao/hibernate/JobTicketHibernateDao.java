@@ -1,5 +1,6 @@
 package com.itao.starlite.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.itao.persistence.GenericHibernateDao;
@@ -23,7 +24,7 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 	@Override
 	public List<JobTicket> findAllTicketsPerUser(String username)
 	{
-		List<JobTicket> list = null;
+		List<JobTicket> list = new ArrayList<JobTicket>();
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
 		if (persons.isEmpty() == false)
 		{
@@ -37,7 +38,7 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 	@Override
 	public List<JobTicket> findAllNonOpenTicketsPerUser(String username) 
 	{
-		List<JobTicket> list = null;
+		List<JobTicket> list = new ArrayList<JobTicket>();
 		
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
 		
@@ -52,7 +53,7 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<JobTicket> findAllWIPTicketsByUser(String username) {
-        List<JobTicket> list = null;
+        List<JobTicket> list = new ArrayList<JobTicket>();
 		
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
 		
@@ -67,7 +68,7 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<JobTicket> findAllSUSPENDEDTicketsByUser(String username) {
-        List<JobTicket> list = null;
+        List<JobTicket> list = new ArrayList<JobTicket>();
 		
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
 		
@@ -82,7 +83,7 @@ public class JobTicketHibernateDao extends GenericHibernateDao<JobTicket, Intege
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<JobTicket> findAllCLOSEDTicketsByUser(String username) {
-List<JobTicket> list = null;
+        List<JobTicket> list = new ArrayList<JobTicket>();
 		
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
 		
@@ -115,7 +116,7 @@ List<JobTicket> list = null;
 	public boolean userHasWIPTickets(String username) 
 	{
 		boolean WIPTickets = false;
-		List<JobTicket> list = null;
+		List<JobTicket> list = new ArrayList<JobTicket>();
 		List<Integer> persons = (List<Integer>)getCurrentSession().createQuery("select id from CrewMember where code = ?").setParameter(0, username).list();
 		
 		//check if user exists
