@@ -25,7 +25,7 @@
             location.href = '${request.contextPath}/hanger.action?' + parameterString;
         }
 </script>
-</script>
+
 
 <style  type="text/css" >
 
@@ -149,12 +149,14 @@ color: #FFFFFF;
 		<div class="fm-opt">
 	       <div style="margin-left:-35px;" >
 			<label style="text" for="reasonForUpdate">Reason for update:</label>
-			<input name="reasonForUpdate" type="text" value="${reasonForUpdate!}"  STYLE=" background-color: #FFFFFF;text-align:right;" size="${block}"/>
+			<input name="reasonForUpdate" type="text" value="${reasonForUpdate!}"  STYLE=" background-color: #FFFFFF;text-align:left;" size="${block}"/>
 		   </div>		
 	    </div>
 	
 	    <div style="margin-left:197px;" >
 	        <button class="smooth" style="margin-left:10px;padding:2px 10px 2px 7px;" onclick="return confirm('Would you like to save these changes?')" type="submit"><img src="images/icons/add.png"/>Submit</button>
+	        <img class="tooltip" title="<b>New Hours</b><br /><br />Please make sure that you fill in all 3 fields. If you only want to change the hours, then set the minutes to 0 (zero). <br /><br />Please note that the value for the hours are overwritten and not added."  style="background-color:transparent;cursor:help;"  src="images/icons/info.png"/>
+	        
 	    </div>
 	    </#if>
 	        

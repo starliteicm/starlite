@@ -40,9 +40,10 @@ import com.opensymphony.xwork2.Preparable;
  * @author Celeste Groenewald
  *
  */
+
 @Results({
-	
-	@Result(name="redirect-list", type=ServletRedirectResult.class, value="hangerHistory.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
+	@Result(name="redirect", type=ServletRedirectResult.class, value="hangerHistory.action?errorMessage=${errorMessage}&id=${id}"),
+	@Result(name="redirect-list", type=ServletRedirectResult.class, value="hanger.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
 	
 })
 
@@ -109,7 +110,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 				new Breadcrumb("<a href='hanger.action'>Hanger Management</a>"),
 				new Breadcrumb("<a href='hangerHistory.action?id="+id+"'>Ticket</a>")};
 		
-		this.errorMessage="";
+		//this.errorMessage="";
 		this.notificationMessage="";
 		
 		//set the first tab ("Tickets") as active
@@ -582,7 +583,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 		return tableFacade;
 		}//editHistoryTable()
     /*-----------------------------------------------------------------*/
-	public String updateTicket()
+	public String updateTicket() throws Exception
 	/*-----------------------------------------------------------------*/
 	{
 		prepare();
@@ -595,17 +596,17 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 		//Make sure that there is a reason
 		if (this.reasonForUpdate.compareTo("") == 0)
 		{
-			this.errorMessage = "Please enter a reason for changing the hours for this ticket.";
+			this.errorMessage = "Please enter a reason for changing the hours for this ticket";
 			pass = false;
 		}
 		if (this.newHours.compareTo("") == 0)
 		{
-			this.errorMessage = "Please enter the New Hours.";
+			this.errorMessage = "Please enter the New Hours";
 			pass = false;
 		}
 		if (this.newMins.compareTo("") == 0)
 		{
-			this.errorMessage = "Please enter the New Minutes.";
+			this.errorMessage = "Please enter the New Minutes";
 			pass = false;
 		}
 		
@@ -655,7 +656,7 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 				this.errorMessage = "Unable to update the ticket: Possible Reason:" + e.getMessage().toString();
 			}
 		}
-		return "redirect-list";
+		return execute();
 	}
 	/*-----------------------------------------------------------------*/
 	
