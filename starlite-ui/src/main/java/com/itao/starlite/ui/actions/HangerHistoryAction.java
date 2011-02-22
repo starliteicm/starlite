@@ -327,8 +327,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 							String time = String.valueOf(((JobHistory) item).getTotalTaskHours());
 							String hrs = time.substring(0, time.indexOf("."));
 							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-							float minsFloat = Float.valueOf(minsDec) * 60;
-							int mins1 = Math.round(minsFloat);
+							Double minsFloat = Double.valueOf(minsDec) * 60;
+							long mins1 = Math.round(minsFloat);
 							if (mins1 < 10){mins="0"+mins1+"mins";}
 							else {mins = ""+mins1+"mins";}
 							hours = ""+hrs+"hrs&nbsp;";
@@ -352,8 +352,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 						String time = String.valueOf(((JobHistory) item).getTotalTaskHours());
 						String hrs = time.substring(0, time.indexOf("."));
 						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-						float minsFloat = Float.valueOf(minsDec) * 60;
-						int mins1 = Math.round(minsFloat);
+						Double minsFloat = Double.valueOf(minsDec) * 60;
+						long mins1 = Math.round(minsFloat);
 						if (mins1 < 10){mins="0"+mins1+"mins";}
 						else {mins = ""+mins1+"mins";}
 						hours = ""+hrs+"hrs&nbsp;";
@@ -478,8 +478,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 							String time = String.valueOf(((JobHistory) item).getChangedByOldValue());
 							String hrs = time.substring(0, time.indexOf("."));
 							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-							float minsFloat = Float.valueOf(minsDec) * 60;
-							int mins1 = Math.round(minsFloat);
+							Double minsFloat = Double.valueOf(minsDec) * 60;
+							long mins1 = Math.round(minsFloat);
 							if (mins1 < 10){mins="0"+mins1+"mins";}
 							else {mins = ""+mins1+"mins";}
 							hours = ""+hrs+"hrs&nbsp;";
@@ -503,8 +503,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 						String time = String.valueOf(((JobHistory) item).getChangedByOldValue());
 						String hrs = time.substring(0, time.indexOf("."));
 						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-						float minsFloat = Float.valueOf(minsDec) * 60;
-						int mins1 = Math.round(minsFloat);
+						Double minsFloat = Double.valueOf(minsDec) * 60;
+						long mins1 = Math.round(minsFloat);
 						if (mins1 < 10){mins="0"+mins1+"mins";}
 						else {mins = ""+mins1+"mins";}
 						hours = ""+hrs+"hrs&nbsp;";
@@ -535,8 +535,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 							String time = String.valueOf(((JobHistory) item).getChangedByNewValue());
 							String hrs = time.substring(0, time.indexOf("."));
 							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-							float minsFloat = Float.valueOf(minsDec) * 60;
-							int mins1 = Math.round(minsFloat);
+							Double minsFloat = Double.valueOf(minsDec) * 60;
+							long mins1 = Math.round(minsFloat);
 							if (mins1 < 10){mins="0"+mins1+"mins";}
 							else {mins = ""+mins1+"mins";}
 							hours = ""+hrs+"hrs&nbsp;";
@@ -560,8 +560,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 						String time = String.valueOf(((JobHistory) item).getChangedByNewValue());
 						String hrs = time.substring(0, time.indexOf("."));
 						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-						float minsFloat = Float.valueOf(minsDec) * 60;
-						int mins1 = Math.round(minsFloat);
+						Double minsFloat = Double.valueOf(minsDec) * 60;
+						long mins1 = Math.round(minsFloat);
 						if (mins1 < 10){mins="0"+mins1+"mins";}
 						else {mins = ""+mins1+"mins";}
 						hours = ""+hrs+"hrs&nbsp;";
@@ -589,9 +589,9 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 		prepare();
 		
 		boolean pass = true;
-		Float hours = 0.0F;
-		Float mins = 0.0F;
-		Float totalTime = 0.0F;
+		Double hours = 0.0;
+		Double mins = 0.0;
+		Double totalTime = 0.0;
 		
 		//Make sure that there is a reason
 		if (this.reasonForUpdate.compareTo("") == 0)
@@ -616,8 +616,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 			//Update ticket hours
 			try
 			{
-			     hours = Float.valueOf(this.newHours);
-			     mins = Float.valueOf(this.newMins);
+			     hours = Double.valueOf(this.newHours);
+			     mins = Double.valueOf(this.newMins);
 			     
 			     mins = mins/60;
 			     
@@ -640,7 +640,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 				temp.setChangedByNewValue(String.valueOf(totalTime));
 				temp.setChangedByOldValue(String.valueOf(this.jobTicket.getTotalTicketHours()));
 				temp.setJobTaskValue(this.jobTicket.getJobTask().getJobTaskValue());
-				temp.setSubTaskValue(this.jobTicket.getJobSubTask());
+				temp.setJobSubTaskCode(this.jobTicket.getJobSubTask().getJobSubTaskCode());
+				temp.setJobSubTaskDesc(this.jobTicket.getJobSubTask().getJobSubTaskDesc());
 				temp.setJobStatus(jobTicket.getJobTicketStatus().getJobStatusValue());
 				temp.setParentTicketNo(this.jobTicket.getJobTicketID());
 				temp.setCaptureEdit(1); // 1 means 'yes this is an edit ticket'
@@ -702,8 +703,8 @@ public class HangerHistoryAction extends ActionSupport implements UserAware, Pre
 				String time = String.valueOf(this.jobTicket.getTotalTicketHours());
 				String hrs = time.substring(0, time.indexOf("."));
 				String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-				float minsFloat = Float.valueOf(minsDec) * 60;
-				int mins1 = Math.round(minsFloat);
+				Double minsFloat = Double.valueOf(minsDec) * 60;
+				long mins1 = Math.round(minsFloat);
 				if (mins1 < 10){mins="0"+mins1+"mins";}
 				else {mins = ""+mins1+"mins";}
 				hours = ""+hrs+"hrs&nbsp;";

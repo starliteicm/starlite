@@ -33,6 +33,7 @@ import com.itao.starlite.model.Aircraft;
 import com.itao.starlite.model.AircraftType;
 import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewMember;
+import com.itao.starlite.model.JobSubTask;
 //import com.itao.starlite.model.FlightActuals;
 //import com.itao.starlite.model.FlightPlan;
 import com.itao.starlite.model.JobHistory;
@@ -81,16 +82,20 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	
 	public List<Aircraft> aircrafts;
 	public List<JobTask> jobTasks;
+	public List<JobSubTask> jobSubTasks;
 	public List<JobTicket> jobTicketsForUser;
 	List<JobStatus> jobStatusList;
 	
 	public JobTicket jobTicket;
 	public Aircraft aircraft;
 	public JobTask jobTask;
+	public JobSubTask jobSubTask;
+	
 	public String taskToPerform = "";
 	public JobStatus jobStatus;
 	
 	public Integer newStatus=null;
+	
 	
 	
 	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Hanger Management")};
@@ -106,6 +111,9 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	
 	public String selectedValue = "none";
 	public String newTask="none";
+	public String newSubTaskCode="none";
+	public String newSubTaskDesc="none";
+	public String newSubTaskRef="none";
 	
 	public boolean isNotACrewMember = false;
 	
@@ -134,6 +142,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 
 		//get all the information to work with
 		this.jobTasks = manager.getAllTasks();
+		//get all the information to work with
+		this.jobSubTasks = manager.getAllSubTasks();
+		Collections.sort(this.jobSubTasks);
+		
 		Collections.sort(this.jobTasks);
 	    this.aircrafts = manager.getAllAircraftRegs();
 	    Collections.sort(this.aircrafts);
@@ -221,6 +233,64 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	}
 	/*-----------------------------------------------------------------*/
 	/**
+	 * <p>Allows a user to add a new Job Sub Task such as "330-P4-PRE-001". The task table is
+	 * created via hibernate through jobTask.java</p>
+	 */
+	/*-----------------------------------------------------------------*/
+	public String saveSubTask()
+	/*-----------------------------------------------------------------*/
+	{
+		boolean pass = true;
+	    this.errorMsg="";
+	    this.notificationMessage="";
+	    this.errorMessage="";
+	    
+	    //Test if the user entered a value before clicking on the add button in hanger.ftl
+		if (this.newTask.compareTo("") == 0)
+		{
+			this.errorMsg = "Error: Unable to add an empty task. Please enter a value before adding a new task.";
+			pass = false;
+		}
+		else if (this.newSubTaskCode.compareTo("") == 0)
+		{
+			this.errorMsg = "Error: Unable to add task with an empty description. Please enter a value for the description.";
+			pass = false;
+		}
+		
+		else
+		{
+			try
+			{
+				//if valid, create a new Task and commit to the database
+				JobSubTask newSubTask = new JobSubTask();
+				newSubTask.setJobSubTaskCode(this.newSubTaskCode);
+				newSubTask.setJobSubTaskDesc(this.newSubTaskDesc);
+				newSubTask.setJobSubTaskRef(this.newSubTaskRef);
+				
+				manager.saveJobSubTask(newSubTask);
+				
+			}
+			catch(Exception ex)
+			{
+				pass=false;
+				this.errorMsg = "ERROR: Unable to add task. Possible Reason: "+ex.getMessage().toString();
+				
+			}
+		}
+		
+		if (pass == false)
+		{
+			//display the error message if there was an Exception
+			this.errorMessage = this.errorMsg;
+		}
+		else
+		{
+			this.notificationMessage = this.newSubTaskCode + " has been added.";
+		}
+		return "redirect";
+	}
+	/*-----------------------------------------------------------------*/
+	/**
 	 * <p>Allows a user to add a new Job Task such as "P4-Servicing". The task table is
 	 * created via hibernate through jobTask.java</p>
 	 */
@@ -234,7 +304,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 	    this.errorMessage="";
 	    
 	    //Test if the user entered a value before clicking on the add button in hanger.ftl
-		if (this.taskToPerform.compareTo("") == 0)
+		if (this.newSubTaskCode.compareTo("") == 0)
 		{
 			this.errorMsg = "Error: Unable to create a new job ticket. Please enter a Task value before submitting.";
 			pass = false;
@@ -250,7 +320,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 				JobTask tempJobTask = manager.getJobTaskByValue(this.jobTask.getJobTaskValue());
 				CrewMember assignedTo = manager.getCrewMemberByCode(this.user.getUsername());
 				
-				newJobTicket.createJobTicket(tempJobTask, tempAircraft, assignedTo, assignedTo, manager, this.taskToPerform);
+				JobSubTask tempSubTask = this.manager.getJobSubTaskByValue(this.newSubTaskCode);
+			
+				
+				newJobTicket.createJobTicket(tempJobTask, tempAircraft, assignedTo, assignedTo, manager, tempSubTask);
 				//save ticket to get id of ticket and status
 				this.jobTicket = manager.saveJobTicket(newJobTicket);
 				//determine action for dates and history
@@ -429,13 +502,20 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		 
 		
 		JobHistory history = new JobHistory();
+		if (id!=null)
+		{
 		history.setParentTicketNo(id);
+		}
+		else{history.setParentTicketNo(ticket.getJobTicketID());}
+		
 		history.setCaptureEdit(0);
 		history.setJobAircraft(ticket.getAircraft().getRef());
 		history.setJobTaskValue(ticket.getJobTask().getJobTaskValue());
+		history.setJobSubTaskCode(ticket.getJobSubTask().getJobSubTaskCode());
+		history.setJobSubTaskDesc(ticket.getJobSubTask().getJobSubTaskDesc());
 		history.setAssignedTo(ticket.getAssignedTo().getCode());
 		
-		float totalHours = ticket.getTotalTicketHours();
+		Double totalHours = ticket.getTotalTicketHours();
 
 		//changed from OPEN to WIP
 		if ((previousStatus.compareTo("OPEN") == 0) && (selectedStatus.compareTo("WIP")==0))
@@ -443,7 +523,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			//OPEN is not used, so no hours calculated. Kept here for future use.
 			ticket.setStartTime(new Date());
 			ticket.setJobTicketStatus(status);
-			ticket.setTotalTicketHours(0.0F);
+			ticket.setTotalTicketHours(0.0);
 			history.setTotalTaskHours(ticket.getTotalTicketHours());
 			history.setJobTimeStamp(ticket.getStartTime());
 			history.setJobStatus(selectedStatus);
@@ -455,10 +535,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			ticket.setEndTime(new Date());
 			Date startTime = ticket.getStartTime();
 			Date endTime = ticket.getEndTime();
-			float startHours = (float)startTime.getTime();
-			float endHours = (float)endTime.getTime();
-			float difference = (float)endHours - startHours;
-			float hours = (difference / (1000 * 60 * 60));
+			double startHours = (double)startTime.getTime();
+			double endHours = (double)endTime.getTime();
+			double difference = (double)endHours - startHours;
+			double hours = (difference / (1000 * 60 * 60));
 			totalHours += hours; 
 			
 			ticket.setTotalTicketHours(totalHours);
@@ -475,10 +555,10 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			
 			Date startTime = ticket.getStartTime();
 			Date endTime = ticket.getEndTime();
-			float startHours = (float)startTime.getTime();
-			float endHours = (float)endTime.getTime();
-			float difference = (float)endHours - startHours;
-			float hours = (difference / (1000 * 60 * 60));
+			double startHours = (double)startTime.getTime();
+			double endHours = (double)endTime.getTime();
+			double difference = (double)endHours - startHours;
+			double hours = (difference / (1000 * 60 * 60));
 			totalHours += hours; 
 			
 			ticket.setTotalTicketHours(totalHours);
@@ -494,7 +574,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			ticket.setStartTime(new Date());
 			ticket.setEndTime(null);
 			//no end time so set the hours to zero
-			history.setTotalTaskHours(0.0F);
+			history.setTotalTaskHours(0.0);
 			history.setJobTimeStamp(ticket.getStartTime());
 			history.setJobStatus(selectedStatus);
 			ticket.setJobTicketStatus(status);
@@ -506,7 +586,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			ticket.setStartTime(new Date());
 			ticket.setEndTime(new Date());
 			//if it goes directly to closed, then there is no time to calculate
-			history.setTotalTaskHours(0.0F);
+			history.setTotalTaskHours(0.0);
 			history.setJobTimeStamp(ticket.getEndTime());
 			history.setJobStatus(selectedStatus);
 			ticket.setJobTicketStatus(status);
@@ -516,7 +596,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			//Created a ticket that went straight into WIP
 			ticket.setStartTime(new Date());
 			//ticket.setEndTime(new Date());
-			history.setTotalTaskHours(0.0F);
+			history.setTotalTaskHours(0.0);
 			history.setJobTimeStamp(ticket.getStartTime());
 			history.setJobStatus(previousStatus);
 				
@@ -528,7 +608,7 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			//Created a ticket that went straight into WIP
 			ticket.setStartTime(new Date());
 			ticket.setEndTime(ticket.getStartTime());
-			history.setTotalTaskHours(0.0F);
+			history.setTotalTaskHours(0.0);
 			history.setJobTimeStamp(ticket.getStartTime());
 			history.setJobStatus(previousStatus);
 				
@@ -696,11 +776,11 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 						if(((JobTicket) item).getJobSubTask() == null){
 							return "";
 						}
-						if (((JobTicket) item).getJobSubTask().length() > 15)
+						if (((JobTicket) item).getJobSubTask().getJobSubTaskCode().length() > 20)
 						{
-							return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().substring(0,15)+"</div>";
+							return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode().substring(0,20)+"</div>";
 						}
-						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask()+"</div>";
+						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode()+"</div>";
 					}
 			});
 		}
@@ -708,11 +788,11 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			jobSubTask.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) 
 				{
-					if (((JobTicket) item).getJobSubTask().length() > 15)
+					if (((JobTicket) item).getJobSubTask().getJobSubTaskCode().length() > 20)
 					{
-						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().substring(0,15)+"</div>";
+						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode().substring(0,20)+"</div>";
 					}
-					return ((JobTicket) item).getJobSubTask();
+					return ((JobTicket) item).getJobSubTask().getJobSubTaskCode();
 				}
 			});
 		}
@@ -897,11 +977,11 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 						if(((JobTicket) item).getJobSubTask() == null){
 							return "";
 						}
-						if (((JobTicket) item).getJobSubTask().length() > 15)
+						if (((JobTicket) item).getJobSubTask().getJobSubTaskCode().length() > 20)
 						{
-							return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().substring(0,15)+"</div>";
+							return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode().substring(0,20)+"</div>";
 						}
-						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask()+"</div>";
+						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode()+"</div>";
 					}
 			});
 		}
@@ -909,11 +989,11 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			jobSubTask.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) 
 				{
-					if (((JobTicket) item).getJobSubTask().length() > 15)
+					if (((JobTicket) item).getJobSubTask().getJobSubTaskCode().length() > 20)
 					{
-						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().substring(0,15)+"</div>";
+						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode().substring(0,20)+"</div>";
 					}
-					return ((JobTicket) item).getJobSubTask();
+					return ((JobTicket) item).getJobSubTask().getJobSubTaskCode();
 				}
 			});
 		}
@@ -965,8 +1045,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 							String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
 							String hrs = time.substring(0, time.indexOf("."));
 							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-							float minsFloat = Float.valueOf(minsDec) * 60;
-							int mins1 = Math.round(minsFloat);
+							Double minsFloat = Double.valueOf(minsDec) * 60;
+							long mins1 = Math.round(minsFloat);
 							if (mins1 < 10){mins="0"+mins1+"mins";}
 							else {mins = ""+mins1+"mins";}
 							hours = ""+hrs+"hrs&nbsp;";
@@ -987,8 +1067,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 						String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
 						String hrs = time.substring(0, time.indexOf("."));
 						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-						float minsFloat = Float.valueOf(minsDec) * 60;
-						int mins1 = Math.round(minsFloat);
+						Double minsFloat = Double.valueOf(minsDec) * 60;
+						long mins1 = Math.round(minsFloat);
 						if (mins1 < 10){mins="0"+mins1+"mins";}
 						else {mins = ""+mins1+"mins";}
 						hours = ""+hrs+"hrs&nbsp;";
@@ -1118,11 +1198,11 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 						if(((JobTicket) item).getJobSubTask() == null){
 							return "";
 						}
-						if (((JobTicket) item).getJobSubTask().length() > 15)
+						if (((JobTicket) item).getJobSubTask().getJobSubTaskCode().length() > 20)
 						{
-							return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().substring(0,15)+"</div>";
+							return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode().substring(0,20)+"</div>";
 						}
-						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask()+"</div>";
+						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode()+"</div>";
 					}
 			});
 		}
@@ -1130,11 +1210,11 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			jobSubTask.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) 
 				{
-					if (((JobTicket) item).getJobSubTask().length() > 15)
+					if (((JobTicket) item).getJobSubTask().getJobSubTaskCode().length() > 20)
 					{
-						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().substring(0,15)+"</div>";
+						return "<div style='text-align:left'>"+((JobTicket) item).getJobSubTask().getJobSubTaskCode().substring(0,20)+"</div>";
 					}
-					return ((JobTicket) item).getJobSubTask();
+					return ((JobTicket) item).getJobSubTask().getJobSubTaskCode();
 				}
 			});
 		}
@@ -1187,8 +1267,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 							String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
 							String hrs = time.substring(0, time.indexOf("."));
 							String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-							float minsFloat = Float.valueOf(minsDec) * 60;
-							int mins1 = Math.round(minsFloat);
+							Double minsFloat = Double.valueOf(minsDec) * 60;
+							long mins1 = Math.round(minsFloat);
 							if (mins1 < 10){mins="0"+mins1+"mins";}
 							else {mins = ""+mins1+"mins";}
 							hours = ""+hrs+"hrs&nbsp;";
@@ -1209,8 +1289,8 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 						String time = String.valueOf(((JobTicket) item).getTotalTicketHours());
 						String hrs = time.substring(0, time.indexOf("."));
 						String minsDec = "0."+time.substring(time.indexOf(".")+1,time.length());
-						float minsFloat = Float.valueOf(minsDec) * 60;
-						int mins1 = Math.round(minsFloat);
+						Double minsFloat = Double.valueOf(minsDec) * 60;
+						long mins1 = Math.round(minsFloat);
 						if (mins1 < 10){mins="0"+mins1+"mins";}
 						else {mins = ""+mins1+"mins";}
 						hours = ""+hrs+"hrs&nbsp;";
@@ -1334,6 +1414,12 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 			this.jobTask = new JobTask();
 			this.jobTask.setJobTaskValue("");
 		}
+		if (jobSubTask == null)
+		{
+			this.jobSubTask = new JobSubTask();
+			this.jobSubTask.setJobSubTaskCode("");
+			this.jobSubTask.setJobSubTaskDesc("");
+		}
 		
 		if (this.aircrafts == null)
 		{this.aircrafts = new ArrayList<Aircraft>();}
@@ -1341,6 +1427,9 @@ public class HangerAction extends ActionSupport implements UserAware, Preparable
 		if (this.jobTasks == null)
 		{this.jobTasks = new ArrayList<JobTask>();}
 		else {this.jobTasks = manager.getAllTasks();Collections.sort(this.jobTasks);}
+		if (this.jobSubTasks == null)
+		{this.jobSubTasks = new ArrayList<JobSubTask>();}
+		else {this.jobSubTasks = manager.getAllSubTasks();Collections.sort(this.jobSubTasks);}
 		
 		
 		if (id == null) 

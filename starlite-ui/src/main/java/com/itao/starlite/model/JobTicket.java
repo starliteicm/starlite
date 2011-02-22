@@ -43,6 +43,9 @@ public class JobTicket implements Comparable{
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private JobTask jobTask = new JobTask();
 	
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private JobSubTask jobSubTask2 = new JobSubTask();
+	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private Aircraft aircraft = new Aircraft();
 	
@@ -69,10 +72,10 @@ public class JobTicket implements Comparable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date endTime;
 	
-	@Column(nullable = false, columnDefinition="varchar(100) default 'no description available'")
-	private String jobSubTask="";
+	//@Column(nullable = false, columnDefinition="varchar(100) default 'no description available'")
+	//private String jobSubTask="";
 	@Column(nullable = false, columnDefinition="FLOAT(10,4) default 0.00")
-	private Float totalTicketHours = 0.00F;
+	private Double totalTicketHours = 0.00;
 	
 	
 	
@@ -81,7 +84,7 @@ public class JobTicket implements Comparable{
 	}
 
     @Inject
-	public void createJobTicket(JobTask jobTask, Aircraft aircraft, CrewMember submittedBy, CrewMember assignedTo, StarliteCoreManager manager, String jobSubTask )
+	public void createJobTicket(JobTask jobTask, Aircraft aircraft, CrewMember submittedBy, CrewMember assignedTo, StarliteCoreManager manager, JobSubTask jobSubTask2 )
 	{
 		this.jobTask = jobTask;
 		this.aircraft = aircraft;
@@ -100,8 +103,11 @@ public class JobTicket implements Comparable{
 			status = manager.getJobStatusValue("WIP");
 		}
 		
+		//get value for jobSubTask
+		this.jobSubTask2 = manager.getJobSubTaskByValue(jobSubTask2.getJobSubTaskCode());
+		
 		this.jobTicketStatus = status;
-		this.jobSubTask = jobSubTask;
+		this.jobSubTask2 = jobSubTask2;
 		
 		
 	}
@@ -210,23 +216,23 @@ public class JobTicket implements Comparable{
 		this.endTime = endTime;
 	}
 	
-	public String getJobSubTask() {
-		return jobSubTask;
+	public JobSubTask getJobSubTask() {
+		return jobSubTask2;
 	}
 
-	public void setJobSubTask(String jobSubTask) {
-		this.jobSubTask = jobSubTask;
+	public void setJobSubTask(JobSubTask jobSubTask) {
+		this.jobSubTask2 = jobSubTask;
 	}
 
-	public Float getTotalTicketHours() 
+	public Double getTotalTicketHours() 
 	{
-		Float hours = this.totalTicketHours;
+		Double hours = this.totalTicketHours;
 		DecimalFormat twoDForm = new DecimalFormat("#.###");
-		return Float.valueOf(twoDForm.format(hours));
+		return Double.valueOf(twoDForm.format(hours));
 	}
 
-	public void setTotalTicketHours(Float totalTicketHours) {
-		this.totalTicketHours = totalTicketHours;
+	public void setTotalTicketHours(Double totalTime) {
+		this.totalTicketHours = totalTime;
 	}
 
 	/**

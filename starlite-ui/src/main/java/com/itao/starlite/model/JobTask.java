@@ -66,8 +66,8 @@ public class JobTask implements Comparable{
 		    final int AFTER = 1;
 
 		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )== 0)) return EQUAL;
-		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )== -1)) return BEFORE;
-		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )== 1)) return AFTER;
+		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )< 0)) return BEFORE;
+		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )> 0)) return AFTER;
 
 		return EQUAL;
 	}

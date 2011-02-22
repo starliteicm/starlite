@@ -30,6 +30,7 @@ import com.itao.starlite.dao.ExchangeDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
 //import com.itao.starlite.dao.FlightLogDao;
 //import com.itao.starlite.dao.FlightPlanDao;
+import com.itao.starlite.dao.JobSubTaskDao;
 //import com.itao.starlite.model.FlightActualStatus;
 //import com.itao.starlite.model.FlightActuals;
 //import com.itao.starlite.model.FlightPlan;
@@ -58,6 +59,7 @@ import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.JobHistory;
 import com.itao.starlite.model.JobStatus;
+import com.itao.starlite.model.JobSubTask;
 import com.itao.starlite.model.JobTask;
 import com.itao.starlite.model.JobTicket;
 import com.itao.starlite.model.Store;
@@ -82,6 +84,7 @@ public class StarliteCoreManager {
 	@Inject private AircraftTypeDao aircraftTypeDao;
 	@Inject private ExchangeDao exDao;
 	@Inject private JobTaskDao jobTaskDao;
+	@Inject private JobSubTaskDao jobSubTaskDao;
 	@Inject private JobTicketDao jobTicketDao;	
 	@Inject private JobStatusDao jobStatusDao;
 	@Inject private JobHistoryDao jobHistoryDao;
@@ -672,6 +675,21 @@ public class StarliteCoreManager {
 		return jobTaskDao.makePersistent(newTask);
 	}	
 	
+	//JobSubTask
+	@Transactional
+	public List<JobSubTask> getAllSubTasks(){
+		return jobSubTaskDao.findAllSubTasks();
+	}
+	public JobSubTask getJobSubTaskByValue(String jobSubTaskValue){
+		return jobSubTaskDao.findJobSubTaskByValue(jobSubTaskValue);
+	}
+	@Transactional
+	public JobSubTask saveJobSubTask(JobSubTask newSubTask) {
+		
+		return jobSubTaskDao.makePersistent(newSubTask);
+	}	
+	
+	
 	//JobTicket
 	@Transactional
 	public List<JobTicket> getAllTicketsByUser(String username){
@@ -746,10 +764,10 @@ public class StarliteCoreManager {
 	}
 	
 	
-/*	
+	
 	
 	//FlightPlan
-	@Transactional
+/*	@Transactional
 	public FlightPlan saveFlightPlan(FlightPlan flightPlan) {
 		return flightPlanDao.makePersistent(flightPlan);
 	}
@@ -813,6 +831,6 @@ public class StarliteCoreManager {
 		return flightActualStatusDao.findStatusValueByID(id);
 	}
 	
-	*/
+*/
 
 }

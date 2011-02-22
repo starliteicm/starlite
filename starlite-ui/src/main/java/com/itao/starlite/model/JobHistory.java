@@ -38,7 +38,15 @@ public class JobHistory implements Cloneable, Comparable {
 	@Column(nullable=false)
 	private String jobTaskValue;
 	
+	@Column(nullable=false)
+	private String jobSubTaskCode;
 	
+	@Column(nullable=false)
+	private String jobSubTaskDesc;
+	
+	
+	
+
 	@Column(nullable=false)
 	private String jobAircraft;
 	
@@ -49,8 +57,8 @@ public class JobHistory implements Cloneable, Comparable {
 	@Column(nullable=false)
 	private String jobStatus;
 	
-	@Column(nullable = true, columnDefinition="FLOAT(10,2) default 0.0")
-	private Float totalTaskHours = 0.0F;
+	@Column(nullable = true, columnDefinition="FLOAT(15,2) default 0.0")
+	private Double totalTaskHours = 0.0;
 	
 	@Column(nullable = true, columnDefinition="varchar(50) default ''")
 	private String changedBy = "";
@@ -79,14 +87,14 @@ public class JobHistory implements Cloneable, Comparable {
 	
 	
 	
-    public Float getTotalTaskHours() {
+    public Double getTotalTaskHours() {
 		return totalTaskHours;
 	}
 
 
 
-	public void setTotalTaskHours(Float totalTaskHours) {
-		this.totalTaskHours = totalTaskHours;
+	public void setTotalTaskHours(Double hours) {
+		this.totalTaskHours = hours;
 	}
 
 
@@ -150,6 +158,29 @@ public class JobHistory implements Cloneable, Comparable {
 	 */
 	public void setJobTaskValue(String jobTaskValue) {
 		this.jobTaskValue = jobTaskValue;
+	}
+
+
+	public String getJobSubTaskCode() {
+		return jobSubTaskCode;
+	}
+
+
+
+	public void setJobSubTaskCode(String jobSubTaskCode) {
+		this.jobSubTaskCode = jobSubTaskCode;
+	}
+
+
+
+	public String getJobSubTaskDesc() {
+		return jobSubTaskDesc;
+	}
+
+
+
+	public void setJobSubTaskDesc(String jobSubTaskDesc) {
+		this.jobSubTaskDesc = jobSubTaskDesc;
 	}
 
 

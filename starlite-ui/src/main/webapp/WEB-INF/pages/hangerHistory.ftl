@@ -107,10 +107,22 @@ color: #FFFFFF;
 	    </div>
 	    <div class="fm-opt">
 	       <div style="margin-left:-35px;" >
-			<label style="text" for="jobTicket.jobSubTask">Task:</label>
-			<input name="jobTicket.jobSubTask" type="text" value="${jobTicket.jobSubTask}" readonly="readonly"  STYLE=" background-color: #F2F2F2;"  size="${block}"/>
+			<label style="text" for="jobTicket.jobSubTaskCode">Task Code:</label>
+			<input name="jobTicket.jobSubTaskCode" type="text" value="${jobTicket.jobSubTask.jobSubTaskCode}" readonly="readonly"  STYLE=" background-color: #F2F2F2;"  size="${block}"/>
 		   </div>	
 	    </div>
+	    <div class="fm-opt">
+	       <div style="margin-left:-35px;" >
+			<label style="text" for="jobTicket.jobSubTaskDesc">Task Description:</label>
+			<textarea name="jobTicket.jobSubTaskDesc" type="text" readonly="readonly"  STYLE=" background-color: #F2F2F2;" rows="3"  size="${block}">${jobTicket.jobSubTask.jobSubTaskDesc} </textarea>
+		   </div>	
+	    </div>
+	    <div class="fm-opt">
+	       <div style="margin-left:-35px;" >
+			<label style="text" for="jobTicket.jobSubTaskRef">Task Reference:</label>
+			<input name="jobTicket.jobSubTaskRef" type="text" value="${jobTicket.jobSubTask.jobSubTaskRef!}" readonly="readonly"  STYLE=" background-color: #F2F2F2;" length="4"  size="${block}"/>
+		   </div>	
+	    </div>	    
 	    
         </fieldset>
         </div>
@@ -129,8 +141,9 @@ color: #FFFFFF;
 	    </div>
         <div class="fm-opt">
 	       <div style="margin-left:-35px;" >
-			<label style="text" for="hours">Total Hours Worked:</label>
+			<label for="hours" style="margin-left:10px;padding:4px 10px 2px 7px;">Total Hours Worked:</label>
 			<input name="hours" type="text" value="${time!}" readonly="readonly"  STYLE=" background-color: #F2F2F2;text-align:right;" size="${block}"/>
+			<img class="tooltip" title="<b>Total Hours</b><br /><br />Please note that the time specified here is more accurate than the history table. This is because the values are not rounded off when added."  style="background-color:transparent;cursor:help;"  src="images/icons/info.png"/>
 		   </div>	
 	    </div>
 	    
