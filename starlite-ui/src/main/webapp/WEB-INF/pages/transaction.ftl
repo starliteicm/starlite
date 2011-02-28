@@ -46,29 +46,31 @@
         <label>Current Location:</label>
         <select name="locCurrent" style="width:600px;">
         <#list component.locations as c>
-        <option value="${c.id}">${c.location?if_exists} ${c.bin?if_exists} (${c.quantity?if_exists})
+        <option value="${c.id}">${c.location?if_exists} (${c.bin?if_exists}) (${c.batch?if_exists})(${c.quantity?if_exists})
         </#list>
         </select>
-        <span>(Location) (Bin) (Quantity)
+        <span>(Location)(Bin)(Batch)(Quantity)
         </div>
         </#if>
         
-        
-        
-        <#if type == "Move" || type == "Purchase" || type == "Repair"  >
+        <#if type == "Move" || type == "Repair" || type=="Purchase" >
         <div class="fm-opt">
         <label>Destination Store:</label>
         <select name="location" style="width:280px;">
         <#list stores as c>
-        <option value="${c.location}">${c.location}
+        <option value="${c.code!}${c.seccode!}">${c.code?if_exists}${c.seccode?if_exists}
         </#list>
-        </select>
-        <input name="bin" style="width:310px;"/>
-        <span>(Store) (Bin)
+        </select>      
+        <span>(Location)(Bin)(Batch)(Quantity)
         </div>
         </#if>
         
-        <#if type == "Purchase" || type == "Repair"  >
+               
+        <#if type == "Purchase" || type=="Move" || type="Repair">
+        <div class="fm-opt">
+        <label>Bin:</label>
+        <input name="bin" type="text" />
+        </div>
         <div class="fm-opt">
         <label>Batch:</label>
         <input name="batch" type="text" />

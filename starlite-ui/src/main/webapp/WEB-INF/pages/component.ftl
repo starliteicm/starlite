@@ -1,5 +1,5 @@
 <#include "/starlite.ftl">
-<#setting number_format = "######.##########"/>
+<#setting number_format = "######.##"/>
 
 <html>
 <head>
@@ -30,29 +30,62 @@
 
 <#if user.hasPermission("UserAdmin")>
 <div id="toolbar">
-    <a href="${request.contextPath}/component!edit.action"><img src="${request.contextPath}/images/icons/add.png"/>Add</a>
     
-    <#if user.hasRead("compup")>
     
-    <div style="margin-left:150px;">
+    
+    
+    <#if tab=="componentUpload">
+    <br />
+    <div style="margin-left:-9px;"> 
+    <@subTabs/>
+    </div>
+    <br />
+    <br />
+    <div style="float:left;padding:5px;margin-left:10px;margin-top:0px;border:1px solid silver;width:1000px;height:300px;valign:left;">
     <form action="component!upload.action" enctype="multipart/form-data" method="post">
-    <input type="file" style="float:left" name="document" id="document"/>
-    <select style="float:left;margin-left:10px;height:24px;" name="location" >
+    <div style="margin-left:11px;"> 
+    <br />
+    <select style="float:left;margin-left:0px;height:24px;" name="location" >
     <#list stores as store>
     <option value="${store.location}" >${store.location}</option>
     </#list>
     </select>
-    <button class="smooth" style="margin-left:10px;padding:2px 10px 2px 7px;" onclick="return confirm('Are you sure you wish to upload these components to this Store?')" type="submit"><img src="images/icons/arrow_up.png"/>Upload Components</button>
+    </div>
+    <br />
+    
+    <div style="margin-left:11px;">
+    <br />
+    <input style="margin-left:0px;margin-top:0px;" type="file" style="float:left" name="document" id="document"/>
+    <input type="hidden" name="id" value="${id!}"/>
+	<input type="hidden" name="component.id" value="${id!}"/>
+	</div>
+	<br />
+	
+    <div style="margin-left:11px;"> 
+    <button class="smooth" style="margin-left:0px;padding:2px 10px 2px 7px;" onclick="return confirm('Are you sure you wish to upload these components to this Store?')" type="submit"><img src="images/icons/arrow_up.png"/>Upload Components</button>
+    </div>
     </form>
     </div>
-    </#if>
+   
+   </#if>
     
     <hr class="clear"/>
 </div>
 <br/>
 </#if>
 
-<@jmesa id="componentTable"/>
+<#if current="active">
+
+<@jmesa id="active"/>  
+</#if>
+<#if current="deactive">
+<@jmesa id="deactive"/>
+</#if>
+ 
+<#if tab == "componentAdd">
+<@subTabs/>
+</#if>
+
 
 </body>
 </html>

@@ -750,6 +750,8 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		@Temporal(TemporalType.DATE)
 		private Date expiryDate;
+		@Temporal(TemporalType.DATE)
+		private Date reviewDate;
 		
 		private Certificate r1 = new Certificate();
 		private Certificate r2 = new Certificate();
@@ -786,7 +788,12 @@ public class CrewMember implements Cloneable, Comparable {
 			this.position = position;
 		}
 
-		public String getSubPosition() {
+		public String getSubPosition() 
+		{
+			if (subPosition == null)
+			{
+				this.subPosition = " ";
+			}
 			return subPosition;
 		}
 
@@ -826,6 +833,14 @@ public class CrewMember implements Cloneable, Comparable {
 			this.expiryDate = expiryDate;
 		}
 		
+		public Date getReviewDate() {
+			return reviewDate;
+		}
+
+		public void setReviewDate(Date reviewDate) {
+			this.reviewDate = reviewDate;
+		}
+
 		public Certificate getR1() {
 			if (r1 == null)
 				r1 = new Certificate();

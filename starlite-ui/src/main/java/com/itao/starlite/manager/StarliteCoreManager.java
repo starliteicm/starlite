@@ -88,10 +88,10 @@ public class StarliteCoreManager {
 	@Inject private JobTicketDao jobTicketDao;	
 	@Inject private JobStatusDao jobStatusDao;
 	@Inject private JobHistoryDao jobHistoryDao;
-	//@Inject private FlightPlanDao flightPlanDao;
-	//@Inject private FlightActualsDao flightActualsDao;
-	//@Inject private FlightActualStatusDao flightActualStatusDao;
-	//@Inject private FlightLogDao flightLogDao;
+//	@Inject private FlightPlanDao flightPlanDao;
+//	@Inject private FlightActualsDao flightActualsDao;
+//	@Inject private FlightActualStatusDao flightActualStatusDao;
+//	@Inject private FlightLogDao flightLogDao;
 	
 	
 	@Inject private AuthManager authManager;
@@ -631,6 +631,10 @@ public class StarliteCoreManager {
 	//Components
 	public List<Component> getComponents(){
 		return componentDao.findActive();
+	}
+	
+	public List<Component> getTransactionComponents(){
+		return componentDao.findTransactionComponents();
 	}
 		
 	public List<Component> getComponentsDeactivated(){

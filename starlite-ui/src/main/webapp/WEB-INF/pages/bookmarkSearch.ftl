@@ -47,18 +47,25 @@
 	<#else>
 		<#assign currentFolder = root/>
 		
+	
+		
 		<#macro treeSegment folder path rootPath>
 			<#if folder.subFolders?size &gt; 0 || folder.docs?size &gt; 0>
+			
 			<ul>
 				<#list folder.subFolders as subFolder>
 					<li>${subFolder.path}<@treeSegment subFolder path+folder.path+'/' rootPath/></li>
 				</#list>
 				<#list folder.docs as doc>
-					<li><a href="${rootPath}${path}${folder.path}/${doc.name}" target="_blank">${doc.name}</a><#if folder.canWrite(user)> <a href="${request.contextPath}/documents!delete.action?path=${path}${folder.path}/${doc.name}">x</a></#if></li>
+					<li>
+					 <a href="${rootPath}${path}${folder.path}/${doc.name}" target="_blank">${doc.name}</a>
+					 <a onclick="return confirm('Are you sure you wish to delete this document?');" href="${request.contextPath}/documents!delete.action?path=${path}${folder.path}/${doc.name}">&nbsp;&nbsp;&nbsp;[delete]</a>
+					</li>
 				</#list>
 			</ul>
 			</#if>
 		</#macro>
+		
 			
 			<ul class="mktree" style="margin-top:20px;">
 				<#list root.subFolders as subFolder>

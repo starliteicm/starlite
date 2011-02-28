@@ -277,10 +277,12 @@ $("document").ready(function() {
 		<br/>
 		<div style="">
 		    <div class="fm-opt">
+		    <#if user.hasPermission("UserAdmin")>
                 <label for="photo">Upload:</label>
                 <input name="document" type="file" value=""/>
                 <input type="hidden" name="tags" value="photo">
                 <input type="hidden" name="docfolder" value="/crew/${id!}"/>
+            </#if>
             </div>
 		</div>		
 		</fieldset>
@@ -391,26 +393,33 @@ $("document").ready(function() {
 		</div>
 		  <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
           <div class="fm-opt">
-          <label for="passports">
-          <#if count == 1>
-          <span class="star">*</span>
-          </#if>
-          Upload:</label>
-          <input type="file" name="passports" value="" />
-          <input type="hidden" name="passportsTags" value="passport" />
-
-          <#assign passname = "passport"+passFileCount />
-          <#if passportFiles.get(passname)?exists > 
-          <#assign pass = passportFiles.get(passname)/>
-          <#if pass?exists>
-             <label for="passportsUploadedFile"/>&nbsp;</label>
-             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div>
-          </#if> 
-          </#if>
-          
-          <#assign passFileCount = passFileCount +1>
-          
+	          <label for="passports">
+	          <#if count == 1>
+	          <span class="star">*</span>
+	          </#if>
+	          Upload:</label>
+	          <input type="file" name="passports" value="" />
+	          <input type="hidden" name="passportsTags" value="passport" />
+	
+	          <#assign passname = "passport"+passFileCount />
+	          <#if passportFiles.get(passname)?exists > 
+	          <#assign pass = passportFiles.get(passname)/>
+	          <#if pass?exists>
+	             <label for="passportsUploadedFile"/>&nbsp;</label>
+	             <div id="passportsUploadedFile"><a href='${request.contextPath}${pass.bookmark.url!}'>${pass.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}&path=${pass.bookmark.bookmarkedId}">x</a></#if></div>
+	          </#if> 
+	          </#if>
+	          
+	          <#assign passFileCount = passFileCount +1>
         </div>
+
+        
+
+
+
+
+
+
 
 
 		</#list>

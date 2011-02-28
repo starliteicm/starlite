@@ -36,7 +36,7 @@ import com.opensymphony.xwork2.Preparable;
 	@Result(name="redirect", type=ServletRedirectResult.class, value="store!edit.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}"),
 	@Result(name="redirect-list", type=ServletRedirectResult.class, value="store.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
 })
-public class StoreAction extends ActionSupport implements UserAware, Preparable {
+public class StoreCompAction extends ActionSupport implements UserAware, Preparable {
 	/**
 	 * 
 	 */
@@ -66,18 +66,11 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	public String execute() throws Exception {
 		stores = manager.getStores();
 		prepareTabs();
-		createTable();
+		viewStoreComponents();
 		return SUCCESS;
 	}
 
-	public String deactive() throws Exception {
-		tab = "deactive";
-		prepareTabs();
-		stores = manager.getStoresDeactivated();
-		createTable();
-		return SUCCESS;
-	}
-
+	
 	private void prepareTabs() {
 
 		Tab activeTab = new Tab("Active", "store.action", tab.equals("active"));
@@ -126,72 +119,7 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		return "redirect-list";
     	
     }
-    public String storeAdd()
-    {
-    	prepare();
-		prepareTabs();
-
-		tab = "storeAdd";
-
-		if((store != null) && (tab.compareToIgnoreCase("storeViewComponents")!= 0))
-		{
-
-			components = manager.getComponents(store.getLocation());
-
-			TableFacade tableFacade = createComponentTable();
-
-			Limit limit = tableFacade.getLimit();
-			if (limit.isExported()) {
-				tableFacade.render();
-				return null;
-			} 
-			tableFacade.setView(new SearchTableView());
-			componentTable = tableFacade.render();
-			params = "id="+store.getId();
-			return "edit";
-		}
-		return "redirect-list";
-    }
-	public String edit()
-	{
-		prepare();
-		prepareTabs();
-		
-		
-		tab = "storeEdit";
-		
-		
-		if ((store != null) && (tab.compareToIgnoreCase("storeViewComponents")!= 0))
-		{
-
-			components = manager.getComponents(store.getLocation());
-
-			TableFacade tableFacade = createComponentTable();
-
-			Limit limit = tableFacade.getLimit();
-			if (limit.isExported()) {
-				tableFacade.render();
-				return null;
-			} 
-			tableFacade.setView(new SearchTableView());
-			componentTable = tableFacade.render();
-			params = "id="+store.getId();
-			return "edit";
-		}
-		return "redirect-list";
-	}
-
-	public String save(){
-		if((store != null)&&(tab.compareToIgnoreCase("storeViewComponents") != 0))
-		{
-			manager.saveStore(store);
-			notificationMessage = "Store saved";
-			errorMessage = "";
-		}
-		return "redirect";
-	}
-
-
+ 
 	public void setUser(User arg0) {
 		user = arg0;	
 	}
@@ -200,39 +128,6 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 		return user;
 	}
 
-	public void createTable(){
-		TableFacade tableFacade = TableFacadeFactory.createTableFacade("storeTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("location","code", "seccode", "type", "description");
-
-		tableFacade.setItems(stores);
-		tableFacade.setMaxRows(100);
-		Table table = tableFacade.getTable();
-		table.getRow().setUniqueProperty("id");
-
-		Column secCol = table.getRow().getColumn("seccode");
-		secCol.setTitle("Seconday Identifier");
-
-		Column codeCol = table.getRow().getColumn("code");
-		codeCol.setTitle("Primary Identifier");
-
-		Column refCol = table.getRow().getColumn("location");
-		refCol.setTitle("Code");
-		refCol.getCellRenderer().setCellEditor(new CellEditor() {
-
-			public Object getValue(Object item, String property, int rowCount) {
-				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
-				Object value = new BasicCellEditor().getValue(item, property, rowCount);
-				HtmlBuilder html = new HtmlBuilder();
-				html.a().href().quote().append("storeComp!viewStoreComponents.action?id="+id).quote().close();
-				html.append(value);
-				html.aEnd();
-				return html.toString();
-			}
-
-		});
-		tableFacade.setView(new PlainTableView());
-		tableHtml = tableFacade.render();
-	}
 
 	public TableFacade createComponentTable(){    			
 

@@ -6,6 +6,8 @@
   <@enableDatePickers/>
   <@enableCalculator/>
   <@enableHelp/>  
+  
+
 <style type="text/css">
 
 .star{
@@ -18,7 +20,31 @@
        padding:5px;
        text-align:center;       
      }
-          
+       
+select.small
+{
+margin-left:0px;
+margin-right:0px;
+height:23px;
+width: 50px; 
+}   
+select.medium
+{
+margin-left:0px;
+margin-right:0px;
+height:23px;
+width: 77px; 
+}  
+
+input.medium
+{
+margin-left:0px;
+margin-right:0px;
+height:17px;
+width: 74px; 
+}  
+
+ 
 </style>
 
 
@@ -179,21 +205,24 @@ $("document").ready(function() {
 					<option value="Pilot" <#if crewMember.role.position?if_exists == "Pilot">selected</#if>>Pilot
 					<option value="AME" <#if crewMember.role.position?if_exists == "AME">selected</#if>>AME
 					<option value="Base Manager" <#if crewMember.role.position?if_exists == "Base Manager">selected</#if>>Base Manager
+					<option value="Ops Admin" <#if crewMember.role.position?if_exists == "Ops Admin">selected</#if>>Ops Admin
+					<option value="Systems Operator" <#if crewMember.role.position?if_exists == "Systems Operator">selected</#if>>Systems Operator
+					
 				</select>
 			
 			</div>
 			<div class="fm-opt">
-			<label for="role.subPosition">Position Subcategory:</label>				
-            <input name="role.subPostition" type="text" value="${role.subPostition!}" /> 
-            </div>
+			<label for="crewMember.role.subPosition">Position Subcategory:</label>	
+				<input type="text" name="crewMember.role.subPosition" value="${crewMember.role.subPosition!}"/>
+			</div>
             								
 			<div class="fm-opt">
 				<label for="crewMember.role.initialDate">Initial Date:</label>
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
-                <label for="crewMember.role.exDate">Review Date:</label>
-                <input name="crewMember.role.exDate" type="text" class="date-pick" value="<#if crewMember.role.exDate??>${crewMember.role.exDate?string('dd/MM/yyyy')}</#if>"/>
+                <label style="text" for="crewMember.role.reviewDate">Review Date:</label>
+                <input name="crewMember.role.reviewDate" type="text" class="date-pick" value="<#if crewMember.role.reviewDate??>${crewMember.role.reviewDate?string('dd/MM/yyyy')}</#if>"/>
             </div>
 			<div class="fm-opt">
 				<label for="crewMember.role.employment"><span class="star">*</span>Employment Status:</label>
@@ -282,38 +311,94 @@ $("document").ready(function() {
 	    </#if>
         
        <#if crewMember.role.position?if_exists == "Pilot">
+       
+       <input type="hidden" id="crewMember.role.instructor.number" value=${crewMember.role.instructor.number!}>
        <fieldset>
 		<legend>Ratings (Pilots only)</legend>
-		 <div class="fm-opt">
-				<label for="crewMember.role.instructor.number">Instructor Rated:</label>
-				<input name="crewMember.role.instructor.number" type="checkbox"  value="yes" onclick='instructor();return true;'  <#if crewMember.role.instructor.number?if_exists == "yes" >checked</#if> />
+		 	 <div class="fm-opt">
+				<label for="crewMember.role.instructor.number">Instructor:</label>
+				<select class="small" name="crewMember.role.instructor.number">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.instructor.number>	  
+	    		   	<option SELECTED onclick='instructor();return true;' >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.instructor.number>
+	    		    <option onclick='instructor();return true;'>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+	    		
 			</div>
-			
 			<#if crewMember.role.instructor.number?if_exists == "yes" >
 			<div id="instructorExtra" >
 			<#else>
 			<div id="instructorExtra" style="display:none;">
 			</#if>	
-				<div class="fm-opt">
-				<label for="crewMember.role.instructor.type">Instructor for AC Type:</label>
-					<select name="crewMember.role.instructor.type">
-			    	<option>
-					<#list aircraftTypes?if_exists as aircraftType>
-						<option <#if crewMember.role.instructor.type?if_exists == (aircraftType.name)>selected</#if> >${aircraftType.name!}
-					</#list>
-				</select>
-			</div>
+				
             <div class="fm-opt">
-				<label for="crewMember.role.instructor.quantity">Instructor Grade:</label>
-				<select name="crewMember.role.instructor.quantity" >
+				<label for="crewMember.role.instructor.quantity">Grade:</label>
+				<select class="medium" name="crewMember.role.instructor.quantity" >
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 1">selected</#if>>Grade 1
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 2">selected</#if>>Grade 2
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
+					<option <#if crewMember.role.instructor.quantity?if_exists == "DFE">selected</#if>>DFE
 				</select>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.role.r2.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r2.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r2.expiryDate??>${crewMember.role.r2.expiryDate?string('dd/MM/yyyy')}</#if>" />
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.instructor.typeS92">Instructor Aircraft Type:</label>
+				<br />
+		    </div>
+		    <div class="fm-opt">
+				<label for="crewMember.role.instructor.typeS92">S92:</label>
+				<select class="small" name="crewMember.role.instructor.typeS92">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.instructor.typeS92>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.instructor.typeS92>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.instructor.typeS330J">S330J:</label>
+				<select class="small" name="crewMember.role.instructor.typeS330J">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.instructor.typeS330J>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.instructor.typeS330J>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>		
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.instructor.typeB407">B407:</label>
+				<select class="small" name="crewMember.role.instructor.typeB407">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.instructor.typeB407>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.instructor.typeB407>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>		
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.role.instructor.typeOther">Other:</label>
+				<#if crewMember.role.instructor.typeOther??>
+				<input class="medium" type="text" name="crewMember.role.instructor.typeOther" value="${crewMember.role.instructor.typeOther!}"/>
+				<#else>
+				<input class="medium" type="text" name="crewMember.role.instructor.typeOther" value=""/>
+				</#if>
+				
 			</div>
 			</div>
 			
@@ -424,6 +509,27 @@ $("document").ready(function() {
 
 		<div style="float:left; width: 500px;">	                               
         <#if crewMember.role.position?if_exists == "Pilot">   
+        
+        <fieldset>
+            <legend>
+            Pilot Experience 
+            </legend>
+		<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+		 
+	    <#if user.hasPermission("UserAdmin")>
+                <label for="flighthoursFile">Upload:</label>
+                <input id="flighthoursFile" name="flighthoursFile" value="" type="file" />
+                <input name="flighthoursTags" value="flighthours" type="hidden" />
+                <img class="tooltip" title="<h2>Document Upload</h2>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+              
+                <#if flighthours?exists>
+                  <label for="flighthoursFile"/>&nbsp;</label>
+                  <div id="flighthoursFile"><a href='${request.contextPath}${flighthours.bookmark.url!}'>${flighthours.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${flighthours.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[delete]</a></#if></div>
+                  <h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?path=${bookmark.bookmarkedId}">Delete</a></#if></h3>
+                </#if>
+        </#if>        
+            </div>
+		 </fieldset>
         
 
 		<fieldset>

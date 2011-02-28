@@ -67,7 +67,12 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	public String returnUrl;
 	public String shallReturn;
 	
-	public String upload() throws Exception {
+	public String upload() throws Exception 
+	{
+		boolean pass = true;
+		try{
+			
+		
 		LOG.info(tags+" "+folder+" "+shallReturn);
 		String[] tagsArray = tags.split(" ");
 		
@@ -79,11 +84,21 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 		doc.setBookmark(b);
 		
 		documentManager.createDocument(doc, folder, new FileInputStream(document), user);
+		}
+		catch(Exception ex)
+		{
+			this.errorMessage="Unable to upload document. Possible Reason: "+ex.getMessage().toString();
+			pass = false;
+			return ERROR;
+		}
+		if (pass)
+		{
 		if (returnUrl != null)
 			return "redirect";
 		else if (shallReturn != null) {
 			returnUrl = ServletActionContext.getRequest().getHeader("referer");
 			return "redirect";
+		}
 		}
 		return execute();
 	}

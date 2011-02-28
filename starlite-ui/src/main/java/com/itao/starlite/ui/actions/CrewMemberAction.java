@@ -80,7 +80,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String switch_role_to = "";//used to store temporary role switch to drive different form
 	public String tagArray = "[]";
 	private User user;
-	public Role role;
+	//public Role role;
+	
+	public ArrayList<String> YNOption = new ArrayList<String> ();
 	
 	public String docfolder;
 	public File document;
@@ -173,6 +175,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	@Override
 	public String execute() throws Exception {
 		//crewMember = manager.getCrewMember(id);
+		prepare();
 		if (!user.hasPermission("ManagerView") && !user.getUsername().equalsIgnoreCase(id))
 			return "";
 		breadcrumbs = Breadcrumb.toArray(
@@ -208,6 +211,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				 }
 				 count++;
 			}
+			
 			
 			return SUCCESS;
 		}
@@ -1166,12 +1170,19 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public void prepare() throws Exception
 /*-----------------------------------------------------*/	
 	{
+		this.YNOption = new ArrayList<String>();
+		this.YNOption.add("yes");
+		this.YNOption.add("no");
+		
 		if (id == null) {
 			crewMember = new CrewMember();
-			this.role = new Role();
+		//	this.role = new Role();
 		} else {
 			crewMember = manager.getCrewMemberByCode(id);
-			this.role = crewMember.getRole();
+			
+			//this.role = crewMember.getRole();
+			
+			
 			if (switch_role_to!="") {
 				crewMember.getRole().setPosition(switch_role_to);
 			}

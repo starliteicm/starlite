@@ -317,6 +317,7 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 	public boolean prepareAdd = true;
 	public String errorMessage = null;
 	public CrewMember createdCrewMember;
+	
 
 	@Permissions("UserAdmin")
 	public String addCrewMember() {

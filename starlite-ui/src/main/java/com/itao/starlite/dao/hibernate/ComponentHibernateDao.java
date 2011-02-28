@@ -14,27 +14,41 @@ import com.itao.starlite.model.Component.ComponentLocation;
 public class ComponentHibernateDao extends GenericHibernateDao<Component, Integer> implements ComponentDao {
 
 	@SuppressWarnings("unchecked")
-	public List<Component> findByLocation(String location){
-		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c "+
-				"LEFT JOIN c.locations cl where cl.location = ? order by c.name,c.number")
-		.setString(0, location).list();
+	public List<Component> findByLocation(String location)
+	{
+		//Used by Stores Tab
+		//Only get back the C and E components
+		//List<Component> storesCompList = new ArrayList();
 		
-		for(Component c : components){
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select distinct c from Component c "+
+				"LEFT JOIN c.locations cl where cl.location in (?,?) and c.type=? order by c.name,c.number")
+		.setString(0, location).setString(1,"Class C").setParameter(2, "Class E").list();
+		
+		for(Component c : components)
+		{
 			c.location = location;
 		}
+		
+		
 		
 		return components;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Component> findActive() {
+	public List<Component> findTransactionComponents() {
 		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =1 order by c.name,c.number").list();
 		return components;
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<Component> findActive() {
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =1 and c.type = ? order by c.name,c.number").setParameter(0,"Class A").list();
+		return components;
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<Component> findDeactive() {
-		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =0 order by c.name,c.number").list();
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select c from Component c where c.active =0 and c.type = ? order by c.name,c.number").setParameter(0,"Class A").list();
 		return components;
 	}
 
