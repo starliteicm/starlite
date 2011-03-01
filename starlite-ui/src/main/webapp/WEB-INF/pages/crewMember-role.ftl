@@ -26,14 +26,14 @@ select.small
 margin-left:0px;
 margin-right:0px;
 height:23px;
-width: 50px; 
+width: 120px; 
 }   
 select.medium
 {
 margin-left:0px;
 margin-right:0px;
 height:23px;
-width: 77px; 
+width: 120px; 
 }  
 
 input.medium
@@ -41,7 +41,7 @@ input.medium
 margin-left:0px;
 margin-right:0px;
 height:17px;
-width: 74px; 
+width: 120px; 
 }  
 
  
@@ -145,13 +145,36 @@ $("document").ready(function() {
       }                          
    }
    
-   function instructor(){
+   function instructor()
+   {
      $("#instructorExtra").toggle();
-     if($("#instructorExtra").css("display") == "none"){
-      //blank out fields
-      $("#licenceexpiry").val("")
-     }
+     if($("#instructorExtra").css("display") == "none")
+         {
+         //blank out fields
+         $("#licenceexpiry").val("")
+         }
    }
+   function englishTest(number)
+   {
+     if (number==6)
+     {
+     $("#englishTestExtra").toggle();
+     if($("#englishTestExtra").css("display") == "none")
+	       {
+	        //blank out fields
+	        $("#englishTestExtraExpiry").val("")
+	       }
+     }
+     else
+     {
+     if($("#englishTestExtra").css("display") == "none")
+     {
+     $("#englishTestExtra").toggle();
+     }
+     }
+      
+	      
+    }
 </script>
 
 </head>
@@ -221,7 +244,7 @@ $("document").ready(function() {
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
 			<div class="fm-opt">
-                <label style="text" for="crewMember.role.reviewDate">Review Date:</label>
+                <label for="crewMember.role.reviewDate">Review Date:</label>
                 <input name="crewMember.role.reviewDate" type="text" class="date-pick" value="<#if crewMember.role.reviewDate??>${crewMember.role.reviewDate?string('dd/MM/yyyy')}</#if>"/>
             </div>
 			<div class="fm-opt">
@@ -316,7 +339,7 @@ $("document").ready(function() {
        <fieldset>
 		<legend>Ratings (Pilots only)</legend>
 		 	 <div class="fm-opt">
-				<label for="crewMember.role.instructor.number">Instructor:</label>
+				<label for="crewMember.role.instructor.number"><u>Instructor:</u></label>
 				<select class="small" name="crewMember.role.instructor.number">
 	    		   <#list YNOption as option >
 	    			<#if option == crewMember.role.instructor.number>	  
@@ -337,23 +360,22 @@ $("document").ready(function() {
 				
             <div class="fm-opt">
 				<label for="crewMember.role.instructor.quantity">Grade:</label>
-				<select class="medium" name="crewMember.role.instructor.quantity" >
+     			<select  class="medium" name="crewMember.role.instructor.quantity" >
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 1">selected</#if>>Grade 1
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 2">selected</#if>>Grade 2
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 3">selected</#if>>Grade 3
 					<option <#if crewMember.role.instructor.quantity?if_exists == "DFE">selected</#if>>DFE
 				</select>
-			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.r2.expiryDate"><span class="star">*</span>Expiry Date:</label>
+		   </div>
+		   <div class="fm-opt">
+				<label  for="crewMember.role.r2.expiryDate"><span class="star">*</span>Expiry Date:</label>
 				<input name="crewMember.role.r2.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r2.expiryDate??>${crewMember.role.r2.expiryDate?string('dd/MM/yyyy')}</#if>" />
-			</div>
-			<div class="fm-opt">
+		   </div>
+		   <div class="fm-opt">
 				<label for="crewMember.role.instructor.typeS92">Instructor Aircraft Type:</label>
-				<br />
-		    </div>
+			<br/>	
 		    <div class="fm-opt">
-				<label for="crewMember.role.instructor.typeS92">S92:</label>
+				<label  for="crewMember.role.instructor.typeS92">S92:</label>
 				<select class="small" name="crewMember.role.instructor.typeS92">
 	    		   <#list YNOption as option >
 	    			<#if option == crewMember.role.instructor.typeS92>	  
@@ -366,7 +388,7 @@ $("document").ready(function() {
 	    		</select>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.instructor.typeS330J">S330J:</label>
+				<label  for="crewMember.role.instructor.typeS330J">S330J:</label>
 				<select class="small" name="crewMember.role.instructor.typeS330J">
 	    		   <#list YNOption as option >
 	    			<#if option == crewMember.role.instructor.typeS330J>	  
@@ -377,7 +399,7 @@ $("document").ready(function() {
 	    		    </#if>
 	    		   </#list>
 	    		</select>		
-			</div>
+	    	</div>	
 			<div class="fm-opt">
 				<label for="crewMember.role.instructor.typeB407">B407:</label>
 				<select class="small" name="crewMember.role.instructor.typeB407">
@@ -392,56 +414,159 @@ $("document").ready(function() {
 	    		</select>		
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.instructor.typeOther">Other:</label>
+				<label  for="crewMember.role.instructor.typeOther">Other:</label>
 				<#if crewMember.role.instructor.typeOther??>
-				<input class="medium" type="text" name="crewMember.role.instructor.typeOther" value="${crewMember.role.instructor.typeOther!}"/>
+				<input  class="medium" type="text" name="crewMember.role.instructor.typeOther" value="${crewMember.role.instructor.typeOther!}"/>
 				<#else>
-				<input class="medium" type="text" name="crewMember.role.instructor.typeOther" value=""/>
+				<input  class="medium" type="text" name="crewMember.role.instructor.typeOther" value=""/>
 				</#if>
+			</div>
 				
 			</div>
 			</div>
+			<div class="fm-opt">
+				<label  for="crewMember.role.instrument"><u>Instrument:</u></label>
+				<select class="small" name="crewMember.role.instrument">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.instrument>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.instrument>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>
+            <div class="fm-opt">
+                <label for="crewMember.role.ifr.expiryDate">Expiry Date:</label>
+                <input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+            </div>
+            <div class="fm-opt">
+                <label for="crewMember.role.ifr.hours">Hours:</label>
+                <input class="medium" name="crewMember.role.ifr.hours" type="text"  value="${crewMember.role.ifr.hours!}"/>
+            </div>
 			
+			<div class="fm-opt">
+				<label  for="crewMember.role.testPilot"><u>Test Pilot:</u></label>
+				<select class="small" name="crewMember.role.testPilot">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.testPilot>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.testPilot>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>
+			<div class="fm-opt">
+            <label for="crewMember.role.testPilotClass">&nbsp;</label>
+     			<select  class="medium" name="crewMember.role.testPilotClass" >
+					<option <#if crewMember.role.testPilotClass?if_exists == "Class 1">selected</#if>>Class 1
+					<option <#if crewMember.role.testPilotClass?if_exists == "Class 2">selected</#if>>Class 2
+					<option <#if crewMember.role.testPilotClass?if_exists == "Class 3">selected</#if>>Class 3
+
+				</select>
+			</div>
+			<div class="fm-opt">
+				<label  for="crewMember.role.englishTest"><u>English Test:</u></label>
+				<select  class="medium" name="crewMember.role.englishTest" >
+					<option onclick='englishTest(1);return true;' <#if crewMember.role.englishTest?if_exists == "Level 1">selected</#if>>Level 1
+					<option onclick='englishTest(2);return true;' <#if crewMember.role.englishTest?if_exists == "Level 2">selected</#if>>Level 2
+					<option onclick='englishTest(3);return true;' <#if crewMember.role.englishTest?if_exists == "Level 3">selected</#if>>Level 3
+					<option onclick='englishTest(4);return true;' <#if crewMember.role.englishTest?if_exists == "Level 4">selected</#if>>Level 4
+					<option onclick='englishTest(5);return true;' <#if crewMember.role.englishTest?if_exists == "Level 5">selected</#if>>Level 5
+					<option onclick='englishTest(6);return true;' <#if crewMember.role.englishTest?if_exists == "Level 6">selected</#if>>Level 6
+				</select>
+			</div>
+			<#if crewMember.role.englishTest?if_exists != "Level 6" >
+			<div id="englishTestExtra" >
+			<#else>
+			<div id="englishTestExtra" style="display:none;">
+			</#if>	
+			<div class="fm-opt">
+                <label id="englishTestExtraExpiry" for="crewMember.role.ets.expiryDate">Expiry Date:</label>
+                <input id="englishTestExtraExpiry" name="crewMember.role.ets.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ets.expiryDate??>${crewMember.role.ets.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+            </div>
+			</div>		
+			<div class="fm-opt">
+				
+			<label  for="crewMember.role.night"><u>Night:</u></label>
 			
-			<div class="fm-opt">
-				<label for="crewMember.role.night">Night Rated:</label>
-				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
+				<select class="small" name="crewMember.role.night">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.night>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.night>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+	    		<img class="tooltip" title="<div style='text-align:left'>The pilot concerned shall during the ninety days immediately preceding the intended flight have- <br/><b>i.</b> Executed, by night not less than 3 circuits (incl. take-offs and landings); or<br/><b>ii.</b> Passed the appropriate skill test or proficiency check prescribed in Part 61 for the helicopter night rating in the type of helicopter in which the intended flight is to be undergone.</div>" style="cursor:help;position:relative;margin-right:50;" src="images/icons/info.png"/>
+	         </div>
+			 <div class="fm-opt">				
+				<label  for="crewMember.role.game">Game Rated:</label>
+				<select class="small" name="crewMember.role.game">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.game>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.game>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>	
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.game">Game Rated:</label>
-				<input name="crewMember.role.game" type="checkbox"  value="yes"  <#if crewMember.role.game?if_exists == "yes" >checked</#if> />
-			</div>			
+				<label  for="crewMember.role.nvg">NVG Rated:</label>
+				<select class="small" name="crewMember.role.nvg">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.nvg>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.nvg>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>	
 			<div class="fm-opt">
-				<label for="crewMember.role.nvg">NVG Rated:</label>
-				<input name="crewMember.role.nvg" type="checkbox"  value="yes"  <#if crewMember.role.nvg?if_exists == "yes" >checked</#if> />
-			</div>
+				<label  for="crewMember.role.sling">Undersling Rated:</label>
+				<select class="small" name="crewMember.role.sling">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.sling>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.sling>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>	
+  	        
 			<div class="fm-opt">
-				<label for="crewMember.role.sling">Undersling Rated:</label>
-				<input name="crewMember.role.sling" type="checkbox"  value="yes"  <#if crewMember.role.sling?if_exists == "yes" >checked</#if> />
-			</div>			
-  	        <div class="fm-opt">
-				<label for="crewMember.role.test.number">Test Rated:</label>
-				<input name="crewMember.role.test.number" type="checkbox"  value="yes"  <#if crewMember.role.test.number?if_exists == "yes" >checked</#if> />
-			</div>
+				<label  for="crewMember.role.test.number">Test Rated:</label>
+				<select class="small" name="crewMember.role.test.number">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.test.number>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.test.number>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>	
 			<div class="fm-opt">
 				<label for="crewMember.role.test.type">Test Grade:</label>
-				<select name="crewMember.role.test.type" >
+				<select class="medium" name="crewMember.role.test.type" >
 					<option <#if crewMember.role.test.type?if_exists == "Grade 1">selected</#if>>Grade 1
 					<option <#if crewMember.role.test.type?if_exists == "Grade 2">selected</#if>>Grade 2
 				</select>
 			</div>
-  	        <div class="fm-opt">
-				<label for="crewMember.role">Instrument Rated:</label>
-				<#if crewMember.role.instrument?exists  >
-				  <input name="crewMember.role.instrument" type="checkbox"  value="1" />
-				<#else>
-				  <input name="crewMember.role.instrument" type="checkbox" CHECKED value="1" />
-				</#if>
-			</div>	
-            <div class="fm-opt">
-                <label for="crewMember.role.ifr.expiryDate">Instrument Rated Expiry:</label>
-                <input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
-            </div>
+  	        
+			
     </fieldset>
 	</#if>
     <#if crewMember.role.position?if_exists == "Pilot">
@@ -520,7 +645,7 @@ $("document").ready(function() {
                 <label for="flighthoursFile">Upload:</label>
                 <input id="flighthoursFile" name="flighthoursFile" value="" type="file" />
                 <input name="flighthoursTags" value="flighthours" type="hidden" />
-                <img class="tooltip" title="<h2>Document Upload</h2>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+                <img class="tooltip" title="<b>Document Upload</b>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
               
                 <#if flighthours?exists>
                   <label for="flighthoursFile"/>&nbsp;</label>

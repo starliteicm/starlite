@@ -753,24 +753,47 @@ public class CrewMember implements Cloneable, Comparable {
 		@Temporal(TemporalType.DATE)
 		private Date reviewDate;
 		
+		
+		
 		private Certificate r1 = new Certificate();
 		private Certificate r2 = new Certificate();
 		private Certificate crm = new Certificate();
 		private Certificate dg = new Certificate();
 		private Certificate ifr = new Certificate();
+		private Certificate ets = new Certificate();
 		private Certificate instructor = new Certificate();
 		private Certificate test = new Certificate();
 		private Certificate huet = new Certificate();		
 		
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String nvg;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String sling;
-		private String game;		
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String game;	
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String instrument;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String testPilot;
+		@Column(nullable = true, columnDefinition="varchar(255) default ' '")
+		private String testPilotClass;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'Level 1'")
+		private String englishTest;
 		
 		@CollectionOfElements(fetch=FetchType.LAZY)
 		@Fetch(FetchMode.SUBSELECT)
 		@IndexColumn(name="position")
 		private List<Certificate> conversions = new LinkedList<Certificate>();
+
+		public String getInstrument() {
+			return instrument;
+		}
+
+		public void setInstrument(String instrument) {
+			this.instrument = instrument;
+		}
 
 		public void setEmployment(String employment) {
 			this.employment = employment;
@@ -841,6 +864,30 @@ public class CrewMember implements Cloneable, Comparable {
 			this.reviewDate = reviewDate;
 		}
 
+		public String getTestPilot() {
+			return testPilot;
+		}
+
+		public void setTestPilot(String testPilot) {
+			this.testPilot = testPilot;
+		}
+
+		public String getTestPilotClass() {
+			return testPilotClass;
+		}
+
+		public void setTestPilotClass(String testPilotClass) {
+			this.testPilotClass = testPilotClass;
+		}
+
+		public String getEnglishTest() {
+			return englishTest;
+		}
+
+		public void setEnglishTest(String englishTest) {
+			this.englishTest = englishTest;
+		}
+
 		public Certificate getR1() {
 			if (r1 == null)
 				r1 = new Certificate();
@@ -887,6 +934,14 @@ public class CrewMember implements Cloneable, Comparable {
 			if (huet == null)
 				huet = new Certificate();
 			return huet;
+		}
+
+		public Certificate getEts() {
+			return ets;
+		}
+
+		public void setEts(Certificate ets) {
+			this.ets = ets;
 		}
 
 		public synchronized List<Certificate> getConversions() {
