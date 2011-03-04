@@ -561,6 +561,22 @@ public class StarliteCoreManager {
 		}
 		return perm;
 	}
+	public List<String> getAllActivePilots() {
+		List<CrewMember> all = getAllCrew();
+		List<String> perm = new ArrayList<String>();
+		for(CrewMember c : all){
+			if("Permanent".equals(c.getRole().getEmployment()) || "Freelance".equals(c.getRole().getEmployment()))
+			{
+				String position = c.getRole().getPosition();
+				position = position.toUpperCase();
+				if (position.contains("PILOT"))
+				{
+				perm.add(c.getPersonal().getFullName());
+				}
+			}
+		}
+		return perm;
+	}
 	
 	@Transactional
 	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
@@ -656,6 +672,13 @@ public class StarliteCoreManager {
 	public List<Component> getComponents(String location) {
 		return componentDao.findByLocation(location);
 	}
+	public List<Component> getAllClassComponents(String location) {
+		return componentDao.findAllClassesByLocation(location);
+	}
+	public List<Component> getComponentsClassA(String location) {
+		return componentDao.findByLocationClassA(location);
+	}
+	
 	
 	public Component getComponent(String _class, String _part, String _serial)
 	{

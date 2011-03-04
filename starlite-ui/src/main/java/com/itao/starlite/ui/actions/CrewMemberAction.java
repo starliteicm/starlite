@@ -172,9 +172,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
 	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 	
+	public List<String> pilots = new ArrayList<String>();
 	@Override
 	public String execute() throws Exception {
 		//crewMember = manager.getCrewMember(id);
+		pilots = manager.getAllActivePilots();
 		prepare();
 		if (!user.hasPermission("ManagerView") && !user.getUsername().equalsIgnoreCase(id))
 			return "";
@@ -414,7 +416,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		    to.setSeconds(59);
 			
 			if(from.before(to)){
-				while(!to.after(cal.getTime())){
+				//while(!to.after(cal.getTime())){
+				while(to.after(cal.getTime())){
 					
 					String date = mysqlFormat.format(cal.getTime());
 					CrewDay cd = null;

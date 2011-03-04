@@ -156,8 +156,8 @@
 		    
 		    <div class="fm-opt">
 		    <label for="dateFrom">Date Range:</label>
-		    <input name="dateFrom" type="text" class="date-pick" value=""/>
-            <input name="dateTo" type="text" class="date-pick" value=""/>
+		    <input name="dateFrom" type="text" class="date-pick" value="${dateFrom!}"/>
+            <input name="dateTo" type="text" class="date-pick" value="${dateTo!}"/>
             </div>
             
             <div class="fm-opt">

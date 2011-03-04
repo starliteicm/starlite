@@ -21,8 +21,45 @@ public class ComponentHibernateDao extends GenericHibernateDao<Component, Intege
 		//List<Component> storesCompList = new ArrayList();
 		
 		List<Component> components = (List<Component>) getCurrentSession().createQuery("select distinct c from Component c "+
-				"LEFT JOIN c.locations cl where cl.location in (?,?) and c.type=? order by c.name,c.number")
+				"LEFT JOIN c.locations cl where cl.location = ? and c.type in (?,?) order by c.name,c.number")
 		.setString(0, location).setString(1,"Class C").setParameter(2, "Class E").list();
+		
+		for(Component c : components)
+		{
+			c.location = location;
+		}
+		
+		
+		
+		return components;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Component> findAllClassesByLocation(String location) 
+	{
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select distinct c from Component c "+
+		        "LEFT JOIN c.locations cl where cl.location = ? order by c.name,c.number")
+            .setString(0, location).list();
+
+			for(Component c : components)
+			{
+				c.location = location;
+			}
+			return components;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Component> findByLocationClassA(String location)
+	{
+		//Used by Stores Tab
+		//Only get back the C and E components
+		//List<Component> storesCompList = new ArrayList();
+		
+		List<Component> components = (List<Component>) getCurrentSession().createQuery("select distinct c from Component c "+
+				"LEFT JOIN c.locations cl where cl.location = ? and c.type=? order by c.name,c.number")
+		.setString(0, location).setString(1,"Class A").list();
 		
 		for(Component c : components)
 		{
@@ -106,5 +143,6 @@ public class ComponentHibernateDao extends GenericHibernateDao<Component, Intege
 	*/	
 		 return component;
 	}
+
 
 }

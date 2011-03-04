@@ -102,8 +102,16 @@ public class StoreCompAction extends ActionSupport implements UserAware, Prepara
     	
     	if(store != null){
 
+    		
+    		if (store.getType().equalsIgnoreCase("STORE"))
+    		{
 			components = manager.getComponents(store.getLocation());
-
+    		}
+    		else
+    		{
+    			components = manager.getAllClassComponents(store.getLocation());
+    		}
+    		
 			TableFacade tableFacade = createComponentTable();
 
 			Limit limit = tableFacade.getLimit();

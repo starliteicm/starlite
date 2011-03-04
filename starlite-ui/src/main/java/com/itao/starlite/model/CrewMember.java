@@ -767,12 +767,41 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
+		private Double nightHours;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String nvg;
+		private Double nvgHours;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String sling;
+		private Double underslingHours;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String game;	
+		private Double gameHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String bannerTowing;	
+		private Double bannerTowingHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String fireFighting;	
+		private Double fireFightingHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String flir;	
+		private Double flirHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String fries;	
+		private Double friesHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String hems;	
+		private Double hemsHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String mountain;	
+		private Double mountainHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String offshore;	
+		private Double offshoreHours;
+		private String offshoreCaptain;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String powerline;	
+		private Double powerlineHours;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String instrument;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
@@ -1117,6 +1146,207 @@ public class CrewMember implements Cloneable, Comparable {
 
 		public String getGame() {
 			return game;
+		}
+
+		public Double getNightHours() {
+			return nightHours;
+		}
+
+		public void setNightHours(Double nightHours) {
+			this.nightHours = nightHours;
+		}
+
+		public Double getNvgHours() {
+			return nvgHours;
+		}
+
+		public void setNvgHours(Double nvgHours) {
+			this.nvgHours = nvgHours;
+		}
+
+		public Double getUnderslingHours() {
+			return underslingHours;
+		}
+
+		public void setUnderslingHours(Double underslingHours) {
+			this.underslingHours = underslingHours;
+		}
+
+		public Double getGameHours() {
+			return gameHours;
+		}
+
+		public void setGameHours(Double gameHours) {
+			this.gameHours = gameHours;
+		}
+
+		public String getBannerTowing() {
+			return bannerTowing;
+		}
+
+		public void setBannerTowing(String bannerTowing) {
+			this.bannerTowing = bannerTowing;
+		}
+
+		public Double getBannerTowingHours() {
+			return bannerTowingHours;
+		}
+
+		public void setBannerTowingHours(Double bannerTowingHours) {
+			this.bannerTowingHours = bannerTowingHours;
+		}
+
+		public String getFireFighting() {
+			return fireFighting;
+		}
+
+		public void setFireFighting(String fireFighting) {
+			this.fireFighting = fireFighting;
+		}
+
+		public Double getFireFightingHours() {
+			return fireFightingHours;
+		}
+
+		public void setFireFightingHours(Double fireFightingHours) {
+			this.fireFightingHours = fireFightingHours;
+		}
+
+		public String getFlir() {
+			return flir;
+		}
+
+		public void setFlir(String flir) {
+			this.flir = flir;
+		}
+
+		public Double getFlirHours() {
+			return flirHours;
+		}
+
+		public void setFlirHours(Double flirHours) {
+			this.flirHours = flirHours;
+		}
+
+		public String getFries() {
+			return fries;
+		}
+
+		public void setFries(String fries) {
+			this.fries = fries;
+		}
+
+		public Double getFriesHours() {
+			return friesHours;
+		}
+
+		public void setFriesHours(Double friesHours) {
+			this.friesHours = friesHours;
+		}
+
+		public String getHems() {
+			return hems;
+		}
+
+		public void setHems(String hems) {
+			this.hems = hems;
+		}
+
+		public Double getHemsHours() {
+			return hemsHours;
+		}
+
+		public void setHemsHours(Double hemsHours) {
+			this.hemsHours = hemsHours;
+		}
+
+		public String getMountain() {
+			return mountain;
+		}
+
+		public void setMountain(String mountain) {
+			this.mountain = mountain;
+		}
+
+		public Double getMountainHours() {
+			return mountainHours;
+		}
+
+		public void setMountainHours(Double mountainHours) {
+			this.mountainHours = mountainHours;
+		}
+
+		public String getOffshore() {
+			return offshore;
+		}
+
+		public void setOffshore(String offshore) {
+			this.offshore = offshore;
+		}
+
+		public Double getOffshoreHours() {
+			return offshoreHours;
+		}
+
+		public void setOffshoreHours(Double offshoreHours) {
+			this.offshoreHours = offshoreHours;
+		}
+
+		public String getOffshoreCaptain() {
+			return offshoreCaptain;
+			
+		}
+
+		public void setOffshoreCaptain(String offshoreCaptain) {
+			this.offshoreCaptain = offshoreCaptain;
+		}
+
+		public String getPowerline() {
+			return powerline;
+		}
+
+		public void setPowerline(String powerline) {
+			this.powerline = powerline;
+		}
+
+		public Double getPowerlineHours() {
+			return powerlineHours;
+		}
+
+		public void setPowerlineHours(Double powerlineHours) {
+			this.powerlineHours = powerlineHours;
+		}
+
+		public void setR1(Certificate r1) {
+			this.r1 = r1;
+		}
+
+		public void setR2(Certificate r2) {
+			this.r2 = r2;
+		}
+
+		public void setCrm(Certificate crm) {
+			this.crm = crm;
+		}
+
+		public void setDg(Certificate dg) {
+			this.dg = dg;
+		}
+
+		public void setIfr(Certificate ifr) {
+			this.ifr = ifr;
+		}
+
+		public void setInstructor(Certificate instructor) {
+			this.instructor = instructor;
+		}
+
+		public void setTest(Certificate test) {
+			this.test = test;
+		}
+
+		public void setHuet(Certificate huet) {
+			this.huet = huet;
 		}
 
 

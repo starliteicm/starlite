@@ -47,7 +47,8 @@ import com.itao.starlite.ui.jmesa.SearchTableView;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
-@Permissions("ManagerView")
+
+
 @Results({
 	@Result(name="redirect", type=ServletRedirectResult.class, value="aircraftInfo.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
 })
@@ -123,7 +124,7 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		tableHtml = "";
 		prepare();
 		prepareTabs();
-		components = manager.getComponents(aircraft.getRef().replaceAll("-", ""));
+		components = manager.getAllClassComponents(aircraft.getRef().replaceAll("-", ""));
 		params = "id="+id;
 		TableFacade tableFacade = createComponentTable();
 
@@ -291,9 +292,6 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 			tableTabs[count] = tab;
 			count++;
 		}		
-	}
-	public void setUser(User arg0) {
-		this.user = arg0;
 	}
 	
 	public TableFacade createComponentTable(){    			
@@ -535,7 +533,14 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		
 		
 	}
-
+	public void setUser(User arg0) {
+		this.user = arg0;
+	}
 	
-	
+	public User getUser() {
+		return user;
+	}
 }
+
+
+

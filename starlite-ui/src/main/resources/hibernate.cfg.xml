@@ -47,8 +47,7 @@
 			<mapping class="com.itao.starlite.model.JobSubTask"/>
 			<mapping class="com.itao.starlite.model.JobTicket"/>
 			<mapping class="com.itao.starlite.model.JobHistory"/>
-		
-            
+						            
             <mapping class="com.itao.starlite.scheduling.model.Allocation"/>
             
             <mapping class="com.itao.starlite.docs.model.Document"/>
