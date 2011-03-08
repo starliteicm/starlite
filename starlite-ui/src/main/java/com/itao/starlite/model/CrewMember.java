@@ -1,5 +1,6 @@
 package com.itao.starlite.model;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -763,7 +764,8 @@ public class CrewMember implements Cloneable, Comparable {
 		private Certificate ets = new Certificate();
 		private Certificate instructor = new Certificate();
 		private Certificate test = new Certificate();
-		private Certificate huet = new Certificate();		
+		private Certificate huet = new Certificate();
+		private Certificate hemsCert = new Certificate();	
 		
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
@@ -880,17 +882,47 @@ public class CrewMember implements Cloneable, Comparable {
 		public Date getExpiryDate() {
 			return expiryDate;
 		}
+		
+		public String getStringExpiryDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			dat = df.format(this.expiryDate);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
 
 		public void setExpiryDate(Date expiryDate) {
 			this.expiryDate = expiryDate;
 		}
 		
-		public Date getReviewDate() {
+		public Date getReviewDate() 
+		{
+					
 			return reviewDate;
 		}
 
-		public void setReviewDate(Date reviewDate) {
+		public void setReviewDate(Date reviewDate) 
+		{
 			this.reviewDate = reviewDate;
+		}
+		public String getStringReviewDate() 
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			dat = df.format(reviewDate);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
 		}
 
 		public String getTestPilot() {
@@ -934,7 +966,7 @@ public class CrewMember implements Cloneable, Comparable {
 				crm = new Certificate();
 			return crm;
 		}
-
+		
 		public Certificate getDg() {
 			if (dg == null)
 				dg = new Certificate();
@@ -963,6 +995,11 @@ public class CrewMember implements Cloneable, Comparable {
 			if (huet == null)
 				huet = new Certificate();
 			return huet;
+		}
+		public Certificate getHemsCert() {
+			if (hemsCert == null)
+				hemsCert = new Certificate();
+			return hemsCert;
 		}
 
 		public Certificate getEts() {

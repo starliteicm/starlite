@@ -1,5 +1,7 @@
 package com.itao.starlite.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -40,10 +42,25 @@ public class Certificate {
 	public Date getExpiryDate() {
 		return expiryDate;
 	}
+	public String getStringExpiryDate() 
+	{
+		String dat = "";
+		try{
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		dat = df.format(this.expiryDate);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return dat;
+	}
 
 	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
+	
+
 
 	public Date getIssueDate() {
 		return issueDate;

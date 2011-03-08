@@ -56,14 +56,17 @@
 		
 		<#assign hide=0/>
 		<#list bookmark.tags as tag>
-		  <#if tag.tag == "CRM"><#assign hide=1/></#if>
-		  <#if tag.tag == "DG"><#assign hide=1/></#if>
-		  <#if tag.tag == "HUET"><#assign hide=1/></#if>
-		  <#if tag.tag == "medical"><#assign hide=1/></#if>
-		  <#if tag.tag == "licence"><#assign hide=1/></#if>
-		  <#if tag.tag == "photo"><#assign hide=1/></#if>
-		  <#if tag.tag == "flighthours"><#assign hide=1/></#if>
-		  <#if tag.tag.indexOf("passport") != -1><#assign hide=1/></#if>
+		  <#if tag.tag == "CRM"><#assign hide=0/></#if>
+		  <#if tag.tag == "DG"><#assign hide=0/></#if>
+		  <#if tag.tag == "HUET"><#assign hide=0/></#if>
+		  <#if tag.tag == "HEMS"><#assign hide=0/></#if>
+		  <#if tag.tag == "additionalCert"><#assign hide=0/></#if>
+		  <#if tag.tag == "${id}"><#assign hide=0/></#if>
+		  <#if tag.tag == "medical"><#assign hide=0/></#if>
+		  <#if tag.tag == "licence"><#assign hide=0/></#if>
+		  <#if tag.tag == "photo"><#assign hide=0/></#if>
+		  <#if tag.tag == "flighthours"><#assign hide=0/></#if>
+		  <#if tag.tag.indexOf("passport") != -1><#assign hide=0/></#if>
 		</#list>
 		
 		<#if hide == 0>

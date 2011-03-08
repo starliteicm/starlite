@@ -115,6 +115,7 @@ $("document").ready(function() {
    validateDate("licenceexpiry", "Licence is expired");
    validateDate("licenceexpiry", "Licence is expired");
    validateDate("huet",          "HUET is expired");
+   validateDate("hemsCert",      "HEMS is expired");
 });    
    
 </script>
@@ -234,18 +235,31 @@ $("document").ready(function() {
 				</select>
 			
 			</div>
+			<#if crewMember.role.position?if_exists != "AME" >
 			<div class="fm-opt">
+			
 			<label for="crewMember.role.subPosition">Position Subcategory:</label>	
-				<input type="text" name="crewMember.role.subPosition" value="${crewMember.role.subPosition!}"/>
+				<input type="text" name="crewMember.role.subPosition" <#if crewMember.role.subPosition = "Fitter" || crewMember.role.subPosition = "Avionician">value=""<#else>value="${crewMember.role.subPosition!}</#if>"/>
 			</div>
+			<#else>
+			<div class="fm-opt">
+			<label for="crewMember.role.subPosition">Position Subcategory:</label>
+			<select name="crewMember.role.subPosition" id="subPosition"/>
+				   	<option value="Fitter" <#if crewMember.role.subPosition?if_exists == "Fitter">selected</#if>>Fitter
+					<option value="Avionician" <#if crewMember.role.subPosition?if_exists == "Avionician">selected</#if>>Avionician
+			</select>
+			</div>
+			</#if>
+            
             								
 			<div class="fm-opt">
 				<label for="crewMember.role.initialDate">Initial Date:</label>
 				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
 			</div>
+			
 			<div class="fm-opt">
-                <label for="crewMember.role.reviewDate">Review Date:</label>
-                <input name="crewMember.role.reviewDate" type="text" class="date-pick" value="<#if crewMember.role.reviewDate??>${crewMember.role.reviewDate?string('dd/MM/yyyy')}</#if>"/>
+                <label for="reviewDate">Review Date:</label>
+                <input name="reviewDate" type="text" class="date-pick" value="<#if crewMember.role.reviewDate??>${crewMember.role.reviewDate?string('dd/MM/yyyy')}<#else>${reviewDate!}</#if>"/>
             </div>
 			<div class="fm-opt">
 				<label for="crewMember.role.employment"><span class="star">*</span>Employment Status:</label>
@@ -293,16 +307,17 @@ $("document").ready(function() {
 				  <option <#if crewMember.role.r1.type?if_exists == "CPL">selected</#if>>      CPL
 				</select>
 			</div>
+<!-- License Expiry Date --> 			
 			<div class="fm-opt">
-				<label for="crewMember.role.r1.expiryDate"><span class="star">*</span>Expiry Date:</label>
-				<input name="crewMember.role.r1.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}</#if>" />
+				<label for="licenseExpiryDate"><span class="star">*</span>Expiry Date:</label>
+				<input name="licenseExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}<#else>${licenseExpiryDate!}</#if>" />
 			    <div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;"></div>
 			    <label for="licenceFile">Upload:</label>
                 <input id="licenceFile" name="licenceFile" value="" type="file" />
                 <input name="licenceTags" value="licence" type="hidden" />
                 <#if licence?exists>
                   <label for="licenceUploadLink"/>&nbsp;</label>
-                  <div id="licenceUploadLink"><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="licenceUploadLink"><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
 			<br/>
@@ -314,22 +329,53 @@ $("document").ready(function() {
        <#-- for AME ratings S92, S330J, 407 and other -->
        <fieldset>
 		<legend>Ratings</legend>
-		 	<div class="fm-opt">
-				<label for="crewMember.role.night">S92:</label>
-				<input name="crewMember.role.night" type="checkbox"  value="yes"  <#if crewMember.role.night?if_exists == "yes" >checked</#if> />
+		 	
+			<div class="fm-opt">
+				<label  for="crewMember.role.night">S92:</label>
+				<select class="small" name="crewMember.role.night">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.night?if_exists>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.night?if_exists>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
 			</div>
+			
 			<div class="fm-opt">
-				<label for="crewMember.role.game">S330J:</label>
-				<input name="crewMember.role.game" type="checkbox"  value="yes"  <#if crewMember.role.game?if_exists == "yes" >checked</#if> />
-			</div>			
+				<label  for="crewMember.role.game">S330J:</label>
+				<select class="small" name="crewMember.role.game">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.game?if_exists>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.game?if_exists>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>		
+			
 			<div class="fm-opt">
-				<label for="crewMember.role.nvg">407:</label>
-				<input name="crewMember.role.nvg" type="checkbox"  value="yes"  <#if crewMember.role.nvg?if_exists == "yes" >checked</#if> />
+				<label  for="crewMember.role.nvg">407:</label>
+				<select class="small" name="crewMember.role.nvg">
+	    		   <#list YNOption as option >
+	    			<#if option == crewMember.role.nvg?if_exists>	  
+	    		   	<option SELECTED >${option}
+	    		    </#if>
+	    		    <#if option != crewMember.role.nvg?if_exists>
+	    		    <option>${option}
+	    		    </#if>
+	    		   </#list>
+	    		</select>
+			</div>	
+			<div class="fm-opt">
+				<label class="small" for="crewMember.role.sling">Other:</label>
+				<input class="small" name="crewMember.role.sling" type="text"  value="${crewMember.role.sling?if_exists}" />
 			</div>
-			<div class="fm-opt">
-				<label for="crewMember.role.sling">Other:</label>
-				<input name="crewMember.role.sling" type="checkbox"  value="yes"  <#if crewMember.role.sling?if_exists == "yes" >checked</#if> />
-			</div>			
+						
         </fieldset>
 	    </#if>
         
@@ -367,9 +413,10 @@ $("document").ready(function() {
 					<option <#if crewMember.role.instructor.quantity?if_exists == "DFE">selected</#if>>DFE
 				</select>
 		   </div>
+<!-- Instructor Expiry Date --> 		   
 		   <div class="fm-opt">
-				<label  for="crewMember.role.r2.expiryDate"><span class="star">*</span>Expiry Date:</label>
-				<input name="crewMember.role.r2.expiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r2.expiryDate??>${crewMember.role.r2.expiryDate?string('dd/MM/yyyy')}</#if>" />
+				<label  for="instructorExpiryDate"><span class="star">*</span>Expiry Date:</label>
+				<input name="instructorExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r2.expiryDate??>${crewMember.role.r2.expiryDate?string('dd/MM/yyyy')}<#else>${instructorExpiryDate!}</#if>" />
 		   </div>
 		   <div class="fm-opt">
 				<label for="crewMember.role.instructor.typeS92">Instructor Aircraft Type:</label>
@@ -437,9 +484,10 @@ $("document").ready(function() {
 	    		   </#list>
 	    		</select>
 			</div>
+<!-- Instrument Expiry Date -->
             <div class="fm-opt">
-                <label for="crewMember.role.ifr.expiryDate">Expiry Date:</label>
-                <input name="crewMember.role.ifr.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+                <label for="instrumentExpiryDate">Expiry Date:</label>
+                <input name="instrumentExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.ifr.expiryDate??>${crewMember.role.ifr.expiryDate?string('dd/MM/yyyy')}<#else>${instrumentExpiryDate!}</#if>" />
             </div>
             <div class="fm-opt">
                 <label for="crewMember.role.ifr.hours">Hours:</label>
@@ -484,9 +532,10 @@ $("document").ready(function() {
 			<#else>
 			<div id="englishTestExtra" style="display:none;">
 			</#if>	
+<!-- English Test Expiry Date -->			
 			<div class="fm-opt">
-                <label id="englishTestExtraExpiry" for="crewMember.role.ets.expiryDate">Expiry Date:</label>
-                <input id="englishTestExtraExpiry" name="crewMember.role.ets.expiryDate" type="text" class="date-pick" value="<#if crewMember.role.ets.expiryDate??>${crewMember.role.ets.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+                <label id="englishTestExpiryDate" for="crewMember.role.ets.expiryDate">Expiry Date:</label>
+                <input name="englishTestExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.ets.expiryDate??>${crewMember.role.ets.expiryDate?string('dd/MM/yyyy')}<#else>${englishTestExpiryDate!}</#if>" />
             </div>
 			</div>		
 			<div class="fm-opt">
@@ -736,61 +785,119 @@ $("document").ready(function() {
     <#if crewMember.role.position?if_exists == "Pilot">
     <fieldset>
 			<legend>Certificates</legend>
+			<img class="tooltip" title="<b>Certificates</b><br/><div style='text-align:left'>Use the save button to upload the file.<br/> Under the documents tab, use the following tags to search for documents:<br/>'tag:medical'<br/>'tag:CRM'<br/>'tag:DG'<br/>'tag:HUET'<br/>tag:'HEMS' and 'tag:additionalCert'<br/>You can also use the User's ID</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
              <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
-                <label for="crewMember.role.expiryDate"><span class="star">*</span>Medical Expiry:</label>
-                <input name="crewMember.role.expiryDate" id="mediexpiry" type="text" class="date-pick" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+<!-- Medical Expiry Date -->             
+                <label for="medicalExpiryDate"><span class="star">*</span>Medical Expiry:</label>
+                <input name="medicalExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}<#else>${medicalExpiryDate!}</#if>" />
                 <div id="msg-mediexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="mediFile">Upload:</label>
                 <input id="mediFile" name="mediFile" value="" type="file"/>
-                <input name="mediTags" value="medical" type="hidden"/>
+                <input name="mediTags" value="medical ${id} certificates" type="hidden"/>
                 <#if medical?exists>
                   <label for="medicalUploadedFile"/>&nbsp;</label>
-                  <div id="medicalUploadedFile"><a href='${request.contextPath}${medical.bookmark.url!}'>${medical.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${medical.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="medicalUploadedFile"><a href='${request.contextPath}${medical.bookmark.url!}'>${medical.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${medical.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div> 
             <br/>   
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
-				<label for="crewMember.role.crm.expiryDate"><span class="star">*</span>CRM Expiry:</label>
-				<input name="crewMember.role.crm.expiryDate" id="crmexpiry" type="text" class="date-pick" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+<!-- CRM Expiry Date --> 			
+				<label for="crmExpiryDate"><span class="star">*</span>CRM Expiry:</label>
+				<input name="crmExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}<#else>${crmExpiryDate!}</#if>" />
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="crmFile">Upload:</label>
                 <input id="crmFile" name="crmFile" value="" type="file"/>
-                <input name="crmTags" value="CRM" type="hidden"/>
+                <input name="crmTags" value="CRM ${id} certificates" type="hidden"/>
                 <#if crm?exists>
                   <label for="crmUploadedFile"/>&nbsp;</label>
-                  <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
             <br/>    
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
-				<label for="crewMember.role.dg.expiryDate"><span class="star">*</span>DG Expiry:</label>
-				<input name="crewMember.role.dg.expiryDate" id="dgexpiry" type="text" class="date-pick" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}</#if>"/>
+<!-- DG Expiry Date -->			
+				<label for="dgExpiryDate"><span class="star">*</span>DG Expiry:</label>
+   				<input name="dgExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}<#else>${dgExpiryDate!}</#if>" /> 				
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="dgFile">Upload:</label>
                 <input id="dgFile" name="dgFile" value="" type="file">
-                <input name="dgTags" value="DG" type="hidden">
+                <input name="dgTags" value="DG ${id} certificates" type="hidden">
                 <#if dg?exists>
                   <label for="dgUploadedFile"/>&nbsp;</label>
-                  <div id="dgUploadedFile"><a href='${request.contextPath}${dg.bookmark.url!}'>${dg.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${dg.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="dgUploadedFile"><a href='${request.contextPath}${dg.bookmark.url!}'>${dg.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${dg.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if> 
 			</div>
 			<br/>   
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
-				<label for="crewMember.role.huet.expiryDate">HUET Training:</label>
-				<input name="crewMember.role.huet.expiryDate" id="huet" type="text" class="date-pick" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}</#if>"/>			
-                <div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+<!-- Huet Expiry Date --> 			
+				<label for="huetExpiryDate">HUET Training:</label>
+				<input name="huetExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}<#else>${huetExpiryDate!}</#if>" />
+				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="huetFile">Upload:</label>
                 <input id="huetFile" name="huetFile" value="" type="file" />
-                <input name="huetTags" value="HUET" type="hidden" />
+                <input name="huetTags" value="HUET ${id} certificates" type="hidden" />
                 <#if huet?exists>
                   <label for="huetUploadedFile"/>&nbsp;</label>
-                  <div id="huetUploadedFile"><a href='${request.contextPath}${huet.bookmark.url!}'>${huet.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${huet.bookmark.bookmarkedId}">x</a></#if></div>
+                  <div id="huetUploadedFile"><a href='${request.contextPath}${huet.bookmark.url!}'>${huet.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${huet.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
+            <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+<!-- HEMS Expiry Date --> 			
+				<div class="fm-opt">
+				<label for="hemsCertExpiryDate">HEMS:</label>
+				<input name="hemsCertExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.hemsCert.expiryDate??>${crewMember.role.hemsCert.expiryDate?string('dd/MM/yyyy')}<#else>${hemsCertExpiryDate!}</#if>" />
+			    <div class="fm-opt" id="msg-hemsCert" style="margin-left:90px; color:red; font-weight: bold;"></div>
+			    <label for="hemsCertFile">Upload:</label>
+                <input id="hemsCertFile" name="hemsCertFile" value="" type="file" />
+                <input name="hemsCertTags" value="HEMS ${id} certificates" type="hidden" />
+                <#if hemsCert?exists>
+                  <label for="hemsCertUploadLink"/>&nbsp;</label>
+                  <div id="hemsCertUploadLink"><a href='${request.contextPath}${hemsCert.bookmark.url!}'>${hemsCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${hemsCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>
+            </div>
+           <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+<!-- Additional Certificates--> 			
+				<div class="fm-opt">
+				<label for="additionalCertExpiryDate">Additional Certificates Upload:</label>
+				
+                <input id="additionalCertFile" name="additionalCertFile" value="" type="file" />
+                <input name="additionalCertTags" value="additionalCert ${id}" type="hidden" />
+                <#if additionalCert?exists>
+                  <label for="additionalCertUploadLink"/>&nbsp;</label>
+                  <div id="additionalCertUploadLink"><a href='${request.contextPath}${additionalCert.bookmark.url!}'>${additionalCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${additionalCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>
+            </div>                             
             <br/>
 			<br/>
     </fieldset>
     </#if>
+    
+    <#if crewMember.role.position?if_exists == "AME">
+    <fieldset>
+			<legend>Certificates</legend>
+			<img class="tooltip" title="<b>Certificates</b><br/><div style='text-align:left'>Use the save button to upload the file.<br/> Under the documents tab, use the following tags to search for documents:<br/>'tag:additionalCert'<br/>'tag:certificates'<br/>You can also use the User's ID.</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+
+           <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
+<!-- Additional Certificates--> 			
+				<div class="fm-opt">
+				<label for="additionalCertExpiryDate">Additional Certificates Upload:</label>
+				
+                <input id="additionalCertFile" name="additionalCertFile" value="" type="file" />
+                <input name="additionalCertTags" value="additionalCert ${id} certificates" type="hidden" />
+                <#if additionalCert?exists>
+                  <label for="additionalCertUploadLink"/>&nbsp;</label>
+                  <div id="additionalCertUploadLink"><a href='${request.contextPath}${additionalCert.bookmark.url!}'>${additionalCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${additionalCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>
+            </div>                             
+            <br/>
+			<br/>
+    </fieldset>
+    </#if>
+    
+    
     
 		</div>
 
@@ -822,20 +929,8 @@ $("document").ready(function() {
         
 
 		<fieldset>
-			<legend>Last Base Check</legend>
-			<div class="fm-opt">
-				<label for="crewMember.role.lastDate">Date:</label>
-				<input name="crewMember.role.lastDate" type="text" class="date-pick" value="<#if crewMember.role.lastDate??>${crewMember.role.lastDate?string('dd/MM/yyyy')}</#if>"/>
-			</div>                                                                                                                                                                
-			<div class="fm-opt">
-				<label for="crewMember.role.lastType">Type:</label>
-					<select name="crewMember.role.lastType">
-			    	<option>
-					<#list aircraftTypes?if_exists as aircraftType>
-						<option <#if crewMember.role.lastType?if_exists == (aircraftType.name)>selected</#if> >${aircraftType.name!}
-					</#list>
-				</select>
-			</div>
+			<legend>Proficiency Records</legend>
+			
 		</fieldset>
 		</#if>
 	

@@ -22,7 +22,7 @@
 		</div>
 		<hr style="clear:left; background-color:#fff;border: 0;width: 80%;"/>
 		<input type="hidden" name="folder" value="${folder}"/>
-		<input type="hidden" name="returnUrl" value="${returnUrl}"/>
+		<input type="hidden" name="returnUrl" value="${returnUrl!}"/>
 	</form>
 </body>
 </html>

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -127,6 +128,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String huetFileFileName;
     public String huetTags;
     
+    public File   hemsCertFile;
+	public String hemsCertFileContentType;
+    public String hemsCertFileFileName;
+    public String hemsCertTags;
+    
+    public File   additionalCertFile;
+	public String additionalCertFileContentType;
+    public String additionalCertFileFileName;
+    public String additionalCertTags;
+    
     public File   flighthoursFile;
     public String flighthoursFileContentType;
     public String flighthoursFileFileName;
@@ -147,10 +158,23 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document crm;
     public Document dg;
     public Document huet;
+    public Document hemsCert;
+    public Document additionalCert;
     public Document photoFile;
     public Document flighthours;
     
     public String subPosition;
+    
+    public String reviewDate;
+    public String licenseExpiryDate;
+    public String instructorExpiryDate;
+    public String instrumentExpiryDate;
+    public String englishTestExpiryDate;
+    public String medicalExpiryDate;
+    public String crmExpiryDate;
+    public String dgExpiryDate;
+    public String huetExpiryDate;
+    public String hemsCertExpiryDate;
     
     
     @SuppressWarnings("unchecked")
@@ -250,7 +274,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        medical     = folder.getDocumentByTag("medical");
 	        crm         = folder.getDocumentByTag("CRM");
 	        dg          = folder.getDocumentByTag("DG");
-	        huet        = folder.getDocumentByTag("HUET");  
+	        huet        = folder.getDocumentByTag("HUET");
+	        hemsCert    = folder.getDocumentByTag("HEMS");
+	        additionalCert = folder.getDocumentByTag("additionalCert");
 	        flighthours = folder.getDocumentByTag("flighthours");
 		}
 		
@@ -340,6 +366,35 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
+	public InputStream getHemsFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document hemsFile = folder.getDocumentByTag("HEMS");
+		    LOG.info("Name:"+hemsFile.getName());
+		    LOG.info("Uuid:"+hemsFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(hemsFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getAdditionalFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document additionalFile = folder.getDocumentByTag("additionalCert");
+		    LOG.info("Name:"+additionalFile.getName());
+		    LOG.info("Uuid:"+additionalFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(additionalFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	
 	
 	public InputStream getFlighthoursFile(){
 		  try{
@@ -984,11 +1039,149 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		tableTabs = new Tab[] {personalTab};
 		return SUCCESS;
 	}
-
-	public String save() throws Exception {
+/*-------------------------------------------------------------------*/
+	private void setDates()
+/*-------------------------------------------------------------------*/	
+	{
+		Date r = null;
 		
-		//LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
-		
+//Review Date
+		if (reviewDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(reviewDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().setReviewDate(r);
+		}
+//Instrument Expiry Date
+		if (this.instrumentExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.instrumentExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getIfr().setExpiryDate(r);
+		}
+//License Expiry Date (R1)		
+		if (this.licenseExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.licenseExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getR1().setExpiryDate(r);
+    	}
+//Instructor Expiry Date (R2)		
+		if (this.instructorExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.instructorExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getR2().setExpiryDate(r);
+    	}		
+//English Test Expiry Date		
+		if (this.englishTestExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.englishTestExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getEts().setExpiryDate(r);
+		}
+//Medical Expiry Date			
+		if (this.medicalExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.medicalExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().setExpiryDate(r);
+		}
+//CRM Expiry Date			
+		if (this.crmExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.crmExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getCrm().setExpiryDate(r);
+		}
+//DG Expiry Date		
+		if (this.dgExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.dgExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getDg().setExpiryDate(r);
+		}
+//Huet Expiry Date		
+		if (this.huetExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.huetExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getHuet().setExpiryDate(r);
+		}
+//Hems Expiry Date		
+		if (this.hemsCertExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.hemsCertExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getHemsCert().setExpiryDate(r);
+		}		
+  }//serDates()
+	/*-------------------------------------------------------------------*/
+	public String save() throws Exception
+	/*-------------------------------------------------------------------*/
+	{
+		//Set dates, otherwise they're not saved.
+		setDates();
 		//set passports
 		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
 		int index = 0;
@@ -1148,6 +1341,39 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
               e.printStackTrace();
           }
           try{
+              if(hemsCertFile!= null){         
+                  LOG.info(hemsCertTags+" "+docfolder+" "+docfolder+"/"+ hemsCertFileFileName);
+                  String[] tagsArray = hemsCertTags.split(" ");
+                  Document doc = new Document();
+                  doc.setName(hemsCertFileFileName);
+                  doc.setContentType(hemsCertFileContentType);
+                  Bookmark b = bookmarkManager.createBookmark(hemsCertFileFileName, "Document", docfolder+"/"+ hemsCertFileFileName, tagsArray);
+                  doc.setBookmark(b);
+                  docManager.createDocument(doc, docfolder, new FileInputStream(hemsCertFile), user);
+              }
+            }
+            catch(Exception e){
+          	  LOG.error("HEMS Cert error: "+e);
+                e.printStackTrace();
+            }
+//Additional Certificates            
+            try{
+                if(additionalCertFile!= null){         
+                    LOG.info(additionalCertTags+" "+docfolder+" "+docfolder+"/"+ additionalCertFileFileName);
+                    String[] tagsArray = additionalCertTags.split(" ");
+                    Document doc = new Document();
+                    doc.setName(additionalCertFileFileName);
+                    doc.setContentType(additionalCertFileContentType);
+                    Bookmark b = bookmarkManager.createBookmark(additionalCertFileFileName, "Document", docfolder+"/"+ additionalCertFileFileName, tagsArray);
+                    doc.setBookmark(b);
+                    docManager.createDocument(doc, docfolder, new FileInputStream(additionalCertFile), user);
+                }
+              }
+              catch(Exception e){
+            	  LOG.error("Additional Cert error: "+e);
+                  e.printStackTrace();
+              }
+          try{
               if(flighthoursFile!= null){         
                   LOG.info(flighthoursTags+" "+docfolder+" "+docfolder+"/"+ flighthoursFileFileName);
                   String[] tagsArray = flighthoursTags.split(" ");
@@ -1163,7 +1389,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
           	  LOG.error("flighthours error: "+e);
                 e.printStackTrace();
             }
-          
+       this.crewMember = this.manager.saveCrewMember(crewMember);
 	return execute();
 	}
 
@@ -1179,12 +1405,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		if (id == null) {
 			crewMember = new CrewMember();
-		//	this.role = new Role();
+		
 		} else {
 			crewMember = manager.getCrewMemberByCode(id);
-			
-			//this.role = crewMember.getRole();
-			
 			
 			if (switch_role_to!="") {
 				crewMember.getRole().setPosition(switch_role_to);
@@ -1215,7 +1438,19 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		String idStr = "";
 		if (id != null) {
 			idStr=id;
+			this.crewMember = this.manager.getCrewMemberByCode(idStr);
+    		this.reviewDate = this.crewMember.getRole().getStringReviewDate();
+    		this.licenseExpiryDate = this.crewMember.getRole().getR1().getStringExpiryDate();
+    		this.instructorExpiryDate = this.crewMember.getRole().getR2().getStringExpiryDate();
+    		this.instrumentExpiryDate = this.crewMember.getRole().getIfr().getStringExpiryDate();
+    		this.englishTestExpiryDate = this.crewMember.getRole().getEts().getStringExpiryDate();
+    		this.medicalExpiryDate = this.crewMember.getRole().getStringExpiryDate();
+    		this.crmExpiryDate = this.crewMember.getRole().getCrm().getStringExpiryDate();
+    		this.dgExpiryDate = this.crewMember.getRole().getDg().getStringExpiryDate();
+    		this.huetExpiryDate = this.crewMember.getRole().getHuet().getStringExpiryDate();
+    		this.hemsCertExpiryDate = this.crewMember.getRole().getHemsCert().getStringExpiryDate();
 		}
+
 		
 		List<Tab> tabList = new ArrayList<Tab>();
 		
