@@ -766,6 +766,11 @@ public class CrewMember implements Cloneable, Comparable {
 		private Certificate test = new Certificate();
 		private Certificate huet = new Certificate();
 		private Certificate hemsCert = new Certificate();	
+	    private  Certificate lpcCert;
+	    private  Certificate opcCert;
+	    private  Certificate operationsManualCert;
+	    private  Certificate annualTechnicalManualCert;
+	    
 		
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
@@ -947,6 +952,42 @@ public class CrewMember implements Cloneable, Comparable {
 
 		public void setEnglishTest(String englishTest) {
 			this.englishTest = englishTest;
+		}
+
+		public Certificate getLpcCert() {
+			return lpcCert;
+		}
+
+		public void setLpcCert(Certificate lpcCert) {
+			this.lpcCert = lpcCert;
+		}
+
+		public Certificate getOpcCert() {
+			return opcCert;
+		}
+
+		public void setOpcCert(Certificate opcCert) {
+			this.opcCert = opcCert;
+		}
+
+		public Certificate getOperationsManualCert() {
+			return operationsManualCert;
+		}
+
+		public void setOperationsManualCert(Certificate operationsManualCert) {
+			this.operationsManualCert = operationsManualCert;
+		}
+
+		public Certificate getAnnualTechnicalManualCert() {
+			return annualTechnicalManualCert;
+		}
+
+		public void setAnnualTechnicalManualCert(Certificate annualTechnicalManualCert) {
+			this.annualTechnicalManualCert = annualTechnicalManualCert;
+		}
+
+		public void setHemsCert(Certificate hemsCert) {
+			this.hemsCert = hemsCert;
 		}
 
 		public Certificate getR1() {

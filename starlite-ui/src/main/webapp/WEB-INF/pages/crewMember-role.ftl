@@ -116,6 +116,10 @@ $("document").ready(function() {
    validateDate("licenceexpiry", "Licence is expired");
    validateDate("huet",          "HUET is expired");
    validateDate("hemsCert",      "HEMS is expired");
+   validateDate("lpcexpiry",      "LPC is expired");
+   validateDate("opcexpiry",      "OPC is expired");
+   validateDate("opsManexpiry",      "Operations Manual is expired");
+   validateDate("annualManexpiry",      "Annual Technical Manual is expired");
 });    
    
 </script>
@@ -144,6 +148,16 @@ $("document").ready(function() {
       }else{
          document.forms.roleform.submit(); 
       }                          
+   }
+   
+   function showPilot()
+   {
+     $("#showPilotExtra").toggle();
+   }
+   
+   function showCertificates()
+   {
+     $("#showCertificatesExtra").toggle();
    }
    
    function instructor()
@@ -292,7 +306,7 @@ $("document").ready(function() {
 			</div>-->
 		</fieldset>
 		
-		<#if crewMember.role.position?if_exists != "Base Manager">
+		<#if crewMember.role.position?if_exists == "Pilot" || crewMember.role.position?if_exists == "AME">
 		<fieldset>
 			<legend>Licence</legend>
 			<div class="fm-opt">
@@ -328,7 +342,7 @@ $("document").ready(function() {
        <#-- using night, game, nvg and sling fields -->
        <#-- for AME ratings S92, S330J, 407 and other -->
        <fieldset>
-		<legend>Ratings</legend>
+		<legend>Type Licence</legend>
 		 	
 			<div class="fm-opt">
 				<label  for="crewMember.role.night">S92:</label>
@@ -378,12 +392,23 @@ $("document").ready(function() {
 						
         </fieldset>
 	    </#if>
+
         
        <#if crewMember.role.position?if_exists == "Pilot">
        
        <input type="hidden" id="crewMember.role.instructor.number" value=${crewMember.role.instructor.number!}>
        <fieldset>
 		<legend>Ratings (Pilots only)</legend>
+		 	 <div class="fm-opt">
+		 	 <input type="button" onclick="showPilot();return true;" value="Show\Hide Pilot Fields"/>
+		 	 </div>
+		 	 
+		 	<#if crewMember.role.position?if_exists == "Pilot" >
+		 	<div id="showPilotExtra" style="display:none;">
+			<#else>
+			<div id="showPilotExtra" >
+			</#if>
+			
 		 	 <div class="fm-opt">
 				<label for="crewMember.role.instructor.number"><u>Instructor:</u></label>
 				<select class="small" name="crewMember.role.instructor.number">
@@ -779,12 +804,22 @@ $("document").ready(function() {
 				</select>
 			</div>
   	        
-			
+	</div>		
     </fieldset>
 	</#if>
     <#if crewMember.role.position?if_exists == "Pilot">
     <fieldset>
 			<legend>Certificates</legend>
+			<div class="fm-opt">
+		 	 <input type="button" onclick="showCertificates();return true;" value="Show\Hide Certificates"/>
+		 	 </div>
+		 	
+		 	<#if crewMember.role.position?if_exists != " " >
+		 	<div id="showCertificatesExtra" style="display:none;">
+			<#else>
+			<div id="showCertificatesExtra">
+			</#if>
+		 	 
 			<img class="tooltip" title="<b>Certificates</b><br/><div style='text-align:left'>Use the save button to upload the file.<br/> Under the documents tab, use the following tags to search for documents:<br/>'tag:medical'<br/>'tag:CRM'<br/>'tag:DG'<br/>'tag:HUET'<br/>tag:'HEMS' and 'tag:additionalCert'<br/>You can also use the User's ID</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
              <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 <!-- Medical Expiry Date -->             
@@ -874,7 +909,7 @@ $("document").ready(function() {
     </fieldset>
     </#if>
     
-    <#if crewMember.role.position?if_exists == "AME">
+    <#if crewMember.role.position?if_exists == "AME" || crewMember.role.position?if_exists == "Base Manager" || crewMember.role.position?if_exists == "Ops Admin" || crewMember.role.position?if_exists == "Systems Operator">
     <fieldset>
 			<legend>Certificates</legend>
 			<img class="tooltip" title="<b>Certificates</b><br/><div style='text-align:left'>Use the save button to upload the file.<br/> Under the documents tab, use the following tags to search for documents:<br/>'tag:additionalCert'<br/>'tag:certificates'<br/>You can also use the User's ID.</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
@@ -916,7 +951,7 @@ $("document").ready(function() {
                 <label for="flighthoursFile">Upload:</label>
                 <input id="flighthoursFile" name="flighthoursFile" value="" type="file" />
                 <input name="flighthoursTags" value="flighthours" type="hidden" />
-                <img class="tooltip" title="<b>Document Upload</b>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents." style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+                <img class="tooltip" title="<b>Document Upload</b><br/><div style='text-align:left'>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents.</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
               
                 <#if flighthours?exists>
                   <label for="flighthoursFile"/>&nbsp;</label>
@@ -926,11 +961,90 @@ $("document").ready(function() {
         </#if>        
             </div>
 		 </fieldset>
-        
-
+		</#if>
+		 
+        <#if crewMember.role.position?if_exists == "Pilot" || crewMember.role.position?if_exists == "AME"  >   
 		<fieldset>
 			<legend>Proficiency Records</legend>
-			
+			<img class="tooltip" title="<b>Proficiency Records</b><br/><div style='text-align:left'>Use the save button to upload the file.<br/> Under the documents tab, use the following tags to search for documents:<br/>'tag:LPC'<br/>'tag:OPC'<br/>'tag:opsManual'<br/>'tag:annualTechManual' and 'tag:proficiency'<br/>You can also use the User's ID</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+<!-- LPC Expiry Date -->	
+            <#if crewMember.role.position?if_exists == "Pilot">	
+ 			<div class="fm-opt">	
+				<label for="lpcExpiryDate">LPC Expiry:</label>
+   				<input name="lpcExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.lpcCert.expiryDate??>${crewMember.role.lpcCert.expiryDate?string('dd/MM/yyyy')}<#else>${lpcExpiryDate!}</#if>" /> 				
+				<div id="msg-lpcexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+			</div>
+<!-- Life Proficiency Check (LPC)--> 			
+				<div class="fm-opt">
+				<label for="lpcCertFile">Life Proficiency Check(LPC) Upload:</label>
+                <input id="lpcCertFile" name="lpcCertFile" value="" type="file" />
+                <input name="lpcCertTags" value="LPC ${id} proficiencyRecords" type="hidden" />
+                <#if lpcCert?exists>
+                  <label for="lpcCertUploadLink"/>&nbsp;</label>
+                  <div id="lpcCertUploadLink"><a href='${request.contextPath}${lpcCert.bookmark.url!}'>${lpcCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${lpcCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>
+  		   <br/>
+<!-- OPC Expiry Date -->	
+			<div class="fm-opt">		
+				<label for="opcExpiryDate"><span class="star">*</span>OPC Expiry:</label>
+   				<input name="opcExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.opcCert.expiryDate??>${crewMember.role.opcCert.expiryDate?string('dd/MM/yyyy')}<#else>${opcExpiryDate!}</#if>" /> 				
+				<div id="msg-opcexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+                </div>
+			    		   
+<!-- Operational Proficiency Check (OPC)--> 			
+				<div class="fm-opt">
+				<label for="opcCertFile">Operational Proficiency Check(OPC) Upload:</label>
+                <input id="opcCertFile" name="opcCertFile" value="" type="file" />
+                <input name="opcCertTags" value="OPC ${id} proficiencyRecords" type="hidden" />
+                <#if opcCert?exists>
+                  <label for="opcCertUploadLink"/>&nbsp;</label>
+                  <div id="opcCertUploadLink"><a href='${request.contextPath}${opcCert.bookmark.url!}'>${opcCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${opcCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>  
+            <br/>
+              </#if> 
+            <label for=""><b><u>Quizzes:</u></b></label>
+            <br/>
+<!-- operationsManual Expiry Date -->	
+			<div class="fm-opt">		
+				<label for="operationsManualExpiry"><span class="star">*</span>Manual Expiry:</label>
+   				<input name="operationsManualExpiry"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.operationsManualCert.expiryDate??>${crewMember.role.operationsManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${operationsManualExpiry!}</#if>" /> 				
+				<div id="msg-opsManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+			</div>
+		 
+<!-- Operational Manual --> 			
+				<div class="fm-opt">
+				<label for="operationsManualCertFile">Operations Manual Upload:</label>
+                <input id="operationsManualCertFile" name="operationsManualCertFile" value="" type="file" />
+                <input name="operationsManualCertTags" value="opsManual ${id} proficiencyRecords" type="hidden" />
+                <#if operationsManualCert?exists>
+                  <label for="operationsManualCertUploadLink"/>&nbsp;</label>
+                  <div id="operationsManualCertUploadLink"><a href='${request.contextPath}${operationsManualCert.bookmark.url!}'>${operationsManualCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${operationsManualCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>  
+            <br/>
+            <#if crewMember.role.position?if_exists == "Pilot">
+<!-- annual Tech Expiry Date -->	
+            <div class="fm-opt">	
+				<label for="annualTechnicalManual">Manual Expiry:</label>
+   				<input name="annualTechnicalManual"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.annualTechnicalManualCert.expiryDate??>${crewMember.role.annualTechnicalManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${annualTechnicalManual!}</#if>" /> 				
+				<div id="msg-annualManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
+                
+			</div>                 
+<!-- Annual Technical Manual --> 			
+				<div class="fm-opt">
+				<label for="annualTechnicalManualCertFile">Annual Technical Upload:</label>
+                <input id="annualTechnicalManualCertFile" name="annualTechnicalManualCertFile" value="" type="file" />
+                <input name="annualTechnicalManualCertTags" value="annualTechManual ${id} proficiencyRecords" type="hidden" />
+                <#if annualTechnicalManualCert?exists>
+                  <label for="annualTechnicalManualCertUploadLink"/>&nbsp;</label>
+                  <div id="annualTechnicalManualCertUploadLink"><a href='${request.contextPath}${annualTechnicalManualCert.bookmark.url!}'>${annualTechnicalManualCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${annualTechnicalManualCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
+                </#if>
+            </div>  
+            </#if>
+          
+                              
 		</fieldset>
 		</#if>
 	

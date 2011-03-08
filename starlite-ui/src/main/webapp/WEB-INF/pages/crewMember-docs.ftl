@@ -61,6 +61,10 @@
 		  <#if tag.tag == "HUET"><#assign hide=0/></#if>
 		  <#if tag.tag == "HEMS"><#assign hide=0/></#if>
 		  <#if tag.tag == "additionalCert"><#assign hide=0/></#if>
+		  <#if tag.tag == "LPC"><#assign hide=0/></#if>
+		  <#if tag.tag == "OPC"><#assign hide=0/></#if>
+		  <#if tag.tag == "opsManual"><#assign hide=0/></#if>
+		  <#if tag.tag == "annualTechManual"><#assign hide=0/></#if>
 		  <#if tag.tag == "${id}"><#assign hide=0/></#if>
 		  <#if tag.tag == "medical"><#assign hide=0/></#if>
 		  <#if tag.tag == "licence"><#assign hide=0/></#if>

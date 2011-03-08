@@ -153,6 +153,27 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String licenceFileFileName;
     public String licenceTags;
     
+    public File   lpcCertFile;
+	public String lpcCertFileContentType;
+    public String lpcCertFileFileName;
+    public String lpcCertTags;
+    
+    public File   opcCertFile;
+	public String opcCertFileContentType;
+    public String opcCertFileFileName;
+    public String opcCertTags;
+    
+    public File   operationsManualCertFile;
+	public String operationsManualCertFileContentType;
+    public String operationsManualCertFileFileName;
+    public String operationsManualCertTags;
+    
+
+    public File   annualTechnicalManualCertFile;
+	public String annualTechnicalManualCertFileContentType;
+    public String annualTechnicalManualCertFileFileName;
+    public String annualTechnicalManualCertTags;
+    
     public Document licence;
     public Document medical;
     public Document crm;
@@ -162,6 +183,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document additionalCert;
     public Document photoFile;
     public Document flighthours;
+    public Document lpcCert;
+    public Document opcCert;
+    public Document operationsManualCert;
+    public Document annualTechnicalManualCert;
     
     public String subPosition;
     
@@ -175,6 +200,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String dgExpiryDate;
     public String huetExpiryDate;
     public String hemsCertExpiryDate;
+    public String lpcExpiryDate;
+    public String opcExpiryDate;
+    public String operationsManualExpiry;
+    public String annualTechnicalManual;
     
     
     @SuppressWarnings("unchecked")
@@ -277,6 +306,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        huet        = folder.getDocumentByTag("HUET");
 	        hemsCert    = folder.getDocumentByTag("HEMS");
 	        additionalCert = folder.getDocumentByTag("additionalCert");
+	        opcCert= folder.getDocumentByTag("OPC");
+	        lpcCert= folder.getDocumentByTag("LPC");
+	        operationsManualCert= folder.getDocumentByTag("opsManual");
+	        annualTechnicalManualCert= folder.getDocumentByTag("annualTechManual");
+	        
+	        	        
 	        flighthours = folder.getDocumentByTag("flighthours");
 		}
 		
@@ -394,9 +429,65 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
+	public InputStream getLpcFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document lpcFile = folder.getDocumentByTag("LPC");
+		    LOG.info("Name:"+lpcFile.getName());
+		    LOG.info("Uuid:"+lpcFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(lpcFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getOpcFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document opcFile = folder.getDocumentByTag("OPC");
+		    LOG.info("Name:"+opcFile.getName());
+		    LOG.info("Uuid:"+opcFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(opcFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getOperationsManualCertFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document operationsManualCertFile = folder.getDocumentByTag("opsManual");
+		    LOG.info("Name:"+operationsManualCertFile.getName());
+		    LOG.info("Uuid:"+operationsManualCertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(operationsManualCertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getAnnualTechnicalManualCertFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document annualTechnicalManualCertFile = folder.getDocumentByTag("annualTechManual");
+		    LOG.info("Name:"+annualTechnicalManualCertFile.getName());
+		    LOG.info("Uuid:"+annualTechnicalManualCertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(annualTechnicalManualCertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
 	
 	
-	public InputStream getFlighthoursFile(){
+ 	public InputStream getFlighthoursFile(){
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -1174,7 +1265,62 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				e.printStackTrace();
 			}
 			this.crewMember.getRole().getHemsCert().setExpiryDate(r);
+		}	
+//LPC Expiry Date		
+		if (this.lpcExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.lpcExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getLpcCert().setExpiryDate(r);
+		}			
+//OPC Expiry Date		
+		if (this.opcExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.opcExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getOpcCert().setExpiryDate(r);
+		}			
+//operationsManual Expiry Date		
+		if (this.operationsManualExpiry != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.operationsManualExpiry);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getOperationsManualCert().setExpiryDate(r);
 		}		
+//annualTechManual Expiry Date		
+		if (this.annualTechnicalManual != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.annualTechnicalManual);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getAnnualTechnicalManualCert().setExpiryDate(r);
+		}				
+	    
+	    
+	    
   }//serDates()
 	/*-------------------------------------------------------------------*/
 	public String save() throws Exception
@@ -1373,6 +1519,75 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
             	  LOG.error("Additional Cert error: "+e);
                   e.printStackTrace();
               }
+//LPC Certificates            
+              try{
+                  if(lpcCertFile!= null){         
+                      LOG.info(additionalCertTags+" "+docfolder+" "+docfolder+"/"+ lpcCertFileFileName);
+                      String[] tagsArray = lpcCertTags.split(" ");
+                      Document doc = new Document();
+                      doc.setName(lpcCertFileFileName);
+                      doc.setContentType(lpcCertFileContentType);
+                      Bookmark b = bookmarkManager.createBookmark(lpcCertFileFileName, "Document", docfolder+"/"+ lpcCertFileFileName, tagsArray);
+                      doc.setBookmark(b);
+                      docManager.createDocument(doc, docfolder, new FileInputStream(lpcCertFile), user);
+                  }
+                }
+                catch(Exception e){
+              	  LOG.error("LPC Cert error: "+e);
+                    e.printStackTrace();
+                }  
+//OPC Certificates            
+                try{
+                    if(opcCertFile!= null){         
+                        LOG.info(opcCertTags+" "+docfolder+" "+docfolder+"/"+ opcCertFileFileName);
+                        String[] tagsArray = opcCertTags.split(" ");
+                        Document doc = new Document();
+                        doc.setName(opcCertFileFileName);
+                        doc.setContentType(opcCertFileContentType);
+                        Bookmark b = bookmarkManager.createBookmark(opcCertFileFileName, "Document", docfolder+"/"+ opcCertFileFileName, tagsArray);
+                        doc.setBookmark(b);
+                        docManager.createDocument(doc, docfolder, new FileInputStream(opcCertFile), user);
+                    }
+                  }
+                  catch(Exception e){
+                	  LOG.error("OPC Cert error: "+e);
+                      e.printStackTrace();
+                  }   
+//operationsManualCert Certificates            
+                  try{
+                      if(operationsManualCertFile!= null){         
+                          LOG.info(operationsManualCertTags+" "+docfolder+" "+docfolder+"/"+ operationsManualCertFileFileName);
+                          String[] tagsArray = operationsManualCertTags.split(" ");
+                          Document doc = new Document();
+                          doc.setName(operationsManualCertFileFileName);
+                          doc.setContentType(operationsManualCertFileContentType);
+                          Bookmark b = bookmarkManager.createBookmark(operationsManualCertFileFileName, "Document", docfolder+"/"+ operationsManualCertFileFileName, tagsArray);
+                          doc.setBookmark(b);
+                          docManager.createDocument(doc, docfolder, new FileInputStream(operationsManualCertFile), user);
+                      }
+                    }
+                    catch(Exception e){
+                  	  LOG.error("operationsManualCert Cert error: "+e);
+                        e.printStackTrace();
+                    }  
+//operationsManualCert Certificates            
+                    try{
+                        if(annualTechnicalManualCertFile!= null){         
+                            LOG.info(annualTechnicalManualCertTags+" "+docfolder+" "+docfolder+"/"+ annualTechnicalManualCertFileFileName);
+                            String[] tagsArray = annualTechnicalManualCertTags.split(" ");
+                            Document doc = new Document();
+                            doc.setName(annualTechnicalManualCertFileFileName);
+                            doc.setContentType(annualTechnicalManualCertFileContentType);
+                            Bookmark b = bookmarkManager.createBookmark(annualTechnicalManualCertFileFileName, "Document", docfolder+"/"+ annualTechnicalManualCertFileFileName, tagsArray);
+                            doc.setBookmark(b);
+                            docManager.createDocument(doc, docfolder, new FileInputStream(annualTechnicalManualCertFile), user);
+                        }
+                      }
+                      catch(Exception e){
+                    	  LOG.error("annualTechnical Cert error: "+e);
+                          e.printStackTrace();
+                      } 
+              
           try{
               if(flighthoursFile!= null){         
                   LOG.info(flighthoursTags+" "+docfolder+" "+docfolder+"/"+ flighthoursFileFileName);
@@ -1449,6 +1664,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     		this.dgExpiryDate = this.crewMember.getRole().getDg().getStringExpiryDate();
     		this.huetExpiryDate = this.crewMember.getRole().getHuet().getStringExpiryDate();
     		this.hemsCertExpiryDate = this.crewMember.getRole().getHemsCert().getStringExpiryDate();
+    		this.lpcExpiryDate = this.crewMember.getRole().getLpcCert().getStringExpiryDate();
+    	    this.opcExpiryDate = this.crewMember.getRole().getOpcCert().getStringExpiryDate();
+    	    this.operationsManualExpiry = this.crewMember.getRole().getOperationsManualCert().getStringExpiryDate();
+    	    this.annualTechnicalManual = this.crewMember.getRole().getAnnualTechnicalManualCert().getStringExpiryDate();
 		}
 
 		
