@@ -826,7 +826,7 @@ $("document").ready(function() {
              <div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 <!-- Medical Expiry Date -->             
                 <label for="medicalExpiryDate"><span class="star">*</span>Medical Expiry:</label>
-                <input name="medicalExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}<#else>${medicalExpiryDate!}</#if>" />
+                <input name="medicalExpiryDate"  type="text" class="date-pick" id="mediexpiry" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}<#else>${medicalExpiryDate!}</#if>" />
                 <div id="msg-mediexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="mediFile">Upload:</label>
                 <#if user.hasPermission("UserAdmin")>
@@ -842,7 +842,7 @@ $("document").ready(function() {
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 <!-- CRM Expiry Date --> 			
 				<label for="crmExpiryDate"><span class="star">*</span>CRM Expiry:</label>
-				<input name="crmExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}<#else>${crmExpiryDate!}</#if>" />
+				<input name="crmExpiryDate"  type="text" class="date-pick" id="crmexpiry" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}<#else>${crmExpiryDate!}</#if>" />
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="crmFile">Upload:</label>
                 <#if user.hasPermission("UserAdmin")>
@@ -858,7 +858,7 @@ $("document").ready(function() {
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 <!-- DG Expiry Date -->			
 				<label for="dgExpiryDate"><span class="star">*</span>DG Expiry:</label>
-   				<input name="dgExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}<#else>${dgExpiryDate!}</#if>" /> 				
+   				<input name="dgExpiryDate"  type="text" class="date-pick" id="dgexpiry" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}<#else>${dgExpiryDate!}</#if>" /> 				
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="dgFile">Upload:</label>
                 <#if user.hasPermission("UserAdmin")>
@@ -874,7 +874,7 @@ $("document").ready(function() {
 			<div class="fm-opt" style="padding-bottom:5px;border-bottom:1px solid silver;margin-bottom:5px;margin-left:10px;">
 <!-- Huet Expiry Date --> 			
 				<label for="huetExpiryDate">HUET Training:</label>
-				<input name="huetExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}<#else>${huetExpiryDate!}</#if>" />
+				<input name="huetExpiryDate"  type="text" class="date-pick" id="huet" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}<#else>${huetExpiryDate!}</#if>" />
 				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="huetFile">Upload:</label>
                 <#if user.hasPermission("UserAdmin")>
@@ -890,7 +890,7 @@ $("document").ready(function() {
 <!-- HEMS Expiry Date --> 			
 				<div class="fm-opt">
 				<label for="hemsCertExpiryDate">HEMS:</label>
-				<input name="hemsCertExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.hemsCert.expiryDate??>${crewMember.role.hemsCert.expiryDate?string('dd/MM/yyyy')}<#else>${hemsCertExpiryDate!}</#if>" />
+				<input name="hemsCertExpiryDate"  type="text" class="date-pick" id="hemsCert" value="<#if crewMember.role.hemsCert.expiryDate??>${crewMember.role.hemsCert.expiryDate?string('dd/MM/yyyy')}<#else>${hemsCertExpiryDate!}</#if>" />
 			    <div class="fm-opt" id="msg-hemsCert" style="margin-left:90px; color:red; font-weight: bold;"></div>
 			    <label for="hemsCertFile">Upload:</label>
 			    <#if user.hasPermission("UserAdmin")>
@@ -987,7 +987,7 @@ $("document").ready(function() {
             <#if crewMember.role.position?if_exists == "Pilot">	
  			<div class="fm-opt">	
 				<label for="lpcExpiryDate">LPC Expiry:</label>
-   				<input name="lpcExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.lpcCert.expiryDate??>${crewMember.role.lpcCert.expiryDate?string('dd/MM/yyyy')}<#else>${lpcExpiryDate!}</#if>" /> 				
+   				<input name="lpcExpiryDate"  type="text" class="date-pick" id="lpcexpiry" value="<#if crewMember.role.lpcCert.expiryDate??>${crewMember.role.lpcCert.expiryDate?string('dd/MM/yyyy')}<#else>${lpcExpiryDate!}</#if>" /> 				
 				<div id="msg-lpcexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 <!-- Life Proficiency Check (LPC)--> 			
@@ -1005,8 +1005,8 @@ $("document").ready(function() {
   		   <br/>
 <!-- OPC Expiry Date -->	
 			<div class="fm-opt">		
-				<label for="opcExpiryDate"><span class="star">*</span>OPC Expiry:</label>
-   				<input name="opcExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.opcCert.expiryDate??>${crewMember.role.opcCert.expiryDate?string('dd/MM/yyyy')}<#else>${opcExpiryDate!}</#if>" /> 				
+				<label for="opcExpiryDate">OPC Expiry:</label>
+   				<input name="opcExpiryDate"  type="text" class="date-pick" id="opcexpiry" value="<#if crewMember.role.opcCert.expiryDate??>${crewMember.role.opcCert.expiryDate?string('dd/MM/yyyy')}<#else>${opcExpiryDate!}</#if>" /> 				
 				<div id="msg-opcexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 </div>
 			    		   
@@ -1035,8 +1035,8 @@ $("document").ready(function() {
             <br/>
 <!-- operationsManual Expiry Date -->	
 			<div class="fm-opt">		
-				<label for="operationsManualExpiry"><span class="star">*</span>Manual Expiry:</label>
-   				<input name="operationsManualExpiry"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.operationsManualCert.expiryDate??>${crewMember.role.operationsManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${operationsManualExpiry!}</#if>" /> 				
+				<label for="operationsManualExpiry">Manual Expiry:</label>
+   				<input name="operationsManualExpiry"  type="text" class="date-pick" id="opsManexpiry" value="<#if crewMember.role.operationsManualCert.expiryDate??>${crewMember.role.operationsManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${operationsManualExpiry!}</#if>" /> 				
 				<div id="msg-opsManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 		 
@@ -1057,7 +1057,7 @@ $("document").ready(function() {
 <!-- annual Tech Expiry Date -->	
             <div class="fm-opt">	
 				<label for="annualTechnicalManual">Manual Expiry:</label>
-   				<input name="annualTechnicalManual"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.annualTechnicalManualCert.expiryDate??>${crewMember.role.annualTechnicalManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${annualTechnicalManual!}</#if>" /> 				
+   				<input name="annualTechnicalManual"  type="text" class="date-pick" id="annualManexpiry" value="<#if crewMember.role.annualTechnicalManualCert.expiryDate??>${crewMember.role.annualTechnicalManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${annualTechnicalManual!}</#if>" /> 				
 				<div id="msg-annualManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 
 			</div>                 
