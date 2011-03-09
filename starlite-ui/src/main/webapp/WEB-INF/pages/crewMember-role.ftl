@@ -327,7 +327,9 @@ $("document").ready(function() {
 				<input name="licenseExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.r1.expiryDate??>${crewMember.role.r1.expiryDate?string('dd/MM/yyyy')}<#else>${licenseExpiryDate!}</#if>" />
 			    <div class="fm-opt" id="msg-licenceexpiry" style="margin-left:90px; color:red; font-weight: bold;"></div>
 			    <label for="licenceFile">Upload:</label>
+			    <#if user.hasPermission("UserAdmin")>
                 <input id="licenceFile" name="licenceFile" value="" type="file" />
+                </#if>
                 <input name="licenceTags" value="licence" type="hidden" />
                 <#if licence?exists>
                   <label for="licenceUploadLink"/>&nbsp;</label>
@@ -827,7 +829,9 @@ $("document").ready(function() {
                 <input name="medicalExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.expiryDate??>${crewMember.role.expiryDate?string('dd/MM/yyyy')}<#else>${medicalExpiryDate!}</#if>" />
                 <div id="msg-mediexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="mediFile">Upload:</label>
+                <#if user.hasPermission("UserAdmin")>
                 <input id="mediFile" name="mediFile" value="" type="file"/>
+                </#if>
                 <input name="mediTags" value="medical ${id} certificates" type="hidden"/>
                 <#if medical?exists>
                   <label for="medicalUploadedFile"/>&nbsp;</label>
@@ -841,7 +845,9 @@ $("document").ready(function() {
 				<input name="crmExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.crm.expiryDate??>${crewMember.role.crm.expiryDate?string('dd/MM/yyyy')}<#else>${crmExpiryDate!}</#if>" />
 				<div id="msg-crmexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="crmFile">Upload:</label>
+                <#if user.hasPermission("UserAdmin")>
                 <input id="crmFile" name="crmFile" value="" type="file"/>
+                </#if>
                 <input name="crmTags" value="CRM ${id} certificates" type="hidden"/>
                 <#if crm?exists>
                   <label for="crmUploadedFile"/>&nbsp;</label>
@@ -855,7 +861,9 @@ $("document").ready(function() {
    				<input name="dgExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.dg.expiryDate??>${crewMember.role.dg.expiryDate?string('dd/MM/yyyy')}<#else>${dgExpiryDate!}</#if>" /> 				
 				<div id="msg-dgexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="dgFile">Upload:</label>
+                <#if user.hasPermission("UserAdmin")>
                 <input id="dgFile" name="dgFile" value="" type="file">
+                </#if>
                 <input name="dgTags" value="DG ${id} certificates" type="hidden">
                 <#if dg?exists>
                   <label for="dgUploadedFile"/>&nbsp;</label>
@@ -869,7 +877,9 @@ $("document").ready(function() {
 				<input name="huetExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.huet.expiryDate??>${crewMember.role.huet.expiryDate?string('dd/MM/yyyy')}<#else>${huetExpiryDate!}</#if>" />
 				<div id="msg-huet" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 <label for="huetFile">Upload:</label>
+                <#if user.hasPermission("UserAdmin")>
                 <input id="huetFile" name="huetFile" value="" type="file" />
+                </#if>
                 <input name="huetTags" value="HUET ${id} certificates" type="hidden" />
                 <#if huet?exists>
                   <label for="huetUploadedFile"/>&nbsp;</label>
@@ -883,7 +893,9 @@ $("document").ready(function() {
 				<input name="hemsCertExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.hemsCert.expiryDate??>${crewMember.role.hemsCert.expiryDate?string('dd/MM/yyyy')}<#else>${hemsCertExpiryDate!}</#if>" />
 			    <div class="fm-opt" id="msg-hemsCert" style="margin-left:90px; color:red; font-weight: bold;"></div>
 			    <label for="hemsCertFile">Upload:</label>
+			    <#if user.hasPermission("UserAdmin")>
                 <input id="hemsCertFile" name="hemsCertFile" value="" type="file" />
+                </#if>
                 <input name="hemsCertTags" value="HEMS ${id} certificates" type="hidden" />
                 <#if hemsCert?exists>
                   <label for="hemsCertUploadLink"/>&nbsp;</label>
@@ -895,8 +907,9 @@ $("document").ready(function() {
 <!-- Additional Certificates--> 			
 				<div class="fm-opt">
 				<label for="additionalCertExpiryDate">Additional Certificates Upload:</label>
-				
+				<#if user.hasPermission("UserAdmin")>
                 <input id="additionalCertFile" name="additionalCertFile" value="" type="file" />
+                </#if>
                 <input name="additionalCertTags" value="additionalCert ${id}" type="hidden" />
                 <#if additionalCert?exists>
                   <label for="additionalCertUploadLink"/>&nbsp;</label>
@@ -918,8 +931,9 @@ $("document").ready(function() {
 <!-- Additional Certificates--> 			
 				<div class="fm-opt">
 				<label for="additionalCertExpiryDate">Additional Certificates Upload:</label>
-				
+				<#if user.hasPermission("UserAdmin")>
                 <input id="additionalCertFile" name="additionalCertFile" value="" type="file" />
+                </#if>
                 <input name="additionalCertTags" value="additionalCert ${id} certificates" type="hidden" />
                 <#if additionalCert?exists>
                   <label for="additionalCertUploadLink"/>&nbsp;</label>
@@ -949,7 +963,9 @@ $("document").ready(function() {
 		 
 	    <#if user.hasPermission("UserAdmin")>
                 <label for="flighthoursFile">Upload:</label>
+                <#if user.hasPermission("UserAdmin")>
                 <input id="flighthoursFile" name="flighthoursFile" value="" type="file" />
+                </#if>
                 <input name="flighthoursTags" value="flighthours" type="hidden" />
                 <img class="tooltip" title="<b>Document Upload</b><br/><div style='text-align:left'>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents.</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
               
@@ -977,7 +993,9 @@ $("document").ready(function() {
 <!-- Life Proficiency Check (LPC)--> 			
 				<div class="fm-opt">
 				<label for="lpcCertFile">Life Proficiency Check(LPC) Upload:</label>
+				<#if user.hasPermission("UserAdmin")>
                 <input id="lpcCertFile" name="lpcCertFile" value="" type="file" />
+                </#if>
                 <input name="lpcCertTags" value="LPC ${id} proficiencyRecords" type="hidden" />
                 <#if lpcCert?exists>
                   <label for="lpcCertUploadLink"/>&nbsp;</label>
@@ -995,7 +1013,9 @@ $("document").ready(function() {
 <!-- Operational Proficiency Check (OPC)--> 			
 				<div class="fm-opt">
 				<label for="opcCertFile">Operational Proficiency Check(OPC) Upload:</label>
+				<#if user.hasPermission("UserAdmin")>
                 <input id="opcCertFile" name="opcCertFile" value="" type="file" />
+                </#if>
                 <input name="opcCertTags" value="OPC ${id} proficiencyRecords" type="hidden" />
                 <#if opcCert?exists>
                   <label for="opcCertUploadLink"/>&nbsp;</label>
@@ -1016,7 +1036,9 @@ $("document").ready(function() {
 <!-- Operational Manual --> 			
 				<div class="fm-opt">
 				<label for="operationsManualCertFile">Operations Manual Upload:</label>
+				<#if user.hasPermission("UserAdmin")>
                 <input id="operationsManualCertFile" name="operationsManualCertFile" value="" type="file" />
+                </#if>
                 <input name="operationsManualCertTags" value="opsManual ${id} proficiencyRecords" type="hidden" />
                 <#if operationsManualCert?exists>
                   <label for="operationsManualCertUploadLink"/>&nbsp;</label>
@@ -1035,7 +1057,9 @@ $("document").ready(function() {
 <!-- Annual Technical Manual --> 			
 				<div class="fm-opt">
 				<label for="annualTechnicalManualCertFile">Annual Technical Upload:</label>
+				<#if user.hasPermission("UserAdmin")>
                 <input id="annualTechnicalManualCertFile" name="annualTechnicalManualCertFile" value="" type="file" />
+                </#if>
                 <input name="annualTechnicalManualCertTags" value="annualTechManual ${id} proficiencyRecords" type="hidden" />
                 <#if annualTechnicalManualCert?exists>
                   <label for="annualTechnicalManualCertUploadLink"/>&nbsp;</label>
