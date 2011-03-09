@@ -204,6 +204,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String opcExpiryDate;
     public String operationsManualExpiry;
     public String annualTechnicalManual;
+    public String routeCheckExpiryDate;
     
     
     @SuppressWarnings("unchecked")
@@ -1317,6 +1318,20 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				e.printStackTrace();
 			}
 			this.crewMember.getRole().getAnnualTechnicalManualCert().setExpiryDate(r);
+		}		
+		
+//Route Check Completion Date	
+		if (this.routeCheckExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.routeCheckExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getRoutCheck().setExpiryDate(r);
 		}				
 	    
 	    
@@ -1668,6 +1683,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     	    this.opcExpiryDate = this.crewMember.getRole().getOpcCert().getStringExpiryDate();
     	    this.operationsManualExpiry = this.crewMember.getRole().getOperationsManualCert().getStringExpiryDate();
     	    this.annualTechnicalManual = this.crewMember.getRole().getAnnualTechnicalManualCert().getStringExpiryDate();
+    	    this.routeCheckExpiryDate = this.crewMember.getRole().getRoutCheck().getStringExpiryDate();
 		}
 
 		

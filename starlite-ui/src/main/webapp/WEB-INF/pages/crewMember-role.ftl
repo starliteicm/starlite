@@ -1023,6 +1023,13 @@ $("document").ready(function() {
                 </#if>
             </div>  
             <br/>
+<!-- Route Check--> 			
+				<div class="fm-opt">
+				<label for="routeCheckExpiryDate">Route Check :Base (Date Completed) </label>
+                <input name="routeCheckExpiryDate"  type="text" class="date-pick" value="<#if crewMember.role.routCheck.expiryDate??>${crewMember.role.routCheck.expiryDate?string('dd/MM/yyyy')}<#else>${routeCheckExpiryDate!}</#if>" />
+				
+            </div>              
+            <br/>
               </#if> 
             <label for=""><b><u>Quizzes:</u></b></label>
             <br/>

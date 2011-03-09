@@ -770,6 +770,7 @@ public class CrewMember implements Cloneable, Comparable {
 	    private  Certificate opcCert;
 	    private  Certificate operationsManualCert;
 	    private  Certificate annualTechnicalManualCert;
+	    private Certificate routCheck;
 	    
 		
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
@@ -960,6 +961,13 @@ public class CrewMember implements Cloneable, Comparable {
 
 		public void setLpcCert(Certificate lpcCert) {
 			this.lpcCert = lpcCert;
+		}
+		public Certificate getRoutCheck() {
+			return this.routCheck;
+		}
+
+		public void setRoutCheck(Certificate routCheck) {
+			this.routCheck = routCheck;
 		}
 
 		public Certificate getOpcCert() {
