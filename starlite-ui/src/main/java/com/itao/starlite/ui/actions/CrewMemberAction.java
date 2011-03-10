@@ -32,6 +32,7 @@ import com.itao.jmesa.dsl.entities.Table;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.auth.annotations.Permissions;
+import com.itao.starlite.auth.exceptions.InsufficientPrivilagesException;
 import com.itao.starlite.docs.manager.BookmarkManager;
 import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.docs.model.Bookmark;
@@ -49,6 +50,7 @@ import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
+import com.itao.starlite.model.CrewMember.Passport;
 import com.itao.starlite.model.CrewMember.Role;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.CharterEntry;
@@ -174,6 +176,21 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String annualTechnicalManualCertFileFileName;
     public String annualTechnicalManualCertTags;
     
+    public File   passport1CertFile;
+	public String passport1CertFileContentType;
+    public String passport1CertFileFileName;
+    public String passport1CertTags;
+    
+    public File   passport2CertFile;
+	public String passport2CertFileContentType;
+    public String passport2CertFileFileName;
+    public String passport2CertTags;
+    
+    public File   passport3CertFile;
+	public String passport3CertFileContentType;
+    public String passport3CertFileFileName;
+    public String passport3CertTags;
+    
     public Document licence;
     public Document medical;
     public Document crm;
@@ -187,6 +204,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document opcCert;
     public Document operationsManualCert;
     public Document annualTechnicalManualCert;
+    public Document passport1Cert;
+    public Document passport2Cert;
+    public Document passport3Cert;
     
     public String subPosition;
     
@@ -205,6 +225,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String operationsManualExpiry;
     public String annualTechnicalManual;
     public String routeCheckExpiryDate;
+    public String passportCert1ExpiryDate;
+    public String passportCert2ExpiryDate;
+    public String passportCert3ExpiryDate;
     
     
     @SuppressWarnings("unchecked")
@@ -311,6 +334,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        lpcCert= folder.getDocumentByTag("LPC");
 	        operationsManualCert= folder.getDocumentByTag("opsManual");
 	        annualTechnicalManualCert= folder.getDocumentByTag("annualTechManual");
+	        passport1Cert    = folder.getDocumentByTag("passportVisa1");
+	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
+	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
 	        
 	        	        
 	        flighthours = folder.getDocumentByTag("flighthours");
@@ -480,6 +506,48 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		    LOG.info("Name:"+annualTechnicalManualCertFile.getName());
 		    LOG.info("Uuid:"+annualTechnicalManualCertFile.getUuid());		    
 		    return (InputStream) docManager.getDocumentData(annualTechnicalManualCertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getPassport1CertFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport1CertFile = folder.getDocumentByTag("passportCertificate1");
+		    LOG.info("Name:"+passport1CertFile.getName());
+		    LOG.info("Uuid:"+passport1CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport1CertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getPassport2CertFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport2CertFile = folder.getDocumentByTag("passportCertificate2");
+		    LOG.info("Name:"+passport2CertFile.getName());
+		    LOG.info("Uuid:"+passport2CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport2CertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	public InputStream getPassport3CertFile(){
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport3CertFile = folder.getDocumentByTag("passportCertificate3");
+		    LOG.info("Name:"+passport3CertFile.getName());
+		    LOG.info("Uuid:"+passport3CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport3CertFile);
 		  }
 		  catch(Exception e){
 			  LOG.error(e);			  			 
@@ -1334,17 +1402,72 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getRoutCheck().setExpiryDate(r);
 		}				
 	    
-	    
+//Passport 1 Certificate Expiry Date	
+		if (this.passportCert1ExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.passportCert1ExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (crewMember.getPassport().isEmpty() == false)
+			{
+			if (crewMember.getPassport().get(0) != null)
+			{
+			this.crewMember.getPassport().get(0).getCertificate().setExpiryDate(r);
+			}
+			}
+		}
+//Passport 2 Certificate Expiry Date	
+		if (this.passportCert2ExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.passportCert2ExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (crewMember.getPassport().isEmpty() == false)
+			{
+			if (crewMember.getPassport().get(1) != null)
+			{
+			this.crewMember.getPassport().get(1).getCertificate().setExpiryDate(r);
+			}
+			}
+		}				
+//Passport 3 Certificate Expiry Date	
+		if (this.passportCert3ExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.passportCert3ExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (crewMember.getPassport().isEmpty() == false)
+			{
+			if (crewMember.getPassport().get(2) != null)
+			{
+			this.crewMember.getPassport().get(2).getCertificate().setExpiryDate(r);
+			}
+			}
+		}			
 	    
   }//serDates()
 	/*-------------------------------------------------------------------*/
 	public String save() throws Exception
 	/*-------------------------------------------------------------------*/
 	{
-		//Set dates, otherwise they're not saved.
-		setDates();
+		
 		//set passports
-		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
+		ArrayList<Passport> cmPassports = new ArrayList<CrewMember.Passport>();
 		int index = 0;
 		if(passportsNumber != null){
 		for(String passportNumber : passportsNumber ){
@@ -1370,6 +1493,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		crewMember.setPassport(cmPassports);
 		}
 		
+		//Set dates, otherwise they're not saved. Must be after the Passports are created. 
+		setDates();
+		
+		
 		this.crewMember = manager.saveCrewMember(crewMember);
 		try{
 		  if(document != null){
@@ -1391,12 +1518,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	    int count = 0;
 	    if(passports != null){
 		while(morePassports){			
-			if(count < passports.size()){			
+			if(count < passports.size())
+			{			
 			    File passport = passports.get(count);
 			    String passportTags = passportsTags.get(count);
 			    String passportFileName = passportsFileName.get(count);
 			    String passportContentType = passportsContentType.get(count);
-			    passportTags = passportTags + count;
+			   // passportTags = passportTags + count;
 			    try{
 				    if(passport != null){
 					    LOG.info(passportTags+" "+docfolder);
@@ -1602,6 +1730,58 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
                     	  LOG.error("annualTechnical Cert error: "+e);
                           e.printStackTrace();
                       } 
+//Passport 1 Certificates            
+                      try{
+                          if(passport1CertFile!= null){         
+                              LOG.info(passport1CertTags+" "+docfolder+" "+docfolder+"/"+ passport1CertFileFileName);
+                              String[] tagsArray = passport1CertTags.split(" ");
+                              Document doc = new Document();
+                              doc.setName(passport1CertFileFileName);
+                              doc.setContentType(passport1CertFileContentType);
+                              Bookmark b = bookmarkManager.createBookmark(passport1CertFileFileName, "Document", docfolder+"/"+ passport1CertFileFileName, tagsArray);
+                              doc.setBookmark(b);
+                              docManager.createDocument(doc, docfolder, new FileInputStream(passport1CertFile), user);
+                          }
+                        }
+                        catch(Exception e){
+                      	  LOG.error("passport1 Cert error: "+e);
+                            e.printStackTrace();
+                        }        
+//Passport 2 Certificates            
+                        try{
+                            if(passport2CertFile!= null){         
+                                LOG.info(passport2CertTags+" "+docfolder+" "+docfolder+"/"+ passport2CertFileFileName);
+                                String[] tagsArray = passport2CertTags.split(" ");
+                                Document doc = new Document();
+                                doc.setName(passport2CertFileFileName);
+                                doc.setContentType(passport2CertFileContentType);
+                                Bookmark b = bookmarkManager.createBookmark(passport2CertFileFileName, "Document", docfolder+"/"+ passport2CertFileFileName, tagsArray);
+                                doc.setBookmark(b);
+                                docManager.createDocument(doc, docfolder, new FileInputStream(passport2CertFile), user);
+                            }
+                          }
+                          catch(Exception e){
+                        	  LOG.error("passport2 Cert error: "+e);
+                              e.printStackTrace();
+                          }    
+//Passport 3 Certificates       
+                          try{
+                              if(passport3CertFile!= null){         
+                                  LOG.info(passport3CertTags+" "+docfolder+" "+docfolder+"/"+ passport3CertFileFileName);
+                                  String[] tagsArray = passport3CertTags.split(" ");
+                                  Document doc = new Document();
+                                  doc.setName(passport3CertFileFileName);
+                                  doc.setContentType(passport3CertFileContentType);
+                                  Bookmark b = bookmarkManager.createBookmark(passport3CertFileFileName, "Document", docfolder+"/"+ passport3CertFileFileName, tagsArray);
+                                  doc.setBookmark(b);
+                                  docManager.createDocument(doc, docfolder, new FileInputStream(passport3CertFile), user);
+                              }
+                            }
+                            catch(Exception e){
+                          	  LOG.error("passport3 Cert error: "+e);
+                                e.printStackTrace();
+                            }                                
+                                          
               
           try{
               if(flighthoursFile!= null){         
@@ -1684,6 +1864,19 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     	    this.operationsManualExpiry = this.crewMember.getRole().getOperationsManualCert().getStringExpiryDate();
     	    this.annualTechnicalManual = this.crewMember.getRole().getAnnualTechnicalManualCert().getStringExpiryDate();
     	    this.routeCheckExpiryDate = this.crewMember.getRole().getRoutCheck().getStringExpiryDate();
+    	    
+    	    if (crewMember.getPassport().isEmpty()==false)
+    	    {
+    	    	for (int i =0; i< this.crewMember.getPassport().size(); i++)
+    	    	{
+    	    		if (this.crewMember.getPassport().get(i) != null)
+    	    		{
+    	    			if (i==0) {this.passportCert1ExpiryDate = this.crewMember.getPassport().get(i).getCertificate().getStringExpiryDate();}
+    	    			if (i==1) {this.passportCert2ExpiryDate = this.crewMember.getPassport().get(i).getCertificate().getStringExpiryDate();}
+    	    			if (i==2) {this.passportCert3ExpiryDate = this.crewMember.getPassport().get(i).getCertificate().getStringExpiryDate();}
+    	    		}
+    	    	}
+    	    }
 		}
 
 		
@@ -1702,6 +1895,18 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		if(user.hasRead("crewRole")){
 		Tab roleTab = new Tab("Role", "crewMember.action?tab=role&id="+idStr, tab.equals("role"));
 		tabList.add(roleTab);
+		
+		try {
+			folder = docManager.getFolderByPath("/crew/"+id, user);
+			passport1Cert    = folder.getDocumentByTag("passportVisa1");
+	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
+	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
+		} catch (InsufficientPrivilagesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        
 		}
 		
 		if(user.hasRead("crewPay")){

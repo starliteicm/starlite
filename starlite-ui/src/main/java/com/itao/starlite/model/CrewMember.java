@@ -87,6 +87,8 @@ public class CrewMember implements Cloneable, Comparable {
 		@Temporal(TemporalType.DATE)
 		public Date expiryDate;
 		public String country;
+		private Certificate certificate = new Certificate();
+		
 		
 		@Id @GeneratedValue
 		public Integer id;
@@ -102,6 +104,16 @@ public class CrewMember implements Cloneable, Comparable {
 		public void setExpiryDate(Date passportExpiryDate) {
 			this.expiryDate = passportExpiryDate;
 		}
+		public void setCertificate(Certificate certificate) {
+			this.certificate = certificate;
+		}
+
+		public Certificate getCertificate() 
+		{   if (certificate == null)
+		     {this.certificate = new Certificate();}
+			return certificate;
+		}
+
 		public Date getExpiryDate() {
 			return expiryDate;
 		}
