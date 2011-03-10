@@ -15,6 +15,7 @@ function validate(){
       var daily    = $("#daily").val();
       var training = $("#training").val();
       var travel   = $("#travel").val();
+      var basePilot = $("#basePilot").val();
       var errormsg = "<b> The following mandatory fields are blank: </b><br>";
       var error    = 0;
       
@@ -23,6 +24,7 @@ function validate(){
       if(daily   == ""){ errormsg += "Daily allowance, "; error=1;}      
       if(training== ""){ errormsg += "Training allowance, "; error=1;}
       if(travel  == ""){ errormsg += "Travel allowance, "; error=1;}
+      if(basePilot  == ""){ errormsg += "Senior Base Pilot allowance, "; error=1;}
       
       if(error==1){$("#msg-error").html(errormsg); return false;
       }else{
@@ -146,11 +148,51 @@ function validate(){
 					<input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
+						
+			<div class="fm-opt">
+				<label for="crewMember.payments.seniorBasePilot"><span style="color:red;">*</span>&nbsp;Senior Base Pilot:</label>
+				<#if readOnly>
+					<label>${crewMember.payments.seniorBasePilot.amountAsDouble!'&nbsp;'}</label>
+				<#else>
+					<input name="crewMember.payments.seniorBasePilot.amountAsDouble" id ="basePilot" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.seniorBasePilot.amountAsDouble!}"/>
+				</#if>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.payments.safetyLevel"><span style="color:red;">*</span>&nbsp;Safety Level:</label>
+				<#if readOnly>
+					<label>${crewMember.payments.safetyLevelValue.amountAsDouble!'&nbsp;'}</label>
+				<#else>
+				<select name="crewMember.payments.safetyLevel" style="width:81px;" id="level" >
+				  <option value="Level 1" <#if crewMember.payments.safetyLevel?if_exists == "Level 1">selected</#if>>Level 1
+					<option value="Level 2" <#if crewMember.payments.safetyLevel?if_exists == "Level 2">selected</#if>>Level 2
+					<option value="Level 3" <#if crewMember.payments.safetyLevel?if_exists == "Level 3">selected</#if>>Level 3
+					<option value="Level 4" <#if crewMember.payments.safetyLevel?if_exists == "Level 4">selected</#if>>Level 4
+					
+				</select>
+				<br/>
+				<#if crewMember.payments.safetyLevel == "Level 1">
+				  <label for="crewMember.payments.safetyLevelAmount">Safety Level Amount:</label>
+				  <input readonly="readonly" name="crewMember.payments.safetyLevelValue.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#BDBDBD;" value="5"/>
+				<#elseif crewMember.payments.safetyLevel == "Level 2">
+				  <label for="crewMember.payments.safetyLevelAmount">Safety Level Amount:</label>
+				  <input readonly="readonly" name="crewMember.payments.safetyLevelValue.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#BDBDBD;" value="10"/>
+				<#elseif crewMember.payments.safetyLevel == "Level 3">
+				  <label for="crewMember.payments.safetyLevelAmount">Safety Level Amount:</label>
+				  <input readonly="readonly" name="crewMember.payments.safetyLevelValue.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#BDBDBD;" value="15"/>
+				<#elseif crewMember.payments.safetyLevel == "Level 4">
+				  <label for="crewMember.payments.safetyLevelAmount">Safety Level Amount:</label>
+				  <input readonly="readonly"  name="crewMember.payments.safetyLevelValue.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#BDBDBD;" value="20"/>
+				</#if>
+				
+			</#if>   	    
+			</div>
+		<#if !readOnly>
+		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 10px;"><img src="images/icons/pencil.png"/>Save</button>
+			
 		</fieldset>
+		
 		</div>
 		<hr class="clear"/>
-		<#if !readOnly>
-		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
 		
   <div id="msg-error" style="color:red"></div>
 

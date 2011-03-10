@@ -203,7 +203,7 @@ $("document").ready(function()
        
    }
    
-   validateDate("passport1Cert",      "Passport 1 Visa is expired");
+   validateDate("passport1Cert",   "Passport 1 Visa is expired");
    validateDate("passport2Cert",   "Passport 2 Visa is expired");
    validateDate("passport3Cert",   "Passport 3 Visa is expired");
 });    

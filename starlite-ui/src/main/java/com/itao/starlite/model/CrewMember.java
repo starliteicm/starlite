@@ -1463,9 +1463,37 @@ public class CrewMember implements Cloneable, Comparable {
 		private Money dailyAllowance = new Money();
 		@Column(nullable=false)
 		private Money flightAllowance = new Money();
+		@Column(nullable=false)
+		private Money seniorBasePilot = new Money();
+		@Column(nullable=false, columnDefinition="varchar(10) default 'Level 1'")
+		private String safetyLevel;
+		@Column(nullable=false)
+		private Money safetyLevelValue = new Money();
 		
 		@Column(length=3)
 		private String currency;
+		
+		public Money getSeniorBasePilot() {
+			if (seniorBasePilot == null)
+				seniorBasePilot = new Money();
+			return seniorBasePilot;
+		}
+		
+		public String getSafetyLevel() {
+			if (safetyLevel == null)
+				safetyLevel = "Level 1";
+			return safetyLevel;
+		}
+		public void setSafetyLevel(String safetyLevel) {
+			this.safetyLevel = safetyLevel;
+		}
+		
+		public Money getSafetyLevelValue() {
+			if (safetyLevelValue == null)
+				safetyLevelValue = new Money();
+			return safetyLevelValue;
+		}
+		
 		
 		public Money getMonthlyBaseRate() {
 			if (monthlyBaseRate == null)
