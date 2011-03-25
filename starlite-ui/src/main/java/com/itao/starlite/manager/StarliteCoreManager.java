@@ -28,7 +28,9 @@ import com.itao.starlite.dao.ExchangeDao;
 //import com.itao.starlite.dao.FlightActualStatusDao;
 //import com.itao.starlite.dao.FlightActualsDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
+//import com.itao.starlite.dao.FlightGCatagoryDao;
 //import com.itao.starlite.dao.FlightLogDao;
+//import com.itao.starlite.dao.FlightOFPDao;
 //import com.itao.starlite.dao.FlightPlanDao;
 import com.itao.starlite.dao.JobSubTaskDao;
 //import com.itao.starlite.model.FlightActualStatus;
@@ -57,6 +59,8 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
+//import com.itao.starlite.model.FlightGCatagory;
+//import com.itao.starlite.model.FlightOFP;
 import com.itao.starlite.model.JobHistory;
 import com.itao.starlite.model.JobStatus;
 import com.itao.starlite.model.JobSubTask;
@@ -88,10 +92,12 @@ public class StarliteCoreManager {
 	@Inject private JobTicketDao jobTicketDao;	
 	@Inject private JobStatusDao jobStatusDao;
 	@Inject private JobHistoryDao jobHistoryDao;
-//	@Inject private FlightPlanDao flightPlanDao;
-//	@Inject private FlightActualsDao flightActualsDao;
-//	@Inject private FlightActualStatusDao flightActualStatusDao;
-//	@Inject private FlightLogDao flightLogDao;
+	//@Inject private FlightPlanDao flightPlanDao;
+	//@Inject private FlightActualsDao flightActualsDao;
+	//@Inject private FlightActualStatusDao flightActualStatusDao;
+	//@Inject private FlightLogDao flightLogDao;
+	//@Inject private FlightOFPDao flightOFPDao;
+	//@Inject private FlightGCatagoryDao flightGCategoryDao;
 	
 	
 	@Inject private AuthManager authManager;
@@ -165,6 +171,13 @@ public class StarliteCoreManager {
 			charterDao.makeTransient(c);
 		}
 	}
+	
+	@Transactional
+	public List<String> findAllCharterNames()
+	{
+		return this.charterDao.findAllCharterNames();
+	}
+	
 	
 	@Transactional
 	public ExchangeRate getExchangeRateByCode(String fromCode, String toCode) {
@@ -754,6 +767,21 @@ public class StarliteCoreManager {
 	public JobTicket getJobTicketByID(Integer id) {
 		return jobTicketDao.findJobTicketByID(id);
 	}
+	@Transactional
+	public List<JobTicket> getAllTicketsByPeriod(String period)
+	{
+		return jobTicketDao.findAllTicketsPerPeriod(period);
+	}
+	@Transactional
+	public List<JobTicket> getAllSuspiciousTicketsByPeriod(String period)
+	{
+		return jobTicketDao.findAllSuspiciousTicketsPerPeriod(period);
+	}
+	@Transactional
+	public List<JobTicket> getAllJobTicketsNotSuspended()
+	{
+		return jobTicketDao.findAllNonLoggedOutTickets();
+	}
 	
    //JobStatus
 	@Transactional
@@ -791,10 +819,47 @@ public class StarliteCoreManager {
 	}
 	
 	
-	
+	//FlightOFP
+/*	@Transactional
+	public FlightOFP saveFlightOFP(FlightOFP flightOFP) {
+		return flightOFPDao.makePersistent(flightOFP);
+	}
+	@Transactional
+	public List<FlightOFP> findFlightOFP(String contract, String invoiceNo, Date flightDate) {
+		return flightOFPDao.findFlightOFP(contract, invoiceNo, flightDate);
+	}
+	@Transactional
+	public List<FlightOFP> findAllFlightOFPs() {
+		return flightOFPDao.findAllFlightOFP();
+	}
+	@Transactional
+	public FlightOFP findFlightOFPById(Integer id) {
+		return flightOFPDao.findFlightOFPById(id);
+	}
+
+	//FlightGCategory
+	public List<FlightGCatagory> getAllGCategories()
+	{
+		return flightGCategoryDao.findAllGCategories();
+	}
+	public FlightGCatagory getGCategoryByValue(String gCategoryValue)
+	{
+		return flightGCategoryDao.findGCategoryByValue(gCategoryValue);
+		
+	}
+	public FlightGCatagory getGCategoryByID(Integer id)
+	{
+		return flightGCategoryDao.findGCategoryByID(id);
+		
+	}
+	public FlightGCatagory saveGCategory(FlightGCatagory gCategory)
+	{
+		return flightGCategoryDao.makePersistent(gCategory);
+		
+	}
 	
 	//FlightPlan
-/*	@Transactional
+	@Transactional
 	public FlightPlan saveFlightPlan(FlightPlan flightPlan) {
 		return flightPlanDao.makePersistent(flightPlan);
 	}

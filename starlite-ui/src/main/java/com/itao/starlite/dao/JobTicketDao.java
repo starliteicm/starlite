@@ -24,4 +24,7 @@ public interface JobTicketDao extends GenericDao<JobTicket, Integer>{
 	public void insertNewJobTicket(JobTicket jobTicket);
 	public JobTicket findJobTicketByID(Integer ID);
 	public boolean userHasWIPTickets(String username);
+	public List<JobTicket> findAllTicketsPerPeriod(String period);
+	public List<JobTicket> findAllSuspiciousTicketsPerPeriod(String period);
+	public List<JobTicket> findAllNonLoggedOutTickets();
 }

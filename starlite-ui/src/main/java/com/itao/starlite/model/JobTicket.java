@@ -1,9 +1,14 @@
 package com.itao.starlite.model;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +26,12 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.google.inject.Inject;
+import com.itao.starlite.auth.User;
+import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.manager.StarliteCoreManager;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
 
 
 /**
@@ -34,7 +44,7 @@ import com.itao.starlite.manager.StarliteCoreManager;
  */
 
 @Entity
-public class JobTicket implements Comparable{
+public class JobTicket implements Cloneable, Comparable{
 
 	@Id
 	@GeneratedValue
@@ -76,6 +86,7 @@ public class JobTicket implements Comparable{
 	//private String jobSubTask="";
 	@Column(nullable = false, columnDefinition="FLOAT(10,4) default 0.00")
 	private Double totalTicketHours = 0.00;
+	
 	
 	
 	
@@ -272,6 +283,11 @@ public class JobTicket implements Comparable{
 		}
 		
 	}
+	
+	
+
+	
+	
 
 	@Override
 	public int compareTo(Object arg0) {

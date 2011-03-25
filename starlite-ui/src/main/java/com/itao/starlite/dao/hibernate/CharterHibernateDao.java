@@ -1,5 +1,6 @@
 package com.itao.starlite.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class CharterHibernateDao extends GenericHibernateDao<Charter, Integer> i
 			.uniqueResult();
 	}
 
+
 	public Double getInvoicedHours(Charter c, Date date) {
 		MonthlyInvoicedHours i = (MonthlyInvoicedHours) getCurrentSession().createQuery("from MonthlyInvoicedHours i where i.charter = :charter and i.date = :date")
 			.setEntity("charter", c)
@@ -62,5 +64,22 @@ public class CharterHibernateDao extends GenericHibernateDao<Charter, Integer> i
 		}
 		i.setHours(hours);
 		getCurrentSession().save(i);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> findAllCharterNames() 
+	{
+		List<String> list = new ArrayList<String>();
+		List<Charter> tempCharters = (List<Charter>) getCurrentSession().createQuery("select distinct c from Charter c ").list();
+		
+		if (tempCharters.isEmpty() == false)
+		{
+			for (Charter temp : tempCharters)
+			{
+				list.add(temp.getClient());
+			}
+		}
+		return list;
 	}
 }
