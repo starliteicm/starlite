@@ -176,8 +176,8 @@ public class StarliteCoreManager {
 	@Transactional
 	public List<String> findAllCharterNames()
 	{
-		//return this.charterDao.findAllCharterNames();
-		return null;
+		return this.charterDao.findAllCharterNames();
+		//return null;
 	}
 	
 	

@@ -26,4 +26,6 @@ public interface CharterDao extends GenericDao<Charter, Integer>{
 	public Double getInvoicedHours(Charter c, Date date);
 
 	public void setInvoicedHours(Charter c, Date date, Double hours);
+	
+	public List<String> findAllCharterNames(); 
 }

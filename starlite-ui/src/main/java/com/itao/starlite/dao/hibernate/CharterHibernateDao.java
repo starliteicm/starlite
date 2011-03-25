@@ -67,9 +67,9 @@ public class CharterHibernateDao extends GenericHibernateDao<Charter, Integer> i
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<String> findAllCharterNames() 
 	{
+		//for crew reporting
 		List<String> list = new ArrayList<String>();
 		List<Charter> tempCharters = (List<Charter>) getCurrentSession().createQuery("select distinct c from Charter c ").list();
 		
