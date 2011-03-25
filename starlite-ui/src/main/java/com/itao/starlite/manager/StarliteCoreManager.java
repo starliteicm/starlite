@@ -25,18 +25,21 @@ import com.itao.starlite.dao.ComponentDao;
 import com.itao.starlite.dao.CrewDao;
 import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
+import com.itao.starlite.dao.JobSubTaskDao;
+import com.itao.starlite.dao.FlightAndDutyActualsDao;
 //import com.itao.starlite.dao.FlightActualStatusDao;
 //import com.itao.starlite.dao.FlightActualsDao;
-import com.itao.starlite.dao.FlightAndDutyActualsDao;
 //import com.itao.starlite.dao.FlightGCatagoryDao;
 //import com.itao.starlite.dao.FlightLogDao;
 //import com.itao.starlite.dao.FlightOFPDao;
 //import com.itao.starlite.dao.FlightPlanDao;
-import com.itao.starlite.dao.JobSubTaskDao;
 //import com.itao.starlite.model.FlightActualStatus;
 //import com.itao.starlite.model.FlightActuals;
 //import com.itao.starlite.model.FlightPlan;
 //import com.itao.starlite.model.FlightLog;
+//import com.itao.starlite.model.FlightGCatagory;
+//import com.itao.starlite.model.FlightOFP;
+
 import com.itao.starlite.dao.JobHistoryDao;
 import com.itao.starlite.dao.JobStatusDao;
 import com.itao.starlite.dao.JobTicketDao;
@@ -59,8 +62,6 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
-//import com.itao.starlite.model.FlightGCatagory;
-//import com.itao.starlite.model.FlightOFP;
 import com.itao.starlite.model.JobHistory;
 import com.itao.starlite.model.JobStatus;
 import com.itao.starlite.model.JobSubTask;
@@ -175,7 +176,8 @@ public class StarliteCoreManager {
 	@Transactional
 	public List<String> findAllCharterNames()
 	{
-		return this.charterDao.findAllCharterNames();
+		//return this.charterDao.findAllCharterNames();
+		return null;
 	}
 	
 	
