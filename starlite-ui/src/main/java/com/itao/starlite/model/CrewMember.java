@@ -1464,34 +1464,38 @@ public class CrewMember implements Cloneable, Comparable {
 		@Column(nullable=false)
 		private Money flightAllowance = new Money();
 		@Column(nullable=false)
-		private Money seniorBasePilot = new Money();
+		private Money basePilotAllowance = new Money();
 		@Column(nullable=false, columnDefinition="varchar(10) default 'Level 1'")
 		private String safetyLevel;
 		@Column(nullable=false)
-		private Money safetyLevelValue = new Money();
+		private Money safetyLevelAllowance = new Money();
 		
 		@Column(length=3)
 		private String currency;
 		
-		public Money getSeniorBasePilot() {
-			if (seniorBasePilot == null)
-				seniorBasePilot = new Money();
-			return seniorBasePilot;
+		public Money getBasePilotAllowance() {
+			if (basePilotAllowance == null)
+				basePilotAllowance = new Money();
+			return basePilotAllowance;
 		}
-		
+		public void setBasePilotAllowance(Double basePilotAllowance)
+		{
+			Money money = new Money();
+			money.setAmountAsDouble(basePilotAllowance);
+			this.basePilotAllowance = money;
+		}
 		public String getSafetyLevel() {
 			if (safetyLevel == null)
 				safetyLevel = "Level 1";
 			return safetyLevel;
 		}
-		public void setSafetyLevel(String safetyLevel) {
-			this.safetyLevel = safetyLevel;
-		}
 		
-		public Money getSafetyLevelValue() {
-			if (safetyLevelValue == null)
-				safetyLevelValue = new Money();
-			return safetyLevelValue;
+			
+				
+		public Money getSafetyLevelAllowance() {
+			if (safetyLevelAllowance == null)
+				safetyLevelAllowance = new Money();
+			return safetyLevelAllowance;
 		}
 		
 		
@@ -1532,6 +1536,8 @@ public class CrewMember implements Cloneable, Comparable {
 			instructorAllowance.setCurrencyCode(currency);
 			dailyAllowance.setCurrencyCode(currency);
 			flightAllowance.setCurrencyCode(currency);
+			basePilotAllowance.setCurrencyCode(currency);
+			safetyLevelAllowance.setCurrencyCode(currency);
 		}
 		
 	}
@@ -1634,6 +1640,12 @@ public class CrewMember implements Cloneable, Comparable {
 		@Column(nullable=false)
 		private Money flightRate;
 		
+		@Column(nullable=false)
+		private Money basePilotRate;
+		
+		@Column(nullable=false)
+		private Money safetyLevelRate;
+		
 		@Temporal(TemporalType.DATE)
 		private Date paidDate;
 		private Money paidAmount;
@@ -1718,6 +1730,26 @@ public class CrewMember implements Cloneable, Comparable {
 			}
 			return sum;
 		}
+		public Money getbasePilotRate() {
+			return this.basePilotRate;
+		}
+		public int getbasePilotDays() {
+			int sum =0;
+			for (CharterEntry e: entries.values()) {
+				sum += e.getBasePilotDays();
+			}
+			return sum;
+		}
+		public Money getSafetyLevelRate() {
+			return this.safetyLevelRate;
+		}
+		public int getSafetyLevelDays() {
+			int sum =0;
+			for (CharterEntry e: entries.values()) {
+				sum += e.getSafetyLevelDays();
+			}
+			return sum;
+		}
 		public Money getFlightRate() {
 			return flightRate;
 		}
@@ -1796,6 +1828,8 @@ public class CrewMember implements Cloneable, Comparable {
 			Money total = getMonthlyRate().multiply(monthlyHours);
 			total = total.add(getDailyRate().multiply(getDailyDays()));
 			total = total.add(getFlightRate().multiply(getFlightDays()));
+			total = total.add(getbasePilotRate().multiply(getbasePilotDays()));
+			total = total.add(getSafetyLevelRate().multiply(getSafetyLevelDays()));
 			total = total.add(getAreaRate().multiply(getAreaDays()));
 			total = total.add(getInstructorRate().multiply(getInstructorDays()));
 			total = total.add(getDiscomfortTotal());
@@ -1808,13 +1842,15 @@ public class CrewMember implements Cloneable, Comparable {
 		public FlightAndDutyActuals() {}
 		
 		public FlightAndDutyActuals(Money monthlyRate, Money areaRate,
-				Money instructorRate, Money dailyRate, Money flightRate) {
+				Money instructorRate, Money dailyRate, Money flightRate, Money basePilotRate, Money safetyLevelRate) {
 			super();
 			this.monthlyRate = monthlyRate;
 			this.areaRate = areaRate;
 			this.instructorRate = instructorRate;
 			this.dailyRate = dailyRate;
-			this.flightRate = flightRate;			
+			this.flightRate = flightRate;	
+			this.basePilotRate = basePilotRate;
+			this.safetyLevelRate = safetyLevelRate;
 		}
 		
 		@Embeddable
@@ -1966,6 +2002,8 @@ public class CrewMember implements Cloneable, Comparable {
 			private int    dailyDays;
 			private int    flightDays;
 		    private Integer discomfort;
+		    private int basePilotDays;
+		    private int safetyLevelDays;
 			
 			public int getAreaDays() {
 				return areaDays;
@@ -1988,8 +2026,21 @@ public class CrewMember implements Cloneable, Comparable {
 			public int getFlightDays() {
 				return flightDays;
 			}
+			public int getBasePilotDays() {
+				return this.basePilotDays;
+			}
+			public int getSafetyLevelDays()
+			{
+				return this.safetyLevelDays;
+			}
 			public void setFlightDays(int flightDays) {
 				this.flightDays = flightDays;
+			}
+			public void setbasePilotDays(int basePilotDays) {
+				this.basePilotDays = basePilotDays;
+			}
+			public void setSafetyLevelDays(int safetyLevelDays) {
+				this.safetyLevelDays = safetyLevelDays;
 			}
 			public void setAircraft(String aircraft) {
 				this.aircraft = aircraft;
@@ -2113,7 +2164,9 @@ public class CrewMember implements Cloneable, Comparable {
 						getPayments().getAreaAllowance(),
 						getPayments().getInstructorAllowance(),
 						getPayments().getDailyAllowance(),
-						getPayments().getFlightAllowance()
+						getPayments().getFlightAllowance(),
+						getPayments().getBasePilotAllowance(),
+						getPayments().getSafetyLevelAllowance()
 				   );
     }
     
@@ -2401,6 +2454,30 @@ public class CrewMember implements Cloneable, Comparable {
 				else{
 					cm = (CrewMember) clone();
 					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Travel",""+fda.getFlightDays(),fda.getFlightRate().toString(),fda.getFlightRate().multiply(fda.getFlightDays()).toString(),fdatotal);
+				}
+				storedCMs.put(type, cm);
+			}
+			if(fda.getbasePilotDays() != 0){
+				String type = "Senior Base Pilot";
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get(type);
+					cm = cm.addPayments(type,""+fda.getbasePilotDays(),fda.getbasePilotRate().toString(),fda.getbasePilotRate().multiply(fda.getbasePilotDays()).toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Senior Base Pilot",""+fda.getbasePilotDays(),fda.getbasePilotRate().toString(),fda.getbasePilotRate().multiply(fda.getbasePilotDays()).toString(),fdatotal);
+				}
+				storedCMs.put(type, cm);
+			}
+			if(fda.getSafetyLevelDays() != 0){
+				String type = "Safety Level";
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get(type);
+					cm = cm.addPayments(type,""+fda.getSafetyLevelDays(),fda.safetyLevelRate.toString(),fda.safetyLevelRate.multiply(fda.getSafetyLevelDays()).toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Safety Level",""+fda.getSafetyLevelDays(),fda.getSafetyLevelRate().toString(),fda.getSafetyLevelRate().multiply(fda.getSafetyLevelDays()).toString(),fdatotal);
 				}
 				storedCMs.put(type, cm);
 			}

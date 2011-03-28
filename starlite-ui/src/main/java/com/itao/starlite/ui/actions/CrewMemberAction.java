@@ -229,6 +229,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String passportCert2ExpiryDate;
     public String passportCert3ExpiryDate;
     
+    public Double basePilotAllowance;
+    public Double safetyLevel;
+    
     
     @SuppressWarnings("unchecked")
 	public TreeMap<String, TreeMap> months;
@@ -592,6 +595,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				.column("instructorDays").called("Days")
 				.column("flightRate").withStyle("text-align:right").called("Travel")
 				.column("flightDays").called("Days")
+				.column("basePilotRate").withStyle("text-align:right").called("SB Pilot")
+				.column("basePilotDays").called("Days")
+				.column("safetyLevelRate").withStyle("text-align:right").called("Safety Level")
+				.column("safetyLevelDays").called("Days")
 				.column("deductionTotal").called("Deductions")
 				.column("additionTotal").called("Contributions")
 				.column("total").called("Total Due").withStyle("text-align:right")
@@ -1063,7 +1070,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 					HashMap<String,String> tbRem = new HashMap<String,String>();
 					for (String code: actuals.getEntries().keySet()) {
 						CharterEntry ce = actuals.getEntries().get(code);
-						if (ce.getAreaDays() == 0 && ce.getDailyDays() == 0 && ce.getFlightDays() == 0 && ce.getInstructorDays() == 0)
+						if (ce.getAreaDays() == 0 && ce.getDailyDays() == 0 && ce.getFlightDays() == 0 && ce.getBasePilotDays() == 0 && ce.getSafetyLevelDays() == 0 && ce.getInstructorDays() == 0)
 							tbRem.put(code,"remove");
 					}
 					
@@ -1082,19 +1089,23 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						int area = parseInt(ServletActionContext.getRequest().getParameter("newEntryArea"+i));
 						int daily = parseInt(ServletActionContext.getRequest().getParameter("newEntryDaily"+i));
 						int flight = parseInt(ServletActionContext.getRequest().getParameter("newEntryFlight"+i));
+						int basePilot = parseInt(ServletActionContext.getRequest().getParameter("newEntryBasePilot"+i));
+						int safetyLevel = parseInt(ServletActionContext.getRequest().getParameter("newEntrySafetyLevel"+i));
 						int instructor = parseInt(ServletActionContext.getRequest().getParameter("newEntryInstructor"+i));
 						int discomfort = parseInt(ServletActionContext.getRequest().getParameter("newEntryDiscomfort"+i));
-						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor+", "+discomfort);
+						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + basePilot + ", "+ safetyLevel + ", "+instructor+", "+discomfort);
 
 						i++;
 
-						if (area != 0 || daily != 0 || flight != 0 || instructor != 0) {
+						if (area != 0 || daily != 0 || flight != 0 ||basePilot !=0 ||safetyLevel !=0 || instructor != 0) {
 							CharterEntry ce = new CrewMember.FlightAndDutyActuals.CharterEntry();
 							ce.setCharter(key1);
 							ce.setAircraft(key2);
 							ce.setAreaDays(area);
 							ce.setDailyDays(daily);
 							ce.setFlightDays(flight);
+							ce.setbasePilotDays(basePilot);
+							ce.setSafetyLevelDays(safetyLevel);
 							ce.setDiscomfort(discomfort);
 							ce.setInstructorDays(instructor);
 							actuals.getEntries().put(key, ce);
@@ -1465,7 +1476,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String save() throws Exception
 	/*-------------------------------------------------------------------*/
 	{
-		
+		if (this.basePilotAllowance != null)
+		{
+			if (crewMember != null){this.crewMember.getPayments().setBasePilotAllowance(basePilotAllowance);}
+		}
 		//set passports
 		ArrayList<Passport> cmPassports = new ArrayList<CrewMember.Passport>();
 		int index = 0;
@@ -1828,8 +1842,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						crewMember.getPayments().getAreaAllowance(),
 						crewMember.getPayments().getInstructorAllowance(),
 						crewMember.getPayments().getDailyAllowance(),
-						crewMember.getPayments().getFlightAllowance()
+						crewMember.getPayments().getFlightAllowance(),
+						crewMember.getPayments().getBasePilotAllowance(),
+						crewMember.getPayments().getSafetyLevelAllowance()
+						
 				);
+			
 			} else {
 				actuals = manager.getFlightAndDutyActualsById(actualsId);
 				Calendar cal = Calendar.getInstance();
