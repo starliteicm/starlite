@@ -42,9 +42,9 @@ def generate(manager, pageContext) {
       reportRow["assignedTo"]       = cm.assignedTo.code
        reportRow["fullname"]        = fullname
       reportRow["Task"]    			= cm.jobSubTask2.JobSubTaskCode
-      reportRow["TaskDesc"]    			= cm.jobSubTask2.JobSubTaskDesc
-      reportRow["Ticket Status"]	= cm.jobTicketStatus.jobstatus_value;
-      reportRow["Total Ticket Hrs"] = cm.totalTicketHours;
+      reportRow["TaskDesc"]    		= cm.jobSubTask2.JobSubTaskDesc
+      reportRow["Ticket Status"]	= cm.jobTicketStatus.jobstatus_value
+      reportRow["Total Ticket Hrs"] = cm.totalTicketHours
       report.add(reportRow)
       }
     }
