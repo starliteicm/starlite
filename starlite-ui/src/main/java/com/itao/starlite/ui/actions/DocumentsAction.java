@@ -19,6 +19,7 @@ import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.docs.model.Bookmark;
 import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
+import com.itao.starlite.manager.StarliteCoreManager;
 import com.opensymphony.xwork2.ActionSupport;
 
 @Results({
@@ -38,6 +39,8 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	private DocumentManager documentManager;
 	@Inject
 	private BookmarkManager bookmarkManager;
+	@Inject
+	private StarliteCoreManager manager;
 	
 	private User user;
 	public String errorMessage;
@@ -66,6 +69,8 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	
 	public String returnUrl;
 	public String shallReturn;
+	
+	public String id;
 	
 	public String upload() throws Exception 
 	{
@@ -104,8 +109,28 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	}
 	
 	public String path;
-	public String delete() throws Exception {
+	public String delete() throws Exception 
+	{
+		try
+		{
 		documentManager.deleteDocument(path, user);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				//manager.deleteDocByName(path,id);
+				//find the file and then delete
+				//File target = new File(path);
+				//target.delete();	
+				
+				
+			}
+			catch (Exception ee)
+			{
+				this.errorMessage = "Unable to delete the file: "+ path;
+			}
+		}
 		if (returnUrl != null)
 			return "redirect";
 		

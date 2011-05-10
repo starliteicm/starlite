@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.joda.time.DateMidnight;
@@ -27,26 +28,31 @@ import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
 import com.itao.starlite.dao.JobSubTaskDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
-//import com.itao.starlite.dao.FlightActualStatusDao;
-//import com.itao.starlite.dao.FlightActualsDao;
-//import com.itao.starlite.dao.FlightGCatagoryDao;
-//import com.itao.starlite.dao.FlightLogDao;
-//import com.itao.starlite.dao.FlightOFPDao;
-//import com.itao.starlite.dao.FlightPlanDao;
-//import com.itao.starlite.model.FlightActualStatus;
-//import com.itao.starlite.model.FlightActuals;
-//import com.itao.starlite.model.FlightPlan;
-//import com.itao.starlite.model.FlightLog;
-//import com.itao.starlite.model.FlightGCatagory;
-//import com.itao.starlite.model.FlightOFP;
-
+import com.itao.starlite.dao.FlightActualStatusDao;
+import com.itao.starlite.dao.FlightActualsDao;
+import com.itao.starlite.dao.FlightGCatagoryDao;
+import com.itao.starlite.dao.FlightLogDao;
+import com.itao.starlite.dao.FlightOFPDao;
+import com.itao.starlite.dao.FlightPlanDao;
+import com.itao.starlite.dao.MyFolderDao;
+import com.itao.starlite.model.FlightActualStatus;
+import com.itao.starlite.model.FlightActuals;
+import com.itao.starlite.model.FlightPlan;
+import com.itao.starlite.model.FlightLog;
+import com.itao.starlite.model.FlightGCatagory;
+import com.itao.starlite.model.FlightOFP;
 import com.itao.starlite.dao.JobHistoryDao;
 import com.itao.starlite.dao.JobStatusDao;
 import com.itao.starlite.dao.JobTicketDao;
 import com.itao.starlite.dao.StoreDao;
 import com.itao.starlite.dao.JobTaskDao;
+import com.itao.starlite.docs.dao.BookmarkDao;
+import com.itao.starlite.docs.dao.DocumentDao;
 import com.itao.starlite.docs.manager.DocumentManager;
+import com.itao.starlite.docs.model.Bookmark;
+import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
+import com.itao.starlite.docs.model.Tag;
 import com.itao.starlite.exceptions.CannotCreateCrewMemberException;
 import com.itao.starlite.exceptions.ExistingRecordException;
 import com.itao.starlite.model.Actuals;
@@ -93,12 +99,14 @@ public class StarliteCoreManager {
 	@Inject private JobTicketDao jobTicketDao;	
 	@Inject private JobStatusDao jobStatusDao;
 	@Inject private JobHistoryDao jobHistoryDao;
-	//@Inject private FlightPlanDao flightPlanDao;
-	//@Inject private FlightActualsDao flightActualsDao;
-	//@Inject private FlightActualStatusDao flightActualStatusDao;
-	//@Inject private FlightLogDao flightLogDao;
-	//@Inject private FlightOFPDao flightOFPDao;
-	//@Inject private FlightGCatagoryDao flightGCategoryDao;
+	@Inject private FlightPlanDao flightPlanDao;
+	@Inject private FlightActualsDao flightActualsDao;
+	@Inject private FlightActualStatusDao flightActualStatusDao;
+	@Inject private FlightLogDao flightLogDao;
+	@Inject private FlightOFPDao flightOFPDao;
+	@Inject private FlightGCatagoryDao flightGCategoryDao;
+	@Inject private MyFolderDao myFolderDao;
+	@Inject private BookmarkDao bookmarkDao;
 	
 	
 	@Inject private AuthManager authManager;
@@ -556,11 +564,21 @@ public class StarliteCoreManager {
 		return adhoc;
 	}
 
-	public List<CrewMember> getPermCrew() {
+	public List<CrewMember> getPermCrewCRI() {
 		List<CrewMember> all = getAllCrew();
 		List<CrewMember> perm = new ArrayList<CrewMember>();
 		for(CrewMember c : all){
-			if("Permanent".equals(c.getRole().getEmployment())){
+			if ("Permanent CRI".equals(c.getRole().getEmployment())){
+				perm.add(c);
+			}
+		}
+		return perm;
+	}
+	public List<CrewMember> getPermCrewStarlite() {
+		List<CrewMember> all = getAllCrew();
+		List<CrewMember> perm = new ArrayList<CrewMember>();
+		for(CrewMember c : all){
+			if ("Permanent Starlite".equals(c.getRole().getEmployment())) {
 				perm.add(c);
 			}
 		}
@@ -822,7 +840,7 @@ public class StarliteCoreManager {
 	
 	
 	//FlightOFP
-/*	@Transactional
+	@Transactional
 	public FlightOFP saveFlightOFP(FlightOFP flightOFP) {
 		return flightOFPDao.makePersistent(flightOFP);
 	}
@@ -924,7 +942,38 @@ public class StarliteCoreManager {
 	public FlightActualStatus findStatusValueByID(int id) {
 		return flightActualStatusDao.findStatusValueByID(id);
 	}
-	
-*/
+	@Transactional
+	public FlightActualStatus findStatusIDByValue(String value) {
+		return flightActualStatusDao.findStatusIDByValue(value);
+	}
 
+	//MyFolder
+	@Transactional
+	public List<Bookmark> findDocsByTag(String tag, String person) {
+		return myFolderDao.findFilesPerTag(tag, person);
+	}
+	@Transactional
+	public void deleteDocByName(String name, String person) {
+		List<Bookmark> bookmarks = myFolderDao.findFilesPerTag(name, person);
+		
+		if (bookmarks.isEmpty() == false)
+		{
+			for (int i=0; i< bookmarks.size(); i++)
+			{
+				Set<Tag> tempTags =  bookmarks.get(i).getTags();
+
+				for (Tag e : tempTags)
+				{
+					if (e.getTag().compareToIgnoreCase(name) == 0)
+					{
+			              bookmarks.remove(e);
+			              break;
+					}
+							
+				}
+				bookmarkDao.makePersistent(bookmarks.get(i));
+			}
+			
+		}
+	}
 }

@@ -784,6 +784,8 @@ public class CrewMember implements Cloneable, Comparable {
 	    private  Certificate annualTechnicalManualCert;
 	    private Certificate routCheck;
 	    
+	    @Column(nullable = true, columnDefinition="varchar(255) default ' '")
+		private String base;
 		
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
@@ -1445,6 +1447,14 @@ public class CrewMember implements Cloneable, Comparable {
 
 		public void setHuet(Certificate huet) {
 			this.huet = huet;
+		}
+
+		public String getBase() {
+			return base;
+		}
+
+		public void setBase(String base) {
+			this.base = base;
 		}
 
 

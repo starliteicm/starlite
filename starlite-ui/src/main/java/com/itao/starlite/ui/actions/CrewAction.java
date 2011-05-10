@@ -237,7 +237,7 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 
 	@Override
 	public String execute() throws Exception {
-		crew = manager.getPermCrew();
+		crew = manager.getPermCrewCRI();
         sortCrewByName();
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("crewTable", ServletActionContext.getRequest());
 		tableFacade.setItems(crew);
@@ -253,6 +253,24 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 		tab="Permenant Crew";
 		prepareTabs();
 		return SUCCESS;
+	}
+	public String crewStarlite() throws Exception{
+		crew = manager.getPermCrewStarlite();
+        sortCrewByName();
+		TableFacade tableFacade = TableFacadeFactory.createTableFacade("crewTable", ServletActionContext.getRequest());
+		tableFacade.setItems(crew);
+		tableFacade.setMaxRows(300);
+		HtmlComponentFactory factory = new HtmlComponentFactory(tableFacade.getWebContext(), tableFacade.getCoreContext());
+		HtmlTable table = factory.createTable();
+		HtmlRow row = factory.createRow();
+		addColumnsToRow(row, factory);
+		table.setRow(row);
+		tableFacade.setTable(table);
+		tableFacade.setView(new PlainTableView());
+		tableHtml = tableFacade.render();
+		tab="Permanent Starlite Crew";
+		prepareTabs();
+		return "Permanent Starlite Crew";
 	}
 	
 	public String freelance() throws Exception{
@@ -365,6 +383,10 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 		column.setTitle("First Name");
 		row.addColumn(column);
 
+		//column = factory.createColumn("role.employment");
+		//column.setTitle("Employment");
+		//row.addColumn(column);
+		
 		column = factory.createColumn("role.position");
 		column.setTitle("Role");
 		row.addColumn(column);
@@ -578,13 +600,14 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 
 	public Tab[] tableTabs;
 	public void prepareTabs() {
-		Tab aircraftTab = new Tab("Permenant Crew", "crew.action", tab.equals("Permenant Crew"));
+		Tab aircraftTab = new Tab("Permenant Crew CRI", "crew.action", tab.equals("Permenant Crew"));
+		Tab aircraftTab2 = new Tab("Permenant Crew Starlite", "crew!crewStarlite.action", tab.equals("Permenant Crew Starlite"));
 		Tab aircraftTypeTab = new Tab("Freelance Crew", "crew!freelance.action", tab.equals("Freelance Crew"));
 		Tab permanentInactive = new Tab("Permenant Crew - Inactive", "crew!permCrewInactive.action", tab.equals("Permenant Crew Inactive"));
 		Tab freelanceInactive = new Tab("Freelance Crew - Inactive", "crew!freelanceInactive.action", tab.equals("Freelance Crew Inactive"));
 		
 		if (user.hasPermission("ManagerView"))
-			tableTabs = new Tab[] {aircraftTab, aircraftTypeTab,permanentInactive, freelanceInactive};
+			tableTabs = new Tab[] {aircraftTab, aircraftTab2,aircraftTypeTab,permanentInactive, freelanceInactive};
 		
 	}
 

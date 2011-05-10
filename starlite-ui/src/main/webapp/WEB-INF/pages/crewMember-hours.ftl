@@ -241,7 +241,7 @@
 		  <tr>
 		    <th>&nbsp;</th>
 		    <th><b>Activity / Comments</b></th>
-		    <th><b>Type</b></th>
+		   <!-- <th><b>Type</b></th> -->
 		    <th><b>Registration</b></th>
 		    <th><b>Contract</b></th>
 		    

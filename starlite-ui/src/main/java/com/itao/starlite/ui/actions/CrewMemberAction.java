@@ -50,6 +50,7 @@ import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
+import com.itao.starlite.model.MyFolder;
 import com.itao.starlite.model.CrewMember.Passport;
 import com.itao.starlite.model.CrewMember.Role;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
@@ -208,6 +209,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document passport2Cert;
     public Document passport3Cert;
     
+    public List<Bookmark> additionalDocs = new ArrayList<Bookmark>();
+    
     public String subPosition;
     
     public String reviewDate;
@@ -253,8 +256,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 	
 	public List<String> pilots = new ArrayList<String>();
+
+	/*------------------------------------------------------------*/
 	@Override
-	public String execute() throws Exception {
+	public String execute() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		//crewMember = manager.getCrewMember(id);
 		pilots = manager.getAllActivePilots();
 		prepare();
@@ -333,6 +340,31 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        huet        = folder.getDocumentByTag("HUET");
 	        hemsCert    = folder.getDocumentByTag("HEMS");
 	        additionalCert = folder.getDocumentByTag("additionalCert");
+	        List<Bookmark> additionalDocsTempList = (List<Bookmark>) manager.findDocsByTag("additionalCert",id);
+	        
+	        if (additionalDocsTempList.isEmpty() == true)
+	        {
+	        	additionalDocsTempList = new ArrayList<Bookmark>();
+	        }
+	        Collections.reverse(additionalDocsTempList);
+	        if (additionalDocsTempList.size() > 5)
+	        {
+	        	List<Bookmark> temp = additionalDocsTempList.subList(0, 5);
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.additionalDocs.add(temp.get(i));
+	        	}
+	        }
+	        else
+	        {
+	        	List<Bookmark> temp = additionalDocsTempList;
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.additionalDocs.add(temp.get(i));
+	        	}
+	        }
+	        
+	        
 	        opcCert= folder.getDocumentByTag("OPC");
 	        lpcCert= folder.getDocumentByTag("LPC");
 	        operationsManualCert= folder.getDocumentByTag("opsManual");
@@ -347,25 +379,32 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		return tab;
 	}
-
-	public String profile() throws Exception{
+	/*------------------------------------------------------------*/
+	public String profile() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		LOG.info(crewMember.getId());
 		return "profile";
 	}
-	
-	public String required() throws Exception{
+	/*------------------------------------------------------------*/
+	public String required() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		LOG.info(crewMember.getId());
 		return "required";
 	}
-	
-	public String photo(){
+	/*------------------------------------------------------------*/
+	public String photo()
+	/*------------------------------------------------------------*/
+	{
 		return "photo";
 	}
-	
-	
-	public InputStream getPhoto(){
+	/*------------------------------------------------------------*/
+	public InputStream getPhoto()
+	/*------------------------------------------------------------*/
+	{
 	  try{
 	    folder = docManager.getFolderByPath("/crew/"+id, user);
 	    LOG.info(folder.getDocs());
@@ -386,8 +425,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 	  }
 	}
-	
-	public InputStream getCrmFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getCrmFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -401,8 +442,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-
-	public InputStream getDgFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getDgFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -416,8 +459,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	
-	public InputStream getHuetFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getHuetFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -431,7 +476,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getHemsFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getHemsFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -445,7 +493,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getAdditionalFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getAdditionalFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -459,7 +510,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getLpcFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getLpcFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -473,7 +527,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getOpcFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getOpcFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -487,7 +544,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getOperationsManualCertFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getOperationsManualCertFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -501,7 +561,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getAnnualTechnicalManualCertFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getAnnualTechnicalManualCertFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -515,7 +578,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getPassport1CertFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getPassport1CertFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -529,7 +595,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getPassport2CertFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getPassport2CertFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -543,7 +612,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	public InputStream getPassport3CertFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getPassport3CertFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -557,9 +629,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	
-	
- 	public InputStream getFlighthoursFile(){
+	/*------------------------------------------------------------*/
+ 	public InputStream getFlighthoursFile()
+ 	/*------------------------------------------------------------*/
+ 	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -575,7 +648,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 	
 	public String tableHtml;
-	private String setupFlight() {
+	/*------------------------------------------------------------*/
+	private String setupFlight()
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
 			tableHtml = "No Records Found";
 		}
@@ -609,10 +685,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "flight";
 	}
-	
-	
+	/*------------------------------------------------------------*/	
 	@SuppressWarnings("deprecation")
-	public String saveRange() throws Exception{
+	public String saveRange() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		Aircraft aircraft =  null;
 		Charter charter = null;
@@ -662,9 +739,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "redirect-hours";
 	}
-	
-	
-	public String saveHours() throws Exception{
+	/*------------------------------------------------------------*/	
+	public String saveHours() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		for(int i = 1; i < 32; i++){
 			
@@ -727,9 +805,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		return "redirect-hours";
 	}
-	
+	/*------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
-	private String setupHours() throws Exception{
+	private String setupHours() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		
 		int startYear = 2009;
 		int startMonth = 1;
@@ -811,7 +891,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		//provide month list
 		return "hours";
 	}
-	
+	/*------------------------------------------------------------*/
 
 	public String errorMessage;
 	public String notificationMessage;
@@ -826,8 +906,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public double amount;
 	public double amountUSD;
 
-	
-	public String addAddition() throws Exception{
+	/*------------------------------------------------------------*/
+	public String addAddition() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -896,9 +978,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "redirect-addFlightActuals";
 	}
-	
+	/*------------------------------------------------------------*/
 	//remove a deduction from a crewMember
-	public String remAddition() throws Exception{
+	public String remAddition() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -929,9 +1013,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "addFlightActuals";
 	}
-	
+	/*------------------------------------------------------------*/
 	//add a deduction to a crewMember
-	public String addDeduction() throws Exception{
+	public String addDeduction() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -1000,9 +1086,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "redirect-addFlightActuals";
 	}
-
+	/*------------------------------------------------------------*/
 	//remove a deduction from a crewMember
-	public String remDeduction() throws Exception{
+	public String remDeduction() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -1033,9 +1121,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "addFlightActuals";
 	}
-	
-	
-	public String addFlightActuals() throws Exception {
+	/*------------------------------------------------------------*/
+	public String addFlightActuals() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		
 		if("".equals(errorMessage)){errorMessage = null; }
 		if("".equals(notificationMessage)){notificationMessage = null; }
@@ -1139,8 +1228,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return execute();
 	}
-
-	private int parseInt(String i) {
+	/*------------------------------------------------------------*/
+	private int parseInt(String i)
+	/*------------------------------------------------------------*/
+	{
 		if (i == null || i.trim().length()==0)
 			return 0;
 		try {
@@ -1150,10 +1241,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			return 0;
 		}
 	}
-
+	/*------------------------------------------------------------*/
 	public List<Document> docs;
 	public Folder folder;
-	public String docs() throws Exception {
+	/*------------------------------------------------------------*/
+	public String docs() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (id == null) {
 			return ERROR;
 		}
@@ -1199,8 +1293,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		tagArray = buf.toString();
 		return "docs";
 	}
-
-	public String create() {
+	/*------------------------------------------------------------*/
+	public String create()
+	/*------------------------------------------------------------*/
+	{
 		//crewMember = new CrewMember();
 		breadcrumbs = Breadcrumb.toArray(
 				new Breadcrumb("Crew", "crew.action"),
@@ -1862,7 +1958,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 	}
 	/*-----------------------------------------------------*/
-	private void prepareTabs() {
+	private void prepareTabs()
+	/*------------------------------------------------------------*/
+	{
 		String idStr = "";
 		if (id != null) {
 			idStr=id;
@@ -1968,10 +2066,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			count++;
 		}
 	}
-		
+	/*------------------------------------------------------------*/	
 
     public String fromPage = "";
-	public String assignments() {
+    /*------------------------------------------------------------*/
+	public String assignments()
+	/*------------------------------------------------------------*/
+	{
 		tab = "assignments";
 
         if ("".equals(fromPage)) {
@@ -1992,39 +2093,50 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 		return "assignments";
 	}
-
-	public void setUser(User arg0) {
+	/*------------------------------------------------------------*/
+	public void setUser(User arg0)
+	/*------------------------------------------------------------*/
+	{
 		user = arg0;
 	}
-
-	public User getUser() {
+	/*------------------------------------------------------------*/
+	public User getUser()
+	/*------------------------------------------------------------*/
+	{
 		return user;
 	}
-
+	/*------------------------------------------------------------*/
 	@Permissions("Approve")
-	public String review() throws Exception {
+	public String review() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		String approvalKey = approvalsManager.review(crewMember.getApprovalGroup().getId(), 1000*60*5);
 		ServletActionContext.getRequest().getSession().setAttribute("approvalKey-"+crewMember.getApprovalGroup().getId(), approvalKey);
 		prepare();
 		notificationMessage = "Crew Member locked for 5 minutes";
 		return execute();
 	}
-
+	/*------------------------------------------------------------*/
 	@Permissions("Approve")
-	public String approve() throws Exception {
+	public String approve() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		String approvalKey = (String) ServletActionContext.getRequest().getSession().getAttribute("approvalKey-"+crewMember.getApprovalGroup().getId());
 		approvalsManager.approve(crewMember.getApprovalGroup().getId(), approvalKey);
 		prepare();
 		notificationMessage = "Crew Member has been approved";
 		return execute();
 	}
-
+	/*------------------------------------------------------------*/
 	@Permissions("Approve")
-	public String open() throws Exception {
+	public String open() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		String approvalKey = (String) ServletActionContext.getRequest().getSession().getAttribute("approvalKey-"+crewMember.getApprovalGroup().getId());
 		approvalsManager.open(crewMember.getApprovalGroup().getId(), approvalKey);
 		prepare();
 		notificationMessage = "Crew Member has been opened for editing";
 		return execute();
 	}
+	/*------------------------------------------------------------*/
 }
