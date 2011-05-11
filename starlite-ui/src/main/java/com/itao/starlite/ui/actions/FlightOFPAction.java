@@ -52,9 +52,7 @@ import com.itao.starlite.ui.jmesa.PlainTableView;
 import com.opensymphony.xwork2.ActionSupport;
 @Results({
 	@Result(name="redirect", type=ServletRedirectResult.class, value="aircraft!flightOFP.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}&tab=${tab}"),
-	@Result(name="redirect-list", type=ServletRedirectResult.class, value="FlightOFP.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}"),
-	
-	
+	@Result(name="redirect-list", type=ServletRedirectResult.class, value="FlightOFP.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
 })
 @Permissions("ManagerView")
 public class FlightOFPAction extends ActionSupport implements UserAware {
