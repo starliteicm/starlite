@@ -320,6 +320,7 @@ public class AircraftAction extends ActionSupport implements UserAware {
 		
 		if (user.hasPermission("ManagerView"))
 		//	tableTabs = new Tab[] {aircraftTab, aircraftTypeTab,aircraftFlightActualsTab,aircraftFlightPlansTab,aircraftFlightMisconfigurationsTab};
+		//	tableTabs = new Tab[] {aircraftTab, aircraftTypeTab};
 			tableTabs = new Tab[] {aircraftTab, aircraftTypeTab};
 	}
 	
