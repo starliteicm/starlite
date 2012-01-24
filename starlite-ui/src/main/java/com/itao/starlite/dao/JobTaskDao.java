@@ -17,4 +17,5 @@ import com.itao.starlite.model.JobTask;
 public interface JobTaskDao extends GenericDao<JobTask, Integer>{
 
 	public List<JobTask> findAllTasks();
+	public JobTask findJobTaskByValue(String jobTaskValue);
 }

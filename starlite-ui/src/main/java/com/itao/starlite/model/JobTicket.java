@@ -1,8 +1,14 @@
 package com.itao.starlite.model;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,7 +26,12 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.google.inject.Inject;
+import com.itao.starlite.auth.User;
+import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.manager.StarliteCoreManager;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
 
 
 /**
@@ -33,7 +44,7 @@ import com.itao.starlite.manager.StarliteCoreManager;
  */
 
 @Entity
-public class JobTicket {
+public class JobTicket implements Cloneable, Comparable{
 
 	@Id
 	@GeneratedValue
@@ -41,6 +52,9 @@ public class JobTicket {
 	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private JobTask jobTask = new JobTask();
+	
+	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private JobSubTask jobSubTask2 = new JobSubTask();
 	
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private Aircraft aircraft = new Aircraft();
@@ -51,11 +65,7 @@ public class JobTicket {
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private CrewMember assignedTo = new CrewMember();
 	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@Fetch(FetchMode.SUBSELECT)
-	private List<JobStatusButton> jobStatusButtons = 
-		new ArrayList<JobStatusButton>();
-	
+		
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
 	private List<JobHistory> jobTicketHistory = 
@@ -72,10 +82,11 @@ public class JobTicket {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date endTime;
 	
-	@Column(nullable = false, columnDefinition="int(5) default 0")
-	private int posY=0;
-	@Column(nullable = false, columnDefinition="int(5) default 0")
-	private int posX=0;
+	//@Column(nullable = false, columnDefinition="varchar(100) default 'no description available'")
+	//private String jobSubTask="";
+	@Column(nullable = false, columnDefinition="FLOAT(10,4) default 0.00")
+	private Double totalTicketHours = 0.00;
+	
 	
 	
 	
@@ -84,15 +95,30 @@ public class JobTicket {
 	}
 
     @Inject
-	public void createJobTicket(JobTask jobTask, Aircraft aircraft, CrewMember submittedBy, CrewMember assignedTo, List<JobStatusButton> jobStatusButtons, StarliteCoreManager manager)
+	public void createJobTicket(JobTask jobTask, Aircraft aircraft, CrewMember submittedBy, CrewMember assignedTo, StarliteCoreManager manager, JobSubTask jobSubTask2 )
 	{
 		this.jobTask = jobTask;
 		this.aircraft = aircraft;
 		this.submittedBy = submittedBy;
 		this.assignedTo = assignedTo;
-		this.jobStatusButtons = jobStatusButtons;
-		JobStatus wip = manager.getJobStatusValue("OPEN");
-		this.jobTicketStatus = wip;
+		JobStatus status = null;
+		boolean WIPTickets = manager.userHasWIPTickets(assignedTo.getCode());
+		if (WIPTickets)
+		{
+			//if the user has WIP tickets, then suspend this ticket
+			status = manager.getJobStatusValue("SUSPENDED");
+		}
+		else
+		{
+			//if the user doesn't have WIP tickets, then WIP this ticket
+			status = manager.getJobStatusValue("WIP");
+		}
+		
+		//get value for jobSubTask
+		this.jobSubTask2 = manager.getJobSubTaskByValue(jobSubTask2.getJobSubTaskCode());
+		
+		this.jobTicketStatus = status;
+		this.jobSubTask2 = jobSubTask2;
 		
 		
 	}
@@ -155,20 +181,6 @@ public class JobTicket {
 		this.assignedTo = assignedTo;
 	}
 
-
-
-	public List<JobStatusButton> getJobStatusButtons() {
-		return jobStatusButtons;
-	}
-
-
-
-	public void setJobStatusButtons(List<JobStatusButton> jobStatusButtons) {
-		this.jobStatusButtons = jobStatusButtons;
-	}
-
-
-
 	public JobStatus getJobTicketStatus() {
 		return jobTicketStatus;
 	}
@@ -215,55 +227,23 @@ public class JobTicket {
 		this.endTime = endTime;
 	}
 	
-	public List<JobStatusButton> createButtons(StarliteCoreManager manager)
+	public JobSubTask getJobSubTask() {
+		return jobSubTask2;
+	}
+
+	public void setJobSubTask(JobSubTask jobSubTask) {
+		this.jobSubTask2 = jobSubTask;
+	}
+
+	public Double getTotalTicketHours() 
 	{
-		JobStatus wip = manager.getJobStatusValue("WIP");
-	    JobStatus suspended = manager.getJobStatusValue("SUSPENDED");	
-		JobStatus closed = manager.getJobStatusValue("CLOSED");
-		
-		 JobStatusButton button = new JobStatusButton();
-	     button.setJobStatus(wip);
-	     button.setJobStatusBtnState(0);
-	     this.jobStatusButtons.add(button);
-	    
-	     button = new JobStatusButton();
-	     button.setJobStatus(suspended);
-	     button.setJobStatusBtnState(0);
-	     this.jobStatusButtons.add(button);
-	     
-	     button = new JobStatusButton();
-	     button.setJobStatus(closed);
-	     button.setJobStatusBtnState(0);
-	     this.jobStatusButtons.add(button);
-	     return (this.jobStatusButtons);
+		Double hours = this.totalTicketHours;
+		DecimalFormat twoDForm = new DecimalFormat("#.###");
+		return Double.valueOf(twoDForm.format(hours));
 	}
 
-	/**
-	 * @return the posY
-	 */
-	public int getPosY() {
-		return posY;
-	}
-
-	/**
-	 * @param posY the posY to set
-	 */
-	public void setPosY(int posY) {
-		this.posY = posY;
-	}
-
-	/**
-	 * @return the posX
-	 */
-	public int getPosX() {
-		return posX;
-	}
-
-	/**
-	 * @param posX the posX to set
-	 */
-	public void setPosX(int posX) {
-		this.posX = posX;
+	public void setTotalTicketHours(Double totalTime) {
+		this.totalTicketHours = totalTime;
 	}
 
 	/**
@@ -302,6 +282,26 @@ public class JobTicket {
 			this.jobTicketHistory.add(history);
 		}
 		
+	}
+	
+	
+
+	
+	
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		JobTicket temp = (JobTicket)arg0;
+	    final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+
+		if (( this.getJobTicketID()== temp.getJobTicketID())) return EQUAL; 
+		if (( this.getJobTicketID() > temp.getJobTicketID())) return BEFORE;
+		if (( this.getJobTicketID() < temp.getJobTicketID())) return AFTER;
+
+	return EQUAL;
 	}
 
 

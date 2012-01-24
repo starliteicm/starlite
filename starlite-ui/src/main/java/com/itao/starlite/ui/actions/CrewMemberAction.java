@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import com.itao.jmesa.dsl.entities.Table;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.UserAware;
 import com.itao.starlite.auth.annotations.Permissions;
+import com.itao.starlite.auth.exceptions.InsufficientPrivilagesException;
 import com.itao.starlite.docs.manager.BookmarkManager;
 import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.docs.model.Bookmark;
@@ -48,6 +50,9 @@ import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
+import com.itao.starlite.model.MyFolder;
+import com.itao.starlite.model.CrewMember.Passport;
+import com.itao.starlite.model.CrewMember.Role;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.CharterEntry;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
@@ -60,7 +65,7 @@ import com.opensymphony.xwork2.Preparable;
 
 
 @SuppressWarnings("serial")
-@ParentPackage("prepare")
+
 @Results({
     @Result(name="unauthorised", type=ServletRedirectResult.class, value="unauthorised.html"),
     @Result(name="redirect-hours", type=ServletRedirectResult.class, value="crewMember.action?id=${id}&tab=hours&notificationMessage=Saved"),
@@ -79,6 +84,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String switch_role_to = "";//used to store temporary role switch to drive different form
 	public String tagArray = "[]";
 	private User user;
+	//public Role role;
+	
+	public ArrayList<String> YNOption = new ArrayList<String> ();
 	
 	public String docfolder;
 	public File document;
@@ -123,6 +131,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String huetFileFileName;
     public String huetTags;
     
+    public File   hemsCertFile;
+	public String hemsCertFileContentType;
+    public String hemsCertFileFileName;
+    public String hemsCertTags;
+    
+    public File   additionalCertFile;
+	public String additionalCertFileContentType;
+    public String additionalCertFileFileName;
+    public String additionalCertTags;
+    
     public File   flighthoursFile;
     public String flighthoursFileContentType;
     public String flighthoursFileFileName;
@@ -138,13 +156,84 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String licenceFileFileName;
     public String licenceTags;
     
+    public File   lpcCertFile;
+	public String lpcCertFileContentType;
+    public String lpcCertFileFileName;
+    public String lpcCertTags;
+    
+    public File   opcCertFile;
+	public String opcCertFileContentType;
+    public String opcCertFileFileName;
+    public String opcCertTags;
+    
+    public File   operationsManualCertFile;
+	public String operationsManualCertFileContentType;
+    public String operationsManualCertFileFileName;
+    public String operationsManualCertTags;
+    
+
+    public File   annualTechnicalManualCertFile;
+	public String annualTechnicalManualCertFileContentType;
+    public String annualTechnicalManualCertFileFileName;
+    public String annualTechnicalManualCertTags;
+    
+    public File   passport1CertFile;
+	public String passport1CertFileContentType;
+    public String passport1CertFileFileName;
+    public String passport1CertTags;
+    
+    public File   passport2CertFile;
+	public String passport2CertFileContentType;
+    public String passport2CertFileFileName;
+    public String passport2CertTags;
+    
+    public File   passport3CertFile;
+	public String passport3CertFileContentType;
+    public String passport3CertFileFileName;
+    public String passport3CertTags;
+    
     public Document licence;
     public Document medical;
     public Document crm;
     public Document dg;
     public Document huet;
+    public Document hemsCert;
+    public Document additionalCert;
     public Document photoFile;
     public Document flighthours;
+    public Document lpcCert;
+    public Document opcCert;
+    public Document operationsManualCert;
+    public Document annualTechnicalManualCert;
+    public Document passport1Cert;
+    public Document passport2Cert;
+    public Document passport3Cert;
+    
+    public List<Bookmark> additionalDocs = new ArrayList<Bookmark>();
+    
+    public String subPosition;
+    
+    public String reviewDate;
+    public String licenseExpiryDate;
+    public String instructorExpiryDate;
+    public String instrumentExpiryDate;
+    public String englishTestExpiryDate;
+    public String medicalExpiryDate;
+    public String crmExpiryDate;
+    public String dgExpiryDate;
+    public String huetExpiryDate;
+    public String hemsCertExpiryDate;
+    public String lpcExpiryDate;
+    public String opcExpiryDate;
+    public String operationsManualExpiry;
+    public String annualTechnicalManual;
+    public String routeCheckExpiryDate;
+    public String passportCert1ExpiryDate;
+    public String passportCert2ExpiryDate;
+    public String passportCert3ExpiryDate;
+    
+    public Double basePilotAllowance;
+    public Double safetyLevel;
     
     
     @SuppressWarnings("unchecked")
@@ -166,11 +255,18 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
 	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 	
+	public List<String> pilots = new ArrayList<String>();
+
+	/*------------------------------------------------------------*/
 	@Override
-	public String execute() throws Exception {
+	public String execute() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		//crewMember = manager.getCrewMember(id);
+		pilots = manager.getAllActivePilots();
+		prepare();
 		if (!user.hasPermission("ManagerView") && !user.getUsername().equalsIgnoreCase(id))
-			return "unauthorised";
+			return "";
 		breadcrumbs = Breadcrumb.toArray(
 			new Breadcrumb("Crew", "crew.action"),
 			new Breadcrumb(crewMember.getPersonal().getFirstName() + " " + crewMember.getPersonal().getLastName())
@@ -204,6 +300,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				 }
 				 count++;
 			}
+			
 			
 			return SUCCESS;
 		}
@@ -240,31 +337,74 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        medical     = folder.getDocumentByTag("medical");
 	        crm         = folder.getDocumentByTag("CRM");
 	        dg          = folder.getDocumentByTag("DG");
-	        huet        = folder.getDocumentByTag("HUET");  
+	        huet        = folder.getDocumentByTag("HUET");
+	        hemsCert    = folder.getDocumentByTag("HEMS");
+	        additionalCert = folder.getDocumentByTag("additionalCert");
+	        List<Bookmark> additionalDocsTempList = (List<Bookmark>) manager.findDocsByTag("additionalCert",id);
+	        
+	        if (additionalDocsTempList.isEmpty() == true)
+	        {
+	        	additionalDocsTempList = new ArrayList<Bookmark>();
+	        }
+	        Collections.reverse(additionalDocsTempList);
+	        if (additionalDocsTempList.size() > 5)
+	        {
+	        	List<Bookmark> temp = additionalDocsTempList.subList(0, 5);
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.additionalDocs.add(temp.get(i));
+	        	}
+	        }
+	        else
+	        {
+	        	List<Bookmark> temp = additionalDocsTempList;
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.additionalDocs.add(temp.get(i));
+	        	}
+	        }
+	        
+	        
+	        opcCert= folder.getDocumentByTag("OPC");
+	        lpcCert= folder.getDocumentByTag("LPC");
+	        operationsManualCert= folder.getDocumentByTag("opsManual");
+	        annualTechnicalManualCert= folder.getDocumentByTag("annualTechManual");
+	        passport1Cert    = folder.getDocumentByTag("passportVisa1");
+	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
+	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
+	        
+	        	        
 	        flighthours = folder.getDocumentByTag("flighthours");
 		}
 		
 		return tab;
 	}
-
-	public String profile() throws Exception{
+	/*------------------------------------------------------------*/
+	public String profile() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		LOG.info(crewMember.getId());
 		return "profile";
 	}
-	
-	public String required() throws Exception{
+	/*------------------------------------------------------------*/
+	public String required() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		LOG.info(crewMember.getId());
 		return "required";
 	}
-	
-	public String photo(){
+	/*------------------------------------------------------------*/
+	public String photo()
+	/*------------------------------------------------------------*/
+	{
 		return "photo";
 	}
-	
-	
-	public InputStream getPhoto(){
+	/*------------------------------------------------------------*/
+	public InputStream getPhoto()
+	/*------------------------------------------------------------*/
+	{
 	  try{
 	    folder = docManager.getFolderByPath("/crew/"+id, user);
 	    LOG.info(folder.getDocs());
@@ -285,8 +425,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 	  }
 	}
-	
-	public InputStream getCrmFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getCrmFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -300,8 +442,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-
-	public InputStream getDgFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getDgFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -315,8 +459,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	
-	public InputStream getHuetFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getHuetFile()
+	/*------------------------------------------------------------*/
+	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -330,8 +476,163 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  }
 		  return null;
 	}
-	
-	public InputStream getFlighthoursFile(){
+	/*------------------------------------------------------------*/
+	public InputStream getHemsFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document hemsFile = folder.getDocumentByTag("HEMS");
+		    LOG.info("Name:"+hemsFile.getName());
+		    LOG.info("Uuid:"+hemsFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(hemsFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getAdditionalFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document additionalFile = folder.getDocumentByTag("additionalCert");
+		    LOG.info("Name:"+additionalFile.getName());
+		    LOG.info("Uuid:"+additionalFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(additionalFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getLpcFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document lpcFile = folder.getDocumentByTag("LPC");
+		    LOG.info("Name:"+lpcFile.getName());
+		    LOG.info("Uuid:"+lpcFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(lpcFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getOpcFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document opcFile = folder.getDocumentByTag("OPC");
+		    LOG.info("Name:"+opcFile.getName());
+		    LOG.info("Uuid:"+opcFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(opcFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getOperationsManualCertFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document operationsManualCertFile = folder.getDocumentByTag("opsManual");
+		    LOG.info("Name:"+operationsManualCertFile.getName());
+		    LOG.info("Uuid:"+operationsManualCertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(operationsManualCertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getAnnualTechnicalManualCertFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document annualTechnicalManualCertFile = folder.getDocumentByTag("annualTechManual");
+		    LOG.info("Name:"+annualTechnicalManualCertFile.getName());
+		    LOG.info("Uuid:"+annualTechnicalManualCertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(annualTechnicalManualCertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getPassport1CertFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport1CertFile = folder.getDocumentByTag("passportCertificate1");
+		    LOG.info("Name:"+passport1CertFile.getName());
+		    LOG.info("Uuid:"+passport1CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport1CertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getPassport2CertFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport2CertFile = folder.getDocumentByTag("passportCertificate2");
+		    LOG.info("Name:"+passport2CertFile.getName());
+		    LOG.info("Uuid:"+passport2CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport2CertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	public InputStream getPassport3CertFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport3CertFile = folder.getDocumentByTag("passportCertificate3");
+		    LOG.info("Name:"+passport3CertFile.getName());
+		    LOG.info("Uuid:"+passport3CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport3CertFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+ 	public InputStream getFlighthoursFile()
+ 	/*------------------------------------------------------------*/
+ 	{
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
@@ -347,7 +648,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	}
 	
 	public String tableHtml;
-	private String setupFlight() {
+	/*------------------------------------------------------------*/
+	private String setupFlight()
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getFlightAndDutyActuals().isEmpty()) {
 			tableHtml = "No Records Found";
 		}
@@ -367,6 +671,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				.column("instructorDays").called("Days")
 				.column("flightRate").withStyle("text-align:right").called("Travel")
 				.column("flightDays").called("Days")
+				.column("basePilotRate").withStyle("text-align:right").called("SB Pilot")
+				.column("basePilotDays").called("Days")
+				.column("safetyLevelRate").withStyle("text-align:right").called("Safety Level")
+				.column("safetyLevelDays").called("Days")
 				.column("deductionTotal").called("Deductions")
 				.column("additionTotal").called("Contributions")
 				.column("total").called("Total Due").withStyle("text-align:right")
@@ -377,10 +685,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "flight";
 	}
-	
-	
+	/*------------------------------------------------------------*/	
 	@SuppressWarnings("deprecation")
-	public String saveRange() throws Exception{
+	public String saveRange() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		Aircraft aircraft =  null;
 		Charter charter = null;
@@ -406,7 +715,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		    to.setSeconds(59);
 			
 			if(from.before(to)){
-				while(!to.after(cal.getTime())){
+				//while(!to.after(cal.getTime())){
+				while(to.after(cal.getTime())){
 					
 					String date = mysqlFormat.format(cal.getTime());
 					CrewDay cd = null;
@@ -429,9 +739,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return "redirect-hours";
 	}
-	
-	
-	public String saveHours() throws Exception{
+	/*------------------------------------------------------------*/	
+	public String saveHours() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		prepare();
 		for(int i = 1; i < 32; i++){
 			
@@ -446,14 +757,16 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			String type        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_type");
 			String position    =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_position");
 			String instruments =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_instruments");
-			String tail        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_tail");
+			String tail        =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_registration");
 			String chart       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_charter");
 			String flown       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_flown");
-			String timein      =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timein");
+			
+		    String timein      =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timein");
 			String timeout     =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_timeout");
 			String hours       =  ServletActionContext.getRequest().getParameter(hoursMonth+"-"+day+"_hours");
 			
 			LOG.info(hoursMonth+"-"+day+"|"+cDId+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|"+flown+"|"+timein+"|"+timeout+"|"+hours);
+			//LOG.info(hoursMonth+"-"+day+"|"+cDId+"|"+activity+"|"+comment+"|"+type+"|"+position+"|"+instruments+"|"+tail+"|"+chart+"|");
 			
 			Aircraft aircraft = null;
 			Charter charter = null;
@@ -477,7 +790,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						charter  = manager.getCharter(new Integer(chart));
 					}
 				}
-				Double flownHours = new Double(0.0);
+			Double flownHours = new Double(0.0);
 				if(flown != null){
 					if(flown != ""){
 						flownHours = new Double(flown);
@@ -492,9 +805,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		return "redirect-hours";
 	}
-	
+	/*------------------------------------------------------------*/
 	@SuppressWarnings("unchecked")
-	private String setupHours() throws Exception{
+	private String setupHours() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		
 		int startYear = 2009;
 		int startMonth = 1;
@@ -576,7 +891,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		//provide month list
 		return "hours";
 	}
-	
+	/*------------------------------------------------------------*/
 
 	public String errorMessage;
 	public String notificationMessage;
@@ -591,8 +906,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public double amount;
 	public double amountUSD;
 
-	
-	public String addAddition() throws Exception{
+	/*------------------------------------------------------------*/
+	public String addAddition() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -661,9 +978,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "redirect-addFlightActuals";
 	}
-	
+	/*------------------------------------------------------------*/
 	//remove a deduction from a crewMember
-	public String remAddition() throws Exception{
+	public String remAddition() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -694,9 +1013,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "addFlightActuals";
 	}
-	
+	/*------------------------------------------------------------*/
 	//add a deduction to a crewMember
-	public String addDeduction() throws Exception{
+	public String addDeduction() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -765,9 +1086,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "redirect-addFlightActuals";
 	}
-
+	/*------------------------------------------------------------*/
 	//remove a deduction from a crewMember
-	public String remDeduction() throws Exception{
+	public String remDeduction() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (crewMember.getId() == null) {
 			errorMessage = "Unknown Crew Member";
 			return SUCCESS;
@@ -798,9 +1121,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		prepareTabs();
 		return "addFlightActuals";
 	}
-	
-	
-	public String addFlightActuals() throws Exception {
+	/*------------------------------------------------------------*/
+	public String addFlightActuals() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		
 		if("".equals(errorMessage)){errorMessage = null; }
 		if("".equals(notificationMessage)){notificationMessage = null; }
@@ -835,7 +1159,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 					HashMap<String,String> tbRem = new HashMap<String,String>();
 					for (String code: actuals.getEntries().keySet()) {
 						CharterEntry ce = actuals.getEntries().get(code);
-						if (ce.getAreaDays() == 0 && ce.getDailyDays() == 0 && ce.getFlightDays() == 0 && ce.getInstructorDays() == 0)
+						if (ce.getAreaDays() == 0 && ce.getDailyDays() == 0 && ce.getFlightDays() == 0 && ce.getBasePilotDays() == 0 && ce.getSafetyLevelDays() == 0 && ce.getInstructorDays() == 0)
 							tbRem.put(code,"remove");
 					}
 					
@@ -854,19 +1178,23 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						int area = parseInt(ServletActionContext.getRequest().getParameter("newEntryArea"+i));
 						int daily = parseInt(ServletActionContext.getRequest().getParameter("newEntryDaily"+i));
 						int flight = parseInt(ServletActionContext.getRequest().getParameter("newEntryFlight"+i));
+						int basePilot = parseInt(ServletActionContext.getRequest().getParameter("newEntryBasePilot"+i));
+						int safetyLevel = parseInt(ServletActionContext.getRequest().getParameter("newEntrySafetyLevel"+i));
 						int instructor = parseInt(ServletActionContext.getRequest().getParameter("newEntryInstructor"+i));
 						int discomfort = parseInt(ServletActionContext.getRequest().getParameter("newEntryDiscomfort"+i));
-						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + instructor+", "+discomfort);
+						System.out.println(key + " - " + area +", " + daily + ", " + flight + ", " + basePilot + ", "+ safetyLevel + ", "+instructor+", "+discomfort);
 
 						i++;
 
-						if (area != 0 || daily != 0 || flight != 0 || instructor != 0) {
+						if (area != 0 || daily != 0 || flight != 0 ||basePilot !=0 ||safetyLevel !=0 || instructor != 0) {
 							CharterEntry ce = new CrewMember.FlightAndDutyActuals.CharterEntry();
 							ce.setCharter(key1);
 							ce.setAircraft(key2);
 							ce.setAreaDays(area);
 							ce.setDailyDays(daily);
 							ce.setFlightDays(flight);
+							ce.setbasePilotDays(basePilot);
+							ce.setSafetyLevelDays(safetyLevel);
 							ce.setDiscomfort(discomfort);
 							ce.setInstructorDays(instructor);
 							actuals.getEntries().put(key, ce);
@@ -900,8 +1228,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 		return execute();
 	}
-
-	private int parseInt(String i) {
+	/*------------------------------------------------------------*/
+	private int parseInt(String i)
+	/*------------------------------------------------------------*/
+	{
 		if (i == null || i.trim().length()==0)
 			return 0;
 		try {
@@ -911,10 +1241,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			return 0;
 		}
 	}
-
+	/*------------------------------------------------------------*/
 	public List<Document> docs;
 	public Folder folder;
-	public String docs() throws Exception {
+	/*------------------------------------------------------------*/
+	public String docs() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		if (id == null) {
 			return ERROR;
 		}
@@ -960,8 +1293,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		tagArray = buf.toString();
 		return "docs";
 	}
-
-	public String create() {
+	/*------------------------------------------------------------*/
+	public String create()
+	/*------------------------------------------------------------*/
+	{
 		//crewMember = new CrewMember();
 		breadcrumbs = Breadcrumb.toArray(
 				new Breadcrumb("Crew", "crew.action"),
@@ -971,13 +1306,278 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		tableTabs = new Tab[] {personalTab};
 		return SUCCESS;
 	}
-
-	public String save() throws Exception {
+/*-------------------------------------------------------------------*/
+	private void setDates()
+/*-------------------------------------------------------------------*/	
+	{
+		Date r = null;
 		
-		LOG.info("Saving Crew Member "+crewMember.getPersonal().getFullName());
+//Review Date
+		if (reviewDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(reviewDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().setReviewDate(r);
+		}
+//Instrument Expiry Date
+		if (this.instrumentExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.instrumentExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getIfr().setExpiryDate(r);
+		}
+//License Expiry Date (R1)		
+		if (this.licenseExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.licenseExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getR1().setExpiryDate(r);
+    	}
+//Instructor Expiry Date (R2)		
+		if (this.instructorExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.instructorExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getR2().setExpiryDate(r);
+    	}		
+//English Test Expiry Date		
+		if (this.englishTestExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.englishTestExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getEts().setExpiryDate(r);
+		}
+//Medical Expiry Date			
+		if (this.medicalExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.medicalExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().setExpiryDate(r);
+		}
+//CRM Expiry Date			
+		if (this.crmExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.crmExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getCrm().setExpiryDate(r);
+		}
+//DG Expiry Date		
+		if (this.dgExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.dgExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getDg().setExpiryDate(r);
+		}
+//Huet Expiry Date		
+		if (this.huetExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.huetExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getHuet().setExpiryDate(r);
+		}
+//Hems Expiry Date		
+		if (this.hemsCertExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.hemsCertExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getHemsCert().setExpiryDate(r);
+		}	
+//LPC Expiry Date		
+		if (this.lpcExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.lpcExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getLpcCert().setExpiryDate(r);
+		}			
+//OPC Expiry Date		
+		if (this.opcExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.opcExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getOpcCert().setExpiryDate(r);
+		}			
+//operationsManual Expiry Date		
+		if (this.operationsManualExpiry != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.operationsManualExpiry);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getOperationsManualCert().setExpiryDate(r);
+		}		
+//annualTechManual Expiry Date		
+		if (this.annualTechnicalManual != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.annualTechnicalManual);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getAnnualTechnicalManualCert().setExpiryDate(r);
+		}		
 		
+//Route Check Completion Date	
+		if (this.routeCheckExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.routeCheckExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().getRoutCheck().setExpiryDate(r);
+		}				
+	    
+//Passport 1 Certificate Expiry Date	
+		if (this.passportCert1ExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.passportCert1ExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (crewMember.getPassport().isEmpty() == false)
+			{
+			if (crewMember.getPassport().get(0) != null)
+			{
+			this.crewMember.getPassport().get(0).getCertificate().setExpiryDate(r);
+			}
+			}
+		}
+//Passport 2 Certificate Expiry Date	
+		if (this.passportCert2ExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.passportCert2ExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (crewMember.getPassport().isEmpty() == false)
+			{
+			if (crewMember.getPassport().get(1) != null)
+			{
+			this.crewMember.getPassport().get(1).getCertificate().setExpiryDate(r);
+			}
+			}
+		}				
+//Passport 3 Certificate Expiry Date	
+		if (this.passportCert3ExpiryDate != null)
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(this.passportCert3ExpiryDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (crewMember.getPassport().isEmpty() == false)
+			{
+			if (crewMember.getPassport().get(2) != null)
+			{
+			this.crewMember.getPassport().get(2).getCertificate().setExpiryDate(r);
+			}
+			}
+		}			
+	    
+  }//serDates()
+	/*-------------------------------------------------------------------*/
+	public String save() throws Exception
+	/*-------------------------------------------------------------------*/
+	{
+		if (this.basePilotAllowance != null)
+		{
+			if (crewMember != null){this.crewMember.getPayments().setBasePilotAllowance(basePilotAllowance);}
+		}
 		//set passports
-		LinkedList<CrewMember.Passport> cmPassports = new LinkedList<CrewMember.Passport>();
+		ArrayList<Passport> cmPassports = new ArrayList<CrewMember.Passport>();
 		int index = 0;
 		if(passportsNumber != null){
 		for(String passportNumber : passportsNumber ){
@@ -1003,7 +1603,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		crewMember.setPassport(cmPassports);
 		}
 		
-		manager.saveCrewMember(crewMember);
+		//Set dates, otherwise they're not saved. Must be after the Passports are created. 
+		setDates();
+		
+		
+		this.crewMember = manager.saveCrewMember(crewMember);
 		try{
 		  if(document != null){
 			LOG.info(tags+" "+docfolder);
@@ -1024,12 +1628,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	    int count = 0;
 	    if(passports != null){
 		while(morePassports){			
-			if(count < passports.size()){			
+			if(count < passports.size())
+			{			
 			    File passport = passports.get(count);
 			    String passportTags = passportsTags.get(count);
 			    String passportFileName = passportsFileName.get(count);
 			    String passportContentType = passportsContentType.get(count);
-			    passportTags = passportTags + count;
+			   // passportTags = passportTags + count;
 			    try{
 				    if(passport != null){
 					    LOG.info(passportTags+" "+docfolder);
@@ -1135,6 +1740,160 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
               e.printStackTrace();
           }
           try{
+              if(hemsCertFile!= null){         
+                  LOG.info(hemsCertTags+" "+docfolder+" "+docfolder+"/"+ hemsCertFileFileName);
+                  String[] tagsArray = hemsCertTags.split(" ");
+                  Document doc = new Document();
+                  doc.setName(hemsCertFileFileName);
+                  doc.setContentType(hemsCertFileContentType);
+                  Bookmark b = bookmarkManager.createBookmark(hemsCertFileFileName, "Document", docfolder+"/"+ hemsCertFileFileName, tagsArray);
+                  doc.setBookmark(b);
+                  docManager.createDocument(doc, docfolder, new FileInputStream(hemsCertFile), user);
+              }
+            }
+            catch(Exception e){
+          	  LOG.error("HEMS Cert error: "+e);
+                e.printStackTrace();
+            }
+//Additional Certificates            
+            try{
+                if(additionalCertFile!= null){         
+                    LOG.info(additionalCertTags+" "+docfolder+" "+docfolder+"/"+ additionalCertFileFileName);
+                    String[] tagsArray = additionalCertTags.split(" ");
+                    Document doc = new Document();
+                    doc.setName(additionalCertFileFileName);
+                    doc.setContentType(additionalCertFileContentType);
+                    Bookmark b = bookmarkManager.createBookmark(additionalCertFileFileName, "Document", docfolder+"/"+ additionalCertFileFileName, tagsArray);
+                    doc.setBookmark(b);
+                    docManager.createDocument(doc, docfolder, new FileInputStream(additionalCertFile), user);
+                }
+              }
+              catch(Exception e){
+            	  LOG.error("Additional Cert error: "+e);
+                  e.printStackTrace();
+              }
+//LPC Certificates            
+              try{
+                  if(lpcCertFile!= null){         
+                      LOG.info(additionalCertTags+" "+docfolder+" "+docfolder+"/"+ lpcCertFileFileName);
+                      String[] tagsArray = lpcCertTags.split(" ");
+                      Document doc = new Document();
+                      doc.setName(lpcCertFileFileName);
+                      doc.setContentType(lpcCertFileContentType);
+                      Bookmark b = bookmarkManager.createBookmark(lpcCertFileFileName, "Document", docfolder+"/"+ lpcCertFileFileName, tagsArray);
+                      doc.setBookmark(b);
+                      docManager.createDocument(doc, docfolder, new FileInputStream(lpcCertFile), user);
+                  }
+                }
+                catch(Exception e){
+              	  LOG.error("LPC Cert error: "+e);
+                    e.printStackTrace();
+                }  
+//OPC Certificates            
+                try{
+                    if(opcCertFile!= null){         
+                        LOG.info(opcCertTags+" "+docfolder+" "+docfolder+"/"+ opcCertFileFileName);
+                        String[] tagsArray = opcCertTags.split(" ");
+                        Document doc = new Document();
+                        doc.setName(opcCertFileFileName);
+                        doc.setContentType(opcCertFileContentType);
+                        Bookmark b = bookmarkManager.createBookmark(opcCertFileFileName, "Document", docfolder+"/"+ opcCertFileFileName, tagsArray);
+                        doc.setBookmark(b);
+                        docManager.createDocument(doc, docfolder, new FileInputStream(opcCertFile), user);
+                    }
+                  }
+                  catch(Exception e){
+                	  LOG.error("OPC Cert error: "+e);
+                      e.printStackTrace();
+                  }   
+//operationsManualCert Certificates            
+                  try{
+                      if(operationsManualCertFile!= null){         
+                          LOG.info(operationsManualCertTags+" "+docfolder+" "+docfolder+"/"+ operationsManualCertFileFileName);
+                          String[] tagsArray = operationsManualCertTags.split(" ");
+                          Document doc = new Document();
+                          doc.setName(operationsManualCertFileFileName);
+                          doc.setContentType(operationsManualCertFileContentType);
+                          Bookmark b = bookmarkManager.createBookmark(operationsManualCertFileFileName, "Document", docfolder+"/"+ operationsManualCertFileFileName, tagsArray);
+                          doc.setBookmark(b);
+                          docManager.createDocument(doc, docfolder, new FileInputStream(operationsManualCertFile), user);
+                      }
+                    }
+                    catch(Exception e){
+                  	  LOG.error("operationsManualCert Cert error: "+e);
+                        e.printStackTrace();
+                    }  
+//operationsManualCert Certificates            
+                    try{
+                        if(annualTechnicalManualCertFile!= null){         
+                            LOG.info(annualTechnicalManualCertTags+" "+docfolder+" "+docfolder+"/"+ annualTechnicalManualCertFileFileName);
+                            String[] tagsArray = annualTechnicalManualCertTags.split(" ");
+                            Document doc = new Document();
+                            doc.setName(annualTechnicalManualCertFileFileName);
+                            doc.setContentType(annualTechnicalManualCertFileContentType);
+                            Bookmark b = bookmarkManager.createBookmark(annualTechnicalManualCertFileFileName, "Document", docfolder+"/"+ annualTechnicalManualCertFileFileName, tagsArray);
+                            doc.setBookmark(b);
+                            docManager.createDocument(doc, docfolder, new FileInputStream(annualTechnicalManualCertFile), user);
+                        }
+                      }
+                      catch(Exception e){
+                    	  LOG.error("annualTechnical Cert error: "+e);
+                          e.printStackTrace();
+                      } 
+//Passport 1 Certificates            
+                      try{
+                          if(passport1CertFile!= null){         
+                              LOG.info(passport1CertTags+" "+docfolder+" "+docfolder+"/"+ passport1CertFileFileName);
+                              String[] tagsArray = passport1CertTags.split(" ");
+                              Document doc = new Document();
+                              doc.setName(passport1CertFileFileName);
+                              doc.setContentType(passport1CertFileContentType);
+                              Bookmark b = bookmarkManager.createBookmark(passport1CertFileFileName, "Document", docfolder+"/"+ passport1CertFileFileName, tagsArray);
+                              doc.setBookmark(b);
+                              docManager.createDocument(doc, docfolder, new FileInputStream(passport1CertFile), user);
+                          }
+                        }
+                        catch(Exception e){
+                      	  LOG.error("passport1 Cert error: "+e);
+                            e.printStackTrace();
+                        }        
+//Passport 2 Certificates            
+                        try{
+                            if(passport2CertFile!= null){         
+                                LOG.info(passport2CertTags+" "+docfolder+" "+docfolder+"/"+ passport2CertFileFileName);
+                                String[] tagsArray = passport2CertTags.split(" ");
+                                Document doc = new Document();
+                                doc.setName(passport2CertFileFileName);
+                                doc.setContentType(passport2CertFileContentType);
+                                Bookmark b = bookmarkManager.createBookmark(passport2CertFileFileName, "Document", docfolder+"/"+ passport2CertFileFileName, tagsArray);
+                                doc.setBookmark(b);
+                                docManager.createDocument(doc, docfolder, new FileInputStream(passport2CertFile), user);
+                            }
+                          }
+                          catch(Exception e){
+                        	  LOG.error("passport2 Cert error: "+e);
+                              e.printStackTrace();
+                          }    
+//Passport 3 Certificates       
+                          try{
+                              if(passport3CertFile!= null){         
+                                  LOG.info(passport3CertTags+" "+docfolder+" "+docfolder+"/"+ passport3CertFileFileName);
+                                  String[] tagsArray = passport3CertTags.split(" ");
+                                  Document doc = new Document();
+                                  doc.setName(passport3CertFileFileName);
+                                  doc.setContentType(passport3CertFileContentType);
+                                  Bookmark b = bookmarkManager.createBookmark(passport3CertFileFileName, "Document", docfolder+"/"+ passport3CertFileFileName, tagsArray);
+                                  doc.setBookmark(b);
+                                  docManager.createDocument(doc, docfolder, new FileInputStream(passport3CertFile), user);
+                              }
+                            }
+                            catch(Exception e){
+                          	  LOG.error("passport3 Cert error: "+e);
+                                e.printStackTrace();
+                            }                                
+                                          
+              
+          try{
               if(flighthoursFile!= null){         
                   LOG.info(flighthoursTags+" "+docfolder+" "+docfolder+"/"+ flighthoursFileFileName);
                   String[] tagsArray = flighthoursTags.split(" ");
@@ -1150,16 +1909,26 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
           	  LOG.error("flighthours error: "+e);
                 e.printStackTrace();
             }
-          
+       this.crewMember = this.manager.saveCrewMember(crewMember);
 	return execute();
 	}
 
 	public Integer actualsId;
-	public void prepare() throws Exception {
+
+/*-----------------------------------------------------*/	
+	public void prepare() throws Exception
+/*-----------------------------------------------------*/	
+	{
+		this.YNOption = new ArrayList<String>();
+		this.YNOption.add("yes");
+		this.YNOption.add("no");
+		
 		if (id == null) {
 			crewMember = new CrewMember();
+		
 		} else {
 			crewMember = manager.getCrewMemberByCode(id);
+			
 			if (switch_role_to!="") {
 				crewMember.getRole().setPosition(switch_role_to);
 			}
@@ -1169,8 +1938,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						crewMember.getPayments().getAreaAllowance(),
 						crewMember.getPayments().getInstructorAllowance(),
 						crewMember.getPayments().getDailyAllowance(),
-						crewMember.getPayments().getFlightAllowance()
+						crewMember.getPayments().getFlightAllowance(),
+						crewMember.getPayments().getBasePilotAllowance(),
+						crewMember.getPayments().getSafetyLevelAllowance()
+						
 				);
+			
 			} else {
 				actuals = manager.getFlightAndDutyActualsById(actualsId);
 				Calendar cal = Calendar.getInstance();
@@ -1184,12 +1957,44 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 		}
 	}
-
-	private void prepareTabs() {
+	/*-----------------------------------------------------*/
+	private void prepareTabs()
+	/*------------------------------------------------------------*/
+	{
 		String idStr = "";
 		if (id != null) {
 			idStr=id;
+			this.crewMember = this.manager.getCrewMemberByCode(idStr);
+    		this.reviewDate = this.crewMember.getRole().getStringReviewDate();
+    		this.licenseExpiryDate = this.crewMember.getRole().getR1().getStringExpiryDate();
+    		this.instructorExpiryDate = this.crewMember.getRole().getR2().getStringExpiryDate();
+    		this.instrumentExpiryDate = this.crewMember.getRole().getIfr().getStringExpiryDate();
+    		this.englishTestExpiryDate = this.crewMember.getRole().getEts().getStringExpiryDate();
+    		this.medicalExpiryDate = this.crewMember.getRole().getStringExpiryDate();
+    		this.crmExpiryDate = this.crewMember.getRole().getCrm().getStringExpiryDate();
+    		this.dgExpiryDate = this.crewMember.getRole().getDg().getStringExpiryDate();
+    		this.huetExpiryDate = this.crewMember.getRole().getHuet().getStringExpiryDate();
+    		this.hemsCertExpiryDate = this.crewMember.getRole().getHemsCert().getStringExpiryDate();
+    		this.lpcExpiryDate = this.crewMember.getRole().getLpcCert().getStringExpiryDate();
+    	    this.opcExpiryDate = this.crewMember.getRole().getOpcCert().getStringExpiryDate();
+    	    this.operationsManualExpiry = this.crewMember.getRole().getOperationsManualCert().getStringExpiryDate();
+    	    this.annualTechnicalManual = this.crewMember.getRole().getAnnualTechnicalManualCert().getStringExpiryDate();
+    	    this.routeCheckExpiryDate = this.crewMember.getRole().getRoutCheck().getStringExpiryDate();
+    	    
+    	    if (crewMember.getPassport().isEmpty()==false)
+    	    {
+    	    	for (int i =0; i< this.crewMember.getPassport().size(); i++)
+    	    	{
+    	    		if (this.crewMember.getPassport().get(i) != null)
+    	    		{
+    	    			if (i==0) {this.passportCert1ExpiryDate = this.crewMember.getPassport().get(i).getCertificate().getStringExpiryDate();}
+    	    			if (i==1) {this.passportCert2ExpiryDate = this.crewMember.getPassport().get(i).getCertificate().getStringExpiryDate();}
+    	    			if (i==2) {this.passportCert3ExpiryDate = this.crewMember.getPassport().get(i).getCertificate().getStringExpiryDate();}
+    	    		}
+    	    	}
+    	    }
 		}
+
 		
 		List<Tab> tabList = new ArrayList<Tab>();
 		
@@ -1206,6 +2011,18 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		if(user.hasRead("crewRole")){
 		Tab roleTab = new Tab("Role", "crewMember.action?tab=role&id="+idStr, tab.equals("role"));
 		tabList.add(roleTab);
+		
+		try {
+			folder = docManager.getFolderByPath("/crew/"+id, user);
+			passport1Cert    = folder.getDocumentByTag("passportVisa1");
+	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
+	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
+		} catch (InsufficientPrivilagesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        
 		}
 		
 		if(user.hasRead("crewPay")){
@@ -1230,14 +2047,14 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		
 		if(user.hasRead("crewRev")){
 		if (user.hasPermission("ManagerView")){
-			Tab reviewTab = new Tab("Review", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
+			Tab reviewTab = new Tab("Comments", "crewMember.action?tab=review&id="+idStr, tab.equals("review"));
 			tabList.add(reviewTab);
 		}
 		}
 		
 		if(user.hasRead("crewAssign")){
 		if (user.hasPermission("ManagerView")){
-		    Tab assignmentsTab = new Tab("Assignments", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
+		    Tab assignmentsTab = new Tab("Rostering", "crewMember!assignments.action?tab=assignments&id="+idStr, tab.equals("assignments"));
 		    tabList.add(assignmentsTab);
         }
 		}
@@ -1249,10 +2066,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			count++;
 		}
 	}
-		
+	/*------------------------------------------------------------*/	
 
     public String fromPage = "";
-	public String assignments() {
+    /*------------------------------------------------------------*/
+	public String assignments()
+	/*------------------------------------------------------------*/
+	{
 		tab = "assignments";
 
         if ("".equals(fromPage)) {
@@ -1273,39 +2093,50 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 
 		return "assignments";
 	}
-
-	public void setUser(User arg0) {
+	/*------------------------------------------------------------*/
+	public void setUser(User arg0)
+	/*------------------------------------------------------------*/
+	{
 		user = arg0;
 	}
-
-	public User getUser() {
+	/*------------------------------------------------------------*/
+	public User getUser()
+	/*------------------------------------------------------------*/
+	{
 		return user;
 	}
-
+	/*------------------------------------------------------------*/
 	@Permissions("Approve")
-	public String review() throws Exception {
+	public String review() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		String approvalKey = approvalsManager.review(crewMember.getApprovalGroup().getId(), 1000*60*5);
 		ServletActionContext.getRequest().getSession().setAttribute("approvalKey-"+crewMember.getApprovalGroup().getId(), approvalKey);
 		prepare();
 		notificationMessage = "Crew Member locked for 5 minutes";
 		return execute();
 	}
-
+	/*------------------------------------------------------------*/
 	@Permissions("Approve")
-	public String approve() throws Exception {
+	public String approve() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		String approvalKey = (String) ServletActionContext.getRequest().getSession().getAttribute("approvalKey-"+crewMember.getApprovalGroup().getId());
 		approvalsManager.approve(crewMember.getApprovalGroup().getId(), approvalKey);
 		prepare();
 		notificationMessage = "Crew Member has been approved";
 		return execute();
 	}
-
+	/*------------------------------------------------------------*/
 	@Permissions("Approve")
-	public String open() throws Exception {
+	public String open() throws Exception
+	/*------------------------------------------------------------*/
+	{
 		String approvalKey = (String) ServletActionContext.getRequest().getSession().getAttribute("approvalKey-"+crewMember.getApprovalGroup().getId());
 		approvalsManager.open(crewMember.getApprovalGroup().getId(), approvalKey);
 		prepare();
 		notificationMessage = "Crew Member has been opened for editing";
 		return execute();
 	}
+	/*------------------------------------------------------------*/
 }

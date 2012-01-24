@@ -33,8 +33,7 @@ public class JobStatus implements Cloneable, Comparable {
 	private Integer jobstatus_id;
 	@Column(unique=true)
     private String jobstatus_value;
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	private JobStatusBtnImage jsBtnImg = new JobStatusBtnImage();
+	
 
 		
     public JobStatus() 
@@ -75,19 +74,6 @@ public class JobStatus implements Cloneable, Comparable {
 		}
     }
 
-	/**
-	 * @return the jsBtnImg
-	 */
-	public JobStatusBtnImage getJsBtnImg() {
-		return jsBtnImg;
-	}
-
-	/**
-	 * @param jsBtnImg the jsBtnImg to set
-	 */
-	public void setJsBtnImg(JobStatusBtnImage jsBtnImg) {
-		this.jsBtnImg = jsBtnImg;
-	}
 
 
 	@Override

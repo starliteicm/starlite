@@ -1,5 +1,6 @@
 package com.itao.starlite.model;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,6 +87,8 @@ public class CrewMember implements Cloneable, Comparable {
 		@Temporal(TemporalType.DATE)
 		public Date expiryDate;
 		public String country;
+		private Certificate certificate = new Certificate();
+		
 		
 		@Id @GeneratedValue
 		public Integer id;
@@ -101,6 +104,16 @@ public class CrewMember implements Cloneable, Comparable {
 		public void setExpiryDate(Date passportExpiryDate) {
 			this.expiryDate = passportExpiryDate;
 		}
+		public void setCertificate(Certificate certificate) {
+			this.certificate = certificate;
+		}
+
+		public Certificate getCertificate() 
+		{   if (certificate == null)
+		     {this.certificate = new Certificate();}
+			return certificate;
+		}
+
 		public Date getExpiryDate() {
 			return expiryDate;
 		}
@@ -733,6 +746,7 @@ public class CrewMember implements Cloneable, Comparable {
 		private String department;
 		private String manager;
 		private String position;
+		private String subPosition;
 		private String primaryLocation;
 		@Temporal(TemporalType.DATE)
 		private Date initialDate;
@@ -749,25 +763,88 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		@Temporal(TemporalType.DATE)
 		private Date expiryDate;
+		@Temporal(TemporalType.DATE)
+		private Date reviewDate;
+		
+		
 		
 		private Certificate r1 = new Certificate();
 		private Certificate r2 = new Certificate();
 		private Certificate crm = new Certificate();
 		private Certificate dg = new Certificate();
 		private Certificate ifr = new Certificate();
+		private Certificate ets = new Certificate();
 		private Certificate instructor = new Certificate();
 		private Certificate test = new Certificate();
-		private Certificate huet = new Certificate();		
+		private Certificate huet = new Certificate();
+		private Certificate hemsCert = new Certificate();	
+	    private  Certificate lpcCert;
+	    private  Certificate opcCert;
+	    private  Certificate operationsManualCert;
+	    private  Certificate annualTechnicalManualCert;
+	    private Certificate routCheck;
+	    
+	    @Column(nullable = true, columnDefinition="varchar(255) default ' '")
+		private String base;
 		
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
+		private Double nightHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String nvg;
+		private Double nvgHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String sling;
-		private String game;		
+		private Double underslingHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String game;	
+		private Double gameHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String bannerTowing;	
+		private Double bannerTowingHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String fireFighting;	
+		private Double fireFightingHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String flir;	
+		private Double flirHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String fries;	
+		private Double friesHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String hems;	
+		private Double hemsHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String mountain;	
+		private Double mountainHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String offshore;	
+		private Double offshoreHours;
+		private String offshoreCaptain;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String powerline;	
+		private Double powerlineHours;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String instrument;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String testPilot;
+		@Column(nullable = true, columnDefinition="varchar(255) default ' '")
+		private String testPilotClass;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'Level 1'")
+		private String englishTest;
 		
 		@CollectionOfElements(fetch=FetchType.LAZY)
 		@Fetch(FetchMode.SUBSELECT)
 		@IndexColumn(name="position")
 		private List<Certificate> conversions = new LinkedList<Certificate>();
+
+		public String getInstrument() {
+			return instrument;
+		}
+
+		public void setInstrument(String instrument) {
+			this.instrument = instrument;
+		}
 
 		public void setEmployment(String employment) {
 			this.employment = employment;
@@ -783,6 +860,19 @@ public class CrewMember implements Cloneable, Comparable {
 
 		public void setPosition(String position) {
 			this.position = position;
+		}
+
+		public String getSubPosition() 
+		{
+			if (subPosition == null)
+			{
+				this.subPosition = " ";
+			}
+			return subPosition;
+		}
+
+		public void setSubPosition(String subPosition) {
+			this.subPosition = subPosition;
 		}
 
 		public String getPrimaryLocation() {
@@ -812,11 +902,116 @@ public class CrewMember implements Cloneable, Comparable {
 		public Date getExpiryDate() {
 			return expiryDate;
 		}
+		
+		public String getStringExpiryDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			dat = df.format(this.expiryDate);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
 
 		public void setExpiryDate(Date expiryDate) {
 			this.expiryDate = expiryDate;
 		}
 		
+		public Date getReviewDate() 
+		{
+					
+			return reviewDate;
+		}
+
+		public void setReviewDate(Date reviewDate) 
+		{
+			this.reviewDate = reviewDate;
+		}
+		public String getStringReviewDate() 
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			dat = df.format(reviewDate);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
+
+		public String getTestPilot() {
+			return testPilot;
+		}
+
+		public void setTestPilot(String testPilot) {
+			this.testPilot = testPilot;
+		}
+
+		public String getTestPilotClass() {
+			return testPilotClass;
+		}
+
+		public void setTestPilotClass(String testPilotClass) {
+			this.testPilotClass = testPilotClass;
+		}
+
+		public String getEnglishTest() {
+			return englishTest;
+		}
+
+		public void setEnglishTest(String englishTest) {
+			this.englishTest = englishTest;
+		}
+
+		public Certificate getLpcCert() {
+			return lpcCert;
+		}
+
+		public void setLpcCert(Certificate lpcCert) {
+			this.lpcCert = lpcCert;
+		}
+		public Certificate getRoutCheck() {
+			return this.routCheck;
+		}
+
+		public void setRoutCheck(Certificate routCheck) {
+			this.routCheck = routCheck;
+		}
+
+		public Certificate getOpcCert() {
+			return opcCert;
+		}
+
+		public void setOpcCert(Certificate opcCert) {
+			this.opcCert = opcCert;
+		}
+
+		public Certificate getOperationsManualCert() {
+			return operationsManualCert;
+		}
+
+		public void setOperationsManualCert(Certificate operationsManualCert) {
+			this.operationsManualCert = operationsManualCert;
+		}
+
+		public Certificate getAnnualTechnicalManualCert() {
+			return annualTechnicalManualCert;
+		}
+
+		public void setAnnualTechnicalManualCert(Certificate annualTechnicalManualCert) {
+			this.annualTechnicalManualCert = annualTechnicalManualCert;
+		}
+
+		public void setHemsCert(Certificate hemsCert) {
+			this.hemsCert = hemsCert;
+		}
+
 		public Certificate getR1() {
 			if (r1 == null)
 				r1 = new Certificate();
@@ -834,7 +1029,7 @@ public class CrewMember implements Cloneable, Comparable {
 				crm = new Certificate();
 			return crm;
 		}
-
+		
 		public Certificate getDg() {
 			if (dg == null)
 				dg = new Certificate();
@@ -863,6 +1058,19 @@ public class CrewMember implements Cloneable, Comparable {
 			if (huet == null)
 				huet = new Certificate();
 			return huet;
+		}
+		public Certificate getHemsCert() {
+			if (hemsCert == null)
+				hemsCert = new Certificate();
+			return hemsCert;
+		}
+
+		public Certificate getEts() {
+			return ets;
+		}
+
+		public void setEts(Certificate ets) {
+			this.ets = ets;
 		}
 
 		public synchronized List<Certificate> getConversions() {
@@ -918,7 +1126,7 @@ public class CrewMember implements Cloneable, Comparable {
 //			getConversions().add(index, conversion);
 //		}
 
-		private Role() {}
+		public Role() {}
 
 		public void setCompany(String company) {
 			this.company = company;
@@ -1040,6 +1248,215 @@ public class CrewMember implements Cloneable, Comparable {
 			return game;
 		}
 
+		public Double getNightHours() {
+			return nightHours;
+		}
+
+		public void setNightHours(Double nightHours) {
+			this.nightHours = nightHours;
+		}
+
+		public Double getNvgHours() {
+			return nvgHours;
+		}
+
+		public void setNvgHours(Double nvgHours) {
+			this.nvgHours = nvgHours;
+		}
+
+		public Double getUnderslingHours() {
+			return underslingHours;
+		}
+
+		public void setUnderslingHours(Double underslingHours) {
+			this.underslingHours = underslingHours;
+		}
+
+		public Double getGameHours() {
+			return gameHours;
+		}
+
+		public void setGameHours(Double gameHours) {
+			this.gameHours = gameHours;
+		}
+
+		public String getBannerTowing() {
+			return bannerTowing;
+		}
+
+		public void setBannerTowing(String bannerTowing) {
+			this.bannerTowing = bannerTowing;
+		}
+
+		public Double getBannerTowingHours() {
+			return bannerTowingHours;
+		}
+
+		public void setBannerTowingHours(Double bannerTowingHours) {
+			this.bannerTowingHours = bannerTowingHours;
+		}
+
+		public String getFireFighting() {
+			return fireFighting;
+		}
+
+		public void setFireFighting(String fireFighting) {
+			this.fireFighting = fireFighting;
+		}
+
+		public Double getFireFightingHours() {
+			return fireFightingHours;
+		}
+
+		public void setFireFightingHours(Double fireFightingHours) {
+			this.fireFightingHours = fireFightingHours;
+		}
+
+		public String getFlir() {
+			return flir;
+		}
+
+		public void setFlir(String flir) {
+			this.flir = flir;
+		}
+
+		public Double getFlirHours() {
+			return flirHours;
+		}
+
+		public void setFlirHours(Double flirHours) {
+			this.flirHours = flirHours;
+		}
+
+		public String getFries() {
+			return fries;
+		}
+
+		public void setFries(String fries) {
+			this.fries = fries;
+		}
+
+		public Double getFriesHours() {
+			return friesHours;
+		}
+
+		public void setFriesHours(Double friesHours) {
+			this.friesHours = friesHours;
+		}
+
+		public String getHems() {
+			return hems;
+		}
+
+		public void setHems(String hems) {
+			this.hems = hems;
+		}
+
+		public Double getHemsHours() {
+			return hemsHours;
+		}
+
+		public void setHemsHours(Double hemsHours) {
+			this.hemsHours = hemsHours;
+		}
+
+		public String getMountain() {
+			return mountain;
+		}
+
+		public void setMountain(String mountain) {
+			this.mountain = mountain;
+		}
+
+		public Double getMountainHours() {
+			return mountainHours;
+		}
+
+		public void setMountainHours(Double mountainHours) {
+			this.mountainHours = mountainHours;
+		}
+
+		public String getOffshore() {
+			return offshore;
+		}
+
+		public void setOffshore(String offshore) {
+			this.offshore = offshore;
+		}
+
+		public Double getOffshoreHours() {
+			return offshoreHours;
+		}
+
+		public void setOffshoreHours(Double offshoreHours) {
+			this.offshoreHours = offshoreHours;
+		}
+
+		public String getOffshoreCaptain() {
+			return offshoreCaptain;
+			
+		}
+
+		public void setOffshoreCaptain(String offshoreCaptain) {
+			this.offshoreCaptain = offshoreCaptain;
+		}
+
+		public String getPowerline() {
+			return powerline;
+		}
+
+		public void setPowerline(String powerline) {
+			this.powerline = powerline;
+		}
+
+		public Double getPowerlineHours() {
+			return powerlineHours;
+		}
+
+		public void setPowerlineHours(Double powerlineHours) {
+			this.powerlineHours = powerlineHours;
+		}
+
+		public void setR1(Certificate r1) {
+			this.r1 = r1;
+		}
+
+		public void setR2(Certificate r2) {
+			this.r2 = r2;
+		}
+
+		public void setCrm(Certificate crm) {
+			this.crm = crm;
+		}
+
+		public void setDg(Certificate dg) {
+			this.dg = dg;
+		}
+
+		public void setIfr(Certificate ifr) {
+			this.ifr = ifr;
+		}
+
+		public void setInstructor(Certificate instructor) {
+			this.instructor = instructor;
+		}
+
+		public void setTest(Certificate test) {
+			this.test = test;
+		}
+
+		public void setHuet(Certificate huet) {
+			this.huet = huet;
+		}
+
+		public String getBase() {
+			return base;
+		}
+
+		public void setBase(String base) {
+			this.base = base;
+		}
+
 
 	}
 	
@@ -1056,9 +1473,41 @@ public class CrewMember implements Cloneable, Comparable {
 		private Money dailyAllowance = new Money();
 		@Column(nullable=false)
 		private Money flightAllowance = new Money();
+		@Column(nullable=false)
+		private Money basePilotAllowance = new Money();
+		@Column(nullable=false, columnDefinition="varchar(10) default 'Level 1'")
+		private String safetyLevel;
+		@Column(nullable=false)
+		private Money safetyLevelAllowance = new Money();
 		
 		@Column(length=3)
 		private String currency;
+		
+		public Money getBasePilotAllowance() {
+			if (basePilotAllowance == null)
+				basePilotAllowance = new Money();
+			return basePilotAllowance;
+		}
+		public void setBasePilotAllowance(Double basePilotAllowance)
+		{
+			Money money = new Money();
+			money.setAmountAsDouble(basePilotAllowance);
+			this.basePilotAllowance = money;
+		}
+		public String getSafetyLevel() {
+			if (safetyLevel == null)
+				safetyLevel = "Level 1";
+			return safetyLevel;
+		}
+		
+			
+				
+		public Money getSafetyLevelAllowance() {
+			if (safetyLevelAllowance == null)
+				safetyLevelAllowance = new Money();
+			return safetyLevelAllowance;
+		}
+		
 		
 		public Money getMonthlyBaseRate() {
 			if (monthlyBaseRate == null)
@@ -1097,6 +1546,8 @@ public class CrewMember implements Cloneable, Comparable {
 			instructorAllowance.setCurrencyCode(currency);
 			dailyAllowance.setCurrencyCode(currency);
 			flightAllowance.setCurrencyCode(currency);
+			basePilotAllowance.setCurrencyCode(currency);
+			safetyLevelAllowance.setCurrencyCode(currency);
 		}
 		
 	}
@@ -1199,6 +1650,12 @@ public class CrewMember implements Cloneable, Comparable {
 		@Column(nullable=false)
 		private Money flightRate;
 		
+		@Column(nullable=false)
+		private Money basePilotRate;
+		
+		@Column(nullable=false)
+		private Money safetyLevelRate;
+		
 		@Temporal(TemporalType.DATE)
 		private Date paidDate;
 		private Money paidAmount;
@@ -1283,6 +1740,26 @@ public class CrewMember implements Cloneable, Comparable {
 			}
 			return sum;
 		}
+		public Money getbasePilotRate() {
+			return this.basePilotRate;
+		}
+		public int getbasePilotDays() {
+			int sum =0;
+			for (CharterEntry e: entries.values()) {
+				sum += e.getBasePilotDays();
+			}
+			return sum;
+		}
+		public Money getSafetyLevelRate() {
+			return this.safetyLevelRate;
+		}
+		public int getSafetyLevelDays() {
+			int sum =0;
+			for (CharterEntry e: entries.values()) {
+				sum += e.getSafetyLevelDays();
+			}
+			return sum;
+		}
 		public Money getFlightRate() {
 			return flightRate;
 		}
@@ -1361,6 +1838,8 @@ public class CrewMember implements Cloneable, Comparable {
 			Money total = getMonthlyRate().multiply(monthlyHours);
 			total = total.add(getDailyRate().multiply(getDailyDays()));
 			total = total.add(getFlightRate().multiply(getFlightDays()));
+			total = total.add(getbasePilotRate().multiply(getbasePilotDays()));
+			total = total.add(getSafetyLevelRate().multiply(getSafetyLevelDays()));
 			total = total.add(getAreaRate().multiply(getAreaDays()));
 			total = total.add(getInstructorRate().multiply(getInstructorDays()));
 			total = total.add(getDiscomfortTotal());
@@ -1373,13 +1852,15 @@ public class CrewMember implements Cloneable, Comparable {
 		public FlightAndDutyActuals() {}
 		
 		public FlightAndDutyActuals(Money monthlyRate, Money areaRate,
-				Money instructorRate, Money dailyRate, Money flightRate) {
+				Money instructorRate, Money dailyRate, Money flightRate, Money basePilotRate, Money safetyLevelRate) {
 			super();
 			this.monthlyRate = monthlyRate;
 			this.areaRate = areaRate;
 			this.instructorRate = instructorRate;
 			this.dailyRate = dailyRate;
-			this.flightRate = flightRate;			
+			this.flightRate = flightRate;	
+			this.basePilotRate = basePilotRate;
+			this.safetyLevelRate = safetyLevelRate;
 		}
 		
 		@Embeddable
@@ -1531,6 +2012,8 @@ public class CrewMember implements Cloneable, Comparable {
 			private int    dailyDays;
 			private int    flightDays;
 		    private Integer discomfort;
+		    private int basePilotDays;
+		    private int safetyLevelDays;
 			
 			public int getAreaDays() {
 				return areaDays;
@@ -1553,8 +2036,21 @@ public class CrewMember implements Cloneable, Comparable {
 			public int getFlightDays() {
 				return flightDays;
 			}
+			public int getBasePilotDays() {
+				return this.basePilotDays;
+			}
+			public int getSafetyLevelDays()
+			{
+				return this.safetyLevelDays;
+			}
 			public void setFlightDays(int flightDays) {
 				this.flightDays = flightDays;
+			}
+			public void setbasePilotDays(int basePilotDays) {
+				this.basePilotDays = basePilotDays;
+			}
+			public void setSafetyLevelDays(int safetyLevelDays) {
+				this.safetyLevelDays = safetyLevelDays;
 			}
 			public void setAircraft(String aircraft) {
 				this.aircraft = aircraft;
@@ -1615,7 +2111,9 @@ public class CrewMember implements Cloneable, Comparable {
 			role = new Role();
 		return role;
 	}
-
+	public void setRole(Role role) {
+		this.role = role;
+	}
 	public Payments getPayments() {
 		if (payments == null)
 			payments = new Payments();
@@ -1676,7 +2174,9 @@ public class CrewMember implements Cloneable, Comparable {
 						getPayments().getAreaAllowance(),
 						getPayments().getInstructorAllowance(),
 						getPayments().getDailyAllowance(),
-						getPayments().getFlightAllowance()
+						getPayments().getFlightAllowance(),
+						getPayments().getBasePilotAllowance(),
+						getPayments().getSafetyLevelAllowance()
 				   );
     }
     
@@ -1967,6 +2467,30 @@ public class CrewMember implements Cloneable, Comparable {
 				}
 				storedCMs.put(type, cm);
 			}
+			if(fda.getbasePilotDays() != 0){
+				String type = "Senior Base Pilot";
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get(type);
+					cm = cm.addPayments(type,""+fda.getbasePilotDays(),fda.getbasePilotRate().toString(),fda.getbasePilotRate().multiply(fda.getbasePilotDays()).toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Senior Base Pilot",""+fda.getbasePilotDays(),fda.getbasePilotRate().toString(),fda.getbasePilotRate().multiply(fda.getbasePilotDays()).toString(),fdatotal);
+				}
+				storedCMs.put(type, cm);
+			}
+			if(fda.getSafetyLevelDays() != 0){
+				String type = "Safety Level";
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get(type);
+					cm = cm.addPayments(type,""+fda.getSafetyLevelDays(),fda.safetyLevelRate.toString(),fda.safetyLevelRate.multiply(fda.getSafetyLevelDays()).toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Safety Level",""+fda.getSafetyLevelDays(),fda.getSafetyLevelRate().toString(),fda.getSafetyLevelRate().multiply(fda.getSafetyLevelDays()).toString(),fdatotal);
+				}
+				storedCMs.put(type, cm);
+			}
 			if(fda.getDeductions().size() != 0){
 				
 				for(String key: fda.getDeductions().keySet()){
@@ -1984,7 +2508,7 @@ public class CrewMember implements Cloneable, Comparable {
 				//clones.add(cm);
 				}
 			}
-            if(fda.getDeductions().size() != 0){	
+            if(fda.getAdditions().size() != 0){	
 				for(String key: fda.getAdditions().keySet()){
 					Addition d = fda.getAdditions().get(key);
 				String type = ""+d.getReason();

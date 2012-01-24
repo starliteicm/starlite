@@ -15,6 +15,7 @@ function validate(){
       var daily    = $("#daily").val();
       var training = $("#training").val();
       var travel   = $("#travel").val();
+      var basePilot = $("#basePilot").val();
       var errormsg = "<b> The following mandatory fields are blank: </b><br>";
       var error    = 0;
       
@@ -23,6 +24,7 @@ function validate(){
       if(daily   == ""){ errormsg += "Daily allowance, "; error=1;}      
       if(training== ""){ errormsg += "Training allowance, "; error=1;}
       if(travel  == ""){ errormsg += "Travel allowance, "; error=1;}
+      if(basePilot  == ""){ errormsg += "Senior Base Pilot allowance, "; error=1;}
       
       if(error==1){$("#msg-error").html(errormsg); return false;
       }else{
@@ -146,11 +148,30 @@ function validate(){
 					<input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
 				</#if>
 			</div>
+						
+			<div class="fm-opt">
+				<label for="crewMember.payments.basePilotAllowance"><span style="color:red;">*</span>&nbsp;Senior Base Pilot:</label>
+				<#if readOnly>
+					<label>${crewMember.payments.basePilotAllowance.amountAsDouble!'&nbsp;'}</label>
+				<#else>
+					<input name="crewMember.payments.basePilotAllowance.amountAsDouble" id ="basePilot" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.basePilotAllowance.amountAsDouble!}"/>
+				</#if>
+			</div>
+			<div class="fm-opt">
+				<label for="crewMember.payments.safetyLevel"><span style="color:red;">*</span>&nbsp;Safety Level:</label>
+				<#if readOnly>
+					<label>${crewMember.payments.safetyLevelValue.amountAsDouble!'&nbsp;'}</label>
+				<#else>
+				    <input name="crewMember.payments.safetyLevelAllowance.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#FFFFFF;" value="${crewMember.payments.safetyLevelAllowance.amountAsDouble!}"/>
+ 			    </#if>   	    
+			</div>
+		<#if !readOnly>
+		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 10px;"><img src="images/icons/pencil.png"/>Save</button>
+			
 		</fieldset>
+		
 		</div>
 		<hr class="clear"/>
-		<#if !readOnly>
-		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
 		
   <div id="msg-error" style="color:red"></div>
 

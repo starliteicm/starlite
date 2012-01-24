@@ -27,7 +27,7 @@ import javax.persistence.TemporalType;
 
 
 @Entity
-public class JobHistory implements Cloneable {
+public class JobHistory implements Cloneable, Comparable {
 	@Id
 	@GeneratedValue
 	private Integer jobhistoryID;
@@ -39,6 +39,15 @@ public class JobHistory implements Cloneable {
 	private String jobTaskValue;
 	
 	@Column(nullable=false)
+	private String jobSubTaskCode;
+	
+	@Column(nullable=false)
+	private String jobSubTaskDesc;
+	
+	
+	
+
+	@Column(nullable=false)
 	private String jobAircraft;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -48,7 +57,49 @@ public class JobHistory implements Cloneable {
 	@Column(nullable=false)
 	private String jobStatus;
 	
-    public JobHistory() {}
+	@Column(nullable = true, columnDefinition="FLOAT(15,2) default 0.0")
+	private Double totalTaskHours = 0.0;
+	
+	@Column(nullable = true, columnDefinition="varchar(50) default ''")
+	private String changedBy = "";
+	
+	@Column(nullable = true, columnDefinition="varchar(250) default ''")
+	private String changedByReason = "";
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date changedByDate;
+	
+	@Column(nullable = true, columnDefinition="varchar(50) default ''")
+	private String changedByOldValue = "";
+	
+	@Column(nullable = true, columnDefinition="varchar(50) default ''")
+	private String changedByNewValue = "";
+	
+	@Column(nullable = true, columnDefinition="varchar(250) default ''")
+	private String subTaskValue = "";
+	
+	@Column(nullable = true, columnDefinition="int(20)")
+	private Integer parentTicketNo;
+	
+	@Column(nullable = true, columnDefinition="int(5) default 0")
+	private Integer captureEdit;
+	
+	
+	
+	
+    public Double getTotalTaskHours() {
+		return totalTaskHours;
+	}
+
+
+
+	public void setTotalTaskHours(Double hours) {
+		this.totalTaskHours = hours;
+	}
+
+
+
+	public JobHistory() {}
 	
 
 
@@ -107,6 +158,29 @@ public class JobHistory implements Cloneable {
 	 */
 	public void setJobTaskValue(String jobTaskValue) {
 		this.jobTaskValue = jobTaskValue;
+	}
+
+
+	public String getJobSubTaskCode() {
+		return jobSubTaskCode;
+	}
+
+
+
+	public void setJobSubTaskCode(String jobSubTaskCode) {
+		this.jobSubTaskCode = jobSubTaskCode;
+	}
+
+
+
+	public String getJobSubTaskDesc() {
+		return jobSubTaskDesc;
+	}
+
+
+
+	public void setJobSubTaskDesc(String jobSubTaskDesc) {
+		this.jobSubTaskDesc = jobSubTaskDesc;
 	}
 
 
@@ -174,6 +248,102 @@ public class JobHistory implements Cloneable {
 
 
 
+	public String getChangedBy() {
+		return changedBy;
+	}
+
+
+
+	public void setChangedBy(String changedBy) {
+		this.changedBy = changedBy;
+	}
+
+
+
+	public String getChangedByReason() {
+		return changedByReason;
+	}
+
+
+
+	public void setChangedByReason(String changedByReason) {
+		this.changedByReason = changedByReason;
+	}
+
+
+
+	public Date getChangedByDate() {
+		return changedByDate;
+	}
+
+
+
+	public void setChangedByDate(Date changedByDate) {
+		this.changedByDate = changedByDate;
+	}
+
+
+
+	public String getChangedByOldValue() {
+		return changedByOldValue;
+	}
+
+
+
+	public void setChangedByOldValue(String changedByOldValue) {
+		this.changedByOldValue = changedByOldValue;
+	}
+
+
+
+	public String getChangedByNewValue() {
+		return changedByNewValue;
+	}
+
+
+
+	public void setChangedByNewValue(String changedByNewValue) {
+		this.changedByNewValue = changedByNewValue;
+	}
+
+
+
+	public String getSubTaskValue() {
+		return subTaskValue;
+	}
+
+
+
+	public void setSubTaskValue(String subTaskValue) {
+		this.subTaskValue = subTaskValue;
+	}
+
+
+
+	public Integer getParentTicketNo() {
+		return parentTicketNo;
+	}
+
+
+
+	public void setParentTicketNo(Integer parentTicketNo) {
+		this.parentTicketNo = parentTicketNo;
+	}
+
+
+
+	public Integer getCaptureEdit() {
+		return captureEdit;
+	}
+
+
+
+	public void setCaptureEdit(Integer captureEdit) {
+		this.captureEdit = captureEdit;
+	}
+
+
+
 	public Object clone() throws CloneNotSupportedException {
     	try {
 			return super.clone();
@@ -182,6 +352,24 @@ public class JobHistory implements Cloneable {
 			throw(e);
 		}
     }
+
+
+
+	@Override
+	public int compareTo(Object arg0) {
+
+		JobHistory temp = (JobHistory)arg0;
+	    final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+
+		if (( this.jobhistoryID == temp.getJobhistoryID())) return EQUAL; 
+		if (( this.jobhistoryID > temp.getJobhistoryID())) return BEFORE;
+		if (( this.jobhistoryID < temp.getJobhistoryID())) return AFTER;
+		
+		
+		return 0;
+	}
 
 
 	

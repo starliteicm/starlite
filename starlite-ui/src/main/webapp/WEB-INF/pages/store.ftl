@@ -27,15 +27,11 @@
 </head>
 <body>
 
-<#if user.hasPermission("UserAdmin")>
-<div id="toolbar">
-    <a href="${request.contextPath}/store!edit.action"><img src="${request.contextPath}/images/icons/add.png"/>Add</a>
-    <hr class="clear"/>
-</div>
-<br/>
+
+<#if tab != "storeAdd">
+<@jmesa id="store"/>
 </#if>
 
-<@jmesa id="store"/>
 
 </body>
 </html>

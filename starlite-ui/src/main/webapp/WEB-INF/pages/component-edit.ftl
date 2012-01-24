@@ -35,6 +35,7 @@
         $("#locationInput").css("background-color","#FFFFFF");
         $("#conLocationInput").css("background-color","#EEEEEE");
         $("#binInput").css("background-color","#FFFFFF");
+        $("#batchInput").css("background-color","#FFFFFF");
       }
       else{
         $("#locDiv").css("background-color","#EEEEEE");
@@ -43,6 +44,7 @@
         $("#locationInput").css("background-color","#EEEEEE");
         $("#conLocationInput").css("background-color","#FFFFFF");
         $("#binInput").css("background-color","#EEEEEE");
+        $("#batchInput").css("background-color","#EEEEEE");
         
       }
       return true;
@@ -62,6 +64,7 @@
       $("#locCurrent").val("1");
       $("#locationInput").val("");
       $("#binInput").val("");
+      $("#batchInput").val("");
       $("#qtyInput").val("1");
       $("#cancelEditLoc").css("display","none");
       $("#deleteEditLoc").css("display","none");
@@ -76,7 +79,7 @@
       return true;
     }
     
-    function editLoc(locid,location,bin,qty){
+    function editLoc(locid,location,bin,batch,qty){
     
       $("#editMessage").html("Editing "+location);
       $("#editMessage").css("display","");
@@ -86,6 +89,8 @@
       updateLocationMessage(location);
       $("#binInput").val(bin);
       updateBinMessage(bin);
+      $("#batchInput").val(batch);
+      updateBatchMessage(batch);
       $("#qtyInput").val(qty);
       $("#cancelEditLoc").css("display","");
       $("#deleteEditLoc").css("display","");
@@ -196,6 +201,27 @@
       return true;  
     }
     
+    function updateBatchMessage(batch){
+      var message = "Free Edit Field";
+      var valid = 0;
+      
+      if(batch.length >= 0){
+           valid = 1;
+      
+      }
+      
+      if(valid == 1){
+        //GREEN
+        $("#batchMessage").css("background-color","#66FF66")
+      }
+      else{
+        //RED
+        $("#batchMessage").css("background-color","#FF6666")
+      }
+      
+      $("#batchMessage").val(message); 
+      return true;  
+    }
     
     function validate(){return true;}
     function validateTrack(){return true;}
@@ -221,6 +247,7 @@
   
   <@enableDatePickers/>
   <@enableTimePickers/>
+  <@enableHelp/>
   
 </head>
 <body>
@@ -312,6 +339,8 @@
             <input name="component.serial" type="text" value="${component.serial!}"/>
         </div>
         
+       
+        
         
         
         <div class="fm-opt">
@@ -339,6 +368,8 @@
             <label for="component.manufacturedDate">Shelf Life:</label>
             <input class="date-pick" name="component.manufacturedDate" type="text" <#if component.manufacturedDate?exists >value="${component.manufacturedDate?string('dd/MM/yyyy')}"<#else>value=""</#if>  />
         </div>
+        
+         
         
         <#if id?exists>
         <#if component.active == 1>
@@ -480,65 +511,11 @@
      <!--LOCATION-->
     <div id="location" style="display:none;" class="tabContent">
     
-    <form id="locationForm" name="locationForm" autocomplete="off" style="clear:left;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!save.action" method="POST" class="smart" onsubmit="return validateLoc();" >
-      <input type="hidden" name="id" value="${id!}"/>
-      <input type="hidden" name="component.id" value="${id!}"/>
-      <input type="hidden" name="loc" value="1"/>
-      <input type="hidden" id="locCurrent" name="locCurrent"  value="1"/>
-      <input type="hidden" id="locationId" name="locationId" value=""/>
+     <!-- Took out the bit which allowed the user to modify the location on Charles Bell's request. -->
       
-      
-      <fieldset>
-      <legend>Component Location - ${component.name!}</legend>
-      
-      <div id="editMessage" style="color:green;font-weight:bold;text-align:center;display:none;margin:10px;padding:10px;border:1px dashed silver;"></div>
-      
-      <div id="locDiv" class="fm-opt">
-            <label for="location">Location:</label> 
-            <input id="locationInput" type="text" value="" onkeypress="updateLocationMessage(this.value);" onkeyup="updateLocationMessage(this.value);" onchange="updateLocationMessage(this.value);" name="location"/>
-            <input type="text" value="Not Valid" style="background-color:#FF6666" DISABLED name="" id="locationMessage"/>
-      </div>
-      <div id="binDiv" class="fm-opt">
-            <label for="bin">Bin:</label> 
-            <input id="binInput" type="text" value="" onkeypress="updateBinMessage(this.value);" onkeyup="updateBinMessage(this.value);" onchange="updateBinMessage(this.value);" name="bin"/>
-            <input type="text" style="background-color:#66FF66" value="Valid Bin Location" DISABLED name="" id="binMessage"/>
-      </div>
-      <#if component.type?exists>
-      <#if component.type.equals("Class E")>
-      <div class="fm-opt">
-            <label for="quantity">Quantity:</label> 
-            <input id="qtyInput" type="text" value="1" name="quantity" style="text-align:right;" onchange='checkNum(this);'/>
-      </div>
-      <#else>
-      <input id="qtyInput" type="hidden" value="1" name="quantity"/>
-      </#if>
-      </#if>
-      <br/>
-      
-      <#if component.type?exists>
-      <#if component.type.equals("Class E")>
-      <div id="conLocDiv" class="fm-opt" style="background-color:#EEEEEE;">
-            <label for="quantity">Add To Existing Location:</label> 
-            <select id="conLocationInput" style="background-color:#EEEEEE;" name="addLocation" onchange="changeAddLocation(addLocation.options.selectedIndex);">
-             <option>- 
-             <#list component.getLocations() as location>
-             <option value="${location.id}">${location.location?if_exists} - ${location.bin?if_exists}
-             </#list>
-            </select>
-      </div>
-      </#if>
-      </#if>
-      
-      
-      <button id="deleteEditLoc" onclick="deleteEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/delete.png"/>Remove</button>
-      <button type="submit" class="smooth" style="float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/pencil.png"/>Save</button>
-      <button id="cancelEditLoc" onclick="cancelEditLocation(this);" type="button" class="smooth" style="display:none; float:right; margin-right:10px; margin-bottom: 4px;"><img src="images/icons/cross.png"/>Cancel</button>
-        
-      </fieldset>
-      </form>
-      
+      <br />
 
-      <form  autocomplete="off" style="clear:none;margin:0px;padding:0px;width:500px;float:left;margin-left:10px;border-left:1px solid silver;height:300px;" action="component!edit.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
+      <form  autocomplete="off" style="clear:none;margin:20px;padding:0px;width:500px;float:left;margin-left:-385px;border-left:1px solid silver;height:300px;" action="component!edit.action" method="POST" class="smart" onsubmit="return validate();" style="clear:left;">
       <input type="hidden" name="id" value="${id!}"/>
       <input type="hidden" name="component.id" value="${id!}"/>
       <input type="hidden" name="loc" value="1"/>

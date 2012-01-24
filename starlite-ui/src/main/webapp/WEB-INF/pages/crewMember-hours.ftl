@@ -156,8 +156,8 @@
 		    
 		    <div class="fm-opt">
 		    <label for="dateFrom">Date Range:</label>
-		    <input name="dateFrom" type="text" class="date-pick" value=""/>
-            <input name="dateTo" type="text" class="date-pick" value=""/>
+		    <input name="dateFrom" type="text" class="date-pick" value="${dateFrom!}"/>
+            <input name="dateTo" type="text" class="date-pick" value="${dateTo!}"/>
             </div>
             
             <div class="fm-opt">
@@ -205,7 +205,7 @@
 		  <input type="hidden" name="tab" value="hours">
           <input type="hidden" name="id" value="${id}">
             <fieldset>
-            <legend>Hours</legend> 
+            <legend>Days on Contract</legend> 
             <div style="float:left;padding-right:20px;" class="fm-opt">
             <label for="hoursMonth">Select Month:</label>
             <select id="hoursMonth" name="hoursMonth" >      
@@ -237,18 +237,14 @@
 		  <div class="months" id="${month}" style="padding:5px;border:1px solid silver;margin:20px;display:none;">
 		  </#if>
 		  <h3 style="height:20px;width:70px;background-color:white;color:silver;position:relative;top:-22px;left:30px;padding:5px;">${month}</h3>
-		  <table style="width:100%">
+		  <table style="width:60%">
 		  <tr>
 		    <th>&nbsp;</th>
-		    <th>Activity / Comments</th>
-		    <th>Type</th>
-		    <th>Tail#</th>
-		    <th>Contract</th>
-		    <th>Hours Flown</th>
-		    <th>Total Flown</th>
-		    <th>Time In</th>
-		    <th>Time Out</th>
-		    <th>Hours</th>
+		    <th><b>Activity / Comments</b></th>
+		   <!-- <th><b>Type</b></th> -->
+		    <th><b>Registration</b></th>
+		    <th><b>Contract</b></th>
+		    
 		  </tr>
 		
 		<#assign flownTotal = 0  />
@@ -512,45 +508,6 @@
         
         </td>
 		
-		<td>
-		  <div class="${month}-${day}_WorkDiv" style="${visible}">
-		  <#if crewDay.get("crewDay")?? >
-            <input style="width:45px;" value="${crewDay.get("crewDay").flown!?string}" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
-            <#assign flownTotal = flownTotal + crewDay.get("crewDay").flown  />
-          <#else>
-            <input style="width:45px;" value="" name="${month}-${day}_flown" id="${month}-${day}_flown" onchange='checkNum(this);sumTotals("${month}");'>
-          </#if>
-          </div>
-        </td>
-		<td>
-		<#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${flownTotal!}" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
-        <#else>
-          <input style="width:45px;" value="" name="${month}-${day}_flowntotal" id="${month}-${day}_flowntotal" readonly value="0">
-        </#if>
-        </td>
-		
-		<td>
-		<#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${crewDay.get("crewDay").timein!}" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
-        <#else>
-          <input style="width:45px;" value="" class="time-pick" id="${month}-${day}_timein" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timein">
-        </#if>
-        </td>
-        <td>
-        <#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${crewDay.get("crewDay").timeout!}" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
-        <#else>
-          <input style="width:45px;" value="" class="time-pick" id="${month}-${day}_timeout" onblur='timeBetween("#${month}-${day}_timein","#${month}-${day}_timeout","#${month}-${day}_hours");' name="${month}-${day}_timeout">
-        </#if>
-        </td>
-        <td>
-        <#if crewDay.get("crewDay")?? >
-          <input style="width:45px;" value="${crewDay.get("crewDay").hours!}" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
-        <#else>
-          <input style="width:45px;" value="" name="${month}-${day}_hours" value="00:00" readonly id="${month}-${day}_hours" />
-        </#if>        
-        </td>
 		
 		
 		</tr>

@@ -45,7 +45,7 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 
 	public String params;
 	public String tableHtml;
-	public String componentTable;
+	public String componentTable = "";
 	public String notificationMessage;
 	public String errorMessage;
 
@@ -82,17 +82,87 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 
 		Tab activeTab = new Tab("Active", "store.action", tab.equals("active"));
 		Tab deactiveTab = new Tab("Inactive", "store!deactive.action", tab.equals("deactive"));
-
+		Tab addStoreTab = new Tab("Add Store", "store!storeAdd.action", tab.equals("storeAdd"));
+		Tab editStoreTab = new Tab("Edit Store", "store!edit.action?id="+id, tab.equals("storeEdit"));
+		Tab viewStoreTab = new Tab("View Store Components", "storeComp!viewStoreComponents.action?id="+id, tab.equals("storeViewComponents"));
 		if (user.hasPermission("ManagerView"))
-			tableTabs = new Tab[] {activeTab, deactiveTab};
+		{
+			if (id!= null)
+			{
+			tableTabs = new Tab[] {activeTab, deactiveTab,addStoreTab,editStoreTab,viewStoreTab};
+			}
+			else {tableTabs = new Tab[] {activeTab, deactiveTab,addStoreTab};}
+		}else
+		{
+			tableTabs = new Tab[] {activeTab, deactiveTab,viewStoreTab};
+		}
 
 	}
 
 
+    public String viewStoreComponents()
+    {
+    	prepare();
+		prepareTabs();
+		
+    	this.tab = "storeViewComponents";
+    	
+    	if(store != null){
 
-	public String edit(){
+			components = manager.getComponents(store.getLocation());
+
+			TableFacade tableFacade = createComponentTable();
+
+			Limit limit = tableFacade.getLimit();
+			if (limit.isExported()) {
+				tableFacade.render();
+				return null;
+			} 
+			tableFacade.setView(new SearchTableView());
+			componentTable = tableFacade.render();
+			params = "id="+store.getId();
+			return "edit";
+		}
+		return "redirect-list";
+    	
+    }
+    public String storeAdd()
+    {
+    	prepare();
+		prepareTabs();
+
+		tab = "storeAdd";
+
+		if((store != null) && (tab.compareToIgnoreCase("storeViewComponents")!= 0))
+		{
+
+			components = manager.getComponents(store.getLocation());
+
+			TableFacade tableFacade = createComponentTable();
+
+			Limit limit = tableFacade.getLimit();
+			if (limit.isExported()) {
+				tableFacade.render();
+				return null;
+			} 
+			tableFacade.setView(new SearchTableView());
+			componentTable = tableFacade.render();
+			params = "id="+store.getId();
+			return "edit";
+		}
+		return "redirect-list";
+    }
+	public String edit()
+	{
 		prepare();
-		if(store != null){
+		prepareTabs();
+		
+		
+		tab = "storeEdit";
+		
+		
+		if ((store != null) && (tab.compareToIgnoreCase("storeViewComponents")!= 0))
+		{
 
 			components = manager.getComponents(store.getLocation());
 
@@ -112,7 +182,8 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 	}
 
 	public String save(){
-		if(store != null){
+		if((store != null)&&(tab.compareToIgnoreCase("storeViewComponents") != 0))
+		{
 			manager.saveStore(store);
 			notificationMessage = "Store saved";
 			errorMessage = "";
@@ -152,7 +223,7 @@ public class StoreAction extends ActionSupport implements UserAware, Preparable 
 				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
 				HtmlBuilder html = new HtmlBuilder();
-				html.a().href().quote().append("store!edit.action?id="+id).quote().close();
+				html.a().href().quote().append("storeComp!viewStoreComponents.action?id="+id).quote().close();
 				html.append(value);
 				html.aEnd();
 				return html.toString();

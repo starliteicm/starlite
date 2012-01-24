@@ -19,6 +19,7 @@ import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.docs.model.Bookmark;
 import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
+import com.itao.starlite.manager.StarliteCoreManager;
 import com.opensymphony.xwork2.ActionSupport;
 
 @Results({
@@ -38,6 +39,8 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	private DocumentManager documentManager;
 	@Inject
 	private BookmarkManager bookmarkManager;
+	@Inject
+	private StarliteCoreManager manager;
 	
 	private User user;
 	public String errorMessage;
@@ -67,7 +70,14 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	public String returnUrl;
 	public String shallReturn;
 	
-	public String upload() throws Exception {
+	public String id;
+	
+	public String upload() throws Exception 
+	{
+		boolean pass = true;
+		try{
+			
+		
 		LOG.info(tags+" "+folder+" "+shallReturn);
 		String[] tagsArray = tags.split(" ");
 		
@@ -79,18 +89,48 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 		doc.setBookmark(b);
 		
 		documentManager.createDocument(doc, folder, new FileInputStream(document), user);
+		}
+		catch(Exception ex)
+		{
+			this.errorMessage="Unable to upload document. Possible Reason: "+ex.getMessage().toString();
+			pass = false;
+			return ERROR;
+		}
+		if (pass)
+		{
 		if (returnUrl != null)
 			return "redirect";
 		else if (shallReturn != null) {
 			returnUrl = ServletActionContext.getRequest().getHeader("referer");
 			return "redirect";
 		}
+		}
 		return execute();
 	}
 	
 	public String path;
-	public String delete() throws Exception {
+	public String delete() throws Exception 
+	{
+		try
+		{
 		documentManager.deleteDocument(path, user);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				//manager.deleteDocByName(path,id);
+				//find the file and then delete
+				//File target = new File(path);
+				//target.delete();	
+				
+				
+			}
+			catch (Exception ee)
+			{
+				this.errorMessage = "Unable to delete the file: "+ path;
+			}
+		}
 		if (returnUrl != null)
 			return "redirect";
 		

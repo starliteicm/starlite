@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
  */
 
 @Entity
-public class JobTask {
+public class JobTask implements Comparable{
 
 	
 	@Id
@@ -55,6 +55,21 @@ public class JobTask {
 
 	public void setJobTaskNotes(String jobTaskNotes) {
 		this.jobTaskNotes = jobTaskNotes;
+	}
+
+
+	@Override
+	public int compareTo(Object o) {
+		 JobTask temp = (JobTask)o;
+		    final int BEFORE = -1;
+		    final int EQUAL = 0;
+		    final int AFTER = 1;
+
+		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )== 0)) return EQUAL;
+		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )< 0)) return BEFORE;
+		    if (( this.jobTaskValue.compareTo(temp.getJobTaskValue() )> 0)) return AFTER;
+
+		return EQUAL;
 	}
 
 	

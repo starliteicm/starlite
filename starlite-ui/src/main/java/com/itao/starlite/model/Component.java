@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OrderBy;
 
 @Entity
-public class Component {
+public class Component implements Comparable {
 	@Id
 	@GeneratedValue
 	private Integer id;
@@ -65,6 +66,8 @@ public class Component {
 	
 	@Transient
 	public String location;
+	@Transient
+	public String batchNo;
 	
 	//CALC
 	//currentHours
@@ -74,8 +77,8 @@ public class Component {
 	//Time since install
 	//lifeExpiresHours
 	
-	 
-	
+
+
 	public Double getTotalDays(){
 		long milPerDay = 1000*60*60*24;
 		if(expiryDate != null){
@@ -383,7 +386,7 @@ public class Component {
 	private List<ComponentLocation> locations = new ArrayList<ComponentLocation>();
 	
 	@Entity()
-	public static class ComponentLocation{
+	public static class ComponentLocation implements Comparable{
 		@Id
 		@GeneratedValue
 		private Integer id; 
@@ -444,6 +447,24 @@ public class Component {
 		public String getBatch() {
 			return batch;
 		}
+
+		@Override
+		public int compareTo(Object o) {
+			 ComponentLocation temp = (ComponentLocation)o;
+			    final int BEFORE = -1;
+			    final int EQUAL = 0;
+			    final int AFTER = 1;
+
+			    String inStr = temp.getLocation() + temp.getBin() + temp.getBatch();
+			    String thisStr = this.location + this.bin + this.batch;
+			    
+			    if (( thisStr.compareTo(inStr )== 0)) return EQUAL;
+			    if (( thisStr.compareTo(inStr ) < 0)) return BEFORE;
+			    if (( thisStr.compareTo(inStr ) > 0)) return AFTER;
+
+			return EQUAL;
+		}
+
 		
 	}
 
@@ -616,7 +637,7 @@ public class Component {
 		this.locations = locations;
 	}
 
-	public void updateLocation(Integer locationId, String location, String bin, Integer quantity, Integer current) {
+	public void updateLocation(Integer locationId, String location, String bin, Integer quantity, Integer current, String batch) {
 		if(locationId != null){
 			ComponentLocation toRem = null;
 			
@@ -629,6 +650,8 @@ public class Component {
 						l.setBin(bin);
 						l.setCurrent(current);
 						l.setQuantity(quantity);
+						//also save the batch no
+						l.setBatch(batch);						
 					}
 					else{
 						toRem = l;
@@ -656,6 +679,8 @@ public class Component {
 			l.setBin(bin);
 			l.setCurrent(current);
 			l.setQuantity(quantity);
+			//also save batchNo
+			l.setBatch(batch);
 			locations.add(l);
 			}
 		}
@@ -749,6 +774,7 @@ public class Component {
 
 	public void updateLocation(String user, String type, String batch, String location, String bin, Integer quantity, Integer current, String note) {
 	
+		
 		System.out.println("Updating Location - "+type);
 		
 		Date now = Calendar.getInstance().getTime();
@@ -757,8 +783,18 @@ public class Component {
 			//Add to location
 			ComponentLocation l = null;
 			Integer previous = 0;
-			for(ComponentLocation loc : locations){
-				if((loc.location.equals(location))&&(loc.bin.equals(bin))){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+				
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.batch.equals(batch))){
 					l = loc; 
 					previous = loc.getQuantity();
 				}
@@ -777,7 +813,7 @@ public class Component {
 				l.setQuantity(l.getQuantity() + quantity);
 				l.setBatch(batch);
 			}
-			history.add(new ComponentHistory(now,now,user,"transaction","Purchase",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
+			history.add(new ComponentHistory(now,now,user,"transaction","Purchase",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()+" "+l.getBatch()));
 
         }
         else if("Repair".equals(type)){
@@ -786,14 +822,24 @@ public class Component {
         	Integer previous = 0;
         	
         	
-			for(ComponentLocation loc : locations){
+			for(ComponentLocation loc : locations)
+			{
+				if (location==null) {location="";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+				
 				if(loc.getId().equals(current)){
 					previous = loc.getQuantity();
 					loc.setQuantity(loc.getQuantity() - quantity);
 					if(loc.getQuantity()<=0){
 						rem = loc;
 					}
-					history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()+" "+rem.getBatch()));
 				}
 			}
 
@@ -804,8 +850,18 @@ public class Component {
 			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
-			for(ComponentLocation loc : locations){
-				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.status.equals(status))){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+				
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.batch.equals(batch))&&(loc.status.equals(status))){
 					l = loc; 
 					previous = loc.getQuantity();
 				}
@@ -824,10 +880,11 @@ public class Component {
 			else {
 				l.setQuantity(l.getQuantity() + quantity);
 				l.setBatch(batch);
+				l.setBin(bin);
 				l.setStatus("Repair");
 			}
 			
-			history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
+			history.add(new ComponentHistory(now,now,user,"transaction","Repair",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()+" "+l.getBatch()));
 			
         }
         else if("Move".equals(type)){
@@ -844,7 +901,7 @@ public class Component {
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
-					history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()+" "+rem.getBatch()));
 				}
 			}
 			for(ComponentLocation toRem : toRemove){
@@ -855,8 +912,19 @@ public class Component {
 			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
-			for(ComponentLocation loc : locations){
-				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.status.equals(status))){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+					
+				
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&& (loc.batch.equals(batch))&&(loc.status.equals(status))){
 					l = loc; 
 					previous = loc.getQuantity();
 				}
@@ -866,6 +934,7 @@ public class Component {
 				l = new ComponentLocation();
 				l.setLocation(location);
 				l.setBin(bin);
+				l.setBatch(batch);
 				l.setCurrent(current);
 				l.setQuantity(quantity);
 				locations.add(l);
@@ -873,7 +942,7 @@ public class Component {
 			else {
 				l.setQuantity(l.getQuantity() + quantity);
 			}
-			history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
+			history.add(new ComponentHistory(now,now,user,"transaction","Move",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()+" "+l.getBatch()));
 
 		}
 		else if("Reserve".equals(type)){
@@ -890,7 +959,7 @@ public class Component {
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
-					history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()+" "+rem.getBatch()));
 				}
 			}
 			
@@ -901,8 +970,18 @@ public class Component {
 			previous = 0;
         	//Add to location
 			ComponentLocation l = null;
-			for(ComponentLocation loc : locations){
-				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.status.equals(status))){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+				
+				if((loc.location.equals(location))&&(loc.bin.equals(bin))&&(loc.batch.equals(batch))&&(loc.status.equals(status))){
 					l = loc; 
 					previous = loc.getQuantity();
 				}
@@ -912,6 +991,7 @@ public class Component {
 				l = new ComponentLocation();
 				l.setLocation(location);
 				l.setBin(bin);
+				l.setBatch(batch);
 				l.setStatus("Reserve");
 				l.setCurrent(current);
 				l.setQuantity(quantity);
@@ -920,14 +1000,24 @@ public class Component {
 			else {
 				l.setQuantity(l.getQuantity() + quantity);
 			}
-			history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()));
+			history.add(new ComponentHistory(now,now,user,"transaction","Reserve",""+previous,""+l.getQuantity(),note,l.getLocation()+" "+l.getBin()+" "+l.getBatch()));
 		}
 		else if("Sell".equals(type)){	
         	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
 			ComponentLocation rem = null;
 			Integer previous = 0;
 			
-			for(ComponentLocation loc : locations){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+				
 				if(loc.getId().equals(current)){
 					rem = loc; 
 					previous = rem.getQuantity();
@@ -935,7 +1025,7 @@ public class Component {
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
-					history.add(new ComponentHistory(now,now,user,"transaction","Sell",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					history.add(new ComponentHistory(now,now,user,"transaction","Sell",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBatch()));
 				}
 			}
 			
@@ -949,7 +1039,16 @@ public class Component {
 			ComponentLocation rem = null;
         	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
         	
-			for(ComponentLocation loc : locations){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="Scrap";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="Scrap";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
 				
 				if(loc.getId().equals(current)){	
 					rem = loc; 
@@ -959,7 +1058,7 @@ public class Component {
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
-					history.add(new ComponentHistory(now,now,user,"transaction","Scrap",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					history.add(new ComponentHistory(now,now,user,"transaction","Scrap",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()+" "+rem.getBatch()));
 				}
 			}
 			
@@ -971,7 +1070,17 @@ public class Component {
 		else if("Consume".equals(type)){	
 			ComponentLocation rem = null;
         	List<ComponentLocation> toRemove = new ArrayList<ComponentLocation>();
-			for(ComponentLocation loc : locations){
+			for(ComponentLocation loc : locations)
+			{
+				if (location == null) {location="Consumed";}
+				if (bin==null) {bin="";}
+				if (batch==null) {batch="";}
+				if (status == null)	{status="";}
+				if (loc.location == null) {loc.location="Consumed";}
+				if (loc.batch==null){loc.batch="";}
+				if (loc.bin==null){loc.bin="";}
+				if (loc.status==null){loc.status="";}
+				
 				if(loc.getId().equals(current)){
 					rem = loc; 
 					Integer previous = rem.getQuantity();
@@ -980,7 +1089,7 @@ public class Component {
 					if(rem.getQuantity()<=0){
 						toRemove.add(rem);
 					}
-					history.add(new ComponentHistory(now,now,user,"transaction","Consume",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()));
+					history.add(new ComponentHistory(now,now,user,"transaction","Consume",""+previous,""+rem.getQuantity(),note,rem.getLocation()+" "+rem.getBin()+" "+rem.getBatch()));
 				}
 			}
 			
@@ -1007,5 +1116,31 @@ public class Component {
 	public String getState() {
 		return state;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public int compareTo(Object o) {
+		 Component temp = (Component)o;
+		    final int BEFORE = -1;
+		    final int EQUAL = 0;
+		    final int AFTER = 1;
+
+		    if (this.getLocations().isEmpty() || temp.getLocations().isEmpty())
+		    {
+		    	return EQUAL;
+		    }
+		    else
+		    {
+		    Collections.sort(this.locations);
+		    Collections.sort(temp.getLocations());
+		    
+		   
+		    if (( this.getLocations().get(0).getLocation().compareTo(temp.getLocations().get(0).getLocation() )== 0)) return EQUAL;
+		    if (( this.getLocations().get(0).getLocation().compareTo(temp.getLocations().get(0).getLocation() ) < 0)) return BEFORE;
+		    if (( this.getLocations().get(0).getLocation().compareTo(temp.getLocations().get(0).getLocation() ) > 0)) return AFTER;
+		    }
+		return EQUAL;
+	}
+
 
 }

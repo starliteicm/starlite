@@ -21,6 +21,23 @@ public class JobHistoryHibernateDao extends GenericHibernateDao<JobHistory, Inte
 		return (List<JobHistory>) getCurrentSession().createQuery("from JobHistory where assignedto_id = ?").setParameter(0, username).list();
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<JobHistory> findAllNonEditHistroryTicketsByParentID(
+			Integer parentTicketNo) {
+		// TODO Auto-generated method stub
+		return (List<JobHistory>) getCurrentSession().createQuery("from JobHistory where parentTicketNo = ? and captureEdit = 0 order by jobHistoryId desc").setParameter(0, parentTicketNo).list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<JobHistory> findAllEDITHrsTicketsByParentID(Integer parentTicketNo) {
+		// TODO Auto-generated method stub
+		return (List<JobHistory>) getCurrentSession().createQuery("from JobHistory where parentTicketNo = ? and captureEdit = 1 order by jobHistoryId desc").setParameter(0, parentTicketNo).list();
+	}
+
+
 	
 	
 

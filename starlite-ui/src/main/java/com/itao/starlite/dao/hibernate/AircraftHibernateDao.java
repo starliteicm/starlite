@@ -28,7 +28,7 @@ public class AircraftHibernateDao extends GenericHibernateDao<Aircraft, Integer>
 	//get the names for aircrafts
 	@SuppressWarnings("unchecked")
 	public List<Aircraft> getAllAircraftRefs() {
-		return (List<Aircraft>) getCurrentSession().createQuery("from Aircraft").list();
+		return (List<Aircraft>) getCurrentSession().createQuery("from Aircraft where amoresponsible = 'Yes'").list();
 	}
 
 	

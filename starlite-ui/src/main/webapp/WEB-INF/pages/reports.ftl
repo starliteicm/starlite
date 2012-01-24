@@ -476,10 +476,14 @@ font-weight:normal;
 	<#if currentUser.hasRead("reportDeduction")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewDeductions.groovy&month=${month}&year=${year?c}">Crew Deductions</a></#if>
 	<#if currentUser.hasRead("reportPayments")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPayments.groovy&month=${month}&year=${year?c}">Crew Payments</a></#if>
 	<#if currentUser.hasRead("reportPaymentsAnalysis")><li style="width:200px;height:30px;"><a href="script.action?scriptName=crewPaymentAnalysis.groovy&month=${month}&year=${year?c}">Crew Payment Analysis</a></#if>
-	<#if currentUser.hasRead("reportHours")><li style="width:200px;height:30px;"><a href="script.action?scriptName=hours.groovy">Crew Hours</a></#if> 	
+	<#if currentUser.hasRead("reportHours")><li style="width:200px;height:30px;"><a href="script.action?scriptName=hours.groovy">Crew Hours</a></#if>
+	<#if currentUser.hasPermission("hangerWrite")><li style="width:200px;height:30px;"><a href="script.action?scriptName=allJobTickets.groovy&month=${month}&year=${year?c}">All Monthly Tickets</a></#if>	
+	<#if currentUser.hasPermission("hangerWrite")><li style="width:200px;height:30px;"><a href="script.action?scriptName=allJobTicketsNotSuspended.groovy&month=${month}&year=${year?c}">All Tickets not Suspended</a></#if>
+	<#if currentUser.hasPermission("hangerWrite")><li style="width:200px;height:30px;"><a href="script.action?scriptName=allSuspiciousJobTickets.groovy&month=${month}&year=${year?c}">All Suspicious Hours Tickets</a></#if> 	
 	</#if>
   </ul>
 
+<ul>
 <#if currentUser.hasRead("report183")>
 <form name="days" id="days" action="script.action">
 <input type="hidden" name="scriptName" value="183days.groovy"/>
@@ -508,6 +512,7 @@ font-weight:normal;
 </form>
 <br/><br/>
 </#if>
+<br/>
 
 <#if currentUser.hasRead("reportProfile")>
 <form name="profile" id="profile" action="crewMember!profile.action">
@@ -522,7 +527,7 @@ font-weight:normal;
 </form>
 <br/><br/>
 </#if>
-
+<br/>
 <#if currentUser.hasRead("reportRequired")>
 <form name="required" id="required" action="crewMember!required.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="document.forms.required.submit();" >View Required Information Report</A></li>
@@ -536,7 +541,7 @@ font-weight:normal;
 </form>
 <br/><br/>
 </#if>
-
+<br/>
 <#if currentUser.hasRead("reportOnContract")>
 <form name="oncontract" id="oncontract" action="reports!days183.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateOnContract();" >View Days On Contract</A></li>
@@ -547,7 +552,7 @@ font-weight:normal;
 </form>
 <br/>
 </#if>
-
+<br/>
 <#if currentUser.hasRead("reportHoursFlown")>
 <form name="hours" id="hours" action="reports!hours.action">
 <li style="width:200px;height:30px;float:left;"><A href="#" style="width:300px;height:20px;" onclick="validateHours();" >View Hours Flown</A></li>
@@ -564,8 +569,8 @@ font-weight:normal;
   </div>
 </form>
 </#if>
-
-
+</ul>
+<br/>
 </#if>
 <div style="height:120px;">&nbsp;</div>
 </body>
