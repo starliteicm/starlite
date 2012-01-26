@@ -380,7 +380,24 @@
                     </execution>
       			</executions>        
             </plugin>
+			
+			<plugin> 
+            <groupId>org.apache.maven.plugins</groupId> 
+            <artifactId>maven-resources-plugin</artifactId> 
+            
+        </plugin> 
+
       
 		</plugins>
+		
+		 <resources> 
+        <resource> 
+        <directory>src/main/java</directory> 
+            <includes> 
+                <include>**/*.ftl</include> 
+            </includes> 
+        </resource> 
+    </resources> 
+
 	</build>
 </project>
