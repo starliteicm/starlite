@@ -38,11 +38,10 @@ public class MailService {
     
     @Inject
     public void setFreemarkerConfiguration(Configuration freemarkerConfiguration) {
-        log.info("inject freemarker");
         this.freemarkerConfiguration = freemarkerConfiguration;
         try {
         	log.info("multi-class loader");
-        	ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "ftl");
+        	ClassTemplateLoader ctl = new ClassTemplateLoader(MailService.class, "ftl");
 			TemplateLoader[] loaders = new TemplateLoader[] { ctl };
         	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
 
