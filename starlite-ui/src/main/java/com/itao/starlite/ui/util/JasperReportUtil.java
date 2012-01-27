@@ -26,7 +26,7 @@ import org.apache.struts2.views.jasperreports.ValueStackShadowMap;
 
 public class JasperReportUtil {
 
-	public static final String JASPER_DIR = "/home/admin/svnwork/starlite/starlite-ui/payslips/";
+	public static final String JASPER_DIR = "/Users/StarAdmin/dev/starlite/starlite-ui/payslips";
 
 	public static void toFile(HttpServletRequest request, String template, String dataSource, String filename){
 		try {
