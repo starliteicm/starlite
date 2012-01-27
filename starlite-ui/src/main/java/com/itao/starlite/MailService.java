@@ -42,17 +42,12 @@ public class MailService {
         this.freemarkerConfiguration = freemarkerConfiguration;
         try {
         	log.info("multi-class loader");
-        	freemarkerConfiguration.setDirectoryForTemplateLoading(new File("/home/admin/svnwork/starlite/starlite-core/src/main/java/com/itao/starlite/ftl"));
-        	//FileTemplateLoader ftl1 = new FileTemplateLoader(new File("/home/admin/svnwork/starlite/starlite-core/src/main/java/com/itao/starlite/ftl"));
-        	//FileTemplateLoader ftl2 = new FileTemplateLoader(new File("/home/admin/svnwork/starlite/starlite-ui/src/main/java/com/itao/starlite/ftl"));
-        	//FileTemplateLoader ftl3 = new FileTemplateLoader(new File("/home/admin/svnwork/starlite/starlite-ui/target/starlite-ui/classes/com/itao/starlite/ftl"));
         	ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "ftl");
-        	//TemplateLoader[] loaders = new TemplateLoader[] { ftl1, ftl2, ftl3, ctl };
 			TemplateLoader[] loaders = new TemplateLoader[] { ctl };
         	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
 
 			this.freemarkerConfiguration.setTemplateLoader(mtl);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  
