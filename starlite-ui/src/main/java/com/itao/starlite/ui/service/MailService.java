@@ -60,7 +60,7 @@ public class MailService {
         	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
 
 			this.freemarkerConfiguration.setTemplateLoader(mtl);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  
