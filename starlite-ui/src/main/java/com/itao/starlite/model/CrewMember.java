@@ -77,6 +77,10 @@ public class CrewMember implements Cloneable, Comparable {
 	@Fetch(FetchMode.SUBSELECT)
 	private List<Passport> passport = new ArrayList<Passport>();
 	
+	public void setID(Integer id) {
+		this.id = id;
+	}
+
 	/*
 	 * Nested Classes - These are used to partition the data into manageable sections
 	 */
@@ -213,6 +217,7 @@ public class CrewMember implements Cloneable, Comparable {
 		private String alternativeEmergencyContactName;
 		private String alternativeEmergencyContactNumber;
 		private String alternativeEmergencyContactRelationship;
+		
 		
 		public String getLastName() {
 			return lastName;
@@ -1476,7 +1481,7 @@ public class CrewMember implements Cloneable, Comparable {
 		@Column(nullable=false)
 		private Money basePilotAllowance = new Money();
 		@Column(nullable=false, columnDefinition="varchar(10) default 'Level 1'")
-		private String safetyLevel;
+		private String safetyLevel="Level 1";
 		@Column(nullable=false)
 		private Money safetyLevelAllowance = new Money();
 		

@@ -33,12 +33,16 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 		}
 		codePrefix += thisCodeNum;
 		
+		int numID = getCurrentSession().createQuery("Select MAX(id) from CrewMember").list().size();
+		++numID;
+		
 		CrewMember cm = new CrewMember();
 		cm.getPersonal().setTitle(title);
 		cm.getPersonal().setFirstName(firstName);
 		cm.getPersonal().setLastName(lastName);
 		cm.getRole().setEmployment("Permanent");
 		cm.setCode(codePrefix);
+		cm.setID(numID);
 		return makePersistent(cm);
 	}
 
