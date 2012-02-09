@@ -14,6 +14,7 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 			.uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	public CrewMember createCrewMember(String title, String firstName, String lastName) {
 		String[] nameParts = lastName.split(" ");
 		
@@ -33,16 +34,20 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 		}
 		codePrefix += thisCodeNum;
 		
-		int numID = getCurrentSession().createQuery("Select MAX(id) from CrewMember").list().size();
-		++numID;
+		Integer numID = 0;
+		List<Integer> numList = getCurrentSession().createQuery("Select MAX(id) from CrewMember").list();
+		Integer temp = numList.get(0);
+		numID = ++temp;
+		
 		
 		CrewMember cm = new CrewMember();
 		cm.getPersonal().setTitle(title);
 		cm.getPersonal().setFirstName(firstName);
 		cm.getPersonal().setLastName(lastName);
-		cm.getRole().setEmployment("Permanent Starlite");
+		cm.getRole().setEmployment("Permanent CRI");
 		cm.setCode(codePrefix);
-		cm.setID(numID);
+		//cm.setID(numID);
+		
 		return makePersistent(cm);
 	}
 

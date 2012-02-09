@@ -601,6 +601,10 @@ public class StarliteCoreManager {
 			if("Permanent".equals(c.getRole().getEmployment()) || "Freelance".equals(c.getRole().getEmployment()))
 			{
 				String position = c.getRole().getPosition();
+				if (position == null)
+				{
+				position = "PILOT";	
+				}
 				position = position.toUpperCase();
 				if (position.contains("PILOT"))
 				{

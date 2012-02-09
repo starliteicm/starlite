@@ -12,9 +12,21 @@
 		var areaRate = ${actuals.areaRate.amountAsDouble?c};
 		var dailyRate = ${actuals.dailyRate.amountAsDouble?c};
 		var flightRate = ${actuals.flightRate.amountAsDouble?c};
+		<#if actuals.basePilotRate??>
 		var basePilotRate = ${actuals.basePilotRate.amountAsDouble?c};
+		<#else>
+		var basePilotRate = 0;
+		</#if>
+		<#if actuals.safetyLevelRate??>
 		var safetyLevelRate = ${actuals.safetyLevelRate.amountAsDouble?c};
+		<#else>
+		var safetyLevelRate = 0;
+		</#if>
+		<#if actuals.instructorRate??>
 		var instructorRate = ${actuals.instructorRate.amountAsDouble?c};
+		<#else>
+		var instructorRate = 0;
+		</#if>
 		
 		var symbol = "${actuals.monthlyRate.currency}";
 		if (symbol == "GBP")
@@ -530,18 +542,30 @@
 				<input type="text" id="flightDays" onchange="onFormChange();" name="actuals.flightRate.amountAsDouble" style="width:50px;" value="${actuals.flightRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
+			    <#if actuals.basePilotRate??>
 				<label for="actuals.basePilotRate.amountAsDouble">Senior Base Pilot <@symbol "${actuals.basePilotRate.currency}"/></label>
 				<input type="text" id="basePilotDays" onchange="onFormChange();" name="actuals.basePilotRate.amountAsDouble" style="width:50px;" value="${actuals.basePilotRate.amountAsDouble}"/>
+			    <#else>
+			    <label for="actuals.basePilotRate.amountAsDouble">Senior Base Pilot - Value Not Set<@symbol "USD"/></label>
+			    
+			    </#if>
 			</div>
 			<div class="fm-opt">
+			    <#if actuals.safetyLevelRate??>
 				<label for="actuals.safetyLevelRate.amountAsDouble">Safety Level <@symbol "${actuals.safetyLevelRate.currency}"/></label>
 				<input type="text" id="safetyLevelDays" onchange="onFormChange();" name="actuals.safetyLevelRate.amountAsDouble" style="width:50px;" value="${actuals.safetyLevelRate.amountAsDouble!}"/>
+				<#else>
+				<label for="actuals.safetyLevelRate.amountAsDouble">Safety Level - Value Not Set<@symbol "USD"/></label>
+				</#if>
+				
 			</div>
-			<!--<input type="hidden" name="actuals.paidAmount.currencyCode" value="${crewMember.payments.currency}"/>
+			<!--
+			<input type="hidden" name="actuals.paidAmount.currencyCode" value="${crewMember.payments.currency}"/>
 			<div class="fm-opt">
 				<label>Total</label>
 				<div id="total"><#if actuals.total??>${actuals.total}<#else><@symbol "${crewMember.payments.currency}"/>0</#if></div>
-			</div>-->
+			</div>
+			-->
 
 			
 		</fieldset>

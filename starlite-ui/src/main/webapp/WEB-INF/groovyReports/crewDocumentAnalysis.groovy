@@ -25,14 +25,18 @@ def generate(manager, pageContext) {
 	
 	def crew = manager.getAllCrewReadOnly()
     def report = []
+    
 	for (CrewMember cm in crew) {
+    
     	def reportRow = [:];
-		
+	
 		reportRow["code"] = cm.code
 		reportRow["personal.lastName"] = cm.personal.lastName
 		reportRow["personal.firstName"] = cm.personal.firstName
-		reportRow["personal.passportExpiryDate"] = cm.personal.passportExpiryDate							
+		//reportRow["personal.passportExpiryDate"] = cm.personal.passportExpiryDate	
+		reportRow["personal.passportExpiryDate"] = cm.getLatestPassportDate()
 		reportRow["role.r1.expiryDate"] = cm.role.r1.expiryDate
+		//reportRow["role.r1.expiryDate"] = cm.getLatestPassportCertificates()
 		reportRow["role.expiryDate"] = cm.role.expiryDate									
 		reportRow["role.crm.expiryDate"] = cm.role.crm.expiryDate
 		reportRow["role.dg.expiryDate"] = cm.role.dg.expiryDate
@@ -41,7 +45,7 @@ def generate(manager, pageContext) {
 		try{
 		code = cm.code;		
 		path = "/crew/"+code;
-		System.out.println("path is :"+path)
+		//System.out.println("path is :"+path)
 		folder = docManager.getFolderByPath(path, user);
 		reportRow["passport"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "";
 		if(!"".equals(reportRow["passport"])){reportRow["ptick"] = "Y";}

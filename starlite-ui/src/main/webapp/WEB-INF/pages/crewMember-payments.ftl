@@ -160,7 +160,7 @@ function validate(){
 			<div class="fm-opt">
 				<label for="crewMember.payments.safetyLevel"><span style="color:red;">*</span>&nbsp;Safety Level:</label>
 				<#if readOnly>
-					<label>${crewMember.payments.safetyLevelValue.amountAsDouble!'&nbsp;'}</label>
+					<label>${crewMember.payments.safetyLevel.amountAsDouble!'&nbsp;'}</label>
 				<#else>
 				    <input name="crewMember.payments.safetyLevelAllowance.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#FFFFFF;" value="${crewMember.payments.safetyLevelAllowance.amountAsDouble!}"/>
  			    </#if>   	    

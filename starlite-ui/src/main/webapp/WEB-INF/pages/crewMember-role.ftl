@@ -268,10 +268,11 @@ $("document").ready(function() {
             								
 			<div class="fm-opt">
 				<label for="crewMember.role.initialDate">Initial Date:</label>
-				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}</#if>"/>
+				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}<#else>${initialDate!}</#if>"/>
 			</div>
 			
 			<div class="fm-opt">
+			    <!-- This is the system date of when the member was created - currently not changable. -->
                 <label for="reviewDate">Review Date:</label>
                 <input name="reviewDate" type="text" class="date-pick" value="<#if crewMember.role.reviewDate??>${crewMember.role.reviewDate?string('dd/MM/yyyy')}<#else>${reviewDate!}</#if>"/>
             </div>
@@ -580,7 +581,9 @@ $("document").ready(function() {
                 <#if flighthours?exists>
                   <label for="flighthoursFile"/>&nbsp;</label>
                   <div id="flighthoursFile"><a href='${request.contextPath}${flighthours.bookmark.url!}'>${flighthours.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${flighthours.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[delete]</a></#if></div>
+                  <#if bookmark??>
                   <h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?path=${bookmark.bookmarkedId}">Delete</a></#if></h3>
+                </#if>
                 </#if>
         </#if>        
             </div>
@@ -596,7 +599,12 @@ $("document").ready(function() {
             <#if crewMember.role.position?if_exists == "Pilot">	
  			<div class="fm-opt">	
 				<label for="lpcExpiryDate">LPC Expiry:</label>
-   				<input name="lpcExpiryDate"  type="text" class="date-pick" id="lpcexpiry" value="<#if crewMember.role.lpcCert.expiryDate??>${crewMember.role.lpcCert.expiryDate?string('dd/MM/yyyy')}<#else>${lpcExpiryDate!}</#if>" /> 				
+				<#if crewMember.role.lpcCert??>
+   				<input name="lpcExpiryDate"  type="text" class="date-pick" id="lpcexpiry" value="<#if crewMember.role.lpcCert.expiryDate??>${crewMember.role.lpcCert.expiryDate?string('dd/MM/yyyy')}<#else>${lpcExpiryDate!}</#if>" />
+   				<#else>
+   				<input name="lpcExpiryDate"  type="text" class="date-pick" id="lpcexpiry" value="${lpcExpiryDate!}" />
+   				</#if>
+   				 				
 				<div id="msg-lpcexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 <!-- Life Proficiency Check (LPC)--> 			
@@ -615,7 +623,11 @@ $("document").ready(function() {
 <!-- OPC Expiry Date -->	
 			<div class="fm-opt">		
 				<label for="opcExpiryDate">OPC Expiry:</label>
-   				<input name="opcExpiryDate"  type="text" class="date-pick" id="opcexpiry" value="<#if crewMember.role.opcCert.expiryDate??>${crewMember.role.opcCert.expiryDate?string('dd/MM/yyyy')}<#else>${opcExpiryDate!}</#if>" /> 				
+				<#if crewMember.role.opcCert??>
+   				<input name="opcExpiryDate"  type="text" class="date-pick" id="opcexpiry" value="<#if crewMember.role.opcCert.expiryDate??>${crewMember.role.opcCert.expiryDate?string('dd/MM/yyyy')}<#else>${opcExpiryDate!}</#if>" />
+   				<#else>
+   				<input name="opcExpiryDate"  type="text" class="date-pick" id="opcexpiry" value="${opcExpiryDate!}" />
+   				</#if> 				
 				<div id="msg-opcexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 </div>
 			    		   
@@ -635,7 +647,12 @@ $("document").ready(function() {
 <!-- Route Check--> 			
 				<div class="fm-opt">
 				<label for="routeCheckExpiryDate">Route Check (Date Completed): </label>
+				<#if crewMember.role.routCheck??>
                 <input name="routeCheckExpiryDate"  type="text" class="date-pick" value="<#if crewMember.role.routCheck.expiryDate??>${crewMember.role.routCheck.expiryDate?string('dd/MM/yyyy')}<#else>${routeCheckExpiryDate!}</#if>" />
+                <#else>
+                <input name="routeCheckExpiryDate"  type="text" class="date-pick" value="${routeCheckExpiryDate!}" />
+                </#if>
+                
                 </div>              
             <br/>
             <div class="fm-opt">
@@ -649,7 +666,12 @@ $("document").ready(function() {
 <!-- operationsManual Expiry Date -->	
 			<div class="fm-opt">		
 				<label for="operationsManualExpiry">Operations Manual Expiry:</label>
-   				<input name="operationsManualExpiry"  type="text" class="date-pick" id="opsManexpiry" value="<#if crewMember.role.operationsManualCert.expiryDate??>${crewMember.role.operationsManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${operationsManualExpiry!}</#if>" /> 				
+				<#if crewMember.role.operationsManualCert??>
+   				<input name="operationsManualExpiry"  type="text" class="date-pick" id="opsManexpiry" value="<#if crewMember.role.operationsManualCert.expiryDate??>${crewMember.role.operationsManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${operationsManualExpiry!}</#if>" />
+   				<#else>
+   				<input name="operationsManualExpiry"  type="text" class="date-pick" id="opsManexpiry" value="${operationsManualExpiry!}" />
+   				</#if> 
+   								
 				<div id="msg-opsManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
 		 
@@ -670,7 +692,12 @@ $("document").ready(function() {
 <!-- annual Tech Expiry Date -->	
             <div class="fm-opt">	
 				<label for="annualTechnicalManual">Technical Manual Expiry:</label>
-   				<input name="annualTechnicalManual"  type="text" class="date-pick" id="annualManexpiry" value="<#if crewMember.role.annualTechnicalManualCert.expiryDate??>${crewMember.role.annualTechnicalManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${annualTechnicalManual!}</#if>" /> 				
+				<#if crewMember.role.annualTechnicalManualCert??>
+   				<input name="annualTechnicalManual"  type="text" class="date-pick" id="annualManexpiry" value="<#if crewMember.role.annualTechnicalManualCert.expiryDate??>${crewMember.role.annualTechnicalManualCert.expiryDate?string('dd/MM/yyyy')}<#else>${annualTechnicalManual!}</#if>" />
+   				<#else>
+					<input name="annualTechnicalManual"  type="text" class="date-pick" id="annualManexpiry" value="${annualTechnicalManual!}" />
+   				</#if> 			
+   					
 				<div id="msg-annualManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
                 
 			</div>                 
@@ -720,11 +747,16 @@ $("document").ready(function() {
 		    <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.instructor.number">
 	    		   <#list YNOption as option >
+	    		   
+	    		   <#if crewMember.role.instructor.number??> 
 	    			<#if option == crewMember.role.instructor.number>	  
 	    		   	<option SELECTED onclick='instructor();return true;' >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.instructor.number>
 	    		    <option onclick='instructor();return true;'>${option}
+	    		    </#if>
+	    		<#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -765,11 +797,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.instructor.typeS92">Instructor A/C Type: S92:</label>
 				<select class="small" name="crewMember.role.instructor.typeS92">
 	    		   <#list YNOption as option >
+	    		    <#if crewMember.role.instructor.typeS92??>
 	    			<#if option == crewMember.role.instructor.typeS92>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.instructor.typeS92>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -778,11 +814,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.instructor.typeS330J">S330J:</label>
 				<select class="small" name="crewMember.role.instructor.typeS330J">
 	    		   <#list YNOption as option >
+	    		    <#if crewMember.role.instructor.typeS330J??>
 	    			<#if option == crewMember.role.instructor.typeS330J>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.instructor.typeS330J>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>		
@@ -791,11 +831,15 @@ $("document").ready(function() {
 				<label for="crewMember.role.instructor.typeB407">B407:</label>
 				<select class="small" name="crewMember.role.instructor.typeB407">
 	    		   <#list YNOption as option >
+	    		    <#if crewMember.role.instructor.typeB407??>
 	    			<#if option == crewMember.role.instructor.typeB407>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.instructor.typeB407>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>		
@@ -822,11 +866,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.instrument"><u>Instrument:</u></label>
 				<select class="small" name="crewMember.role.instrument">
 	    		   <#list YNOption as option >
+	    		    <#if crewMember.role.instrument??>
 	    			<#if option == crewMember.role.instrument>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.instrument>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -848,11 +896,15 @@ $("document").ready(function() {
 			<span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.testPilot">
 	    		   <#list YNOption as option >
+	    		   <#if crewMember.role.testPilot??>
 	    			<#if option == crewMember.role.testPilot>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.testPilot>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -893,7 +945,11 @@ $("document").ready(function() {
                 <label id="englishTestExpiryDate" for="crewMember.role.ets.expiryDate">Expiry Date:</label>
              </span>
               <span style="float:left;padding-left:0px;">
+              <#if crewMember.role.ets??>
                 <input name="englishTestExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="<#if crewMember.role.ets.expiryDate??>${crewMember.role.ets.expiryDate?string('dd/MM/yyyy')}<#else>${englishTestExpiryDate!}</#if>" />
+              <#else>
+             <input name="englishTestExpiryDate"  type="text" class="date-pick" id="licenceexpiry" value="${englishTestExpiryDate!}" />              
+              </#if>           
             </span>
 			</div>	
 			<br/>
@@ -906,11 +962,15 @@ $("document").ready(function() {
 			<span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.night">
 	    		   <#list YNOption as option >
+	    		    <#if crewMember.role.night??>
 	    			<#if option == crewMember.role.night>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.night>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -929,11 +989,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.nvg"><u>NVG:</u></label>
 				<select class="small" name="crewMember.role.nvg">
 	    		   <#list YNOption as option >
+	    		   <#if crewMember.role.nvg??>
 	    			<#if option == crewMember.role.nvg>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.nvg>
 	    		    <option>${option}
+	    		    </#if>
+	    		   <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -949,11 +1013,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.sling"><u>Undersling\Winch:</u></label>
 				<select class="small" name="crewMember.role.sling">
 	    		   <#list YNOption as option >
+	    		    <#if crewMember.role.sling??>
 	    			<#if option == crewMember.role.sling>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.sling>
 	    		    <option>${option}
+	    		    </#if>
+	    		   <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>
@@ -972,11 +1040,15 @@ $("document").ready(function() {
 		     <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.game">
 	    		   <#list YNOption as option >
+	    		   <#if crewMember.role.game??>
 	    			<#if option == crewMember.role.game>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.game>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -995,11 +1067,15 @@ $("document").ready(function() {
 		    <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.bannerTowing">
 	    		   <#list YNOption as option >
+	    		   <#if crewMember.role.bannerTowing??>
 	    			<#if option == crewMember.role.bannerTowing>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.bannerTowing>
 	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -1018,11 +1094,15 @@ $("document").ready(function() {
 			<span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.fireFighting">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.fireFighting>	  
-	    		   	<option SELECTED >${option}
-	    		    </#if>
-	    		    <#if option != crewMember.role.fireFighting>
-	    		    <option>${option}
+	    		    <#if crewMember.role.fireFighting??>
+		    			<#if option == crewMember.role.fireFighting>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.fireFighting>
+		    		    <option>${option}
+		    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -1031,6 +1111,7 @@ $("document").ready(function() {
                 <label for="crewMember.role.fireFightingHours">Hours:</label>
             </span>
             <span style="float:left;padding-left:0px;">
+                
                 <input class="medium" name="crewMember.role.fireFightingHours" type="text" value="${crewMember.role.fireFightingHours!}"/>
             </span>
             <br/>
@@ -1041,11 +1122,15 @@ $("document").ready(function() {
 		    <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.flir">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.flir>	  
-	    		   	<option SELECTED >${option}
-	    		    </#if>
-	    		    <#if option != crewMember.role.flir>
-	    		    <option>${option}
+	    		    <#if crewMember.role.flir??>
+		    			<#if option == crewMember.role.flir>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.flir>
+		    		    <option>${option}
+		    		    </#if>
+	    		   <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -1064,11 +1149,15 @@ $("document").ready(function() {
 		    <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.fries">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.fries>	  
-	    		   	<option SELECTED >${option}
-	    		    </#if>
-	    		    <#if option != crewMember.role.fries>
-	    		    <option>${option}
+	    		    <#if crewMember.role.fries??>
+		    			<#if option == crewMember.role.fries>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.fries>
+		    		    <option>${option}
+		    		    </#if>
+	    		   <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -1084,11 +1173,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.hems"><u>HEMS:</u></label>
 				<select class="small" name="crewMember.role.hems">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.hems>	  
-	    		   	<option SELECTED >${option}
-	    		    </#if>
-	    		    <#if option != crewMember.role.hems>
-	    		    <option>${option}
+	    		    <#if crewMember.role.hems??>
+		    			<#if option == crewMember.role.hems>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.hems>
+		    		    <option>${option}
+		    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -1107,11 +1200,15 @@ $("document").ready(function() {
 		    <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.mountain">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.mountain>	  
-	    		   	<option SELECTED >${option}
-	    		    </#if>
-	    		    <#if option != crewMember.role.mountain>
-	    		    <option>${option}
+	    		    <#if crewMember.role.mountain??>
+		    			<#if option == crewMember.role.mountain>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.mountain>
+		    		    <option>${option}
+		    		    </#if>
+	    		    <#else>
+	    	   	    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>	
@@ -1127,8 +1224,13 @@ $("document").ready(function() {
 			</span>
 			<span style="float:left;padding-left:0px;">	
 				<select class="small"  name="crewMember.role.offshore"/>
+				    <#if crewMember.role.offshore??>
 				    <option value="Pilot" <#if crewMember.role.offshore?if_exists == "Pilot">selected</#if>>Pilot
 					<option value="Co-Pilot" <#if crewMember.role.offshore?if_exists == "Co-Pilot">selected</#if>>Co-Pilot
+					<#else>
+					<option value="Pilot">Pilot
+					<option value="Co-Pilot">Co-Pilot
+					</#if>
 				</select>
 			
 			</span>
@@ -1145,10 +1247,14 @@ $("document").ready(function() {
 			 <span style="float:left;padding-left:0px;">
 				<select name="crewMember.role.offshoreCaptain">
 	    		   <#list pilots as option >
+	    		   <#if crewMember.role.offshoreCaptain??>
 	    			<#if option == crewMember.role.offshoreCaptain>	  
 	    		   	<option SELECTED >${option}
 	    		    </#if>
 	    		    <#if option != crewMember.role.offshoreCaptain>
+	    		    <option>${option}
+	    		    </#if>
+	    		    <#else>
 	    		    <option>${option}
 	    		    </#if>
 	    		   </#list>
@@ -1163,12 +1269,17 @@ $("document").ready(function() {
 		    <span style="float:left;padding-left:0px;">
 				<select class="small" name="crewMember.role.powerline">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.powerline>	  
-	    		   	<option SELECTED >${option}
+	    		    <#if crewMember.role.powerline??>
+		    			<#if option == crewMember.role.powerline>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.powerline>
+		    		    <option>${option}
+		    		    </#if>
+		    		<#else>
+	    	   	    <option>${option}
 	    		    </#if>
-	    		    <#if option != crewMember.role.powerline>
-	    		    <option>${option}
-	    		    </#if>
+		    	   
 	    		   </#list>
 	    		</select>	
 			</span>
@@ -1182,11 +1293,15 @@ $("document").ready(function() {
 				<label  for="crewMember.role.test.number">Test Rated:</label>
 				<select class="small" name="crewMember.role.test.number">
 	    		   <#list YNOption as option >
-	    			<#if option == crewMember.role.test.number>	  
-	    		   	<option SELECTED >${option}
-	    		    </#if>
-	    		    <#if option != crewMember.role.test.number>
-	    		    <option>${option}
+	    		    <#if crewMember.role.test.number??>
+		    			<#if option == crewMember.role.test.number>	  
+		    		   	<option SELECTED >${option}
+		    		    </#if>
+		    		    <#if option != crewMember.role.test.number>
+		    		    <option>${option}
+		    		    </#if>
+		    		<#else>
+		    		    <option>${option}
 	    		    </#if>
 	    		   </#list>
 	    		</select>

@@ -81,15 +81,81 @@ public class CrewMember implements Cloneable, Comparable {
 		this.id = id;
 	}
 
+	
+	public String getLatestPassportDate()
+	{
+		Passport latestPassport = new Passport();
+		        
+		String dat = "";
+		
+		if(passport != null)
+		{
+		
+		if (passport.size() > 0)
+		{
+	    for (int i=passport.size()-1; i>=0; i--)
+	    {
+		latestPassport = passport.get(i); 
+		try{
+    		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (latestPassport.getExpiryDate() != null)
+			{
+				dat += "Passport "+ (i+1) +": " + df.format(latestPassport.getExpiryDate()) + " ";
+			}
+			else {dat+="Passport "+(i+1)+": none";}
+			}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+			}
+		}//for
+		}//if
+		}
+		return dat;
+	}
+	
+	public String getLatestPassportCertificates()
+	{
+		Passport latestPassport = new Passport();
+				
+		String dat = "";
+		
+		if(passport != null)
+		{
+		
+		if (passport.size() > 0)
+		{
+	    for (int i=passport.size()-1; i>=0; i--)
+	    {
+		latestPassport = passport.get(i); 
+		try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (latestPassport.getCertificate().getExpiryDate() != null)
+			{
+			dat += "P"+ (i+1) +"Cert" +": " + df.format(latestPassport.getCertificate().getExpiryDate()) + " ";
+			}
+			else {dat+="P"+(i+1)+"Cert"+": none";}
+			}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+			}
+		}//for
+		}//if
+		}
+		return dat;
+	}
 	/*
 	 * Nested Classes - These are used to partition the data into manageable sections
 	 */
 	
 	@Entity
-	public static class Passport{			
+	public static class Passport{
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String passportNumber;
 		@Temporal(TemporalType.DATE)
-		public Date expiryDate;
+		public Date expiryDate = new Date();
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String country;
 		private Certificate certificate = new Certificate();
 		
@@ -151,6 +217,7 @@ public class CrewMember implements Cloneable, Comparable {
 	  return passport;
 	}
 	
+	
 	public void setPassport(List<Passport> passports) {
 		this.passport = passports;
 	}
@@ -158,64 +225,111 @@ public class CrewMember implements Cloneable, Comparable {
 	
 	@Embeddable
 	public static class Personal {
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String lastName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String firstName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String secondName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String preferedName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String title;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String gender;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String status;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String classification;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address1;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address3;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address4;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address5;
 
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalAddress;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalTown;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalCode;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalCountry;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String mobilePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String mobilePhone2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String homePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String homeFax;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String businessPhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String businessFax;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String email;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternateEmail;
 
 		@Temporal(TemporalType.DATE)
-		private Date dateOfBirth;
+		private Date dateOfBirth = new Date();
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String nationality;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String idNumber;
 
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String passportNumber;
 		@Temporal(TemporalType.DATE)
-		private Date passportExpiryDate;
+		private Date passportExpiryDate=new Date();
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String passportCountry;
 
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinLastName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinFirstName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinMobilePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinHomePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinRelation;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinEldestChildName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private Integer nextOfKinNumberOfChildren;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress1;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress3;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress4;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress5;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String emergencyContactName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String emergencyContactNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String emergencyContactRelationship;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternativeEmergencyContactName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternativeEmergencyContactNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternativeEmergencyContactRelationship;
 		
 		
@@ -354,7 +468,8 @@ public class CrewMember implements Cloneable, Comparable {
 			this.passportNumber = passportNumber;
 		}
 
-		public Date getPassportExpiryDate() {
+		public Date getPassportExpiryDate() 
+		{
 			return passportExpiryDate;
 		}
 
@@ -630,21 +745,33 @@ public class CrewMember implements Cloneable, Comparable {
 
 	@Embeddable
 	public static class Banking {
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String bankName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String branchCode;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String accountName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String accountNumber;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address1;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address3;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address4;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address5;
-		
+				
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String swift;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String iban;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String bic;
-
+		
 		public String getBankName() {
 			return bankName;
 		}
@@ -746,30 +873,46 @@ public class CrewMember implements Cloneable, Comparable {
 
 	@Embeddable
 	public static class Role {
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String employment;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String company;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String department;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String manager;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String position;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String subPosition;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String primaryLocation;
 		@Temporal(TemporalType.DATE)
-		private Date initialDate;
+		private Date initialDate = new Date();
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String medicalClass;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String medicalAid;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String medicalAidNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String drivingLicenceNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String drivingLicenceIssued;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String telephoneExtension;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private Date lastDate;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String lastType;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private Double totalHours;
 		
 		@Temporal(TemporalType.DATE)
-		private Date expiryDate;
+		private Date expiryDate= new Date();
 		@Temporal(TemporalType.DATE)
-		private Date reviewDate;
+		private Date reviewDate = new Date();
 		
 		
 		
@@ -794,41 +937,41 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
-		private Double nightHours;
+		private Double nightHours = 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String nvg;
-		private Double nvgHours;
+		private Double nvgHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String sling;
-		private Double underslingHours;
+		private Double underslingHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String game;	
-		private Double gameHours;
+		private Double gameHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String bannerTowing;	
-		private Double bannerTowingHours;
+		private Double bannerTowingHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String fireFighting;	
-		private Double fireFightingHours;
+		private Double fireFightingHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String flir;	
-		private Double flirHours;
+		private Double flirHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String fries;	
-		private Double friesHours;
+		private Double friesHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String hems;	
-		private Double hemsHours;
+		private Double hemsHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String mountain;	
-		private Double mountainHours;
+		private Double mountainHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String offshore;	
-		private Double offshoreHours;
+		private Double offshoreHours= 0.0;
 		private String offshoreCaptain;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String powerline;	
-		private Double powerlineHours;
+		private Double powerlineHours= 0.0;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String instrument;
 		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
@@ -913,7 +1056,11 @@ public class CrewMember implements Cloneable, Comparable {
 			String dat = "";
 			try{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			dat = df.format(this.expiryDate);
+			if (this.expiryDate != null)
+			{
+				dat = df.format(this.expiryDate);
+			}
+			else {dat="";}
 			}
 			catch(Exception e)
 			{
@@ -928,7 +1075,8 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		public Date getReviewDate() 
 		{
-					
+					if (reviewDate == null)
+					{reviewDate = new Date();}
 			return reviewDate;
 		}
 
@@ -941,7 +1089,11 @@ public class CrewMember implements Cloneable, Comparable {
 			String dat = "";
 			try{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (reviewDate != null)
+			{
 			dat = df.format(reviewDate);
+			}
+			else {dat="";}
 			}
 			catch(Exception e)
 			{
@@ -975,13 +1127,20 @@ public class CrewMember implements Cloneable, Comparable {
 		}
 
 		public Certificate getLpcCert() {
+			if (this.lpcCert == null)
+			{
+				this.lpcCert = new Certificate();
+			}
 			return lpcCert;
 		}
 
 		public void setLpcCert(Certificate lpcCert) {
 			this.lpcCert = lpcCert;
 		}
-		public Certificate getRoutCheck() {
+		public Certificate getRoutCheck() 
+		{
+			if (this.routCheck == null)
+			{this.routCheck = new Certificate();}
 			return this.routCheck;
 		}
 
@@ -989,7 +1148,9 @@ public class CrewMember implements Cloneable, Comparable {
 			this.routCheck = routCheck;
 		}
 
-		public Certificate getOpcCert() {
+		public Certificate getOpcCert() 
+		{
+			if (this.opcCert == null){this.opcCert = new Certificate();}
 			return opcCert;
 		}
 
@@ -997,7 +1158,9 @@ public class CrewMember implements Cloneable, Comparable {
 			this.opcCert = opcCert;
 		}
 
-		public Certificate getOperationsManualCert() {
+		public Certificate getOperationsManualCert() 
+		{
+			if (this.operationsManualCert == null){this.operationsManualCert = new Certificate();}
 			return operationsManualCert;
 		}
 
@@ -1005,7 +1168,9 @@ public class CrewMember implements Cloneable, Comparable {
 			this.operationsManualCert = operationsManualCert;
 		}
 
-		public Certificate getAnnualTechnicalManualCert() {
+		public Certificate getAnnualTechnicalManualCert() 
+		{
+			if (this.annualTechnicalManualCert == null){this.annualTechnicalManualCert = new Certificate();}
 			return annualTechnicalManualCert;
 		}
 
@@ -1071,6 +1236,8 @@ public class CrewMember implements Cloneable, Comparable {
 		}
 
 		public Certificate getEts() {
+			if (ets == null)
+			{ets = new Certificate();}
 			return ets;
 		}
 
@@ -1468,21 +1635,21 @@ public class CrewMember implements Cloneable, Comparable {
 	@Embeddable
 	public static class Payments {
 		
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money monthlyBaseRate = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money areaAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money instructorAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money dailyAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money flightAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money basePilotAllowance = new Money();
-		@Column(nullable=false, columnDefinition="varchar(10) default 'Level 1'")
+		@Column(nullable=true, columnDefinition="varchar(10) default 'Level 1'")
 		private String safetyLevel="Level 1";
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money safetyLevelAllowance = new Money();
 		
 		@Column(length=3)
@@ -1635,38 +1802,38 @@ public class CrewMember implements Cloneable, Comparable {
 		private Integer id;
 		
 		@Temporal(TemporalType.DATE)
-		private Date date;
+		private Date date = new Date();
 		
-		@Column(nullable=false)
-		private Money monthlyRate;
-		private boolean payMonthlyRate;
+		@Column(nullable=true)
+		private Money monthlyRate = new Money();
+		private boolean payMonthlyRate=false;
 		
-		@Column(nullable=false)
-		private Money areaRate;
-		
-		
-		@Column(nullable=false)
-		private Money instructorRate;
-		
-		@Column(nullable=false)
-		private Money dailyRate;
+		@Column(nullable=true)
+		private Money areaRate = new Money();
 		
 		
-		@Column(nullable=false)
-		private Money flightRate;
+		@Column(nullable=true)
+		private Money instructorRate = new Money();
 		
-		@Column(nullable=false)
-		private Money basePilotRate;
+		@Column(nullable=true)
+		private Money dailyRate = new Money();
 		
-		@Column(nullable=false)
-		private Money safetyLevelRate;
 		
-		@Temporal(TemporalType.DATE)
-		private Date paidDate;
-		private Money paidAmount;
+		@Column(nullable=true)
+		private Money flightRate = new Money();
+		
+		@Column(nullable=true)
+		private Money basePilotRate = new Money();
+		
+		@Column(nullable=true)
+		private Money safetyLevelRate = new Money();
 		
 		@Temporal(TemporalType.DATE)
-		private Date emailDate;
+		private Date paidDate = new Date();
+		private Money paidAmount = new Money();
+		
+		@Temporal(TemporalType.DATE)
+		private Date emailDate = new Date();
 		
 		@CollectionOfElements
 		private Map<String, CharterEntry> entries = new HashMap<String, CharterEntry>();
@@ -1870,11 +2037,14 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		@Embeddable
 		public static class Addition{
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String reason;
-			private Money amount;
-			private double exchangeRate;
-			private double rand;
-			private Double entered;
+			
+			private Money amount = new Money();
+			private double exchangeRate = 0.0;
+			private double rand = 0.0;
+			private Double entered = 0.0;
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String currency;
 			
 			public String getReason() {
@@ -1940,11 +2110,13 @@ public class CrewMember implements Cloneable, Comparable {
 		
 		@Embeddable
 		public static class Deduction{
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String reason;
-			private Money amount;
-			private double exchangeRate;
-			private double rand;
-			private Double entered;
+			private Money amount=new Money();
+			private double exchangeRate = 0.0;
+			private double rand = 0.0;
+			private Double entered = 0.0;
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String currency;
 			
 			public String getReason() {
@@ -2009,15 +2181,25 @@ public class CrewMember implements Cloneable, Comparable {
 		}
 		
 		@Embeddable
-		public static class CharterEntry {
+		public static class CharterEntry 
+		{
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String charter;
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String aircraft;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    areaDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    instructorDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    dailyDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    flightDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 		    private Integer discomfort;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 		    private int basePilotDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 		    private int safetyLevelDays;
 			
 			public int getAreaDays() {
@@ -2188,6 +2370,7 @@ public class CrewMember implements Cloneable, Comparable {
     
     
     //JasperReports
+    
     public String title;
 	public String type;
     public String category;
