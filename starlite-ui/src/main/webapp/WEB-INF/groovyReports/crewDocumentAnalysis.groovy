@@ -34,9 +34,11 @@ def generate(manager, pageContext) {
 		reportRow["personal.lastName"] = cm.personal.lastName
 		reportRow["personal.firstName"] = cm.personal.firstName
 		//reportRow["personal.passportExpiryDate"] = cm.personal.passportExpiryDate	
-		reportRow["personal.passportExpiryDate"] = cm.getLatestPassportDate()
+		//reportRow["personal.passportExpiryDate"] = cm.getLatestPassportDate()
+		reportRow["personal.passportExpiryDate1"] = cm.getPassportExpiryDate(1)
+		reportRow["personal.passportExpiryDate2"] = cm.getPassportExpiryDate(2)
+		reportRow["personal.passportExpiryDate3"] = cm.getPassportExpiryDate(3)
 		reportRow["role.r1.expiryDate"] = cm.role.r1.expiryDate
-		//reportRow["role.r1.expiryDate"] = cm.getLatestPassportCertificates()
 		reportRow["role.expiryDate"] = cm.role.expiryDate									
 		reportRow["role.crm.expiryDate"] = cm.role.crm.expiryDate
 		reportRow["role.dg.expiryDate"] = cm.role.dg.expiryDate
@@ -47,9 +49,17 @@ def generate(manager, pageContext) {
 		path = "/crew/"+code;
 		//System.out.println("path is :"+path)
 		folder = docManager.getFolderByPath(path, user);
-		reportRow["passport"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "";
-		if(!"".equals(reportRow["passport"])){reportRow["ptick"] = "Y";}
-		else{reportRow["ptick"] = "N";}
+		
+		reportRow["passport1"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport0").name : "";
+		if(!"".equals(reportRow["passport"])){reportRow["ptick1"] = "Y";}
+		else{reportRow["ptick1"] = "N";}
+		reportRow["passport2"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport1").name : "";
+		if(!"".equals(reportRow["passport"])){reportRow["ptick2"] = "Y";}
+		else{reportRow["ptick2"] = "N";}
+		reportRow["passport3"] = folder.getDocumentByTag("passport0") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("passport2").name : "";
+		if(!"".equals(reportRow["passport"])){reportRow["ptick3"] = "Y";}
+		else{reportRow["ptick3"] = "N";}
+		
 		reportRow["licence"]  = folder.getDocumentByTag("licence") ? "documents/crew/"+cm.code+"/"+folder.getDocumentByTag("licence").name : "";
 		if(!"".equals(reportRow["licence"])){reportRow["ltick"] = "Y";}
         else{reportRow["ltick"] = "N";}
@@ -108,8 +118,12 @@ def generate(manager, pageContext) {
 			.column("code").link('crewMember!assignments.action?id=${code}&fromPage='+pageContext["thisUrl"])
 			.column("personal.lastName").called("Last Name")
 			.column("personal.firstName").called("First Name")
-			.column("personal.passportExpiryDate").called("Passport Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle)				
-			.column("passport").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(passportstyle)
+			.column("personal.passportExpiryDate1").called("Passport Exp1").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle)				
+			.column("passport1").called("Doc1").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(passportstyle)
+			.column("personal.passportExpiryDate2").called("Passport Exp2").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle)				
+			.column("passport2").called("Doc2").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(passportstyle)
+			.column("personal.passportExpiryDate3").called("Passport Exp3").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(passportstyle)				
+			.column("passpor3t").called("Doc3").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(passportstyle)
 			.column("role.r1.expiryDate").called("Licence Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(licencestyle)
 			.column("licence").called("Doc").as("com.itao.starlite.ui.jmesa.DocumentCellEditor").withStyle(licencestyle)
 			.column("role.expiryDate").called("Medical Exp").as("com.itao.starlite.ui.jmesa.ExpirableDateEditor").withStyle(medicalstyle)									
