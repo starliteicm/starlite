@@ -83,7 +83,7 @@ public class CrewMember implements Cloneable, Comparable {
 
 	public Date getPassportExpiryDate(int passCounter)
 	{ 
-		Date dat = new Date();
+		Date dat = null;
 		
 		if(passport != null)
 		{
