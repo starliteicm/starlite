@@ -116,54 +116,102 @@ function validate(){
 			<div class="fm-opt">
 				<label for="crewMember.payments.areaAllowance"><span style="color:red;">*</span>&nbsp;Daily:</label>
 				<#if readOnly>
-					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
+				    <#if crewMember.payments.areaAllowance??>
+					   <label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
+					<#else>
+					<label>0</label>
+					</#if>
 				<#else>
-					<input name="crewMember.payments.areaAllowance.amountAsDouble" id = "daily" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.areaAllowance.amountAsDouble!}"/>
+				    <#if crewMember.payments.areaAllowance??>
+					  <input name="crewMember.payments.areaAllowance.amountAsDouble" id = "daily" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.areaAllowance.amountAsDouble!}"/>
+					<#else>
+					  <input name="crewMember.payments.areaAllowance.amountAsDouble" id = "daily" type="text" style="width:76px;text-align:right;" value="0"/>
+					</#if>  
 				</#if>
 			</div>
 
 			<div class="fm-opt">
 				<label for="crewMember.payments.instructorAllowance">Instructor:</label>
 				<#if readOnly>
+				    <#if crewMember.payments.areaAllowance??>
 					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
+					<#else>
+					<label>0</label>
+				    </#if>
 				<#else>
-					<input name="crewMember.payments.instructorAllowance.amountAsDouble" id = "instructor" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.instructorAllowance.amountAsDouble!}"/>
+				    <#if crewMember.payments.instructorAllowance??>
+					  <input name="crewMember.payments.instructorAllowance.amountAsDouble" id = "instructor" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.instructorAllowance.amountAsDouble!}"/>
+				    <#else>
+				      <input name="crewMember.payments.instructorAllowance.amountAsDouble" id = "instructor" type="text" style="width:76px;text-align:right;" value="0"/>
+				    </#if>
 				</#if>
 			</div>
 
 			<div class="fm-opt">
 				<label for="crewMember.payments.dailyAllowance"><span style="color:red;">*</span>&nbsp;Training:</label>
 				<#if readOnly>
-					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
+				    <#if crewMember.payments.areaAllowance??>
+					   <label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
+					<#else>
+					   <label>0</label>
+					</#if>
 				<#else>
-					<input name="crewMember.payments.dailyAllowance.amountAsDouble" id ="training" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.dailyAllowance.amountAsDouble!}"/>
+				    <#if crewMember.payments.dailyAllowance??>
+					   <input name="crewMember.payments.dailyAllowance.amountAsDouble" id ="training" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.dailyAllowance.amountAsDouble!}"/>
+					<#else>
+					   <input name="crewMember.payments.dailyAllowance.amountAsDouble" id ="training" type="text" style="width:76px;text-align:right;" value="0"/>
+					</#if>   
 				</#if>
 			</div>
 
 			<div class="fm-opt">
 				<label for="crewMember.payments.flightAllowance"><span style="color:red;">*</span>&nbsp;Travel:</label>
-				<#if readOnly>
-					<label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
-				<#else>
-					<input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
-				</#if>
-			</div>
-						
+					<#if readOnly>
+					    <#if crewMember.payments.areaAllowance??>
+						   <label>${crewMember.payments.areaAllowance.amountAsDouble!'&nbsp;'}</label>
+						<#else>
+						   <label>0</label>
+						</#if>
+					<#else>
+					    <#if crewMember.payments.flightAllowance??>
+						  <input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.flightAllowance.amountAsDouble!}"/>
+						<#else>
+						  <input name="crewMember.payments.flightAllowance.amountAsDouble" id ="travel" type="text" style="width:76px;text-align:right;" value="0"/>
+						</#if>
+					</#if>
+			</div>			
 			<div class="fm-opt">
 				<label for="crewMember.payments.basePilotAllowance"><span style="color:red;">*</span>&nbsp;Senior Base Pilot:</label>
-				<#if readOnly>
-					<label>${crewMember.payments.basePilotAllowance.amountAsDouble!'&nbsp;'}</label>
-				<#else>
-					<input name="crewMember.payments.basePilotAllowance.amountAsDouble" id ="basePilot" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.basePilotAllowance.amountAsDouble!}"/>
-				</#if>
+					<#if readOnly>
+					    <#if crewMember.payments.basePilotAllowance??>
+						<label>${crewMember.payments.basePilotAllowance.amountAsDouble!'&nbsp;'}</label>
+						<#else>
+						<label>0</label>
+						</#if>
+					<#else>
+					    <#if crewMember.payments.basePilotAllowance??>
+						  <input name="crewMember.payments.basePilotAllowance.amountAsDouble" id ="basePilot" type="text" style="width:76px;text-align:right;" value="${crewMember.payments.basePilotAllowance.amountAsDouble!}"/>
+						<#else>
+						  <input name="crewMember.payments.basePilotAllowance.amountAsDouble" id ="basePilot" type="text" style="width:76px;text-align:right;" value="0"/>
+						</#if>  
+					</#if>
 			</div>
 			<div class="fm-opt">
 				<label for="crewMember.payments.safetyLevel"><span style="color:red;">*</span>&nbsp;Safety Level:</label>
-				<#if readOnly>
-					<label>${crewMember.payments.safetyLevel.amountAsDouble!'&nbsp;'}</label>
-				<#else>
-				    <input name="crewMember.payments.safetyLevelAllowance.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#FFFFFF;" value="${crewMember.payments.safetyLevelAllowance.amountAsDouble!}"/>
- 			    </#if>   	    
+					<#if readOnly>
+					    <#if crewMember.payments.safetyLevel??>
+						   <label>${crewMember.payments.safetyLevel.amountAsDouble!'&nbsp;'}</label>
+						<#else>
+						   <label>0</label>
+						</#if>
+					<#else>
+					   <#if crewMember.payments.safetyLevelAllowance??>
+					    <input name="crewMember.payments.safetyLevelAllowance.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#FFFFFF;" value="${crewMember.payments.safetyLevelAllowance.amountAsDouble!}"/>
+					   <#else>
+					   <input name="crewMember.payments.safetyLevelAllowance.amountAsDouble" id ="amount" type="text" style="width:76px;text-align:right;background-color:#FFFFFF;" value="0"/>
+					   </#if> 
+	 			    </#if>   
+	 			
 			</div>
 		<#if !readOnly>
 		<button type="button" onclick="validate();" class="smooth" style="float:right; margin-right:10px; margin-bottom: 10px;"><img src="images/icons/pencil.png"/>Save</button>

@@ -559,13 +559,7 @@
 				</#if>
 				
 			</div>
-			<!--
-			<input type="hidden" name="actuals.paidAmount.currencyCode" value="${crewMember.payments.currency}"/>
-			<div class="fm-opt">
-				<label>Total</label>
-				<div id="total"><#if actuals.total??>${actuals.total}<#else><@symbol "${crewMember.payments.currency}"/>0</#if></div>
-			</div>
-			-->
+			
 
 			
 		</fieldset>

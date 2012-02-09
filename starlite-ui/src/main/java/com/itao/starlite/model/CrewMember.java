@@ -1688,9 +1688,14 @@ public class CrewMember implements Cloneable, Comparable {
 		}
 		public void setBasePilotAllowance(Double basePilotAllowance)
 		{
+			if (basePilotAllowance == null)
+			{
+			basePilotAllowance = new Double(0);
+			}
 			Money money = new Money();
 			money.setAmountAsDouble(basePilotAllowance);
 			this.basePilotAllowance = money;
+			
 		}
 		public String getSafetyLevel() {
 			if (safetyLevel == null)
