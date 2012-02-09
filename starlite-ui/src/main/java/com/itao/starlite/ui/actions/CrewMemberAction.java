@@ -342,7 +342,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        additionalCert = folder.getDocumentByTag("additionalCert");
 	        List<Bookmark> additionalDocsTempList = (List<Bookmark>) manager.findDocsByTag("additionalCert",id);
 	        
-	        if (additionalDocsTempList.isEmpty() == true)
+	       
+	        if ((additionalDocsTempList == null)|| (additionalDocsTempList.isEmpty() == true))
 	        {
 	        	additionalDocsTempList = new ArrayList<Bookmark>();
 	        }
@@ -1311,9 +1312,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 /*-------------------------------------------------------------------*/	
 	{
 		Date r = null;
+		String empty = "";
 		
 //Review Date
-		if (reviewDate != null)
+		if ((reviewDate != null) && (empty.compareToIgnoreCase(reviewDate) != 0) )
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1326,7 +1328,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().setReviewDate(r);
 		}
 //Instrument Expiry Date
-		if (this.instrumentExpiryDate != null)
+		if ((this.instrumentExpiryDate != null) && (empty.compareToIgnoreCase(this.instrumentExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1339,7 +1341,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getIfr().setExpiryDate(r);
 		}
 //License Expiry Date (R1)		
-		if (this.licenseExpiryDate != null)
+		if ( (this.licenseExpiryDate != null) && (empty.compareToIgnoreCase(this.licenseExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1352,7 +1354,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getR1().setExpiryDate(r);
     	}
 //Instructor Expiry Date (R2)		
-		if (this.instructorExpiryDate != null)
+		if ((this.instructorExpiryDate != null)&& (empty.compareToIgnoreCase(this.instructorExpiryDate) != 0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1365,7 +1367,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getR2().setExpiryDate(r);
     	}		
 //English Test Expiry Date		
-		if (this.englishTestExpiryDate != null)
+		if ((this.englishTestExpiryDate != null) && (empty.compareToIgnoreCase(this.englishTestExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1378,7 +1380,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getEts().setExpiryDate(r);
 		}
 //Medical Expiry Date			
-		if (this.medicalExpiryDate != null)
+		if ((this.medicalExpiryDate != null)&& (empty.compareToIgnoreCase(this.medicalExpiryDate) !=0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1391,7 +1393,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().setExpiryDate(r);
 		}
 //CRM Expiry Date			
-		if (this.crmExpiryDate != null)
+		if ((this.crmExpiryDate != null)&& (empty.compareToIgnoreCase(this.crmExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1404,7 +1406,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getCrm().setExpiryDate(r);
 		}
 //DG Expiry Date		
-		if (this.dgExpiryDate != null)
+		if ((this.dgExpiryDate != null)&& (empty.compareToIgnoreCase(this.dgExpiryDate) !=0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1417,7 +1419,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getDg().setExpiryDate(r);
 		}
 //Huet Expiry Date		
-		if (this.huetExpiryDate != null)
+		if ((this.huetExpiryDate != null)&& (empty.compareToIgnoreCase(this.huetExpiryDate) !=0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1430,7 +1432,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getHuet().setExpiryDate(r);
 		}
 //Hems Expiry Date		
-		if (this.hemsCertExpiryDate != null)
+		if ((this.hemsCertExpiryDate != null) && (empty.compareToIgnoreCase(this.hemsCertExpiryDate) != 0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1443,7 +1445,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getHemsCert().setExpiryDate(r);
 		}	
 //LPC Expiry Date		
-		if (this.lpcExpiryDate != null)
+		if ((this.lpcExpiryDate != null) && (empty.compareToIgnoreCase(this.lpcExpiryDate) != 0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1456,7 +1458,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getLpcCert().setExpiryDate(r);
 		}			
 //OPC Expiry Date		
-		if (this.opcExpiryDate != null)
+		if ((this.opcExpiryDate != null) && (empty.compareToIgnoreCase(this.opcExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1469,7 +1471,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getOpcCert().setExpiryDate(r);
 		}			
 //operationsManual Expiry Date		
-		if (this.operationsManualExpiry != null)
+		if ((this.operationsManualExpiry != null) && (empty.compareToIgnoreCase(this.operationsManualExpiry) != 0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1482,7 +1484,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember.getRole().getOperationsManualCert().setExpiryDate(r);
 		}		
 //annualTechManual Expiry Date		
-		if (this.annualTechnicalManual != null)
+		if ((this.annualTechnicalManual != null) && (empty.compareToIgnoreCase(this.annualTechnicalManual) != 0 ))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1496,7 +1498,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}		
 		
 //Route Check Completion Date	
-		if (this.routeCheckExpiryDate != null)
+		if ((this.routeCheckExpiryDate != null) && (empty.compareToIgnoreCase(this.routeCheckExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1510,7 +1512,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}				
 	    
 //Passport 1 Certificate Expiry Date	
-		if (this.passportCert1ExpiryDate != null)
+		if ((this.passportCert1ExpiryDate != null) && (empty.compareToIgnoreCase(this.passportCert1ExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1529,7 +1531,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 		}
 //Passport 2 Certificate Expiry Date	
-		if (this.passportCert2ExpiryDate != null)
+		if ((this.passportCert2ExpiryDate != null) && (empty.compareToIgnoreCase(this.passportCert2ExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1548,7 +1550,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 		}				
 //Passport 3 Certificate Expiry Date	
-		if (this.passportCert3ExpiryDate != null)
+		if ((this.passportCert3ExpiryDate != null) && (empty.compareToIgnoreCase(this.passportCert3ExpiryDate) != 0))
 		{
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			
@@ -1964,23 +1966,51 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		String idStr = "";
 		if (id != null) {
 			idStr=id;
+			
 			this.crewMember = this.manager.getCrewMemberByCode(idStr);
     		this.reviewDate = this.crewMember.getRole().getStringReviewDate();
-    		this.licenseExpiryDate = this.crewMember.getRole().getR1().getStringExpiryDate();
-    		this.instructorExpiryDate = this.crewMember.getRole().getR2().getStringExpiryDate();
-    		this.instrumentExpiryDate = this.crewMember.getRole().getIfr().getStringExpiryDate();
-    		this.englishTestExpiryDate = this.crewMember.getRole().getEts().getStringExpiryDate();
-    		this.medicalExpiryDate = this.crewMember.getRole().getStringExpiryDate();
-    		this.crmExpiryDate = this.crewMember.getRole().getCrm().getStringExpiryDate();
-    		this.dgExpiryDate = this.crewMember.getRole().getDg().getStringExpiryDate();
-    		this.huetExpiryDate = this.crewMember.getRole().getHuet().getStringExpiryDate();
-    		this.hemsCertExpiryDate = this.crewMember.getRole().getHemsCert().getStringExpiryDate();
-    		this.lpcExpiryDate = this.crewMember.getRole().getLpcCert().getStringExpiryDate();
-    	    this.opcExpiryDate = this.crewMember.getRole().getOpcCert().getStringExpiryDate();
-    	    this.operationsManualExpiry = this.crewMember.getRole().getOperationsManualCert().getStringExpiryDate();
-    	    this.annualTechnicalManual = this.crewMember.getRole().getAnnualTechnicalManualCert().getStringExpiryDate();
-    	    this.routeCheckExpiryDate = this.crewMember.getRole().getRoutCheck().getStringExpiryDate();
-    	    
+    		
+    		try	{this.instructorExpiryDate = this.crewMember.getRole().getR2().getStringExpiryDate();}
+    		catch (Exception e)	{this.instructorExpiryDate = "";}
+    		
+    		try	{this.instrumentExpiryDate = this.crewMember.getRole().getIfr().getStringExpiryDate();}
+    		catch (Exception e)	{this.instrumentExpiryDate = "";}
+    		
+    		try	{this.englishTestExpiryDate = this.crewMember.getRole().getEts().getStringExpiryDate();}
+    		catch (Exception e)	{this.englishTestExpiryDate = "";}
+    		
+    		try {this.medicalExpiryDate = this.crewMember.getRole().getStringExpiryDate();}
+    		catch (Exception e)	{this.medicalExpiryDate = "";}
+    		
+    		try {this.crmExpiryDate = this.crewMember.getRole().getCrm().getStringExpiryDate();}
+    		catch (Exception e)	{this.crmExpiryDate = "";}
+    		
+    		try {this.dgExpiryDate = this.crewMember.getRole().getDg().getStringExpiryDate();}
+    		catch (Exception e)	{this.dgExpiryDate = "";}
+    		
+    		try {this.huetExpiryDate = this.crewMember.getRole().getHuet().getStringExpiryDate();}
+    		catch (Exception e)	{this.huetExpiryDate = "";}
+    		
+    		try {this.hemsCertExpiryDate = this.crewMember.getRole().getHemsCert().getStringExpiryDate();}
+    		catch (Exception e)	{this.hemsCertExpiryDate = "";}
+    		
+    		try {this.lpcExpiryDate = this.crewMember.getRole().getLpcCert().getStringExpiryDate();}
+    		catch (Exception e)	{this.lpcExpiryDate = "";}
+    		
+    		try {this.opcExpiryDate = this.crewMember.getRole().getOpcCert().getStringExpiryDate();}
+    		catch (Exception e)	{this.opcExpiryDate = "";}
+    		
+    		try {this.operationsManualExpiry = this.crewMember.getRole().getOperationsManualCert().getStringExpiryDate();}
+    		catch (Exception e)	{this.operationsManualExpiry = "";}
+    		
+    		try {this.annualTechnicalManual = this.crewMember.getRole().getAnnualTechnicalManualCert().getStringExpiryDate();}
+    		catch (Exception e)	{this.annualTechnicalManual = "";}
+    		
+    		try {this.routeCheckExpiryDate = this.crewMember.getRole().getRoutCheck().getStringExpiryDate();}
+    		catch (Exception e)	{this.routeCheckExpiryDate = "";}
+			
+			
+			
     	    if (crewMember.getPassport().isEmpty()==false)
     	    {
     	    	for (int i =0; i< this.crewMember.getPassport().size(); i++)

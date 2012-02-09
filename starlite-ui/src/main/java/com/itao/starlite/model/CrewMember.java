@@ -81,6 +81,32 @@ public class CrewMember implements Cloneable, Comparable {
 		this.id = id;
 	}
 
+	public Date getPassportExpiryDate(int passCounter)
+	{ 
+		Date dat = new Date();
+		
+		if(passport != null)
+		{
+		
+		if (passport.size() > 0)
+		{
+	     
+		try{
+			Passport tempPass = passport.get(passCounter-1);
+			Date tempDate = tempPass.getExpiryDate();
+			dat = tempDate;
+			
+		}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+				dat = null;
+			}
+		}
+		}
+		return dat;
+	}
+	
 	
 	public String getLatestPassportDate()
 	{
