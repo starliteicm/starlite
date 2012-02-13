@@ -98,6 +98,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public List<ExchangeRate> rates;
 	
 	public List<String>   passportsTags;
+	public List<String>   passportsTags2;
+	public List<String>   passportsTags3;
 	public List<File>     passports;
 	public List<String>   passportsContentType;
 	public List<String>   passportsFileName;
@@ -176,11 +178,27 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public String annualTechnicalManualCertFileContentType;
     public String annualTechnicalManualCertFileFileName;
     public String annualTechnicalManualCertTags;
+
+    public File   passport1PassFile;
+	public String passport1PassFileFileContentType;
+    public String passport1PassFileFileName;
+    public String passport1PassFileTags;
+    
+    public File   passport2PassFile;
+	public String passport2PassFileFileContentType;
+    public String passport2PassFileFileName;
+    public String passport2PassFileTags;
+    
+    public File   passport3PassFile;
+	public String passport3PassFileFileContentType;
+    public String passport3PassFileFileName;
+    public String passport3PassFileTags;
     
     public File   passport1CertFile;
 	public String passport1CertFileContentType;
     public String passport1CertFileFileName;
     public String passport1CertTags;
+    
     
     public File   passport2CertFile;
 	public String passport2CertFileContentType;
@@ -208,6 +226,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document passport1Cert;
     public Document passport2Cert;
     public Document passport3Cert;
+    public Document passport1Pass;
+    public Document passport2Pass;
+    public Document passport3Pass;
     
     public List<Bookmark> additionalDocs = new ArrayList<Bookmark>();
     
@@ -373,6 +394,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        passport1Cert    = folder.getDocumentByTag("passportVisa1");
 	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
 	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
+	        passport1Pass    = folder.getDocumentByTag("passport0");
+	        passport2Pass    = folder.getDocumentByTag("passport1");
+	        passport3Pass    = folder.getDocumentByTag("passport2");
 	        
 	        	        
 	        flighthours = folder.getDocumentByTag("flighthours");
@@ -580,6 +604,60 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  return null;
 	}
 	/*------------------------------------------------------------*/
+	public InputStream getPassport1PassFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport1PassFile = folder.getDocumentByTag("passport0");
+		    LOG.info("Name:"+passport1PassFile.getName());
+		    LOG.info("Uuid:"+passport1PassFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport1PassFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	/*------------------------------------------------------------*/
+	public InputStream getPassport2PassFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport2PassFile = folder.getDocumentByTag("passport1");
+		    LOG.info("Name:"+passport2PassFile.getName());
+		    LOG.info("Uuid:"+passport2PassFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport2PassFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	/*------------------------------------------------------------*/
+	public InputStream getPassport3PassFile()
+	/*------------------------------------------------------------*/
+	{
+		  try{
+		    folder = docManager.getFolderByPath("/crew/"+id, user);
+		    LOG.info(folder.getDocs());
+		    Document passport3PassFile = folder.getDocumentByTag("passport2");
+		    LOG.info("Name:"+passport3PassFile.getName());
+		    LOG.info("Uuid:"+passport3PassFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(passport3PassFile);
+		  }
+		  catch(Exception e){
+			  LOG.error(e);			  			 
+		  }
+		  return null;
+	}
+	/*------------------------------------------------------------*/
+	/*------------------------------------------------------------*/
 	public InputStream getPassport1CertFile()
 	/*------------------------------------------------------------*/
 	{
@@ -620,10 +698,10 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		  try{
 		    folder = docManager.getFolderByPath("/crew/"+id, user);
 		    LOG.info(folder.getDocs());
-		    Document passport3CertFile = folder.getDocumentByTag("passportCertificate3");
-		    LOG.info("Name:"+passport3CertFile.getName());
-		    LOG.info("Uuid:"+passport3CertFile.getUuid());		    
-		    return (InputStream) docManager.getDocumentData(passport3CertFile);
+		    Document CertFile = folder.getDocumentByTag("passportCertificate3");
+		    LOG.info("Name:"+CertFile.getName());
+		    LOG.info("Uuid:"+CertFile.getUuid());		    
+		    return (InputStream) docManager.getDocumentData(CertFile);
 		  }
 		  catch(Exception e){
 			  LOG.error(e);			  			 
@@ -1625,42 +1703,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		catch(Exception e){
 			LOG.error(e);
 		}
-		
-	    boolean morePassports = true;
-	    int count = 0;
-	    if(passports != null){
-		while(morePassports){			
-			if(count < passports.size())
-			{			
-			    File passport = passports.get(count);
-			    String passportTags = passportsTags.get(count);
-			    String passportFileName = passportsFileName.get(count);
-			    String passportContentType = passportsContentType.get(count);
-			   // passportTags = passportTags + count;
-			    try{
-				    if(passport != null){
-					    LOG.info(passportTags+" "+docfolder);
-					    String[] tagsArray = passportTags.split(" ");
-					    Document doc = new Document();
-					    doc.setName(passportFileName);
-					    doc.setContentType(passportContentType);
-					    Bookmark b = bookmarkManager.createBookmark(passportFileName, "Document", docfolder+"/"+passportFileName, tagsArray);
-					    doc.setBookmark(b);
-					    docManager.createDocument(doc, docfolder, new FileInputStream(passport), user);
-				    }
-			    }
-			    catch(Exception e){
-			    	LOG.error(e);
-			    }
-			count++;
-			}
-			else{
-				morePassports = false;
-			}	
-		}
-	    }
-	    
-	    
+			
 	    try{
             if(licenceFile!= null){         
                 LOG.info(licenceTags+" "+docfolder);
@@ -1842,6 +1885,57 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
                     	  LOG.error("annualTechnical Cert error: "+e);
                           e.printStackTrace();
                       } 
+//Passport 1 {Actual Doc}            
+                      try{
+                          if(passport1PassFile!= null){         
+                              LOG.info(passport1PassFileTags+" "+docfolder+" "+docfolder+"/"+ passport1PassFileFileName);
+                              String[] tagsArray = passport1PassFileTags.split(" ");
+                              Document doc = new Document();
+                              doc.setName(passport1PassFileFileName);
+                              doc.setContentType(passport1PassFileFileContentType);
+                              Bookmark b = bookmarkManager.createBookmark(passport1PassFileFileName, "Document", docfolder+"/"+ passport1PassFileFileName, tagsArray);
+                              doc.setBookmark(b);
+                              docManager.createDocument(doc, docfolder, new FileInputStream(passport1PassFile), user);
+                          }
+                        }
+                        catch(Exception e){
+                      	  LOG.error("passport1 Pass error: "+e);
+                            e.printStackTrace();
+                        }  
+//Passport 2 {Actual Doc}            
+                        try{
+                            if(passport2PassFile!= null){         
+                                LOG.info(passport2PassFileTags+" "+docfolder+" "+docfolder+"/"+ passport2PassFileFileName);
+                                String[] tagsArray = passport2PassFileTags.split(" ");
+                                Document doc = new Document();
+                                doc.setName(passport2PassFileFileName);
+                                doc.setContentType(passport2PassFileFileContentType);
+                                Bookmark b = bookmarkManager.createBookmark(passport2PassFileFileName, "Document", docfolder+"/"+ passport2PassFileFileName, tagsArray);
+                                doc.setBookmark(b);
+                                docManager.createDocument(doc, docfolder, new FileInputStream(passport2PassFile), user);
+                            }
+                          }
+                          catch(Exception e){
+                        	  LOG.error("passport2 Pass error: "+e);
+                              e.printStackTrace();
+                          }  
+//Passport 3 {Actual Doc}            
+                      try{
+                          if(passport3PassFile!= null){         
+                              LOG.info(passport3PassFileTags+" "+docfolder+" "+docfolder+"/"+ passport3PassFileFileName);
+                              String[] tagsArray = passport3PassFileTags.split(" ");
+                              Document doc = new Document();
+                              doc.setName(passport3PassFileFileName);
+                              doc.setContentType(passport3PassFileFileContentType);
+                              Bookmark b = bookmarkManager.createBookmark(passport3PassFileFileName, "Document", docfolder+"/"+ passport3PassFileFileName, tagsArray);
+                              doc.setBookmark(b);
+                              docManager.createDocument(doc, docfolder, new FileInputStream(passport3PassFile), user);
+                          }
+                        }
+                        catch(Exception e){
+                      	  LOG.error(" Pass error: "+e);
+                            e.printStackTrace();
+                        }      
 //Passport 1 Certificates            
                       try{
                           if(passport1CertFile!= null){         
@@ -1890,7 +1984,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
                               }
                             }
                             catch(Exception e){
-                          	  LOG.error("passport3 Cert error: "+e);
+                          	  LOG.error(" Cert error: "+e);
                                 e.printStackTrace();
                             }                                
                                           
@@ -2009,10 +2103,36 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     		try {this.routeCheckExpiryDate = this.crewMember.getRole().getRoutCheck().getStringExpiryDate();}
     		catch (Exception e)	{this.routeCheckExpiryDate = "";}
 			
-			
+    		if (crewMember.getPassport().isEmpty()== true)
+    	    {
+    			//create 3 empty passports for new crewmembers
+    	    	Passport temp1 = new Passport();
+    	    	Passport temp2 = new Passport();
+    	    	Passport temp3 = new Passport();
+    	    	ArrayList<Passport> tempList = new ArrayList<Passport>();
+    	    	tempList.add(temp1);
+    	    	tempList.add(temp2);
+    	    	tempList.add(temp3);
+    	    	this.crewMember.setPassport(tempList);
+    	    }
+    		
+    		if (crewMember.getPassport().isEmpty()==false)
+    		{
+    			//for existing (old system crew members) that do not have 3 passports - create the missing passports
+    			for (int i =0; i< 3; i++)
+    	    	{
+    				if (this.crewMember.getPassport().get(i) == null)
+    				{
+    					Passport temp = new Passport();
+    					this.crewMember.getPassport().set(i,temp);
+    				}
+    	    	}
+    			
+    		}
 			
     	    if (crewMember.getPassport().isEmpty()==false)
     	    {
+    	    	//make sure that the certificates have dates assigned to them. This is for new and old crewmembers.
     	    	for (int i =0; i< this.crewMember.getPassport().size(); i++)
     	    	{
     	    		if (this.crewMember.getPassport().get(i) != null)
@@ -2025,6 +2145,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     	    }
 		}
 
+		
 		
 		List<Tab> tabList = new ArrayList<Tab>();
 		
@@ -2047,6 +2168,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			passport1Cert    = folder.getDocumentByTag("passportVisa1");
 	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
 	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
+	        passport3Pass    = folder.getDocumentByTag("passport2");
+	        passport2Pass    = folder.getDocumentByTag("passport1");
+	        passport1Pass    = folder.getDocumentByTag("passport0");
 		} catch (InsufficientPrivilagesException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
