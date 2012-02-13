@@ -180,7 +180,7 @@ public class CrewMember implements Cloneable, Comparable {
 		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String passportNumber;
 		@Temporal(TemporalType.DATE)
-		public Date expiryDate = new Date();
+		public Date expiryDate;
 		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String country;
 		private Certificate certificate = new Certificate();
@@ -315,7 +315,7 @@ public class CrewMember implements Cloneable, Comparable {
 		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String passportNumber;
 		@Temporal(TemporalType.DATE)
-		private Date passportExpiryDate=new Date();
+		private Date passportExpiryDate;
 		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String passportCountry;
 

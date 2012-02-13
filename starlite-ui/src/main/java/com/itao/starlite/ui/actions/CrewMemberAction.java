@@ -2118,15 +2118,22 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     		
     		if (crewMember.getPassport().isEmpty()==false)
     		{
+    			ArrayList<Passport> tempList = new ArrayList<Passport>();
     			//for existing (old system crew members) that do not have 3 passports - create the missing passports
     			for (int i =0; i< 3; i++)
     	    	{
-    				if (this.crewMember.getPassport().get(i) == null)
+    				try 
+    				{
+    					Passport temp = this.crewMember.getPassport().get(i);
+    					tempList.add(temp);
+    				}
+    				catch(Exception e)
     				{
     					Passport temp = new Passport();
-    					this.crewMember.getPassport().set(i,temp);
+    					tempList.add(temp);
     				}
     	    	}
+    			this.crewMember.setPassport(tempList);
     			
     		}
 			
