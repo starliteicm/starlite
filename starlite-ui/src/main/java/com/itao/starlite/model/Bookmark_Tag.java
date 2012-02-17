@@ -25,7 +25,6 @@ public class Bookmark_Tag
 	}
 	
 	
-	
 	public Integer getBookmark_id() {
 		return bookmark_id;
 	}

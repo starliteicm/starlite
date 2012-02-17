@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,7 +178,8 @@ public class CrewMember implements Cloneable, Comparable {
 	 */
 	
 	@Entity
-	public static class Passport{
+	public static class Passport implements Comparable
+	{
 		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String passportNumber;
 		@Temporal(TemporalType.DATE)
@@ -223,14 +226,31 @@ public class CrewMember implements Cloneable, Comparable {
 		public String toString(){
 			return "{id:"+id+",country:"+getCountry()+",number:"+getPassportNumber()+",expiry:"+getExpiryDate()+"}";
 		}
+
+		
+		@Override
+		public int compareTo(Object arg0) {
+			try{
+				Passport two = (Passport)arg0;
+				
+				
+				if (this.id > two.id ) {return 1;}
+				if (this.id < two.id ) {return -1;}
+				if (this.id == two.id ) {return 0;}
+				}
+				catch(Exception e) {return 0;}
+			        //(o1>o2 ? -1 : (o1==o2 ? 0 : 1));
+				return 0;
+		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Passport> getPassport(){
 	  
 	  if(passport == null){
 		  passport = new LinkedList<Passport>();
 	  }
-	  if(passport.size() == 0){
+	  if(passport.size() < 1){
 	      if(personal.passportCountry != null){
 		     //first passport
 	    	    Passport pass = new Passport();
@@ -239,13 +259,29 @@ public class CrewMember implements Cloneable, Comparable {
 				pass.setExpiryDate(personal.passportExpiryDate);
 	    	    passport.add(pass);
 	      }
+	 
 	  }
+	  Collections.sort(this.passport);
 	  return passport;
 	}
 	
 	
-	public void setPassport(List<Passport> passports) {
+	@SuppressWarnings("unchecked")
+	public void setPassport(List<Passport> passports) 
+	{   if (passports != null)
+		{
+		int toAdd = 3 - passports.size();
+		
+		    while (toAdd != 0)
+		    {		    	
+		    	Passport temp = new Passport();
+		    	passports.add(temp);
+		    	toAdd--;
+		    }
+		}
+	    Collections.sort(passports);
 		this.passport = passports;
+		
 	}
 	
 	
@@ -462,8 +498,27 @@ public class CrewMember implements Cloneable, Comparable {
 			this.email = email;
 		}
 
-		public Date getDateOfBirth() {
+		public Date getDateOfBirth() 
+		{
 			return dateOfBirth;
+		}
+		
+		public String getStringDateOfBirthDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (this.dateOfBirth != null)
+			{
+				dat = df.format(this.dateOfBirth);
+			}
+			else {dat="";}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
 		}
 
 		public void setDateOfBirth(Date dateOfBirth) {

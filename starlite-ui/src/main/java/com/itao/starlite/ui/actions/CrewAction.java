@@ -1,5 +1,6 @@
 package com.itao.starlite.ui.actions;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -349,7 +350,8 @@ public class CrewAction extends ActionSupport implements UserAware, ServletConte
 				createdCrewMember = (CrewMember) result[0];
 				generatedPassword = (String) result[1];
 				return "added";
-			} catch (CannotCreateCrewMemberException e) {
+			//} catch (CannotCreateCrewMemberException e) {
+			} catch (SQLException e) {
 				errorMessage = "Error: Unable to create Crew Member.";
 				return ERROR;
 			}

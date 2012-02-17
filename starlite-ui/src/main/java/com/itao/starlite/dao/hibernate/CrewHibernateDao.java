@@ -46,7 +46,7 @@ public class CrewHibernateDao extends GenericHibernateDao<CrewMember, Integer> i
 		cm.getPersonal().setLastName(lastName);
 		cm.getRole().setEmployment("Permanent CRI");
 		cm.setCode(codePrefix);
-		//cm.setID(numID);
+		//cm.setID(999);
 		
 		return makePersistent(cm);
 	}

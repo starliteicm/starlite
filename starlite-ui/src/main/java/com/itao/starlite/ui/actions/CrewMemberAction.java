@@ -231,9 +231,13 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public Document passport3Pass;
     
     public List<Bookmark> additionalDocs = new ArrayList<Bookmark>();
+    public List<Bookmark> passport1Docs = new ArrayList<Bookmark>();
+    public List<Bookmark> passport2Docs = new ArrayList<Bookmark>();
+    public List<Bookmark> passport3Docs = new ArrayList<Bookmark>();
     
     public String subPosition;
     
+    public String dateOfBirth;
     public String reviewDate;
     public String licenseExpiryDate;
     public String instructorExpiryDate;
@@ -308,7 +312,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			
 			photoFile = folder.getDocumentByTag("photo");
 			
-			int count=0;
+			/*int count=0;
 			boolean morePassports = true;
 	       
 			while(morePassports){
@@ -321,8 +325,92 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				 }
 				 count++;
 			}
+			*/
+			//----- Passport 1 List --- ///
+			List<Bookmark> passport1DocsTempList = (List<Bookmark>) manager.findDocsByTag("passport0",id);
 			
+			if ((passport1DocsTempList == null)|| (passport1DocsTempList.isEmpty() == true))
+	        {
+	        	passport1DocsTempList = new ArrayList<Bookmark>();
+	        }
+	        Collections.reverse(passport1DocsTempList);
+	        if (passport1DocsTempList.size() > 5)
+	        {
+	        	List<Bookmark> temp = passport1DocsTempList.subList(0, 5);
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.passport1Docs.add(temp.get(i));
+	        	}
+	        }
+	        else
+	        {
+	        	List<Bookmark> temp = passport1DocsTempList;
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.passport1Docs.add(temp.get(i));
+	        	}
+	        }
+	        
+	      //----- Passport 2 List --- ///
+			List<Bookmark> passport2DocsTempList = (List<Bookmark>) manager.findDocsByTag("passport1",id);
 			
+			if ((passport2DocsTempList == null)|| (passport2DocsTempList.isEmpty() == true))
+	        {
+	        	passport2DocsTempList = new ArrayList<Bookmark>();
+	        }
+	        Collections.reverse(passport2DocsTempList);
+	        if (passport2DocsTempList.size() > 5)
+	        {
+	        	List<Bookmark> temp = passport2DocsTempList.subList(0, 5);
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.passport2Docs.add(temp.get(i));
+	        	}
+	        }
+	        else
+	        {
+	        	List<Bookmark> temp = passport2DocsTempList;
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.passport2Docs.add(temp.get(i));
+	        	}
+	        }	        
+	        
+	        
+	      //----- Passport 3 List --- /// 
+	        
+			List<Bookmark> passport3DocsTempList = (List<Bookmark>) manager.findDocsByTag("passport2",id);
+			
+			if ((passport3DocsTempList == null)|| (passport3DocsTempList.isEmpty() == true))
+	        {
+	        	passport3DocsTempList = new ArrayList<Bookmark>();
+	        }
+	        Collections.reverse(passport3DocsTempList);
+	        if (passport3DocsTempList.size() > 5)
+	        {
+	        	List<Bookmark> temp = passport3DocsTempList.subList(0, 5);
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.passport3Docs.add(temp.get(i));
+	        	}
+	        }
+	        else
+	        {
+	        	List<Bookmark> temp = passport3DocsTempList;
+	        	for (int i = 0; i< temp.size(); i++ )
+	        	{
+	        	this.passport3Docs.add(temp.get(i));
+	        	}
+	        }	
+	        
+	        /// ---- OTher Passport ---///
+	        passport1Cert    = folder.getDocumentByTag("passportVisa1");
+	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
+	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
+	        passport1Pass    = folder.getDocumentByTag("passport0");
+	        passport2Pass    = folder.getDocumentByTag("passport1");
+	        passport3Pass    = folder.getDocumentByTag("passport2");
+	        
 			return SUCCESS;
 		}
 
@@ -387,17 +475,14 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        }
 	        
 	        
+	        
+	        
+	        
 	        opcCert= folder.getDocumentByTag("OPC");
 	        lpcCert= folder.getDocumentByTag("LPC");
 	        operationsManualCert= folder.getDocumentByTag("opsManual");
 	        annualTechnicalManualCert= folder.getDocumentByTag("annualTechManual");
-	        passport1Cert    = folder.getDocumentByTag("passportVisa1");
-	        passport2Cert    = folder.getDocumentByTag("passportVisa2");
-	        passport3Cert    = folder.getDocumentByTag("passportVisa3");
-	        passport1Pass    = folder.getDocumentByTag("passport0");
-	        passport2Pass    = folder.getDocumentByTag("passport1");
-	        passport3Pass    = folder.getDocumentByTag("passport2");
-	        
+	       
 	        	        
 	        flighthours = folder.getDocumentByTag("flighthours");
 		}
@@ -1391,7 +1476,20 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	{
 		Date r = null;
 		String empty = "";
-		
+
+//DOB
+		if ((dateOfBirth != null) && (empty.compareToIgnoreCase(dateOfBirth) != 0) )
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(dateOfBirth);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getPersonal().setDateOfBirth(r);
+		}
 //Review Date
 		if ((reviewDate != null) && (empty.compareToIgnoreCase(reviewDate) != 0) )
 		{
@@ -1657,6 +1755,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			if (crewMember != null){this.crewMember.getPayments().setBasePilotAllowance(basePilotAllowance);}
 		}
 		//set passports
+		
+		
 		ArrayList<Passport> cmPassports = new ArrayList<CrewMember.Passport>();
 		int index = 0;
 		if(passportsNumber != null){
@@ -2064,6 +2164,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			this.crewMember = this.manager.getCrewMemberByCode(idStr);
     		this.reviewDate = this.crewMember.getRole().getStringReviewDate();
     		
+    		try	{this.dateOfBirth = this.crewMember.getPersonal().getStringDateOfBirthDate();}
+    		catch (Exception e)	{this.dateOfBirth = "";}
+    		
     		try	{this.instructorExpiryDate = this.crewMember.getRole().getR2().getStringExpiryDate();}
     		catch (Exception e)	{this.instructorExpiryDate = "";}
     		
@@ -2116,11 +2219,11 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     	    	this.crewMember.setPassport(tempList);
     	    }
     		
-    		if (crewMember.getPassport().isEmpty()==false)
+   /* 		if (crewMember.getPassport().isEmpty()==false)
     		{
     			ArrayList<Passport> tempList = new ArrayList<Passport>();
     			//for existing (old system crew members) that do not have 3 passports - create the missing passports
-    			for (int i =0; i< 3; i++)
+    			for (int i = 0; i < 3; i++)
     	    	{
     				try 
     				{
@@ -2136,7 +2239,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     			this.crewMember.setPassport(tempList);
     			
     		}
-			
+	*/		
     	    if (crewMember.getPassport().isEmpty()==false)
     	    {
     	    	//make sure that the certificates have dates assigned to them. This is for new and old crewmembers.

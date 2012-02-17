@@ -1,5 +1,6 @@
 package com.itao.starlite.manager;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -205,8 +206,11 @@ public class StarliteCoreManager {
 	}
 	
 	@Transactional
-	public CrewMember getCrewMemberByCode(String code) {
-		return crewDao.findCrewMemberByCode(code);
+	public CrewMember getCrewMemberByCode(String code) 
+	{
+		CrewMember crewM = crewDao.findCrewMemberByCode(code);
+		
+		return crewM;
 	}
 	
 	@Transactional
@@ -240,7 +244,8 @@ public class StarliteCoreManager {
 	}
 	
 	@Transactional
-	public Object[] createCrewMember(String title, String firstName, String lastName, User u) throws CannotCreateCrewMemberException {
+//	public Object[] createCrewMember(String title, String firstName, String lastName, User u) throws CannotCreateCrewMemberException {
+	public Object[] createCrewMember(String title, String firstName, String lastName, User u) throws SQLException {
 		try {
 			CrewMember cm = crewDao.createCrewMember(title, firstName, lastName);
 			String password = authManager.generateRandomPassword();
@@ -254,7 +259,8 @@ public class StarliteCoreManager {
 			
 			return new Object[] {cm, password};
 		} catch (Throwable t) {
-			throw new CannotCreateCrewMemberException(t);
+			throw new SQLException();
+			//throw new CannotCreateCrewMemberException(t);
 		}
 	}
 	
