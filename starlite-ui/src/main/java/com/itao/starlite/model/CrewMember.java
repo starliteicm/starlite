@@ -1112,7 +1112,10 @@ public class CrewMember implements Cloneable, Comparable {
 			this.primaryLocation = primaryLocation;
 		}
 
-		public Date getInitialDate() {
+		public Date getInitialDate() 
+		{
+			if (initialDate == null)
+			{initialDate = new Date();}
 			return initialDate;
 		}
 
@@ -1120,6 +1123,23 @@ public class CrewMember implements Cloneable, Comparable {
 			this.initialDate = initialDate;
 		}
 
+		public String getStringInitialDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (this.initialDate != null)
+			{
+				dat = df.format(this.initialDate);
+			}
+			else {dat="";}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
 		public String getMedicalClass() {
 			return medicalClass;
 		}

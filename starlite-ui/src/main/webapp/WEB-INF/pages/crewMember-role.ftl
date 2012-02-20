@@ -264,13 +264,11 @@ $("document").ready(function() {
 			</select>
 			</div>
 			</#if>
-            
-            								
-			<div class="fm-opt">
-				<label for="crewMember.role.initialDate">Initial Date:</label>
-				<input name="crewMember.role.initialDate" type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}<#else>${initialDate!}</#if>"/>
+           
+			<div class="fm-opt">  
+				<label for="initialDate">Initial Date:</label>
+				<input name="initialDate"  type="text" class="date-pick" value="<#if crewMember.role.initialDate??>${crewMember.role.initialDate?string('dd/MM/yyyy')}<#else>${initialDate!}</#if>" />
 			</div>
-			
 			<div class="fm-opt">
 			    <!-- This is the system date of when the member was created - currently not changable. -->
                 <label for="reviewDate">Review Date:</label>
@@ -316,11 +314,11 @@ $("document").ready(function() {
 				<input name="crewMember.role.r1.number" id="licencenumber" type="text" value="${crewMember.role.r1.number!}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="crewMember.role.r1.type"><span class="star">*</span>Type:</label>
-				<select name="crewMember.role.r1.type" value="${crewMember.role.r1.type!}" id="licencetype">
-				  <option <#if crewMember.role.r1.type?if_exists == "AME">selected</#if>>      AME
-				  <option <#if crewMember.role.r1.type?if_exists == "ATPL">selected</#if>>     ATPL
-				  <option <#if crewMember.role.r1.type?if_exists == "CPL">selected</#if>>      CPL
+				<label for="crewMember.role.r1.typeOther"><span class="star">*</span>Type:</label>
+				<select name="crewMember.role.r1.typeOther" id="licencetype">
+				  <option  value="AME"  <#if crewMember.role.r1.typeOther?if_exists == "AME">selected</#if>>AME
+				  <option  value="ATPL" <#if crewMember.role.r1.typeOther?if_exists == "ATPL">selected</#if>>ATPL
+				  <option  value="CPL"  <#if crewMember.role.r1.typeOther?if_exists == "CPL">selected</#if>>CPL
 				</select>
 			</div>
 <!-- License Expiry Date --> 			
@@ -674,7 +672,7 @@ $("document").ready(function() {
    								
 				<div id="msg-opsManexpiry" style="color:red; font-weight: bold; margin-left: 90px;"></div>
 			</div>
-		 
+		    <br/>
 <!-- Operational Manual --> 			
 				<div class="fm-opt">
 				<label for="operationsManualCertFile">Operations Manual Upload:</label>
@@ -772,6 +770,8 @@ $("document").ready(function() {
 			<span style="float:left;padding-left:0px;">	
 				<label for="crewMember.role.instructor.quantity">Grade:</label>
 			</span>
+			
+					
 			<span style="float:left;padding-left:0px;">	
      			<select  class="medium" name="crewMember.role.instructor.quantity" >
 					<option <#if crewMember.role.instructor.quantity?if_exists == "Grade 1">selected</#if>>Grade 1

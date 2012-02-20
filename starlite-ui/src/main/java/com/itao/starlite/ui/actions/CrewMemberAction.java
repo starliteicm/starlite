@@ -238,6 +238,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String subPosition;
     
     public String dateOfBirth;
+    public String initialDate;
     public String reviewDate;
     public String licenseExpiryDate;
     public String instructorExpiryDate;
@@ -1490,6 +1491,19 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 			this.crewMember.getPersonal().setDateOfBirth(r);
 		}
+//Initial Date
+		if ((initialDate != null) && (empty.compareToIgnoreCase(initialDate) != 0) )
+		{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
+			try {
+				r = df.parse(initialDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.crewMember.getRole().setInitialDate(r);
+		}
 //Review Date
 		if ((reviewDate != null) && (empty.compareToIgnoreCase(reviewDate) != 0) )
 		{
@@ -2166,6 +2180,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     		
     		try	{this.dateOfBirth = this.crewMember.getPersonal().getStringDateOfBirthDate();}
     		catch (Exception e)	{this.dateOfBirth = "";}
+    		
+    		try	{this.initialDate = this.crewMember.getRole().getStringInitialDate();}
+    		catch (Exception e)	{this.initialDate = "";}
     		
     		try	{this.instructorExpiryDate = this.crewMember.getRole().getR2().getStringExpiryDate();}
     		catch (Exception e)	{this.instructorExpiryDate = "";}
