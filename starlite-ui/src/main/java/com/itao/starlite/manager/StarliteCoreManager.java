@@ -284,6 +284,7 @@ public class StarliteCoreManager {
 		//We won't save if everything is 0
 		if (actuals.getTotal().getAmount() != 0 || actuals.getPaidAmount().getAmount() != 0)
 			cm.getFlightAndDutyActuals().add(actuals);
+		    //crewDao.makePersistent(cm);
 	}
 	
 	@Transactional

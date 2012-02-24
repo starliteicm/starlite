@@ -1903,7 +1903,7 @@ public class CrewMember implements Cloneable, Comparable {
 	}
 	
 	@Entity
-	public static class FlightAndDutyActuals {
+	public static class FlightAndDutyActuals implements Comparable {
 		@Id @GeneratedValue
 		private Integer id;
 		
@@ -2140,6 +2140,20 @@ public class CrewMember implements Cloneable, Comparable {
 			this.basePilotRate = basePilotRate;
 			this.safetyLevelRate = safetyLevelRate;
 		}
+		@Override
+		public int compareTo(Object o) {
+			try{
+				FlightAndDutyActuals two = (FlightAndDutyActuals)o;
+				
+				
+				if (this.id > two.id ) {return 1;}
+				if (this.id < two.id ) {return -1;}
+				if (this.id == two.id ) {return 0;}
+				}
+				catch(Exception e) {return 0;}
+			        //(o1>o2 ? -1 : (o1==o2 ? 0 : 1));
+				return 0;
+		}
 		
 		@Embeddable
 		public static class Addition{
@@ -2375,6 +2389,8 @@ public class CrewMember implements Cloneable, Comparable {
 			}
 
 		}
+
+	
 
 	}
 	

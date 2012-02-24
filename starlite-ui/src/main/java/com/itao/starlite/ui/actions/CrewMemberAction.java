@@ -51,6 +51,7 @@ import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Money;
 import com.itao.starlite.model.MyFolder;
+import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
 import com.itao.starlite.model.CrewMember.Passport;
 import com.itao.starlite.model.CrewMember.Role;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Addition;
@@ -1249,6 +1250,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		);
 		tab= "flight";
 		prepareTabs();
+		//this.actualsId = actuals.getId();
 		return "redirect-addFlightActuals";
 	}
 	/*------------------------------------------------------------*/
@@ -1378,10 +1380,12 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						if (actuals.getId() == null) {
 							manager.addCrewFlightAndDutyActuals(crewMember.getCode(), actuals);
 							notificationMessage = "Actuals added successfully";
+							
 						} else {
 							manager.saveFlightAndDutyActuals(actuals);
 							notificationMessage = "Actuals saved";
 						}
+						this.actualsId = actuals.getId();
 						crewMember = manager.getCrewMemberByCode(crewMember.getCode());
 					} catch (ExistingRecordException e) {
 						errorMessage = e.getMessage();
@@ -2168,6 +2172,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 		}
 	}
 	/*-----------------------------------------------------*/
+	@SuppressWarnings("unchecked")
 	private void prepareTabs()
 	/*------------------------------------------------------------*/
 	{
@@ -2176,6 +2181,14 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			idStr=id;
 			
 			this.crewMember = this.manager.getCrewMemberByCode(idStr);
+		/*	try{
+			List<FlightAndDutyActuals> acts = crewMember.getFlightAndDutyActuals();
+			Collections.sort(acts);
+			FlightAndDutyActuals lastAct = acts.get(acts.size()-1);
+			this.actualsId = lastAct.getId();
+			}
+			catch(Exception e){}
+			*/
     		this.reviewDate = this.crewMember.getRole().getStringReviewDate();
     		
     		try	{this.dateOfBirth = this.crewMember.getPersonal().getStringDateOfBirthDate();}
