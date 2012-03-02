@@ -29,6 +29,7 @@
 				<label for="lastName">Last Name:</label>
 				<input name="lastName" type="text" value="${lastName!}"/>
 			</div>
+			
 		</fieldset>
 		<button type="submit"><img src="${request.contextPath}/images/icons/add.png"/>Add</button>
 		</div>

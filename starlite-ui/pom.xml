@@ -295,8 +295,14 @@
 			<artifactId>commons-collections</artifactId>
 			<version>3.2</version>
 		</dependency>
-
-        
+		
+		<!-- Open cvs -->
+		<dependency>
+			<groupId>au.com.bytecode.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>1.8</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -380,17 +386,9 @@
                     </execution>
       			</executions>        
             </plugin>
-			
-			<plugin> 
-            <groupId>org.apache.maven.plugins</groupId> 
-            <artifactId>maven-resources-plugin</artifactId> 
-            
-        </plugin> 
-
       
 		</plugins>
-		
-		 <resources> 
+				 <resources> 
         <resource> 
         <directory>src/main/java</directory> 
             <includes> 
@@ -398,6 +396,5 @@
             </includes> 
         </resource> 
     </resources> 
-
 	</build>
 </project>

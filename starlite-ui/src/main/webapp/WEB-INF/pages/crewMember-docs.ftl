@@ -56,19 +56,26 @@
 		
 		<#assign hide=0/>
 		<#list bookmark.tags as tag>
-		  <#if tag.tag == "CRM"><#assign hide=1/></#if>
-		  <#if tag.tag == "DG"><#assign hide=1/></#if>
-		  <#if tag.tag == "HUET"><#assign hide=1/></#if>
-		  <#if tag.tag == "medical"><#assign hide=1/></#if>
-		  <#if tag.tag == "licence"><#assign hide=1/></#if>
-		  <#if tag.tag == "photo"><#assign hide=1/></#if>
-		  <#if tag.tag == "flighthours"><#assign hide=1/></#if>
-		  <#if tag.tag.indexOf("passport") != -1><#assign hide=1/></#if>
+		  <#if tag.tag == "CRM"><#assign hide=0/></#if>
+		  <#if tag.tag == "DG"><#assign hide=0/></#if>
+		  <#if tag.tag == "HUET"><#assign hide=0/></#if>
+		  <#if tag.tag == "HEMS"><#assign hide=0/></#if>
+		  <#if tag.tag == "additionalCert"><#assign hide=0/></#if>
+		  <#if tag.tag == "LPC"><#assign hide=0/></#if>
+		  <#if tag.tag == "OPC"><#assign hide=0/></#if>
+		  <#if tag.tag == "opsManual"><#assign hide=0/></#if>
+		  <#if tag.tag == "annualTechManual"><#assign hide=0/></#if>
+		  <#if tag.tag == "${id}"><#assign hide=0/></#if>
+		  <#if tag.tag == "medical"><#assign hide=0/></#if>
+		  <#if tag.tag == "licence"><#assign hide=0/></#if>
+		  <#if tag.tag == "photo"><#assign hide=0/></#if>
+		  <#if tag.tag == "flighthours"><#assign hide=0/></#if>
+		  <#if tag.tag.indexOf("passport") != -1><#assign hide=0/></#if>
 		</#list>
 		
 		<#if hide == 0>
 		<div style="margin-top:20px;">    
-			<h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?path=${bookmark.bookmarkedId}">x</a></#if></h3>
+			<h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?path=${bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[delete]</a></#if></h3>
 			<#if isManager>
 			<span style="font-size:90%;">Tags: 
 				<#list bookmark.tags as tag>

@@ -1,5 +1,6 @@
 package com.itao.starlite.manager;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.joda.time.DateMidnight;
 
 import com.google.inject.Inject;
+import com.itao.persistence.GenericDao;
 import com.itao.starlite.auth.User;
 import com.itao.starlite.auth.manager.AuthManager;
 import com.itao.starlite.dao.ActualsDao;
@@ -24,10 +27,33 @@ import com.itao.starlite.dao.ComponentDao;
 import com.itao.starlite.dao.CrewDao;
 import com.itao.starlite.dao.CrewDayDao;
 import com.itao.starlite.dao.ExchangeDao;
+import com.itao.starlite.dao.JobSubTaskDao;
 import com.itao.starlite.dao.FlightAndDutyActualsDao;
+import com.itao.starlite.dao.FlightActualStatusDao;
+import com.itao.starlite.dao.FlightActualsDao;
+import com.itao.starlite.dao.FlightGCatagoryDao;
+import com.itao.starlite.dao.FlightLogDao;
+import com.itao.starlite.dao.FlightOFPDao;
+import com.itao.starlite.dao.FlightPlanDao;
+import com.itao.starlite.dao.MyFolderDao;
+import com.itao.starlite.model.FlightActualStatus;
+import com.itao.starlite.model.FlightActuals;
+import com.itao.starlite.model.FlightPlan;
+import com.itao.starlite.model.FlightLog;
+import com.itao.starlite.model.FlightGCatagory;
+import com.itao.starlite.model.FlightOFP;
+import com.itao.starlite.dao.JobHistoryDao;
+import com.itao.starlite.dao.JobStatusDao;
+import com.itao.starlite.dao.JobTicketDao;
 import com.itao.starlite.dao.StoreDao;
+import com.itao.starlite.dao.JobTaskDao;
+import com.itao.starlite.docs.dao.BookmarkDao;
+import com.itao.starlite.docs.dao.DocumentDao;
 import com.itao.starlite.docs.manager.DocumentManager;
+import com.itao.starlite.docs.model.Bookmark;
+import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
+import com.itao.starlite.docs.model.Tag;
 import com.itao.starlite.exceptions.CannotCreateCrewMemberException;
 import com.itao.starlite.exceptions.ExistingRecordException;
 import com.itao.starlite.model.Actuals;
@@ -43,11 +69,21 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.CrewDay;
 import com.itao.starlite.model.CrewMember;
 import com.itao.starlite.model.ExchangeRate;
+import com.itao.starlite.model.JobHistory;
+import com.itao.starlite.model.JobStatus;
+import com.itao.starlite.model.JobSubTask;
+import com.itao.starlite.model.JobTask;
+import com.itao.starlite.model.JobTicket;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.model.CrewMember.FlightAndDutyActuals;
 import com.itao.starlite.scheduling.model.Assignable;
 import com.wideplay.warp.persist.Transactional;
-
+/**
+ * <p>Injects (persistance) the classes for Hibernate.</p>
+ * @author [Creator] i-tao
+ * @author [Modifier] Celeste Groenewald
+ *
+ */
 public class StarliteCoreManager {
 	@Inject private CharterDao charterDao;
 	@Inject private CrewDao crewDao;
@@ -59,9 +95,24 @@ public class StarliteCoreManager {
 	@Inject private FlightAndDutyActualsDao flightAndDutyActualsDao;
 	@Inject private AircraftTypeDao aircraftTypeDao;
 	@Inject private ExchangeDao exDao;
+	@Inject private JobTaskDao jobTaskDao;
+	@Inject private JobSubTaskDao jobSubTaskDao;
+	@Inject private JobTicketDao jobTicketDao;	
+	@Inject private JobStatusDao jobStatusDao;
+	@Inject private JobHistoryDao jobHistoryDao;
+	@Inject private FlightPlanDao flightPlanDao;
+	@Inject private FlightActualsDao flightActualsDao;
+	@Inject private FlightActualStatusDao flightActualStatusDao;
+	@Inject private FlightLogDao flightLogDao;
+	@Inject private FlightOFPDao flightOFPDao;
+	@Inject private FlightGCatagoryDao flightGCategoryDao;
+	@Inject private MyFolderDao myFolderDao;
+	@Inject private BookmarkDao bookmarkDao;
+	
 	
 	@Inject private AuthManager authManager;
 	@Inject private DocumentManager docManager;
+	
 	
 	
 	
@@ -132,6 +183,14 @@ public class StarliteCoreManager {
 	}
 	
 	@Transactional
+	public List<String> findAllCharterNames()
+	{
+		return this.charterDao.findAllCharterNames();
+		//return null;
+	}
+	
+	
+	@Transactional
 	public ExchangeRate getExchangeRateByCode(String fromCode, String toCode) {
 		return exDao.findExchangeByCodes(fromCode, toCode);
 	}
@@ -147,8 +206,11 @@ public class StarliteCoreManager {
 	}
 	
 	@Transactional
-	public CrewMember getCrewMemberByCode(String code) {
-		return crewDao.findCrewMemberByCode(code);
+	public CrewMember getCrewMemberByCode(String code) 
+	{
+		CrewMember crewM = crewDao.findCrewMemberByCode(code);
+		
+		return crewM;
 	}
 	
 	@Transactional
@@ -182,7 +244,8 @@ public class StarliteCoreManager {
 	}
 	
 	@Transactional
-	public Object[] createCrewMember(String title, String firstName, String lastName, User u) throws CannotCreateCrewMemberException {
+//	public Object[] createCrewMember(String title, String firstName, String lastName, User u) throws CannotCreateCrewMemberException {
+	public Object[] createCrewMember(String title, String firstName, String lastName, User u) throws SQLException {
 		try {
 			CrewMember cm = crewDao.createCrewMember(title, firstName, lastName);
 			String password = authManager.generateRandomPassword();
@@ -196,7 +259,8 @@ public class StarliteCoreManager {
 			
 			return new Object[] {cm, password};
 		} catch (Throwable t) {
-			throw new CannotCreateCrewMemberException(t);
+			throw new SQLException();
+			//throw new CannotCreateCrewMemberException(t);
 		}
 	}
 	
@@ -220,6 +284,7 @@ public class StarliteCoreManager {
 		//We won't save if everything is 0
 		if (actuals.getTotal().getAmount() != 0 || actuals.getPaidAmount().getAmount() != 0)
 			cm.getFlightAndDutyActuals().add(actuals);
+		    //crewDao.makePersistent(cm);
 	}
 	
 	@Transactional
@@ -231,6 +296,11 @@ public class StarliteCoreManager {
 	public Aircraft getAircraftByReg(String reg) {
 		return aircraftDao.findByReg(reg);
 	}
+	@Transactional
+	public List<Aircraft> getAllAircraftRegs() {
+		return aircraftDao.getAllAircraftRefs();
+	}
+	
 	
 	@Transactional
 	public Map<String, Aircraft> getAircraftsById(List<String> ids) {
@@ -250,6 +320,7 @@ public class StarliteCoreManager {
 		al.aircraftList.addAll(aircraft);
 		return al;
 	}
+	
 	
 	@Transactional
 	public Aircraft saveAircraft(Aircraft a) {
@@ -489,18 +560,67 @@ public class StarliteCoreManager {
 		}
 		return adhoc;
 	}
+	public List<CrewMember> getAdHocCrewInactive() {
+		List<CrewMember> all = getAllCrew();
+		List<CrewMember> adhoc = new ArrayList<CrewMember>();
+		for(CrewMember c : all){
+			if("Freelance (Inactive)".equals(c.getRole().getEmployment())){
+				adhoc.add(c);
+			}
+		}
+		return adhoc;
+	}
 
-	public List<CrewMember> getPermCrew() {
+	public List<CrewMember> getPermCrewCRI() {
 		List<CrewMember> all = getAllCrew();
 		List<CrewMember> perm = new ArrayList<CrewMember>();
 		for(CrewMember c : all){
-			if(!"Freelance".equals(c.getRole().getEmployment())){
+			if ("Permanent CRI".equals(c.getRole().getEmployment())){
 				perm.add(c);
 			}
 		}
 		return perm;
 	}
-	
+	public List<CrewMember> getPermCrewStarlite() {
+		List<CrewMember> all = getAllCrew();
+		List<CrewMember> perm = new ArrayList<CrewMember>();
+		for(CrewMember c : all){
+			if ("Permanent Starlite".equals(c.getRole().getEmployment())) {
+				perm.add(c);
+			}
+		}
+		return perm;
+	}
+	public List<CrewMember> getPermCrewInactive() {
+		List<CrewMember> all = getAllCrew();
+		List<CrewMember> perm = new ArrayList<CrewMember>();
+		for(CrewMember c : all){
+			if("Permanent (Inactive)".equals(c.getRole().getEmployment())){
+				perm.add(c);
+			}
+		}
+		return perm;
+	}
+	public List<String> getAllActivePilots() {
+		List<CrewMember> all = getAllCrew();
+		List<String> perm = new ArrayList<String>();
+		for(CrewMember c : all){
+			if("Permanent".equals(c.getRole().getEmployment()) || "Freelance".equals(c.getRole().getEmployment()))
+			{
+				String position = c.getRole().getPosition();
+				if (position == null)
+				{
+				position = "PILOT";	
+				}
+				position = position.toUpperCase();
+				if (position.contains("PILOT"))
+				{
+				perm.add(c.getPersonal().getFullName());
+				}
+			}
+		}
+		return perm;
+	}
 	
 	@Transactional
 	public List<CrewDay> getCrewDayByCrewMemberByMonth(Integer cId, Integer month, Integer year){
@@ -572,6 +692,10 @@ public class StarliteCoreManager {
 	public List<Component> getComponents(){
 		return componentDao.findActive();
 	}
+	
+	public List<Component> getTransactionComponents(){
+		return componentDao.findTransactionComponents();
+	}
 		
 	public List<Component> getComponentsDeactivated(){
 		return componentDao.findDeactive();
@@ -592,6 +716,275 @@ public class StarliteCoreManager {
 	public List<Component> getComponents(String location) {
 		return componentDao.findByLocation(location);
 	}
+	public List<Component> getAllClassComponents(String location) {
+		return componentDao.findAllClassesByLocation(location);
+	}
+	public List<Component> getComponentsClassA(String location) {
+		return componentDao.findByLocationClassA(location);
+	}
 	
+	
+	public Component getComponent(String _class, String _part, String _serial)
+	{
+       return componentDao.getComponent(_class,_part, _serial) ;
+	}
+ 
 
+
+	
+	//JobTask
+	@Transactional
+	public List<JobTask> getAllTasks(){
+		return jobTaskDao.findAllTasks();
+	}
+	public JobTask getJobTaskByValue(String jobTaskValue){
+		return jobTaskDao.findJobTaskByValue(jobTaskValue);
+	}
+	@Transactional
+	public JobTask saveJobTask(JobTask newTask) {
+		
+		return jobTaskDao.makePersistent(newTask);
+	}	
+	
+	//JobSubTask
+	@Transactional
+	public List<JobSubTask> getAllSubTasks(){
+		return jobSubTaskDao.findAllSubTasks();
+	}
+	public JobSubTask getJobSubTaskByValue(String jobSubTaskValue){
+		return jobSubTaskDao.findJobSubTaskByValue(jobSubTaskValue);
+	}
+	@Transactional
+	public JobSubTask saveJobSubTask(JobSubTask newSubTask) {
+		
+		return jobSubTaskDao.makePersistent(newSubTask);
+	}	
+	
+	
+	//JobTicket
+	@Transactional
+	public List<JobTicket> getAllTicketsByUser(String username){
+		return jobTicketDao.findAllTicketsPerUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllNonOpenTicketsByUser(String username){
+		return jobTicketDao.findAllNonOpenTicketsPerUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllWIPTicketsByUser(String username){
+		return jobTicketDao.findAllWIPTicketsByUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllSUSPENDEDTicketsByUser(String username){
+		return jobTicketDao.findAllSUSPENDEDTicketsByUser(username);
+	}
+	@Transactional
+	public List<JobTicket> getAllCLOSEDTicketsByUser(String username){
+		return jobTicketDao.findAllCLOSEDTicketsByUser(username);
+	}
+	@Transactional
+	public boolean userHasWIPTickets(String username)
+	{
+		return jobTicketDao.userHasWIPTickets(username);
+	}
+	
+	@Transactional
+	public JobTicket saveJobTicket(JobTicket job) {
+		
+		return jobTicketDao.makePersistent(job);
+	}
+	
+	@Transactional
+	public JobTicket getJobTicketByID(Integer id) {
+		return jobTicketDao.findJobTicketByID(id);
+	}
+	@Transactional
+	public List<JobTicket> getAllTicketsByPeriod(String period)
+	{
+		return jobTicketDao.findAllTicketsPerPeriod(period);
+	}
+	@Transactional
+	public List<JobTicket> getAllSuspiciousTicketsByPeriod(String period)
+	{
+		return jobTicketDao.findAllSuspiciousTicketsPerPeriod(period);
+	}
+	@Transactional
+	public List<JobTicket> getAllJobTicketsNotSuspended()
+	{
+		return jobTicketDao.findAllNonLoggedOutTickets();
+	}
+	
+   //JobStatus
+	@Transactional
+	public JobStatus getJobStatusValue(String jobStatusValue){
+		return jobStatusDao.findJobStatusValue(jobStatusValue);
+	}
+	@Transactional
+	public JobStatus getJobStatusByID(Integer id){
+		return jobStatusDao.findJobStatusByID(id);
+	}
+	@Transactional
+	public List<JobStatus> getAllJobStatusValues(){
+		return jobStatusDao.getAllJobStatusValues();
+	}
+	
+	//JobHistory
+	@Transactional
+	public JobHistory saveJobHistory(JobHistory history) {
+		return jobHistoryDao.makePersistent(history);
+	}
+
+	@Transactional
+	public List<JobHistory> getAllJobHistoryForUser(String username) {
+		return jobHistoryDao.findAllHistoryTicketsPerUser(username);
+	}
+	
+	@Transactional
+	public List<JobHistory> getAllEditHrsTicketsByParentID(Integer parentTicketID) {
+		return jobHistoryDao.findAllEDITHrsTicketsByParentID(parentTicketID);
+	}
+	
+	@Transactional
+	public List<JobHistory> getAllNonEditHistroryTicketsByParentID(Integer parentTicketID) {
+		return jobHistoryDao.findAllNonEditHistroryTicketsByParentID(parentTicketID);
+	}
+	
+	
+	//FlightOFP
+	@Transactional
+	public FlightOFP saveFlightOFP(FlightOFP flightOFP) {
+		return flightOFPDao.makePersistent(flightOFP);
+	}
+	@Transactional
+	public List<FlightOFP> findFlightOFP(String contract, String invoiceNo, Date flightDate) {
+		return flightOFPDao.findFlightOFP(contract, invoiceNo, flightDate);
+	}
+	@Transactional
+	public List<FlightOFP> findAllFlightOFPs() {
+		return flightOFPDao.findAllFlightOFP();
+	}
+	@Transactional
+	public FlightOFP findFlightOFPById(Integer id) {
+		return flightOFPDao.findFlightOFPById(id);
+	}
+
+	//FlightGCategory
+	public List<FlightGCatagory> getAllGCategories()
+	{
+		return flightGCategoryDao.findAllGCategories();
+	}
+	public FlightGCatagory getGCategoryByValue(String gCategoryValue)
+	{
+		return flightGCategoryDao.findGCategoryByValue(gCategoryValue);
+		
+	}
+	public FlightGCatagory getGCategoryByID(Integer id)
+	{
+		return flightGCategoryDao.findGCategoryByID(id);
+		
+	}
+	public FlightGCatagory saveGCategory(FlightGCatagory gCategory)
+	{
+		return flightGCategoryDao.makePersistent(gCategory);
+		
+	}
+	
+	//FlightPlan
+	@Transactional
+	public FlightPlan saveFlightPlan(FlightPlan flightPlan) {
+		return flightPlanDao.makePersistent(flightPlan);
+	}
+	@Transactional
+	public List<FlightPlan> findFlightPlan(String customer, String invoiceNo,
+			String flightNo, String flightDate, String takeOffTime) {
+		return flightPlanDao.findFlightPlan(customer, invoiceNo, flightNo, flightDate, takeOffTime);
+	}
+	@Transactional
+	public List<FlightPlan> findAllFlightPlans() {
+		return flightPlanDao.findAllFlightPlans();
+	}
+	@Transactional
+	public FlightPlan findFlightPlanById(Integer id) {
+		return flightPlanDao.findFlightPlanById(id);
+	}
+	
+	//FlightLog
+	@Transactional
+	public FlightLog findFlightLogById(Integer id) {
+		return flightLogDao.findFlightLogById(id);
+	}
+	
+	//FlightActuals
+	@Transactional
+	public FlightActuals saveFlightActuals(FlightActuals flightActual) {
+		return flightActualsDao.makePersistent(flightActual);
+	}
+	@Transactional
+	public FlightActuals findFlightActualsFlightPlan(String aircraft, String aircraftType,String flightDate) {
+		return flightActualsDao.findFlightActualFlightPlan(aircraft, aircraftType, flightDate);
+	}
+	@Transactional
+	public List<FlightActuals> findAllFlightActuals() {
+		return flightActualsDao.findAllFlightActuals();
+	}
+	@Transactional
+	public FlightActuals findFlightActualsByID(int id) {
+		return flightActualsDao.findFlightActualsByID(id);
+	}
+	@Transactional
+	public FlightActuals findFlightActualsByPlanID(int id) {
+		return flightActualsDao.findFlightActualsByPlanID(id);
+	}
+	@Transactional
+	public List<FlightActuals> findMismatchedFlightActuals()
+	{
+		return flightActualsDao.findMismatchedFlightActuals();
+	}
+	@Transactional
+	public void deleteMismatchedFlightActual(Integer id) {
+		FlightActuals cm = flightActualsDao.findFlightActualsByID(id);
+		if (cm != null)
+			flightActualsDao.makeTransient(cm);
+	}
+	
+	
+	//FlightActualStatus
+	@Transactional
+	public FlightActualStatus findStatusValueByID(int id) {
+		return flightActualStatusDao.findStatusValueByID(id);
+	}
+	@Transactional
+	public FlightActualStatus findStatusIDByValue(String value) {
+		return flightActualStatusDao.findStatusIDByValue(value);
+	}
+
+	//MyFolder
+	@Transactional
+	public List<Bookmark> findDocsByTag(String tag, String person) {
+		return myFolderDao.findFilesPerTag(tag, person);
+	}
+	@Transactional
+	public void deleteDocByName(String name, String person) {
+		List<Bookmark> bookmarks = myFolderDao.findFilesPerTag(name, person);
+		
+		if (bookmarks.isEmpty() == false)
+		{
+			for (int i=0; i< bookmarks.size(); i++)
+			{
+				Set<Tag> tempTags =  bookmarks.get(i).getTags();
+
+				for (Tag e : tempTags)
+				{
+					if (e.getTag().compareToIgnoreCase(name) == 0)
+					{
+			              bookmarks.remove(e);
+			              break;
+					}
+							
+				}
+				bookmarkDao.makePersistent(bookmarks.get(i));
+			}
+			
+		}
+	}
 }

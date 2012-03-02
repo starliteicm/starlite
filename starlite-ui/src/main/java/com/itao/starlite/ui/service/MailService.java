@@ -85,10 +85,10 @@ public class MailService {
 	  
 	  // Create the email message
 	  HtmlEmail email = new HtmlEmail();
-	  email.setHostName("mail.i-tao.com");
+	  email.setHostName("smtp.disrec.com");
 	  email.addTo(emailAddress);
    
-	  email.setAuthentication("starlite@i-tao.com", "g04way");
+	  email.setAuthentication("icm@disrec.com", "1cmemail");
       email.setFrom(from, "<Starlite> "+from);
 	  
 	  email.setSubject(subject);
@@ -157,10 +157,10 @@ public class MailService {
 
     	  // Create the email message
     	  HtmlEmail email = new HtmlEmail();
-    	  email.setHostName("mail.i-tao.com");
+    	  email.setHostName("smtp.disrec.com");
     	  email.addTo(emailAddress, emailName);
        
-    	  email.setAuthentication("starlite@i-tao.com", "g04way");
+    	  email.setAuthentication("icm@disrec.com", "1cmemail");
           email.setFrom("dustyn@crewresource.biz", "Starlite");
     	  
     	  email.setSubject(subject);
@@ -169,7 +169,7 @@ public class MailService {
     	  email.addHeader( "Return-Receipt-To","<Starlite> dustyn@crewresource.biz");
     	  email.addHeader( "Read-Receipt-To","<Starlite> dustyn@crewresource.biz");
     	  email.addHeader( "Disposition-Notification-To", "<Starlite> dustyn@crewresource.biz");
-    	  email.addBcc("jelliott@i-tao.com");
+    	  //email.addBcc("celeste.groenewald@proxime.uk.com");
     	  email.setBounceAddress("dustyn@crewresource.biz");
     	  
           Template template = freemarkerConfiguration.getTemplate(templateName);
@@ -216,10 +216,10 @@ public class MailService {
     	  
     	  // Create the email message
     	  HtmlEmail email = new HtmlEmail();
-    	  email.setHostName("mail.i-tao.com");
+    	  email.setHostName("smtp.disrec.com");
     	  email.addTo(emailAddress);
        
-    	  email.setAuthentication("starlite@i-tao.com", "g04way");
+    	  email.setAuthentication("icm@disrec.com", "1cmemail");
           email.setFrom(from, "Starlite - "+from);
     	  
     	  email.setSubject(subject);
@@ -345,8 +345,8 @@ public class MailService {
             template.setEncoding("UTF8");
             result = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             email.setMsg(result);
-            email.setHostName("mail.i-tao.com");
-            email.setAuthentication("starlite@i-tao.com", "g04way");
+            email.setHostName("smtp.disrec.com");
+            email.setAuthentication("icm@disrec.com", "1cmemail");
             email.setFrom("dustyn@crewresource.biz", "Starlite");
             email.send();
         } 
@@ -365,8 +365,8 @@ public class MailService {
             template.setEncoding("UTF8");
             result = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             email.setHtmlMsg(result);            
-            email.setHostName("mail.i-tao.com");
-            email.setAuthentication("starlite@i-tao.com", "g04way");
+            email.setHostName("smtp.disrec.com");
+            email.setAuthentication("icm@disrec.com", "1cmemail");
             email.setFrom("dustyn@crewresource.biz", "Starlite");
             email.send();
         } 

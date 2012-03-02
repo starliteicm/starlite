@@ -13,6 +13,10 @@
 	<#assign domain = "starlite">
 </#if>
 
+<#if request.serverName?matches(".*local.*")>
+	<#assign domain = "starlite">
+</#if>
+
 <#if request.serverName?matches(".*cri.*")>
 	<#assign domain = "cri">
 </#if>
@@ -65,11 +69,9 @@
 </#if>
 
 <div name="logo" style="float:left;" id="logo">
-	<#if isManager>
+	
 	<img style="float:left;position:absolute;z-index:100;" src="${request.contextPath}/images/starlite.png"/>
-	<#else>
-	<img style="float:left;position:absolute;z-index:100;" src="${request.contextPath}/images/cri-logo.png"/>
-	</#if>
+	
 </div>
 
 <div id="complete" style="position:relative;top:10px">
@@ -82,6 +84,16 @@
    
       <#if isManager>
       	  
+      	  <#if user.hasRead("hanger")>
+      	  <#assign domain = "starlite">
+          <#if current?? && current=="Hanger">
+          <li class="charters current">
+          <#else>
+          <li class="charters">
+          </#if>
+          <a href="hanger.action">Hanger</a></li>
+          </#if>
+      	           
       	  <#if user.hasRead("schedule")>
       	  <#if current?? && current=="schedule">
       		<li class="schedule current">
@@ -191,14 +203,19 @@
           </#if>
       
       <#else>
-      <#if current?? && current=="crew">
-      <li class="crew current">
-      <#else>
-      <li class="crew">
-      </#if>
-      <a href="crewMember.action?id=${user.username}">Details</a></li>
-      </#if>
       
+      <#if user.hasRead("hanger")>
+      <#assign domain = "starlite">
+          <#if current?? && current=="Hanger">
+          <li class="charters current">
+          <#else>
+          <li class="charters">
+          </#if>
+          <a href="hanger.action">Hanger</a></li>
+          
+       </#if>
+     </#if>
+           
       <li style="float:right; margin-right:20px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
       <li class="aircraft" style="float:right;"><a href="${request.contextPath}/account.action">Account</a></li>
     </ul>
@@ -253,11 +270,9 @@
 </head>
 <body style="text-align:left;">
 <#if domain??>
-	<#if domain=="starlite">
-		<img src="${request.contextPath}/images/starlite.png"/>
-	<#else>
-		<img src="${request.contextPath}/images/cri-logo.gif"/>
-	</#if>
+	
+		
+	
 </#if>
 ${body}
 </body>

@@ -2,8 +2,12 @@ package com.itao.starlite.ui.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.Result;
@@ -19,6 +23,8 @@ import com.itao.starlite.docs.manager.DocumentManager;
 import com.itao.starlite.docs.model.Bookmark;
 import com.itao.starlite.docs.model.Document;
 import com.itao.starlite.docs.model.Folder;
+import com.itao.starlite.docs.model.Tag;
+import com.itao.starlite.manager.StarliteCoreManager;
 import com.opensymphony.xwork2.ActionSupport;
 
 @Results({
@@ -38,6 +44,8 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	private DocumentManager documentManager;
 	@Inject
 	private BookmarkManager bookmarkManager;
+	@Inject
+	private StarliteCoreManager manager;
 	
 	private User user;
 	public String errorMessage;
@@ -67,7 +75,14 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 	public String returnUrl;
 	public String shallReturn;
 	
-	public String upload() throws Exception {
+	public String id;
+	
+	public String upload() throws Exception 
+	{
+		boolean pass = true;
+		try{
+			
+		
 		LOG.info(tags+" "+folder+" "+shallReturn);
 		String[] tagsArray = tags.split(" ");
 		
@@ -79,18 +94,48 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 		doc.setBookmark(b);
 		
 		documentManager.createDocument(doc, folder, new FileInputStream(document), user);
+		}
+		catch(Exception ex)
+		{
+			this.errorMessage="Unable to upload document. Possible Reason: "+ex.getMessage().toString();
+			pass = false;
+			return ERROR;
+		}
+		if (pass)
+		{
 		if (returnUrl != null)
 			return "redirect";
 		else if (shallReturn != null) {
 			returnUrl = ServletActionContext.getRequest().getHeader("referer");
 			return "redirect";
 		}
+		}
 		return execute();
 	}
 	
 	public String path;
-	public String delete() throws Exception {
+	public String delete() throws Exception 
+	{
+		try
+		{
 		documentManager.deleteDocument(path, user);
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				//manager.deleteDocByName(path,id);
+				//find the file and then delete
+				//File target = new File(path);
+				//target.delete();	
+				
+				
+			}
+			catch (Exception ee)
+			{
+				this.errorMessage = "Unable to delete the file: "+ path;
+			}
+		}
 		if (returnUrl != null)
 			return "redirect";
 		
@@ -98,6 +143,68 @@ public class DocumentsAction extends ActionSupport implements UserAware {
 		return "redirect";
 	}
 
+	public String archive() throws Exception 
+	{
+		try
+		{
+			String newTags = "";
+			String[] filenameParts = path.split("/");
+			String filename = filenameParts[filenameParts.length-1];
+			String crewMember = filenameParts[filenameParts.length-2];
+			Document doc1 = documentManager.getDocumentByPath(path, user);
+			Bookmark bookMark = doc1.getBookmark();
+			Set<Tag> tagSet = bookMark.getTags();
+			Iterator<Tag> litr = tagSet.iterator(); 
+			
+			while (litr.hasNext())
+			{
+				String empty = "";
+				
+				Tag tempTag = (Tag) litr.next();
+				if (empty.compareToIgnoreCase(tempTag.getTag()) != 0)
+				{
+					if (crewMember.compareToIgnoreCase(tempTag.getTag()) != 0 )
+					{
+						newTags = newTags + tempTag.getTag() + "_archived";
+					}
+					else {newTags = newTags + tempTag.getTag(); }
+				    
+					bookMark.removeTag(tempTag);
+						
+					if (tagSet.iterator().hasNext())
+					{
+						newTags = newTags + " ";
+					}
+					
+				}
+			}
+			String[] tagsArray = newTags.split(" ");
+			Bookmark b = bookmarkManager.createBookmark(filename, "Document", path, tagsArray);
+			doc1.setBookmark(b);
+			
+			
+			
+			int i=0;
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				
+				
+				
+			}
+			catch (Exception ee)
+			{
+				
+			}
+		}
+		if (returnUrl != null)
+			return "redirect";
+		
+		returnUrl = ServletActionContext.getRequest().getHeader("referer");
+		return "redirect";
+	}
 	public void setUser(User arg0) {
 		this.user = arg0;
 	}

@@ -47,7 +47,7 @@
             </select>
             </td>
             
-            <td><input name="charter.cost.itemGroups[${itemGroup_index}].items[${item_index}].limit.amountAsDouble" type="text" style="width:100px;" value="${item.limit.amountAsDouble!}"/></td>
+            <td><input name="charter.cost.itemGroups[${itemGroup_index}].items[${item_index}].limit.amountAsDouble" type="text" style="width:100px;text-align:right;" value="${item.limit.amountAsDouble!}"/></td>
             <td><input name="charter.cost.itemGroups[${itemGroup_index}].items[${item_index}].comments" type="text" style="width:300px;" value="${item.comments!}"/></td>
             </tr>
             </#list>

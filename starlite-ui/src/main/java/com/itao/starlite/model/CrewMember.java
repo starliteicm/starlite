@@ -1,9 +1,12 @@
 package com.itao.starlite.model;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +49,7 @@ import com.itao.starlite.model.CrewMember.FlightAndDutyActuals.Deduction;
  * @author Jonathan Elliott
  */
 @Entity
-public class CrewMember implements Cloneable {
+public class CrewMember implements Cloneable, Comparable {
 	@Id
 	@GeneratedValue
 	private Integer id;
@@ -76,16 +79,115 @@ public class CrewMember implements Cloneable {
 	@Fetch(FetchMode.SUBSELECT)
 	private List<Passport> passport = new ArrayList<Passport>();
 	
+	public void setID(Integer id) {
+		this.id = id;
+	}
+
+	public Date getPassportExpiryDate(int passCounter)
+	{ 
+		Date dat = null;
+		
+		if(passport != null)
+		{
+		
+		if (passport.size() > 0)
+		{
+	     
+		try{
+			Passport tempPass = passport.get(passCounter-1);
+			Date tempDate = tempPass.getExpiryDate();
+			dat = tempDate;
+			
+		}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+				dat = null;
+			}
+		}
+		}
+		return dat;
+	}
+	
+	
+	public String getLatestPassportDate()
+	{
+		Passport latestPassport = new Passport();
+		        
+		String dat = "";
+		
+		if(passport != null)
+		{
+		
+		if (passport.size() > 0)
+		{
+	    for (int i=passport.size()-1; i>=0; i--)
+	    {
+		latestPassport = passport.get(i); 
+		try{
+    		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (latestPassport.getExpiryDate() != null)
+			{
+				dat += "Passport "+ (i+1) +": " + df.format(latestPassport.getExpiryDate()) + " ";
+			}
+			else {dat+="Passport "+(i+1)+": none";}
+			}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+			}
+		}//for
+		}//if
+		}
+		return dat;
+	}
+	
+	public String getLatestPassportCertificates()
+	{
+		Passport latestPassport = new Passport();
+				
+		String dat = "";
+		
+		if(passport != null)
+		{
+		
+		if (passport.size() > 0)
+		{
+	    for (int i=passport.size()-1; i>=0; i--)
+	    {
+		latestPassport = passport.get(i); 
+		try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (latestPassport.getCertificate().getExpiryDate() != null)
+			{
+			dat += "P"+ (i+1) +"Cert" +": " + df.format(latestPassport.getCertificate().getExpiryDate()) + " ";
+			}
+			else {dat+="P"+(i+1)+"Cert"+": none";}
+			}
+			catch(Exception e)
+			{
+				//e.printStackTrace();
+			}
+		}//for
+		}//if
+		}
+		return dat;
+	}
 	/*
 	 * Nested Classes - These are used to partition the data into manageable sections
 	 */
 	
 	@Entity
-	public static class Passport{			
+	public static class Passport implements Comparable
+	{
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String passportNumber;
 		@Temporal(TemporalType.DATE)
 		public Date expiryDate;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		public String country;
+		private Certificate certificate = new Certificate();
+		
 		
 		@Id @GeneratedValue
 		public Integer id;
@@ -101,6 +203,16 @@ public class CrewMember implements Cloneable {
 		public void setExpiryDate(Date passportExpiryDate) {
 			this.expiryDate = passportExpiryDate;
 		}
+		public void setCertificate(Certificate certificate) {
+			this.certificate = certificate;
+		}
+
+		public Certificate getCertificate() 
+		{   if (certificate == null)
+		     {this.certificate = new Certificate();}
+			return certificate;
+		}
+
 		public Date getExpiryDate() {
 			return expiryDate;
 		}
@@ -114,15 +226,31 @@ public class CrewMember implements Cloneable {
 		public String toString(){
 			return "{id:"+id+",country:"+getCountry()+",number:"+getPassportNumber()+",expiry:"+getExpiryDate()+"}";
 		}
+
+		
+		@Override
+		public int compareTo(Object arg0) {
+			try{
+				Passport two = (Passport)arg0;
+				
+				
+				if (this.id > two.id ) {return 1;}
+				if (this.id < two.id ) {return -1;}
+				if (this.id == two.id ) {return 0;}
+				}
+				catch(Exception e) {return 0;}
+			        //(o1>o2 ? -1 : (o1==o2 ? 0 : 1));
+				return 0;
+		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Passport> getPassport(){
-	  System.out.println("GET:"+passport);
 	  
 	  if(passport == null){
 		  passport = new LinkedList<Passport>();
 	  }
-	  if(passport.size() == 0){
+	  if(passport.size() < 1){
 	      if(personal.passportCountry != null){
 		     //first passport
 	    	    Passport pass = new Passport();
@@ -131,77 +259,141 @@ public class CrewMember implements Cloneable {
 				pass.setExpiryDate(personal.passportExpiryDate);
 	    	    passport.add(pass);
 	      }
+	 
 	  }
+	  Collections.sort(this.passport);
 	  return passport;
 	}
 	
-	public void setPassport(List<Passport> passports) {
-		System.out.println("SET:"+passports);
+	
+	@SuppressWarnings("unchecked")
+	public void setPassport(List<Passport> passports) 
+	{   if (passports != null)
+		{
+		int toAdd = 3 - passports.size();
+		
+		    while (toAdd != 0)
+		    {		    	
+		    	Passport temp = new Passport();
+		    	passports.add(temp);
+		    	toAdd--;
+		    }
+		}
+	    Collections.sort(passports);
 		this.passport = passports;
+		
 	}
 	
 	
 	@Embeddable
 	public static class Personal {
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String lastName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String firstName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String secondName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String preferedName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String title;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String gender;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String status;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String classification;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address1;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address3;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address4;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address5;
 
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalAddress;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalTown;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalCode;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String postalCountry;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String mobilePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String mobilePhone2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String homePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String homeFax;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String businessPhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String businessFax;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String email;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternateEmail;
 
 		@Temporal(TemporalType.DATE)
-		private Date dateOfBirth;
+		private Date dateOfBirth = new Date();
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String nationality;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String idNumber;
 
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String passportNumber;
 		@Temporal(TemporalType.DATE)
 		private Date passportExpiryDate;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String passportCountry;
 
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinLastName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinFirstName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinMobilePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinHomePhone;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinRelation;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinEldestChildName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private Integer nextOfKinNumberOfChildren;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress1;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress3;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress4;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String  nextOfKinAddress5;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String emergencyContactName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String emergencyContactNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String emergencyContactRelationship;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternativeEmergencyContactName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternativeEmergencyContactNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String alternativeEmergencyContactRelationship;
+		
 		
 		public String getLastName() {
 			return lastName;
@@ -306,8 +498,27 @@ public class CrewMember implements Cloneable {
 			this.email = email;
 		}
 
-		public Date getDateOfBirth() {
+		public Date getDateOfBirth() 
+		{
 			return dateOfBirth;
+		}
+		
+		public String getStringDateOfBirthDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (this.dateOfBirth != null)
+			{
+				dat = df.format(this.dateOfBirth);
+			}
+			else {dat="";}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
 		}
 
 		public void setDateOfBirth(Date dateOfBirth) {
@@ -338,7 +549,8 @@ public class CrewMember implements Cloneable {
 			this.passportNumber = passportNumber;
 		}
 
-		public Date getPassportExpiryDate() {
+		public Date getPassportExpiryDate() 
+		{
 			return passportExpiryDate;
 		}
 
@@ -614,21 +826,33 @@ public class CrewMember implements Cloneable {
 
 	@Embeddable
 	public static class Banking {
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String bankName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String branchCode;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String accountName;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String accountNumber;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address1;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address2;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address3;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address4;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String address5;
-		
+				
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String swift;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String iban;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String bic;
-
+		
 		public String getBankName() {
 			return bankName;
 		}
@@ -730,46 +954,126 @@ public class CrewMember implements Cloneable {
 
 	@Embeddable
 	public static class Role {
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String employment;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String company;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String department;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String manager;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String position;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
+		private String subPosition;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String primaryLocation;
 		@Temporal(TemporalType.DATE)
-		private Date initialDate;
+		private Date initialDate = new Date();
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String medicalClass;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String medicalAid;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String medicalAidNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String drivingLicenceNumber;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String drivingLicenceIssued;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String telephoneExtension;
 		
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private Date lastDate;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private String lastType;
+		@Column(nullable=true, columnDefinition="varchar(50) default ''")
 		private Double totalHours;
 		
 		@Temporal(TemporalType.DATE)
-		private Date expiryDate;
+		private Date expiryDate= new Date();
+		@Temporal(TemporalType.DATE)
+		private Date reviewDate = new Date();
+		
+		
 		
 		private Certificate r1 = new Certificate();
 		private Certificate r2 = new Certificate();
 		private Certificate crm = new Certificate();
 		private Certificate dg = new Certificate();
 		private Certificate ifr = new Certificate();
+		private Certificate ets = new Certificate();
 		private Certificate instructor = new Certificate();
 		private Certificate test = new Certificate();
-		private Certificate huet = new Certificate();		
+		private Certificate huet = new Certificate();
+		private Certificate hemsCert = new Certificate();	
+	    private  Certificate lpcCert;
+	    private  Certificate opcCert;
+	    private  Certificate operationsManualCert;
+	    private  Certificate annualTechnicalManualCert;
+	    private Certificate routCheck;
+	    
+	    @Column(nullable = true, columnDefinition="varchar(255) default ' '")
+		private String base;
 		
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String night;
+		private Double nightHours = 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String nvg;
+		private Double nvgHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
 		private String sling;
-		private String game;		
+		private Double underslingHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String game;	
+		private Double gameHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String bannerTowing;	
+		private Double bannerTowingHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String fireFighting;	
+		private Double fireFightingHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String flir;	
+		private Double flirHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String fries;	
+		private Double friesHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String hems;	
+		private Double hemsHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String mountain;	
+		private Double mountainHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String offshore;	
+		private Double offshoreHours= 0.0;
+		private String offshoreCaptain;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String powerline;	
+		private Double powerlineHours= 0.0;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String instrument;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'no'")
+		private String testPilot;
+		@Column(nullable = true, columnDefinition="varchar(255) default ' '")
+		private String testPilotClass;
+		@Column(nullable = true, columnDefinition="varchar(255) default 'Level 1'")
+		private String englishTest;
 		
 		@CollectionOfElements(fetch=FetchType.LAZY)
 		@Fetch(FetchMode.SUBSELECT)
 		@IndexColumn(name="position")
 		private List<Certificate> conversions = new LinkedList<Certificate>();
+
+		public String getInstrument() {
+			return instrument;
+		}
+
+		public void setInstrument(String instrument) {
+			this.instrument = instrument;
+		}
 
 		public void setEmployment(String employment) {
 			this.employment = employment;
@@ -787,6 +1091,19 @@ public class CrewMember implements Cloneable {
 			this.position = position;
 		}
 
+		public String getSubPosition() 
+		{
+			if (subPosition == null)
+			{
+				this.subPosition = " ";
+			}
+			return subPosition;
+		}
+
+		public void setSubPosition(String subPosition) {
+			this.subPosition = subPosition;
+		}
+
 		public String getPrimaryLocation() {
 			return primaryLocation;
 		}
@@ -795,7 +1112,10 @@ public class CrewMember implements Cloneable {
 			this.primaryLocation = primaryLocation;
 		}
 
-		public Date getInitialDate() {
+		public Date getInitialDate() 
+		{
+			if (initialDate == null)
+			{initialDate = new Date();}
 			return initialDate;
 		}
 
@@ -803,6 +1123,23 @@ public class CrewMember implements Cloneable {
 			this.initialDate = initialDate;
 		}
 
+		public String getStringInitialDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (this.initialDate != null)
+			{
+				dat = df.format(this.initialDate);
+			}
+			else {dat="";}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
 		public String getMedicalClass() {
 			return medicalClass;
 		}
@@ -814,11 +1151,138 @@ public class CrewMember implements Cloneable {
 		public Date getExpiryDate() {
 			return expiryDate;
 		}
+		
+		public String getStringExpiryDate()
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (this.expiryDate != null)
+			{
+				dat = df.format(this.expiryDate);
+			}
+			else {dat="";}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
 
 		public void setExpiryDate(Date expiryDate) {
 			this.expiryDate = expiryDate;
 		}
 		
+		public Date getReviewDate() 
+		{
+					if (reviewDate == null)
+					{reviewDate = new Date();}
+			return reviewDate;
+		}
+
+		public void setReviewDate(Date reviewDate) 
+		{
+			this.reviewDate = reviewDate;
+		}
+		public String getStringReviewDate() 
+		{
+			String dat = "";
+			try{
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			if (reviewDate != null)
+			{
+			dat = df.format(reviewDate);
+			}
+			else {dat="";}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return dat;
+		}
+
+		public String getTestPilot() {
+			return testPilot;
+		}
+
+		public void setTestPilot(String testPilot) {
+			this.testPilot = testPilot;
+		}
+
+		public String getTestPilotClass() {
+			return testPilotClass;
+		}
+
+		public void setTestPilotClass(String testPilotClass) {
+			this.testPilotClass = testPilotClass;
+		}
+
+		public String getEnglishTest() {
+			return englishTest;
+		}
+
+		public void setEnglishTest(String englishTest) {
+			this.englishTest = englishTest;
+		}
+
+		public Certificate getLpcCert() {
+			if (this.lpcCert == null)
+			{
+				this.lpcCert = new Certificate();
+			}
+			return lpcCert;
+		}
+
+		public void setLpcCert(Certificate lpcCert) {
+			this.lpcCert = lpcCert;
+		}
+		public Certificate getRoutCheck() 
+		{
+			if (this.routCheck == null)
+			{this.routCheck = new Certificate();}
+			return this.routCheck;
+		}
+
+		public void setRoutCheck(Certificate routCheck) {
+			this.routCheck = routCheck;
+		}
+
+		public Certificate getOpcCert() 
+		{
+			if (this.opcCert == null){this.opcCert = new Certificate();}
+			return opcCert;
+		}
+
+		public void setOpcCert(Certificate opcCert) {
+			this.opcCert = opcCert;
+		}
+
+		public Certificate getOperationsManualCert() 
+		{
+			if (this.operationsManualCert == null){this.operationsManualCert = new Certificate();}
+			return operationsManualCert;
+		}
+
+		public void setOperationsManualCert(Certificate operationsManualCert) {
+			this.operationsManualCert = operationsManualCert;
+		}
+
+		public Certificate getAnnualTechnicalManualCert() 
+		{
+			if (this.annualTechnicalManualCert == null){this.annualTechnicalManualCert = new Certificate();}
+			return annualTechnicalManualCert;
+		}
+
+		public void setAnnualTechnicalManualCert(Certificate annualTechnicalManualCert) {
+			this.annualTechnicalManualCert = annualTechnicalManualCert;
+		}
+
+		public void setHemsCert(Certificate hemsCert) {
+			this.hemsCert = hemsCert;
+		}
+
 		public Certificate getR1() {
 			if (r1 == null)
 				r1 = new Certificate();
@@ -836,7 +1300,7 @@ public class CrewMember implements Cloneable {
 				crm = new Certificate();
 			return crm;
 		}
-
+		
 		public Certificate getDg() {
 			if (dg == null)
 				dg = new Certificate();
@@ -865,6 +1329,21 @@ public class CrewMember implements Cloneable {
 			if (huet == null)
 				huet = new Certificate();
 			return huet;
+		}
+		public Certificate getHemsCert() {
+			if (hemsCert == null)
+				hemsCert = new Certificate();
+			return hemsCert;
+		}
+
+		public Certificate getEts() {
+			if (ets == null)
+			{ets = new Certificate();}
+			return ets;
+		}
+
+		public void setEts(Certificate ets) {
+			this.ets = ets;
 		}
 
 		public synchronized List<Certificate> getConversions() {
@@ -920,7 +1399,7 @@ public class CrewMember implements Cloneable {
 //			getConversions().add(index, conversion);
 //		}
 
-		private Role() {}
+		public Role() {}
 
 		public void setCompany(String company) {
 			this.company = company;
@@ -1042,25 +1521,271 @@ public class CrewMember implements Cloneable {
 			return game;
 		}
 
+		public Double getNightHours() {
+			return nightHours;
+		}
+
+		public void setNightHours(Double nightHours) {
+			this.nightHours = nightHours;
+		}
+
+		public Double getNvgHours() {
+			return nvgHours;
+		}
+
+		public void setNvgHours(Double nvgHours) {
+			this.nvgHours = nvgHours;
+		}
+
+		public Double getUnderslingHours() {
+			return underslingHours;
+		}
+
+		public void setUnderslingHours(Double underslingHours) {
+			this.underslingHours = underslingHours;
+		}
+
+		public Double getGameHours() {
+			return gameHours;
+		}
+
+		public void setGameHours(Double gameHours) {
+			this.gameHours = gameHours;
+		}
+
+		public String getBannerTowing() {
+			return bannerTowing;
+		}
+
+		public void setBannerTowing(String bannerTowing) {
+			this.bannerTowing = bannerTowing;
+		}
+
+		public Double getBannerTowingHours() {
+			return bannerTowingHours;
+		}
+
+		public void setBannerTowingHours(Double bannerTowingHours) {
+			this.bannerTowingHours = bannerTowingHours;
+		}
+
+		public String getFireFighting() {
+			return fireFighting;
+		}
+
+		public void setFireFighting(String fireFighting) {
+			this.fireFighting = fireFighting;
+		}
+
+		public Double getFireFightingHours() {
+			return fireFightingHours;
+		}
+
+		public void setFireFightingHours(Double fireFightingHours) {
+			this.fireFightingHours = fireFightingHours;
+		}
+
+		public String getFlir() {
+			return flir;
+		}
+
+		public void setFlir(String flir) {
+			this.flir = flir;
+		}
+
+		public Double getFlirHours() {
+			return flirHours;
+		}
+
+		public void setFlirHours(Double flirHours) {
+			this.flirHours = flirHours;
+		}
+
+		public String getFries() {
+			return fries;
+		}
+
+		public void setFries(String fries) {
+			this.fries = fries;
+		}
+
+		public Double getFriesHours() {
+			return friesHours;
+		}
+
+		public void setFriesHours(Double friesHours) {
+			this.friesHours = friesHours;
+		}
+
+		public String getHems() {
+			return hems;
+		}
+
+		public void setHems(String hems) {
+			this.hems = hems;
+		}
+
+		public Double getHemsHours() {
+			return hemsHours;
+		}
+
+		public void setHemsHours(Double hemsHours) {
+			this.hemsHours = hemsHours;
+		}
+
+		public String getMountain() {
+			return mountain;
+		}
+
+		public void setMountain(String mountain) {
+			this.mountain = mountain;
+		}
+
+		public Double getMountainHours() {
+			return mountainHours;
+		}
+
+		public void setMountainHours(Double mountainHours) {
+			this.mountainHours = mountainHours;
+		}
+
+		public String getOffshore() {
+			return offshore;
+		}
+
+		public void setOffshore(String offshore) {
+			this.offshore = offshore;
+		}
+
+		public Double getOffshoreHours() {
+			return offshoreHours;
+		}
+
+		public void setOffshoreHours(Double offshoreHours) {
+			this.offshoreHours = offshoreHours;
+		}
+
+		public String getOffshoreCaptain() {
+			return offshoreCaptain;
+			
+		}
+
+		public void setOffshoreCaptain(String offshoreCaptain) {
+			this.offshoreCaptain = offshoreCaptain;
+		}
+
+		public String getPowerline() {
+			return powerline;
+		}
+
+		public void setPowerline(String powerline) {
+			this.powerline = powerline;
+		}
+
+		public Double getPowerlineHours() {
+			return powerlineHours;
+		}
+
+		public void setPowerlineHours(Double powerlineHours) {
+			this.powerlineHours = powerlineHours;
+		}
+
+		public void setR1(Certificate r1) {
+			this.r1 = r1;
+		}
+
+		public void setR2(Certificate r2) {
+			this.r2 = r2;
+		}
+
+		public void setCrm(Certificate crm) {
+			this.crm = crm;
+		}
+
+		public void setDg(Certificate dg) {
+			this.dg = dg;
+		}
+
+		public void setIfr(Certificate ifr) {
+			this.ifr = ifr;
+		}
+
+		public void setInstructor(Certificate instructor) {
+			this.instructor = instructor;
+		}
+
+		public void setTest(Certificate test) {
+			this.test = test;
+		}
+
+		public void setHuet(Certificate huet) {
+			this.huet = huet;
+		}
+
+		public String getBase() {
+			return base;
+		}
+
+		public void setBase(String base) {
+			this.base = base;
+		}
+
 
 	}
 	
 	@Embeddable
 	public static class Payments {
 		
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money monthlyBaseRate = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money areaAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money instructorAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money dailyAllowance = new Money();
-		@Column(nullable=false)
+		@Column(nullable=true)
 		private Money flightAllowance = new Money();
+		@Column(nullable=true)
+		private Money basePilotAllowance = new Money();
+		@Column(nullable=true, columnDefinition="varchar(10) default 'Level 1'")
+		private String safetyLevel="Level 1";
+		@Column(nullable=true)
+		private Money safetyLevelAllowance = new Money();
 		
 		@Column(length=3)
 		private String currency;
+		
+		public Money getBasePilotAllowance() {
+			if (basePilotAllowance == null)
+				basePilotAllowance = new Money();
+			return basePilotAllowance;
+		}
+		public void setBasePilotAllowance(Double basePilotAllowance)
+		{
+			if (basePilotAllowance == null)
+			{
+			basePilotAllowance = new Double(0);
+			}
+			Money money = new Money();
+			money.setAmountAsDouble(basePilotAllowance);
+			this.basePilotAllowance = money;
+			
+		}
+		public String getSafetyLevel() {
+			if (safetyLevel == null)
+				safetyLevel = "Level 1";
+			return safetyLevel;
+		}
+		
+			
+				
+		public Money getSafetyLevelAllowance() {
+			if (safetyLevelAllowance == null)
+				safetyLevelAllowance = new Money();
+			return safetyLevelAllowance;
+		}
+		
 		
 		public Money getMonthlyBaseRate() {
 			if (monthlyBaseRate == null)
@@ -1099,6 +1824,8 @@ public class CrewMember implements Cloneable {
 			instructorAllowance.setCurrencyCode(currency);
 			dailyAllowance.setCurrencyCode(currency);
 			flightAllowance.setCurrencyCode(currency);
+			basePilotAllowance.setCurrencyCode(currency);
+			safetyLevelAllowance.setCurrencyCode(currency);
 		}
 		
 	}
@@ -1176,37 +1903,43 @@ public class CrewMember implements Cloneable {
 	}
 	
 	@Entity
-	public static class FlightAndDutyActuals {
+	public static class FlightAndDutyActuals implements Comparable {
 		@Id @GeneratedValue
 		private Integer id;
 		
 		@Temporal(TemporalType.DATE)
-		private Date date;
+		private Date date = new Date();
 		
-		@Column(nullable=false)
-		private Money monthlyRate;
-		private boolean payMonthlyRate;
+		@Column(nullable=true)
+		private Money monthlyRate = new Money();
+		private boolean payMonthlyRate=false;
 		
-		@Column(nullable=false)
-		private Money areaRate;
-		
-		
-		@Column(nullable=false)
-		private Money instructorRate;
-		
-		@Column(nullable=false)
-		private Money dailyRate;
+		@Column(nullable=true)
+		private Money areaRate = new Money();
 		
 		
-		@Column(nullable=false)
-		private Money flightRate;
+		@Column(nullable=true)
+		private Money instructorRate = new Money();
+		
+		@Column(nullable=true)
+		private Money dailyRate = new Money();
+		
+		
+		@Column(nullable=true)
+		private Money flightRate = new Money();
+		
+		@Column(nullable=true)
+		private Money basePilotRate = new Money();
+		
+		@Column(nullable=true)
+		private Money safetyLevelRate = new Money();
 		
 		@Temporal(TemporalType.DATE)
-		private Date paidDate;
-		private Money paidAmount;
+		private Date paidDate = new Date();
+		private Money paidAmount = new Money();
 		
 		@Temporal(TemporalType.DATE)
-		private Date emailDate;
+		private Date emailDate = new Date();
 		
 		@CollectionOfElements
 		private Map<String, CharterEntry> entries = new HashMap<String, CharterEntry>();
@@ -1285,6 +2018,26 @@ public class CrewMember implements Cloneable {
 			}
 			return sum;
 		}
+		public Money getbasePilotRate() {
+			return this.basePilotRate;
+		}
+		public int getbasePilotDays() {
+			int sum =0;
+			for (CharterEntry e: entries.values()) {
+				sum += e.getBasePilotDays();
+			}
+			return sum;
+		}
+		public Money getSafetyLevelRate() {
+			return this.safetyLevelRate;
+		}
+		public int getSafetyLevelDays() {
+			int sum =0;
+			for (CharterEntry e: entries.values()) {
+				sum += e.getSafetyLevelDays();
+			}
+			return sum;
+		}
 		public Money getFlightRate() {
 			return flightRate;
 		}
@@ -1326,7 +2079,6 @@ public class CrewMember implements Cloneable {
 						  emsum = emsum.add(new Money("USD",20.0).multiply(e.getDiscomfort()));
 						  emsum = emsum.multiply(e.getAreaDays());
 						  sum = sum.add(emsum);
-						  //System.out.println("Discomfort:"+e.getDiscomfort()+" Daily:"+e.getAreaDays()+" Total:"+sum.getAmountAsDouble());
 						}
 					}
 				}
@@ -1364,6 +2116,8 @@ public class CrewMember implements Cloneable {
 			Money total = getMonthlyRate().multiply(monthlyHours);
 			total = total.add(getDailyRate().multiply(getDailyDays()));
 			total = total.add(getFlightRate().multiply(getFlightDays()));
+			total = total.add(getbasePilotRate().multiply(getbasePilotDays()));
+			total = total.add(getSafetyLevelRate().multiply(getSafetyLevelDays()));
 			total = total.add(getAreaRate().multiply(getAreaDays()));
 			total = total.add(getInstructorRate().multiply(getInstructorDays()));
 			total = total.add(getDiscomfortTotal());
@@ -1376,22 +2130,41 @@ public class CrewMember implements Cloneable {
 		public FlightAndDutyActuals() {}
 		
 		public FlightAndDutyActuals(Money monthlyRate, Money areaRate,
-				Money instructorRate, Money dailyRate, Money flightRate) {
+				Money instructorRate, Money dailyRate, Money flightRate, Money basePilotRate, Money safetyLevelRate) {
 			super();
 			this.monthlyRate = monthlyRate;
 			this.areaRate = areaRate;
 			this.instructorRate = instructorRate;
 			this.dailyRate = dailyRate;
-			this.flightRate = flightRate;			
+			this.flightRate = flightRate;	
+			this.basePilotRate = basePilotRate;
+			this.safetyLevelRate = safetyLevelRate;
+		}
+		@Override
+		public int compareTo(Object o) {
+			try{
+				FlightAndDutyActuals two = (FlightAndDutyActuals)o;
+				
+				
+				if (this.id > two.id ) {return 1;}
+				if (this.id < two.id ) {return -1;}
+				if (this.id == two.id ) {return 0;}
+				}
+				catch(Exception e) {return 0;}
+			        //(o1>o2 ? -1 : (o1==o2 ? 0 : 1));
+				return 0;
 		}
 		
 		@Embeddable
 		public static class Addition{
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String reason;
-			private Money amount;
-			private double exchangeRate;
-			private double rand;
-			private Double entered;
+			
+			private Money amount = new Money();
+			private double exchangeRate = 0.0;
+			private double rand = 0.0;
+			private Double entered = 0.0;
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String currency;
 			
 			public String getReason() {
@@ -1457,11 +2230,13 @@ public class CrewMember implements Cloneable {
 		
 		@Embeddable
 		public static class Deduction{
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String reason;
-			private Money amount;
-			private double exchangeRate;
-			private double rand;
-			private Double entered;
+			private Money amount=new Money();
+			private double exchangeRate = 0.0;
+			private double rand = 0.0;
+			private Double entered = 0.0;
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String currency;
 			
 			public String getReason() {
@@ -1526,14 +2301,26 @@ public class CrewMember implements Cloneable {
 		}
 		
 		@Embeddable
-		public static class CharterEntry {
+		public static class CharterEntry 
+		{
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String charter;
+			@Column(nullable = true, columnDefinition="varchar(50) default ' '")
 			private String aircraft;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    areaDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    instructorDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    dailyDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 			private int    flightDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
 		    private Integer discomfort;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
+		    private int basePilotDays;
+			@Column(nullable = true, columnDefinition="int(11) default 0")
+		    private int safetyLevelDays;
 			
 			public int getAreaDays() {
 				return areaDays;
@@ -1556,8 +2343,21 @@ public class CrewMember implements Cloneable {
 			public int getFlightDays() {
 				return flightDays;
 			}
+			public int getBasePilotDays() {
+				return this.basePilotDays;
+			}
+			public int getSafetyLevelDays()
+			{
+				return this.safetyLevelDays;
+			}
 			public void setFlightDays(int flightDays) {
 				this.flightDays = flightDays;
+			}
+			public void setbasePilotDays(int basePilotDays) {
+				this.basePilotDays = basePilotDays;
+			}
+			public void setSafetyLevelDays(int safetyLevelDays) {
+				this.safetyLevelDays = safetyLevelDays;
 			}
 			public void setAircraft(String aircraft) {
 				this.aircraft = aircraft;
@@ -1590,6 +2390,8 @@ public class CrewMember implements Cloneable {
 
 		}
 
+	
+
 	}
 	
 	/*
@@ -1618,7 +2420,9 @@ public class CrewMember implements Cloneable {
 			role = new Role();
 		return role;
 	}
-
+	public void setRole(Role role) {
+		this.role = role;
+	}
 	public Payments getPayments() {
 		if (payments == null)
 			payments = new Payments();
@@ -1679,13 +2483,16 @@ public class CrewMember implements Cloneable {
 						getPayments().getAreaAllowance(),
 						getPayments().getInstructorAllowance(),
 						getPayments().getDailyAllowance(),
-						getPayments().getFlightAllowance()
+						getPayments().getFlightAllowance(),
+						getPayments().getBasePilotAllowance(),
+						getPayments().getSafetyLevelAllowance()
 				   );
     }
     
     
     
     //JasperReports
+    
     public String title;
 	public String type;
     public String category;
@@ -1763,10 +2570,7 @@ public class CrewMember implements Cloneable {
     	this.total        = moneytotal.toString();
     	
     	this.paymentTotal = newtotalPaymentTotal.toString();
-    	
-    	
-    	//System.out.println("Adding paymenttotal for type("+paymentType+") :"+totalPaymentTotal+" + "+new Money(paytotal).toString()+" = "+ newtotalPaymentTotal.toString()+" ("+ this.paymentTotal+")");
-    	//System.out.println("setting total for type("+paymentType+") :"+_total+" ("+this.total+")");
+    	  	
     	return this;
     }
     
@@ -1973,6 +2777,30 @@ public class CrewMember implements Cloneable {
 				}
 				storedCMs.put(type, cm);
 			}
+			if(fda.getbasePilotDays() != 0){
+				String type = "Senior Base Pilot";
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get(type);
+					cm = cm.addPayments(type,""+fda.getbasePilotDays(),fda.getbasePilotRate().toString(),fda.getbasePilotRate().multiply(fda.getbasePilotDays()).toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Senior Base Pilot",""+fda.getbasePilotDays(),fda.getbasePilotRate().toString(),fda.getbasePilotRate().multiply(fda.getbasePilotDays()).toString(),fdatotal);
+				}
+				storedCMs.put(type, cm);
+			}
+			if(fda.getSafetyLevelDays() != 0){
+				String type = "Safety Level";
+				if(storedCMs.containsKey(type)){
+					cm = storedCMs.get(type);
+					cm = cm.addPayments(type,""+fda.getSafetyLevelDays(),fda.safetyLevelRate.toString(),fda.safetyLevelRate.multiply(fda.getSafetyLevelDays()).toString(),fdatotal);
+				}
+				else{
+					cm = (CrewMember) clone();
+					cm.setPaymentsValues(dateFrom,dateTo,today,advice,category,"Safety Level",""+fda.getSafetyLevelDays(),fda.getSafetyLevelRate().toString(),fda.getSafetyLevelRate().multiply(fda.getSafetyLevelDays()).toString(),fdatotal);
+				}
+				storedCMs.put(type, cm);
+			}
 			if(fda.getDeductions().size() != 0){
 				
 				for(String key: fda.getDeductions().keySet()){
@@ -2025,5 +2853,30 @@ public class CrewMember implements Cloneable {
 			throw(e);
 		}
     }
-    
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		
+		    CrewMember temp = (CrewMember)arg0;
+		    final int BEFORE = -1;
+		    final int EQUAL = 0;
+		    final int AFTER = 1;
+
+		    if (temp.getPersonal() != null)
+		    {
+		    	if (this.getPersonal().getFullName() != null)
+		    	{
+		    		if (( this.getPersonal().getFullName().compareTo(temp.getPersonal().getFullName() )==0)) return EQUAL; 
+		    		if (( this.getPersonal().getFullName().compareTo(temp.getPersonal().getFullName() )== -1)) return BEFORE;
+		    		if (( this.getPersonal().getFullName().compareTo(temp.getPersonal().getFullName() )== 1)) return AFTER;
+		    	}
+		    	else
+		    	{return AFTER;}
+		    }
+		    else
+		    {	return AFTER; }
+
+		return EQUAL;
+	}
 }

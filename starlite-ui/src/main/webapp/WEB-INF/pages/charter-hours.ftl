@@ -8,6 +8,17 @@
            addDropShadow('images/table/');
         });
 </script>
+<style>
+.jmesa tr td {
+    text-align:right;
+}
+.jmesa tr.header td {
+    text-align:left;
+}
+.jmesa tr td a {
+    float:left;
+}
+</style>
 </head>
 <body>
 	<@subTabs/>

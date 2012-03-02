@@ -20,7 +20,9 @@ import org.jmesa.view.editor.BasicCellEditor;
 import org.jmesa.view.editor.CellEditor;
 import org.jmesa.view.editor.NumberCellEditor;
 import org.jmesa.view.html.HtmlBuilder;
+import org.jmesa.view.html.component.HtmlColumn;
 import org.jmesa.view.html.component.HtmlTable;
+import org.jmesa.view.html.editor.DroplistFilterEditor;
 import org.joda.time.DateMidnight;
 
 import com.google.inject.Inject;
@@ -41,10 +43,12 @@ import com.itao.starlite.ui.Breadcrumb;
 import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
+import com.itao.starlite.ui.jmesa.SearchTableView;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
-@Permissions("ManagerView")
+
+
 @Results({
 	@Result(name="redirect", type=ServletRedirectResult.class, value="aircraftInfo.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
 })
@@ -58,13 +62,16 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public String current="aircraft";
 	public Breadcrumb[] breadcrumbs;
 	public String notificationMessage;
+	public User user;
 	
 	public String id;
+	public String params;
 	public Aircraft aircraft;
 	public Tab[] tableTabs;
 	public String tab = "information";
 
 	public List<Component> components;
+	public List<String> YNSelection = new ArrayList<String>();
 	
 	
 	
@@ -75,7 +82,9 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	private BookmarkManager bookmarkManager;
 	
 	@Override
-	public String execute() throws Exception {
+	public String execute() throws Exception 
+	{
+		prepare();
 		breadcrumbs = Breadcrumb.toArray(
 			new Breadcrumb("Aircraft", "aircraft.action"),
 			new Breadcrumb(aircraft.getRef())
@@ -94,10 +103,16 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 			aircraft = manager.getAircraftByReg(id);
 			aircraftTypes = manager.getAircraftTypes();
 		}
+		if (this.YNSelection.isEmpty())
+		{
+			this.YNSelection.add("Yes");
+			this.YNSelection.add("No");
+		}
 	}
 	
-	public String save() throws Exception {
-		manager.saveAircraft(aircraft);
+	public String save() throws Exception 
+	{
+		this.aircraft =  manager.saveAircraft(aircraft);
 		tab = "information";
 		notificationMessage ="Aircraft Saved";
 		return "redirect";
@@ -109,7 +124,8 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 		tableHtml = "";
 		prepare();
 		prepareTabs();
-		components = manager.getComponents(aircraft.getRef().replaceAll("-", ""));
+		components = manager.getAllClassComponents(aircraft.getRef().replaceAll("-", ""));
+		params = "id="+id;
 		TableFacade tableFacade = createComponentTable();
 
 		Limit limit = tableFacade.getLimit();
@@ -117,7 +133,8 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 			tableFacade.render();
 			return null;
 		} 
-		tableFacade.setView(new NavTableView());
+		//tableFacade.setView(new NavTableView());
+		tableFacade.setView(new SearchTableView());
 		tableHtml = tableFacade.render();
 		return "components";
 	}
@@ -191,7 +208,6 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 	public List<Document> docs;
 	public String errorMessage;
 	public String tagArray;
-	private User user;
 	
 	public String documents() throws Exception {
 		if (id == null) {
@@ -277,218 +293,254 @@ public class AircraftInfoAction extends ActionSupport implements Preparable, Use
 			count++;
 		}		
 	}
-	public void setUser(User arg0) {
-		this.user = arg0;
-	}
 	
 	public TableFacade createComponentTable(){    			
 
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "qty", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
-
+		
 		tableFacade.setItems(components);
 		tableFacade.setMaxRows(15);
-
+		
 		Limit limit = tableFacade.getLimit();
-
-
+		
+		
 		Table table = tableFacade.getTable();
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
-
-		Column type = table.getRow().getColumn("type");
+		
+		Column name = table.getRow().getColumn("name");
+		name.setTitle("Desc");
+		
+		
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn type = (HtmlColumn) table.getRow().getColumn("type");
+			type.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
 			type.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					if((""+((Component) item).getType()).indexOf("Class") >= 0){
-						return (""+((Component) item).getType()).substring(5);
+					public Object getValue(Object item, String property, int rowCount) {
+						if((""+((Component) item).getType()).indexOf("Class") >= 0){
+							return (""+((Component) item).getType()).substring(5);
+						}
+						return ((Component) item).getType();
 					}
-					return ((Component) item).getType();
-				}
 			});
 		}
-
-		Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
-		tbo.setTitle("TBO");
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn tbo = (HtmlColumn) table.getRow().getColumn("timeBetweenOverhaul");
+			tbo.setFilterable(false);
+			tbo.setTitle("TBO");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					if(((Component) item).getTimeBetweenOverhaul() == null){
-						return "";
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getTimeBetweenOverhaul() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
 					}
-					return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
-				}
 			});
 		}
 		else{			
+			Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getTimeBetweenOverhaul() ;
 				}
 			});
 		}
-
-		Column hoursRunCol = table.getRow().getColumn("hoursRun");
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn hoursRunCol = (HtmlColumn) table.getRow().getColumn("hoursRun");
+			hoursRunCol.setFilterable(false);
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					if(((Component) item).getHoursRun() == null){
-						return "";
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getHoursRun() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getHoursRun()+"</div>";
 					}
-					return "<div style='text-align:right'>"+((Component) item).getHoursRun()+"</div>";
-				}
 			});
 		}
-		else{			
+		else{		
+			Column hoursRunCol = table.getRow().getColumn("hoursRun");
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursRun() ;
 				}
 			});
 		}
-
-		Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn hoursInstallCol = (HtmlColumn) table.getRow().getColumn("hoursOnInstall");
+			hoursInstallCol.setFilterable(false);
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					if(((Component) item).getHoursOnInstall() == null){
-						return "";
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getHoursOnInstall() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
 					}
-					return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
-				}
 			});
 		}
-		else{			
+		else{	
+			Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursOnInstall() ;
 				}
 			});
 		}
-
-		Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn expiresCol = (HtmlColumn) table.getRow().getColumn("lifeExpiresHours");
+			expiresCol.setFilterable(false);
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					if(((Component) item).getLifeExpiresHours() == null){
-						return "";
+					public Object getValue(Object item, String property, int rowCount) {
+						if(((Component) item).getLifeExpiresHours() == null){
+							return "";
+						}
+						return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
 					}
-					return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
-				}
 			});
 		}
 		else{			
+			Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getLifeExpiresHours() ;
 				}
 			});
 		}
-
-
-		Column currentCol = table.getRow().getColumn("currentHours");
+		
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn currentCol = (HtmlColumn) table.getRow().getColumn("currentHours");
+			currentCol.setFilterable(false);
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
-				}
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
+					}
 			});
 		}
-		else{			
+		else{	
+			Column currentCol = table.getRow().getColumn("currentHours");
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getCurrentHoursStr() );
 				}
 			});
 		}
-
-
-		Column remainingCol = table.getRow().getColumn("remainingHours");
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn remainingCol = (HtmlColumn) table.getRow().getColumn("remainingHours");
+			remainingCol.setFilterable(false);
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
-				public Object getValue(Object item, String property, int rowCount) {
-					return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
-				}
+					public Object getValue(Object item, String property, int rowCount) {
+						return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
+					}
 			});
 		}
-		else{			
+		else{		
+			Column remainingCol = table.getRow().getColumn("remainingHours");
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getRemainingHoursStr() );
 				}
 			});
 		}
-
-
-
-
-		Column percentCol = table.getRow().getColumn("remainingPercent");
-		percentCol.setTitle("Remaining %");
+		
 		if (!limit.isExported()) {
-			percentCol.getCellRenderer().setCellEditor(new CellEditor() {
+		HtmlColumn totalDays = (HtmlColumn) table.getRow().getColumn("totalDays");
+		totalDays.setFilterable(false);
+		HtmlColumn remainingDays = (HtmlColumn) table.getRow().getColumn("remainingDays");
+		remainingDays.setFilterable(false);
+		}	
+		
+		
+		
+		if (!limit.isExported()) {
+			HtmlColumn percentCol = (HtmlColumn) table.getRow().getColumn("remainingPercent");
+			percentCol.setTitle("Remaining %");
+			percentCol.setFilterable(false);
+		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
 
-				public Object getValue(Object item, String property, int rowCount) {
-					Object id = new BasicCellEditor().getValue(item, "id", rowCount);
-					Object value = new BasicCellEditor().getValue(item, property, rowCount);
-					HtmlBuilder html = new HtmlBuilder();
-
-					try{
-						long valueLong = (Long) value;
-						if(valueLong >= 25){
-							html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
-						}
-						else if(valueLong >= 10){
-							html.div().style("text-align:center;background-color:#FFFF99;font-weight:bold;").styleEnd();
-						}
-						else{
-							html.div().style("text-align:center;background-color:#FF9999;font-weight:bold;").styleEnd();	
-						}
-					}
-					catch(Exception e){
-						e.printStackTrace();
-					}
-
+			public Object getValue(Object item, String property, int rowCount) {
+				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
+				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				HtmlBuilder html = new HtmlBuilder();
+				
+				try{
 					if(value != null){
-						html.append(value+" %");
-						html.divEnd();
+					long valueLong = (Long) value;
+					if(valueLong >= 25){
+						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
 					}
-
-					return html.toString();
+					else if(valueLong >= 10){
+						html.div().style("text-align:center;background-color:#FFFF99;font-weight:bold;").styleEnd();
+					}
+					else{
+						html.div().style("text-align:center;background-color:#FF9999;font-weight:bold;").styleEnd();	
+					}
+					}
 				}
-
-			});
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				if(value != null){
+				  html.append(value+" %");
+				  html.divEnd();
+				}
+				
+				return html.toString();
+			}
+			
+		});
 		}
-
+		
 		Column serialCol = table.getRow().getColumn("serial");
 		serialCol.setTitle("Serial No.");
-
+		
 		Column refCol = table.getRow().getColumn("number");
 		refCol.setTitle("Part No.");
 		if (!limit.isExported()) {
-			refCol.getCellRenderer().setCellEditor(new CellEditor() {
+		refCol.getCellRenderer().setCellEditor(new CellEditor() {
 
-				public Object getValue(Object item, String property, int rowCount) {
-					Object id = new BasicCellEditor().getValue(item, "id", rowCount);
-					Object value = new BasicCellEditor().getValue(item, property, rowCount);
-					if(value == null){value="(blank)";}
-					if("".equals(value)){value="(blank)";}
-					System.out.println(value);
-					HtmlBuilder html = new HtmlBuilder();
-					html.a().href().quote().append("component!edit.action?id="+id).quote().close();
-					html.append(value);
-					html.aEnd();
-					return html.toString();
-				}
-
-			});
+			public Object getValue(Object item, String property, int rowCount) {
+				Object id = new BasicCellEditor().getValue(item, "id", rowCount);
+				Object value = new BasicCellEditor().getValue(item, property, rowCount);
+				if(value == null){value="(blank)";}
+				if("".equals(value)){value="(blank)";}
+				HtmlBuilder html = new HtmlBuilder();
+				html.a().href().quote().append("component!edit.action?id="+id).quote().close();
+				html.append(value);
+				html.aEnd();
+				return html.toString();
+			}
+			
+		});
 		}
-
+		
 		return tableFacade;
-
-
+		
+		
 	}
-
+	public void setUser(User arg0) {
+		this.user = arg0;
+	}
 	
-	
+	public User getUser() {
+		return user;
+	}
 }
+
+
+

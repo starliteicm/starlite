@@ -81,11 +81,13 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 	@Inject
 	private StarliteCoreManager manager;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
-		components = manager.getComponents();
-		
-		TableFacade tableFacade = createComponentTable();
+		components = manager.getTransactionComponents();
+	    Collections.sort(components);
+	    
+    	TableFacade tableFacade = createComponentTable();
 		tableHtml = tableFacade.render();
 		stores = manager.getStores();
 		prepare();
@@ -93,14 +95,23 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 		return SUCCESS;
 	}
 	
+	
 	public String create(){
 		System.out.println("Updating Component("+id+") Location - "+type);
 		
 		prepare();
 		
+		//make sure that a bin and batch was selected
+		if ((batch==null) || (bin == null) )
+		{
+			batch = "";
+		    bin="";
+	    }
+
 		
-        if("Purchase".equals(type)){
-        	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,null,note);
+        if("Purchase".equals(type))
+           {
+        	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,0,note);
         	try {
         		if(purchaseValue != null){
         		Date now = Calendar.getInstance().getTime();
@@ -117,7 +128,7 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
         	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,locCurrent,note);
         }
         else if("Move".equals(type)){
-        	component.updateLocation(user.getUsername(),type,null,location,bin,quantity,locCurrent,note);
+        	component.updateLocation(user.getUsername(),type,batch,location,bin,quantity,locCurrent,note);
 		}
 		else if("Reserve".equals(type)){
 			component.updateLocation(user.getUsername(),type,null,null,null,quantity,locCurrent,note);		
@@ -182,6 +193,12 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 		HtmlColumn type = (HtmlColumn) table.getRow().getColumn("type");
 		type.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
 		
+		HtmlColumn name = (HtmlColumn) table.getRow().getColumn("name");
+		name.setTitle("Description");
+		
+		HtmlColumn num = (HtmlColumn) table.getRow().getColumn("number");
+		num.setTitle("Part No.");
+		
 		HtmlColumn state = (HtmlColumn) table.getRow().getColumn("state");
 		state.setTitle("Status");
 		state.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
@@ -208,7 +225,6 @@ public class TransactionAction extends ActionSupport implements UserAware, Prepa
 				html.img().src("images/icons/accept.png").close();
 				html.append("Select Transaction Type");
 				html.buttonEnd();
-				html.formEnd();
 				html.divEnd();
 				return html.toString();
 			}	

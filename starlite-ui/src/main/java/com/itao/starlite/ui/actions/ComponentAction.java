@@ -1,8 +1,13 @@
 package com.itao.starlite.ui.actions;
 
 
+import java.io.File;
+import java.io.FileReader;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,6 +17,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
 import org.apache.struts2.dispatcher.ServletRedirectResult;
+import org.jfree.util.Log;
 import org.jmesa.facade.TableFacade;
 import org.jmesa.facade.TableFacadeFactory;
 import org.jmesa.limit.ExportType;
@@ -21,6 +27,10 @@ import org.jmesa.view.component.Table;
 import org.jmesa.view.editor.BasicCellEditor;
 import org.jmesa.view.editor.CellEditor;
 import org.jmesa.view.html.HtmlBuilder;
+import org.jmesa.view.html.component.HtmlColumn;
+import org.jmesa.view.html.editor.DroplistFilterEditor;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.google.inject.Inject;
 import com.itao.starlite.auth.User;
@@ -30,17 +40,19 @@ import com.itao.starlite.model.Component;
 import com.itao.starlite.model.ExchangeRate;
 import com.itao.starlite.model.Store;
 import com.itao.starlite.model.Component.ComponentHistory;
+import com.itao.starlite.model.Component.ComponentLocation;
 import com.itao.starlite.ui.Breadcrumb;
 import com.itao.starlite.ui.Tab;
 import com.itao.starlite.ui.jmesa.NavTableView;
 import com.itao.starlite.ui.jmesa.PlainTableView;
+import com.itao.starlite.ui.jmesa.SearchTableView;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 @Results({
 	@Result(name="redirect", type=ServletRedirectResult.class, value="component!edit.action?id=${id}&notificationMessage=${notificationMessage}&errorMessage=${errorMessage}"),
 	@Result(name="redirect-list", type=ServletRedirectResult.class, value="component.action?notificationMessage=${notificationMessage}&errorMessage=${errorMessage}")
-})
+}) 
 public class ComponentAction extends ActionSupport implements UserAware, Preparable {
 	/**
 	 * 
@@ -49,8 +61,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	private User user;
 	
 	public String tab = "active";
+	
 	public Tab[] tableTabs;
 	public String tableHtml;
+	public String componentTable;
 	public String valTableHtml;
 	public String histTableHtml;
 	
@@ -58,13 +72,14 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public String errorMessage;
 	
 	public Integer id;
+	public boolean newComponent = false;
 	
 	public List<Store> stores;
 	public List<Component> components;
 	public List<ExchangeRate> rates;
 	
 	public Component component;
-	public String current="Components";
+	public String current;
 	public Breadcrumb[] breadcrumbs = {new Breadcrumb("Components")};
 	
 	//Valuations
@@ -86,48 +101,152 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	public Integer addLocation;
 	public String location;
 	public String bin;
+	public String batch;
+	public String store;
 	public Integer quantity;
 	public Integer locCurrent;
+	
+	
+	//Upload of Components
+	public File document;
+	public String documentContentType;
+	public String documentFileName;
 	
 	
 	@Inject
 	private StarliteCoreManager manager;
 	
 	@Override
-	public String execute() throws Exception {
+	public String execute() throws Exception 
+	{
+				
 		prepareTabs();
+		prepare();
 		components = manager.getComponents();
+		stores = manager.getStores();
 		TableFacade tableFacade = createTable();
+		tab = "active";
+		current = "active";
 		
 		Limit limit = tableFacade.getLimit();
 		if (limit.isExported()) {
 		    tableFacade.render();
 		    return null;
 		} 
-     	tableFacade.setView(new NavTableView());
+     	//tableFacade.setView(new NavTableView());
+		tableFacade.setView(new SearchTableView());
 		tableHtml = tableFacade.render();
+		
 		
 		return SUCCESS;
 	}
+	
+	public String upload() throws Exception{
+		int uploaded = 0 ;
+		try{
+			if(document != null){
+				CSVReader reader = new CSVReader(new FileReader(document));
+				List<String[]> lines = reader.readAll();
+				for(String[] line : lines){
+
+					try{
+						String _class = line[0];
+						String _part = line[1];
+						String _serial = line[2];
+						String _qty = line[3];
+						String _desc = line[4];
+						String _status = line[5];
+						String _batch = line[6]; //NOT USED
+						String _exp = line[7]; //NOT USED
+						String _manu = line[8];
+						String _loc = line[9]; //NOT USED Store is selected from drop down.
+						String _bin = line[10];
+						
+						//Ignore the header line
+						if (_class.compareToIgnoreCase("Class") != 0)
+						{
+
+						//DEFAULT CLASS TO E TYPE
+						if(("A").equals(_class.toUpperCase())){_class="Class A";}
+						else{_class="Class E";}
+						
+						
+						if(!("").equals(_part)){
+							//FIRST CHECK IF COMPONENT ALREADY EXISTS WITH PART + SERIAL
+							component = manager.getComponent(_class,_part,_serial);
+							
+							if(component == null){
+								component = new Component();
+								component.setActive(1);
+							}
+							//IF YES... update the fields of this component and add qty to location
+							//IF NO... add the new component then add the qty to location
+							component.setType(_class);
+							component.setNumber(_part);
+							component.setSerial(_serial);
+							component.setName(_desc);
+							component.setDescription(_desc);
+							component.setState(_status);
+							component.setManufacturer(_manu);
+						
+							//component.setExpiryDate(expiryDate) //Removed as Requested
+							manager.saveComponent(component);
+							if(new Integer(_qty) >= 0){
+								component.updateLocation(null , location, _bin, new Integer(_qty), new Integer(0),_batch);
+								manager.saveComponent(component);
+							}
+							uploaded ++;
+						}
+						}// if (_class = "Class")
+						
+					}
+					catch(Exception e){
+						//oh well... this line wasnt formatted correctly.
+					}
+
+				}
+				notificationMessage = documentFileName+" Uploaded - "+lines.size()+" Lines Read - "+uploaded + " Components Uploaded";
+			}
+		}
+		catch(Exception e){
+			Log.error(e);
+			e.printStackTrace();
+			errorMessage = "File/Format Error - Unable to Upload";
+		}
+		return execute();
+	}
+	
+	
 	
 	public String deactive() throws Exception {
-		tab = "deactive";
 		prepareTabs();
 		components = manager.getComponentsDeactivated();
+		stores = manager.getStores();
 		TableFacade tableFacade = createTable();
+		tab = "deactive";
+		current = "deactive";
 		
 		Limit limit = tableFacade.getLimit();
 		if (limit.isExported()) {
 		    tableFacade.render();
 		    return null;
 		} 
-     	tableFacade.setView(new NavTableView());
+     	//tableFacade.setView(new NavTableView());
+		tableFacade.setView(new SearchTableView());
 		tableHtml = tableFacade.render();
+		//componentTable = tableFacade.render();
 		
 		return SUCCESS;
 	}
 	
-	public String edit(){
+	public String edit()
+	{
+		//if id == null, then adding a new component, so should hide the batchNo Field.
+		if (id==null)
+		{
+			this.newComponent = true;
+			tab="componentAdd";
+	    }
 		prepare();
 		if(component != null){
 			rates=manager.getExchangeRates();
@@ -140,10 +259,10 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	    return "redirect-list";
 	}
 
-	public String save(){
-		if(component != null){
-			
-
+	public String save()
+	{
+		if(component != null)
+		{
 			if( loc != null){
 				//Save Location
 				if(((location!= null)&&(bin!= null))||(locCurrent == 0)) {
@@ -164,7 +283,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 							locationId = addLocation;
 						}
 						//Record History of Location Move
-						component.updateLocation(locationId,location,bin,quantity,locCurrent);
+						//component.updateLocation(locationId,location,bin,quantity,locCurrent);
+						component.updateLocation(locationId,location,bin,quantity,locCurrent,batch);
 						
 						
 					}
@@ -183,12 +303,18 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			if(installTime != null){
 				try{
 					SimpleDateFormat tf = new SimpleDateFormat("HH:mm");
-					component.setInstallTime(tf.parse(installTime));
+					Date install =  tf.parse(installTime);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(install);
+					cal.add(Calendar.SECOND, 1); 
+					//ADD a Second to stop java.sql error for 00:00:00 as this is not a valid time.
+					component.setInstallTime(cal.getTime());
 				}
 				catch(Exception e){
 					
 				}
 			}
+			
 			
 			manager.saveComponent(component);
 			notificationMessage = "Component saved";
@@ -197,7 +323,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		return "redirect";
 	}
 	
-	public void createValuationTable(){
+	public void createValuationTable()
+	{
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("valuationTable", ServletActionContext.getRequest());		
 		tableFacade.setColumnProperties("date","time","user","marketVal","purchaseVal","replaceVal","edit");
 		tableFacade.setItems(component.getValuations());
@@ -284,13 +411,13 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 	
 	public void createLocationTable(){
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("locationTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("location","bin","quantity","batch","status","edit");
+		tableFacade.setColumnProperties("location","bin","quantity","batch","status");
 		tableFacade.setItems(component.getLocations());
 		tableFacade.setMaxRows(100);
 		Table table = tableFacade.getTable();
 		table.getRow().setUniqueProperty("id");
 		
-		Column refCol = table.getRow().getColumn("edit");
+	/*	Column refCol = table.getRow().getColumn("edit");
 		refCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 		public Object getValue(Object item, String property, int rowCount) {
@@ -298,15 +425,16 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				Object loc = new BasicCellEditor().getValue(item, "location", rowCount);
 				Object bin = new BasicCellEditor().getValue(item, "bin", rowCount);
 				Object qty = new BasicCellEditor().getValue(item, "quantity", rowCount);
+				Object batch = new BasicCellEditor().getValue(item, "batch", rowCount);
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
 				HtmlBuilder html = new HtmlBuilder();
-				html.a().onclick("editLoc('"+id+"','"+loc+"','"+bin+"','"+qty+"');return false;").href().quote().append("#").quote().close();
-				html.append("Edit");
+				html.a().onclick("editLoc('"+id+"','"+loc+"','"+bin+"','"+batch+"','"+qty+"');return false;").href().quote().append("#").quote().close();
+				//html.append("Edit");
 				html.aEnd();
 				return html.toString();
 			}	
 		});
-		
+		*/
 		tableFacade.setView(new PlainTableView());
 		tableHtml = tableFacade.render();
 	}
@@ -333,22 +461,14 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		histTableHtml = tableFacade.render();
 	}
 	
-	private void prepareTabs() {
-
-		Tab activeTab = new Tab("Active", "component.action", tab.equals("active"));
-		Tab deactiveTab = new Tab("Inactive", "component!deactive.action", tab.equals("deactive"));
-		
-		if (user.hasPermission("ManagerView"))
-			tableTabs = new Tab[] {activeTab, deactiveTab};
-		
-	}
+	
 	
 	public TableFacade createTable(){
 		
 		
 		
 		TableFacade tableFacade = TableFacadeFactory.createTableFacade("componentTable", ServletActionContext.getRequest());		
-		tableFacade.setColumnProperties("type","name", "number", "serial", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
+		tableFacade.setColumnProperties("type","name", "number", "serial", "qty", "timeBetweenOverhaul","hoursRun","hoursOnInstall","installDate","lifeExpiresHours","currentHours","remainingHours","expiryDate","totalDays","remainingDays","remainingPercent");		
 		tableFacade.setExportTypes(ServletActionContext.getResponse(), ExportType.CSV, ExportType.EXCEL);
 		
 		tableFacade.setItems(components);
@@ -361,8 +481,15 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		table.setCaption("Components");
 		table.getRow().setUniqueProperty("id");
 		
-		Column type = table.getRow().getColumn("type");
+		Column name = table.getRow().getColumn("name");
+		name.setTitle("Desc");
+		
+		
+		
+		
 		if (!limit.isExported()) {
+			HtmlColumn type = (HtmlColumn) table.getRow().getColumn("type");
+			type.getFilterRenderer().setFilterEditor(new DroplistFilterEditor());
 			type.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if((""+((Component) item).getType()).indexOf("Class") >= 0){
@@ -373,19 +500,25 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
-		tbo.setTitle("TBO");
+		
 		if (!limit.isExported()) {
+			HtmlColumn tbo = (HtmlColumn) table.getRow().getColumn("timeBetweenOverhaul");
+			tbo.setFilterable(false);
+			tbo.setTitle("TBO");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getTimeBetweenOverhaul() == null){
 							return "";
 						}
-						return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
+						Double val = ((Component) item).getTimeBetweenOverhaul();
+						DecimalFormat twoDForm = new DecimalFormat("#.#");
+						return  "<div style='text-align:right'>"+Double.valueOf(twoDForm.format(val))+"</div>";
+						//return "<div style='text-align:right'>"+((Component) item).getTimeBetweenOverhaul()+"</div>";
 					}
 			});
 		}
 		else{			
+			Column tbo = table.getRow().getColumn("timeBetweenOverhaul");
 			tbo.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getTimeBetweenOverhaul() ;
@@ -393,18 +526,24 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column hoursRunCol = table.getRow().getColumn("hoursRun");
+		
 		if (!limit.isExported()) {
+			HtmlColumn hoursRunCol = (HtmlColumn) table.getRow().getColumn("hoursRun");
+			hoursRunCol.setFilterable(false);
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getHoursRun() == null){
 							return "";
 						}
-						return "<div style='text-align:right'>"+((Component) item).getHoursRun()+"</div>";
+						Double val = ((Component) item).getHoursRun();
+						DecimalFormat twoDForm = new DecimalFormat("#.#");
+						return  "<div style='text-align:right'>"+Double.valueOf(twoDForm.format(val))+"</div>";
+						
 					}
 			});
 		}
-		else{			
+		else{		
+			Column hoursRunCol = table.getRow().getColumn("hoursRun");
 			hoursRunCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursRun() ;
@@ -412,18 +551,24 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
+		
 		if (!limit.isExported()) {
+			HtmlColumn hoursInstallCol = (HtmlColumn) table.getRow().getColumn("hoursOnInstall");
+			hoursInstallCol.setFilterable(false);
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getHoursOnInstall() == null){
 							return "";
 						}
-						return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
+						Double val = ((Component) item).getHoursOnInstall();
+						DecimalFormat twoDForm = new DecimalFormat("#.#");
+						return  "<div style='text-align:right'>"+Double.valueOf(twoDForm.format(val))+"</div>";
+						//return "<div style='text-align:right'>"+((Component) item).getHoursOnInstall()+"</div>";
 					}
 			});
 		}
-		else{			
+		else{	
+			Column hoursInstallCol = table.getRow().getColumn("hoursOnInstall");
 			hoursInstallCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getHoursOnInstall() ;
@@ -431,18 +576,24 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-		Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
+		
 		if (!limit.isExported()) {
+			HtmlColumn expiresCol = (HtmlColumn) table.getRow().getColumn("lifeExpiresHours");
+			expiresCol.setFilterable(false);
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
 						if(((Component) item).getLifeExpiresHours() == null){
 							return "";
 						}
-						return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
+						Double val = ((Component) item).getLifeExpiresHours();
+						DecimalFormat twoDForm = new DecimalFormat("#.#");
+						return  "<div style='text-align:right'>"+Double.valueOf(twoDForm.format(val))+"</div>";
+						//return "<div style='text-align:right'>"+((Component) item).getLifeExpiresHours()+"</div>";
 					}
 			});
 		}
 		else{			
+			Column expiresCol = table.getRow().getColumn("lifeExpiresHours");
 			expiresCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) ((Component) item).getLifeExpiresHours() ;
@@ -451,15 +602,21 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		}
 		
 		
-		Column currentCol = table.getRow().getColumn("currentHours");
+		
 		if (!limit.isExported()) {
+			HtmlColumn currentCol = (HtmlColumn) table.getRow().getColumn("currentHours");
+			currentCol.setFilterable(false);
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 					public Object getValue(Object item, String property, int rowCount) {
-						return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
+						Double val = Double.valueOf(((Component) item).getCurrentHoursStr());
+						DecimalFormat twoDForm = new DecimalFormat("#.#");
+						return  "<div style='text-align:right'>"+Double.valueOf(twoDForm.format(val))+"</div>";
+						//return "<div style='text-align:right'>"+((Component) item).getCurrentHoursStr()+"</div>";
 					}
 			});
 		}
-		else{			
+		else{	
+			Column currentCol = table.getRow().getColumn("currentHours");
 			currentCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getCurrentHoursStr() );
@@ -468,15 +625,21 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		}
 		
 		
-		Column remainingCol = table.getRow().getColumn("remainingHours");
 		if (!limit.isExported()) {
+			HtmlColumn remainingCol = (HtmlColumn) table.getRow().getColumn("remainingHours");
+			remainingCol.setFilterable(false);
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
-					public Object getValue(Object item, String property, int rowCount) {
-						return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
+					public Object getValue(Object item, String property, int rowCount) 
+					{
+						Double val = Double.valueOf(((Component) item).getRemainingHoursStr());
+						DecimalFormat twoDForm = new DecimalFormat("#.#");
+						return  "<div style='text-align:right'>"+Double.valueOf(twoDForm.format(val))+"</div>";
+						//return "<div style='text-align:right'>"+((Component) item).getRemainingHoursStr()+"</div>";
 					}
 			});
 		}
-		else{			
+		else{		
+			Column remainingCol = table.getRow().getColumn("remainingHours");
 			remainingCol.getCellRenderer().setCellEditor(new CellEditor() {
 				public Object getValue(Object item, String property, int rowCount) {			
 					return (Number) new Double( ((Component) item).getRemainingHoursStr() );
@@ -484,12 +647,19 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			});
 		}
 		
-			
-			
-		
-		Column percentCol = table.getRow().getColumn("remainingPercent");
-		percentCol.setTitle("Remaining %");
 		if (!limit.isExported()) {
+		HtmlColumn totalDays = (HtmlColumn) table.getRow().getColumn("totalDays");
+		totalDays.setFilterable(false);
+		HtmlColumn remainingDays = (HtmlColumn) table.getRow().getColumn("remainingDays");
+		remainingDays.setFilterable(false);
+		}	
+		
+		
+		
+		if (!limit.isExported()) {
+			HtmlColumn percentCol = (HtmlColumn) table.getRow().getColumn("remainingPercent");
+			percentCol.setTitle("Remaining %");
+			percentCol.setFilterable(false);
 		percentCol.getCellRenderer().setCellEditor(new CellEditor() {
 
 			public Object getValue(Object item, String property, int rowCount) {
@@ -498,6 +668,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				HtmlBuilder html = new HtmlBuilder();
 				
 				try{
+					if(value != null){
 					long valueLong = (Long) value;
 					if(valueLong >= 25){
 						html.div().style("text-align:center;background-color:#99FF99;font-weight:bold;").styleEnd();
@@ -507,6 +678,7 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 					}
 					else{
 						html.div().style("text-align:center;background-color:#FF9999;font-weight:bold;").styleEnd();	
+					}
 					}
 				}
 				catch(Exception e){
@@ -537,7 +709,6 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 				Object value = new BasicCellEditor().getValue(item, property, rowCount);
 				if(value == null){value="(blank)";}
 				if("".equals(value)){value="(blank)";}
-				System.out.println(value);
 				HtmlBuilder html = new HtmlBuilder();
 				html.a().href().quote().append("component!edit.action?id="+id).quote().close();
 				html.append(value);
@@ -553,6 +724,32 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 		
 	}
 	
+    public String uploadComponents()
+    {
+    	prepare();
+    	prepareTabs();
+    	components = manager.getComponents();
+		stores = manager.getStores();
+    	current = "componentUpload";
+    	tab="componentUpload";
+    	return "componentUpload";
+    }
+	private void prepareTabs() {
+
+		Tab activeTab = new Tab("Active", "component.action", tab.equals("active"));
+		Tab deactiveTab = new Tab("Inactive", "component!deactive.action", tab.equals("deactive"));
+		Tab addComponentTab = new Tab("Add Component", "component!edit.action", tab.equals("componentAdd"));
+		Tab uploadComponentTab = new Tab("Upload Components", "component!uploadComponents.action", tab.equals("componentUpload"));
+		
+		if (user.hasPermission("ManagerView"))
+		{
+			tableTabs = new Tab[] {activeTab, deactiveTab,addComponentTab,uploadComponentTab};
+		}
+		else{tableTabs = new Tab[] {activeTab, deactiveTab};}
+		
+	}
+
+	
 	
 	public void setUser(User arg0) {
 		user = arg0;	
@@ -567,7 +764,8 @@ public class ComponentAction extends ActionSupport implements UserAware, Prepara
 			component = new Component();
 		}
 		else {
-			component = manager.getComponent(id);
+			component = manager.getComponent(id);	
+			
 		}
 	}
 	

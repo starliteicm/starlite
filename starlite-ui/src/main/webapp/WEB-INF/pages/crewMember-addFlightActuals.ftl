@@ -12,7 +12,21 @@
 		var areaRate = ${actuals.areaRate.amountAsDouble?c};
 		var dailyRate = ${actuals.dailyRate.amountAsDouble?c};
 		var flightRate = ${actuals.flightRate.amountAsDouble?c};
+		<#if actuals.basePilotRate??>
+		var basePilotRate = ${actuals.basePilotRate.amountAsDouble?c};
+		<#else>
+		var basePilotRate = 0;
+		</#if>
+		<#if actuals.safetyLevelRate??>
+		var safetyLevelRate = ${actuals.safetyLevelRate.amountAsDouble?c};
+		<#else>
+		var safetyLevelRate = 0;
+		</#if>
+		<#if actuals.instructorRate??>
 		var instructorRate = ${actuals.instructorRate.amountAsDouble?c};
+		<#else>
+		var instructorRate = 0;
+		</#if>
 		
 		var symbol = "${actuals.monthlyRate.currency}";
 		if (symbol == "GBP")
@@ -224,7 +238,7 @@
 			
 			
 			var tmpInput;
-			<#list ['Area', 'Daily', 'Flight', 'Instructor'] as field>
+			<#list ['Area', 'Daily', 'Flight', 'BasePilot', 'SafetyLevel', 'Instructor'] as field>
 			tmpTd = document.createElement("td");
 			tmpTd.setAttribute("style", "padding:5px;");
 			tmpInput = document.createElement("input");
@@ -272,7 +286,7 @@
             
             
             
-            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries"] as c>
+            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries","Vitality"] as c>
             tmpOption = document.createElement("option");
             tmpOption.setAttribute("value", '${c}');
             tmpOption.appendChild(document.createTextNode('${c}'));
@@ -353,7 +367,7 @@
             
             
             
-            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries","Pension"] as c>
+            <#list ["Medical Aid","GAP cover","Offshore Investment","Sundries","Sundries2","Sundries3","Sundries4","Sundries5","Pension"] as c>
             tmpOption = document.createElement("option");
             tmpOption.setAttribute("value", '${c}');
             tmpOption.appendChild(document.createTextNode('${c}'));
@@ -452,13 +466,25 @@
 			}
 			total += flightDays * ${crewMember.payments.flightAllowance.amountAsDouble?c};
 			
+			var basePilotDays = 0;
+			if (document.getElementById("basePilotDays").value) {
+				basePilotDays = parseInt(document.getElementById("basePilotDays").value);
+			}
+			total += basePilotDays * ${crewMember.payments.basePilotAllowance.amountAsDouble?c};
+			
+			var safetyLevelDays = 0;
+			if (document.getElementById("safetyLevelDays").value) {
+				safetyLevelDays = parseInt(document.getElementById("safetyLevelDays").value);
+			}
+			total += safetyLevelDays * ${crewMember.payments.safetyLevelAllowance.amountAsDouble?c};
+			
 			var totalDiv = document.getElementById("total");
 			totalDiv.replaceChild(document.createTextNode(symbol+total), totalDiv.firstChild);
 			
 		}
 		*/
 	</script>
-	<form id="mainForm" action="crewMember!addFlightActuals.action" method="POST" class="smart" style="clear:left; border: 1px solid silver; padding: 10px;">
+	<form id="mainForm" action="crewMember!addFlightActuals.action" method="POST" class="smart" style="clear:left; border: 0px solid silver; padding: 10px;">
 		<div style="float:left; width: 500px;">
 		<fieldset>
 			<legend>Period</legend>
@@ -498,7 +524,7 @@
 			</div>
 		</fieldset>
 		<fieldset>
-			<legend>Flight &amp; Duty</legend>
+			<legend>Allowance Values</legend>
 			<div class="fm-opt">
 				<label for="actuals.areaRate.amountAsDouble">Daily <@symbol "${actuals.areaRate.currency}"/></label>
 				<input type="text" id="areaDays" onchange="onFormChange();" name="actuals.areaRate.amountAsDouble" style="width:50px;" value="${actuals.areaRate.amountAsDouble}"/>
@@ -515,11 +541,25 @@
 				<label for="actuals.flightRate.amountAsDouble">Travel <@symbol "${actuals.flightRate.currency}"/></label>
 				<input type="text" id="flightDays" onchange="onFormChange();" name="actuals.flightRate.amountAsDouble" style="width:50px;" value="${actuals.flightRate.amountAsDouble}"/>
 			</div>
-			<!--<input type="hidden" name="actuals.paidAmount.currencyCode" value="${crewMember.payments.currency}"/>
 			<div class="fm-opt">
-				<label>Total</label>
-				<div id="total"><#if actuals.total??>${actuals.total}<#else><@symbol "${crewMember.payments.currency}"/>0</#if></div>
-			</div>-->
+			    <#if actuals.basePilotRate??>
+				<label for="actuals.basePilotRate.amountAsDouble">Senior Base Pilot <@symbol "${actuals.basePilotRate.currency}"/></label>
+				<input type="text" id="basePilotDays" onchange="onFormChange();" name="actuals.basePilotRate.amountAsDouble" style="width:50px;" value="${actuals.basePilotRate.amountAsDouble}"/>
+			    <#else>
+			    <label for="actuals.basePilotRate.amountAsDouble">Senior Base Pilot - Value Not Set<@symbol "USD"/></label>
+			    
+			    </#if>
+			</div>
+			<div class="fm-opt">
+			    <#if actuals.safetyLevelRate??>
+				<label for="actuals.safetyLevelRate.amountAsDouble">Safety Level <@symbol "${actuals.safetyLevelRate.currency}"/></label>
+				<input type="text" id="safetyLevelDays" onchange="onFormChange();" name="actuals.safetyLevelRate.amountAsDouble" style="width:50px;" value="${actuals.safetyLevelRate.amountAsDouble!}"/>
+				<#else>
+				<label for="actuals.safetyLevelRate.amountAsDouble">Safety Level - Value Not Set<@symbol "USD"/></label>
+				</#if>
+				
+			</div>
+			
 
 			
 		</fieldset>
@@ -528,7 +568,7 @@
 		<fieldset>
 			<legend>Entries</legend>
 			<table>
-			<thead><tr><th style="padding:5px;">Charter</th><th style="padding:5px;">Aircraft</th><th style="padding:5px;">Daily</th><th style="padding:5px;">Training</th><th style="padding:5px;">Travel</th><th style="padding:5px;">Instructor</th><th style="padding:5px;">Discomfort</th></tr></thead>
+			<thead><tr><th style="padding:5px;">Charter</th><th style="padding:5px;">Aircraft</th><th style="padding:5px;">Daily</th><th style="padding:5px;">Training</th><th style="padding:5px;">Travel</th><th style="padding:5px;">SB Pilot</th><th style="padding:5px;">Safety Level</th><th style="padding:5px;">Instructor</th><th style="padding:5px;">Discomfort</th></tr></thead>
 			<tbody id="entryTableBody">
 			<#if actuals.entries.isEmpty()>
 			<tr id="noEntriesRow"><td colspan="6">No Entries</td></tr>
@@ -547,6 +587,8 @@
 			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].areaDays' value="${entry.areaDays}"/></td>
 			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].dailyDays' value="${entry.dailyDays}"/></td>
 			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].flightDays' value="${entry.flightDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].basePilotDays' value="${entry.basePilotDays}"/></td>
+			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].safetyLevelDays' value="${entry.safetyLevelDays}"/></td>
 			<td style="padding:5px;"><input style="width:40px;" type="text" name='actuals.entries["${key}"].instructorDays' value="${entry.instructorDays}"/></td>
 			<td style="padding:5px;">
 			<select style="width:40px;" name='actuals.entries["${key}"].discomfort' >

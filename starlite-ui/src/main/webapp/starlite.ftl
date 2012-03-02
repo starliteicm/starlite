@@ -15,17 +15,28 @@
     <hr class="clear"/>
 </#if>
     
-<form name="${id}Form" action="${request.requestURL}${params!}">
+<FORM name="${id}Form" id="${id}Form" action="${request.requestURL}" method="POST">
+
+<#if params?exists>
+<#assign paramList = params.split('&') />
+<#list paramList as nvp>
+<#assign p = nvp.split('=') />
+<#if p[0]?exists && p[1]?exists>
+<input type="hidden" name="${p[0]}" value="${p[1]}" />
+</#if>
+</#list>
+</#if>
+
 <div id="${id}">
 ${mytableHtml?if_exists}
 </div>
-</form>
+</FORM>
 
 <script type="text/javascript">
-function onInvokeAction(id) {
-    setExportToLimit(id, '');
-    createHiddenInputFieldsForLimitAndSubmit(id);
-}
+    function onInvokeAction(id, action) {
+        setExportToLimit(id, '');
+        createHiddenInputFieldsForLimitAndSubmit(id);
+    }
 </script>
 </#macro>
 
@@ -91,7 +102,7 @@ function onInvokeAction(id) {
 </#macro>
 
 <#macro enableJQuery>
-	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.2.3.min.js"></script>	
+	<script type="text/javascript" src="${request.contextPath}/js/jquery-1.4.2.min.js"></script>	
 </#macro>
 
 <#macro enableJcarousel>

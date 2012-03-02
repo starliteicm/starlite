@@ -13,20 +13,25 @@
         function onSubmitWsColumn() {
             document.getElementById("saveButton").disabled = false;
         }
+        function onInvokeExportAction(id) {
+            <#if tab="active">
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/store.action?' + parameterString;
+            <#else>
+            var parameterString = createParameterStringForLimit(id);
+            location.href = '${request.contextPath}/store!deactive.action?' + parameterString;
+            </#if>
+        }
 </script>
 <title>Stores</title>
 </head>
 <body>
 
-<#if user.hasPermission("UserAdmin")>
-<div id="toolbar">
-    <a href="${request.contextPath}/store!edit.action"><img src="${request.contextPath}/images/icons/add.png"/>Add</a>
-    <hr class="clear"/>
-</div>
-<br/>
+
+<#if tab != "storeAdd">
+<@jmesa id="store"/>
 </#if>
 
-<@jmesa id="store"/>
 
 </body>
 </html>

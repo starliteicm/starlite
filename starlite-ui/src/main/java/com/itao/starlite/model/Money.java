@@ -22,8 +22,8 @@ public class Money {
 	private Currency currency=null;
 	@Column(length=3)
 	private String currencyCode;
-	@Column(nullable=false)
-	private long amount=0;
+	@Column(nullable=true, columnDefinition="long(10,4) default 0")
+	private Long amount;
 	
 	
 	public Money(String money){
@@ -75,17 +75,25 @@ public class Money {
 	 */
 	public Money() {}
 	
-	public Double getAmountAsDouble() {
+	public Double getAmountAsDouble() 
+	{
+		Double temp = new Double(0);
 		int cents = 100;
 		if (getCurrency() != null) {
 			int fracDigits = getCurrency().getDefaultFractionDigits();
 			cents = (int) Math.pow(10, fracDigits);
 		}
-		return ((double)amount)/cents;
+		try{
+			temp = ((double)amount)/cents;
+		}
+		catch(Exception e){temp = new Double(0);}
+		//return ((double)amount)/cents;
+		return temp;
 	}
 	
-	public long getAmount() {
-		return amount;
+	public long getAmount() 
+	{
+	return amount;
 	}
 	
 	public Currency getCurrency() {
@@ -165,7 +173,7 @@ public class Money {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int)amount;
+		result = prime * result + (int)amount.intValue();
 		result = prime * result
 				+ ((getCurrencyCode() == null) ? 0 : getCurrencyCode().hashCode());
 		return result;
@@ -199,8 +207,14 @@ public class Money {
 	}
 	
 	@Override
-	public String toString() {
-		return CurrencyFormatter.getInstance(getCurrency()).format(amount);
+	public String toString() 
+	{
+		String temp="";
+	
+		try{temp=CurrencyFormatter.getInstance(getCurrency()).format(amount);}
+		catch(Exception e){temp="";}
+		//return CurrencyFormatter.getInstance(getCurrency()).format(amount);
+		return temp;
 	}
 
 
@@ -224,7 +238,13 @@ public class Money {
 	
 	
 	
-	public void setAmount(Long amount) {
+	public void setAmount(Long amount) 
+	{
+		if (amount == null)
+		{
+			amount = 0L;
+		}
+		
 		this.amount = amount;
 	}
 }

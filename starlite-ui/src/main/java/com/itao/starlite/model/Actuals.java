@@ -11,8 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.itao.starlite.model.CrewMember.Passport;
+
 @Entity
-public class Actuals {
+public class Actuals implements Comparable {
 	@Id @GeneratedValue
 	private Integer id;
 	
@@ -101,5 +103,19 @@ public class Actuals {
 	}
 	public Integer getId() {
 		return id;
+	}
+	@Override
+	public int compareTo(Object arg0) {
+		try{
+			Actuals two = (Actuals)arg0;
+			
+			
+			if (this.id > two.id ) {return 1;}
+			if (this.id < two.id ) {return -1;}
+			if (this.id == two.id ) {return 0;}
+			}
+			catch(Exception e) {return 0;}
+		        //(o1>o2 ? -1 : (o1==o2 ? 0 : 1));
+			return 0;
 	}	
 }
