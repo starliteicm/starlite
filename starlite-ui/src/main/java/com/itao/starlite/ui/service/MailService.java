@@ -85,7 +85,7 @@ public class MailService {
 	  
 	  // Create the email message
 	  HtmlEmail email = new HtmlEmail();
-	  email.setHostName("mail.icm@disrec.com");
+	  email.setHostName("smtp.disrec.com");
 	  email.addTo(emailAddress);
    
 	  email.setAuthentication("icm@disrec.com", "1cmemail");
@@ -157,7 +157,7 @@ public class MailService {
 
     	  // Create the email message
     	  HtmlEmail email = new HtmlEmail();
-    	  email.setHostName("mail.icm@disrec.com");
+    	  email.setHostName("smtp.disrec.com");
     	  email.addTo(emailAddress, emailName);
        
     	  email.setAuthentication("icm@disrec.com", "1cmemail");
@@ -216,7 +216,7 @@ public class MailService {
     	  
     	  // Create the email message
     	  HtmlEmail email = new HtmlEmail();
-    	  email.setHostName("mail.icm@disrec.com");
+    	  email.setHostName("smtp.disrec.com");
     	  email.addTo(emailAddress);
        
     	  email.setAuthentication("icm@disrec.com", "1cmemail");
@@ -345,7 +345,7 @@ public class MailService {
             template.setEncoding("UTF8");
             result = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             email.setMsg(result);
-            email.setHostName("icm@disrec.com");
+            email.setHostName("smtp.disrec.com");
             email.setAuthentication("icm@disrec.com", "1cmemail");
             email.setFrom("dustyn@crewresource.biz", "Starlite");
             email.send();
@@ -365,7 +365,7 @@ public class MailService {
             template.setEncoding("UTF8");
             result = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             email.setHtmlMsg(result);            
-            email.setHostName("mail.icm@disrec.com");
+            email.setHostName("smtp.disrec.com");
             email.setAuthentication("icm@disrec.com", "1cmemail");
             email.setFrom("dustyn@crewresource.biz", "Starlite");
             email.send();
