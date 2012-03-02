@@ -75,7 +75,7 @@
 		
 		<#if hide == 0>
 		<div style="margin-top:20px;">    
-			<h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?path=${bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[delete]</a></#if><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to archive this document?');" href="documents!archive.action?path=${bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Archive]</a></#if></h3>
+			<h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?path=${bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[delete]</a></#if></h3>
 			<#if isManager>
 			<span style="font-size:90%;">Tags: 
 				<#list bookmark.tags as tag>
