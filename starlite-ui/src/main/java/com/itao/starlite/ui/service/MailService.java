@@ -55,15 +55,12 @@ public class MailService {
         this.freemarkerConfiguration = freemarkerConfiguration;
         try {
         	log.info("multi-class loader");
-        	freemarkerConfiguration.setDirectoryForTemplateLoading(new File("/home/admin/svnwork/starlite/starlite-core/src/main/java/com/itao/starlite/ftl"));
-        	FileTemplateLoader ftl1 = new FileTemplateLoader(new File("/home/admin/svnwork/starlite/starlite-core/src/main/java/com/itao/starlite/ftl"));
-        	FileTemplateLoader ftl2 = new FileTemplateLoader(new File("/home/admin/svnwork/starlite/starlite-ui/src/main/java/com/itao/starlite/ftl"));
-        	ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "ftl");
-        	TemplateLoader[] loaders = new TemplateLoader[] { ftl1, ftl2, ctl };
+        	ClassTemplateLoader ctl = new ClassTemplateLoader(MailService.class, "ftl");
+			TemplateLoader[] loaders = new TemplateLoader[] { ctl };
         	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
 
 			this.freemarkerConfiguration.setTemplateLoader(mtl);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  
@@ -88,10 +85,10 @@ public class MailService {
 	  
 	  // Create the email message
 	  HtmlEmail email = new HtmlEmail();
-	  email.setHostName("mail.i-tao.com");
+	  email.setHostName("mail.icm@disrec.com");
 	  email.addTo(emailAddress);
    
-	  email.setAuthentication("starlite@i-tao.com", "g04way");
+	  email.setAuthentication("icm@disrec.com", "1cmemail");
       email.setFrom(from, "<Starlite> "+from);
 	  
 	  email.setSubject(subject);
@@ -160,10 +157,10 @@ public class MailService {
 
     	  // Create the email message
     	  HtmlEmail email = new HtmlEmail();
-    	  email.setHostName("mail.i-tao.com");
+    	  email.setHostName("mail.icm@disrec.com");
     	  email.addTo(emailAddress, emailName);
        
-    	  email.setAuthentication("starlite@i-tao.com", "g04way");
+    	  email.setAuthentication("icm@disrec.com", "1cmemail");
           email.setFrom("dustyn@crewresource.biz", "Starlite");
     	  
     	  email.setSubject(subject);
@@ -172,7 +169,7 @@ public class MailService {
     	  email.addHeader( "Return-Receipt-To","<Starlite> dustyn@crewresource.biz");
     	  email.addHeader( "Read-Receipt-To","<Starlite> dustyn@crewresource.biz");
     	  email.addHeader( "Disposition-Notification-To", "<Starlite> dustyn@crewresource.biz");
-    	  email.addBcc("jelliott@i-tao.com");
+    	  //email.addBcc("celeste.groenewald@proxime.uk.com");
     	  email.setBounceAddress("dustyn@crewresource.biz");
     	  
           Template template = freemarkerConfiguration.getTemplate(templateName);
@@ -219,10 +216,10 @@ public class MailService {
     	  
     	  // Create the email message
     	  HtmlEmail email = new HtmlEmail();
-    	  email.setHostName("mail.i-tao.com");
+    	  email.setHostName("mail.icm@disrec.com");
     	  email.addTo(emailAddress);
        
-    	  email.setAuthentication("starlite@i-tao.com", "g04way");
+    	  email.setAuthentication("icm@disrec.com", "1cmemail");
           email.setFrom(from, "Starlite - "+from);
     	  
     	  email.setSubject(subject);
@@ -348,8 +345,8 @@ public class MailService {
             template.setEncoding("UTF8");
             result = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             email.setMsg(result);
-            email.setHostName("mail.i-tao.com");
-            email.setAuthentication("starlite@i-tao.com", "g04way");
+            email.setHostName("icm@disrec.com");
+            email.setAuthentication("icm@disrec.com", "1cmemail");
             email.setFrom("dustyn@crewresource.biz", "Starlite");
             email.send();
         } 
@@ -368,8 +365,8 @@ public class MailService {
             template.setEncoding("UTF8");
             result = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             email.setHtmlMsg(result);            
-            email.setHostName("mail.i-tao.com");
-            email.setAuthentication("starlite@i-tao.com", "g04way");
+            email.setHostName("mail.icm@disrec.com");
+            email.setAuthentication("icm@disrec.com", "1cmemail");
             email.setFrom("dustyn@crewresource.biz", "Starlite");
             email.send();
         } 
