@@ -370,13 +370,14 @@ $("document").ready(function()
 				  <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
 		          <div class="fm-opt">
 			           <div class="fm-opt" id="msg-passportsExpiryDate" style="margin-left:90px; font-weight: bold;"></div>     			  
-		          
 		          <div class="fm-opt">
 		          <label for="passport1PassFile">Upload:</label>   
 			                <input id="passport1PassFile" name="passport1PassFile" value="" type="file" />
 			                <input name="passport1PassFileTags" value="passport0 ${id}" type="hidden" />
+                  <br/>
+		          <br/>
 			                <#list passport1Docs as item>
-	                         <div class="fm-opt" style="padding-left:175px;">
+	                         <div class="fm-opt" style="padding-left:7px;">
 	                           <a href='${request.contextPath}${item.url!}'>${item.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=personal&path=${item.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if>
 	                          </div>
 	                       </#list>
@@ -414,8 +415,11 @@ $("document").ready(function()
 		          <label for="passport2PassFile">Upload:</label>   
 			                <input id="passport2PassFile" name="passport2PassFile" value="" type="file" />
 			                <input name="passport2PassFileTags" value="passport1 ${id}" type="hidden" />
+                  <br/>
+		          <br/>
+			                
 			                <#list passport2Docs as item>
-	                         <div class="fm-opt" style="padding-left:175px;">
+	                         <div class="fm-opt" style="padding-left:7px;">
 	                           <a href='${request.contextPath}${item.url!}'>${item.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=personal&path=${item.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if>
 	                          </div>
 	                       </#list>
@@ -455,8 +459,11 @@ $("document").ready(function()
 		          <label for="passport3PassFile">Upload:</label>   
 			                <input id="passport3PassFile" name="passport3PassFile" value="" type="file" />
 			                <input name="passport3PassFileTags" value="passport2 ${id}" type="hidden" />
+                  <br/>
+		          <br/>
+
 			                <#list passport3Docs as item>
-	                         <div class="fm-opt" style="padding-left:175px;">
+	                         <div class="fm-opt" style="padding-left:7px;">
 	                           <a href='${request.contextPath}${item.url!}'>${item.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=personal&path=${item.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if>
 	                          </div>
 	                       </#list>
@@ -485,14 +492,16 @@ $("document").ready(function()
 							<label for="passportCert1ExpiryDate">Passport 1 Visa Expiry Date:</label>
 							<input name="passportCert1ExpiryDate"  type="text" class="date-pick" id="passport1Cert" value="<#if pp.certificate.expiryDate??>${pp.certificate.expiryDate?string('dd/MM/yyyy')}<#else>${passportCert1ExpiryDate!}</#if>" />
 						    <div class="fm-opt" id="msg-passport1Cert" style="margin-left:90px; color:red; font-weight: bold;"></div>
-						    <br/>
+						   
 						    <label for="passport1CertFile">Upload:</label>
 						    <#if user.hasPermission("UserAdmin")>
 			                <input id="passport1CertFile" name="passport1CertFile" value="" type="file" />
 			                </#if>
 			                <input name="passport1CertTags" value="passportVisa1 ${id}" type="hidden" />
+			                <br/>			                
 			                <#if passport1Cert?exists>
 			                  <label for="passport1CertUploadedFile"/>&nbsp;</label>
+			                  <br/>
 			                  <div id="passport1CertUploadedFile"><a href='${request.contextPath}${passport1Cert.bookmark.url!}'>${passport1Cert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=personal&path=${passport1Cert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
 			                </#if>
 			             </div>
@@ -503,14 +512,16 @@ $("document").ready(function()
 							<label for="passportCert2ExpiryDate">Passport 2 Visa Expiry Date:</label>
 							<input name="passportCert2ExpiryDate"  type="text" class="date-pick" id="passport2Cert" value="<#if pp.certificate.expiryDate??>${pp.certificate.expiryDate?string('dd/MM/yyyy')}<#else>${passportCert2ExpiryDate!}</#if>" />
 						    <div class="fm-opt" id="msg-passport2Cert" style="margin-left:90px; color:red; font-weight: bold;"></div>
-						    <br/>
+						    
 						    <label for="passport2CertFile">Upload:</label>
 						    <#if user.hasPermission("UserAdmin")>
 			                <input id="passport2CertFile" name="passport2CertFile" value="" type="file" />
 			                </#if>
 			                <input name="passport2CertTags" value="passportVisa2 ${id}" type="hidden" />
-			                <#if passport2Cert?exists>
+			                <br/>
+		                    <#if passport2Cert?exists>
 			                  <label for="passport2CertUploadLink"/>&nbsp;</label>
+			                  <br/>
 			                  <div id="passport2CertUploadLink"><a href='${request.contextPath}${passport2Cert.bookmark.url!}'>${passport2Cert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=personal&path=${passport2Cert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
 			                </#if>
 
@@ -522,14 +533,17 @@ $("document").ready(function()
 							<label for="passportCert3ExpiryDate">Passport 3 Visa Expiry Date:</label>
 							<input name="passportCert3ExpiryDate"  type="text" class="date-pick" id="passport3Cert" value="<#if pp.certificate.expiryDate??>${pp.certificate.expiryDate?string('dd/MM/yyyy')}<#else>${passportCert3ExpiryDate!}</#if>" />
 						    <div class="fm-opt" id="msg-passport3Cert" style="margin-left:90px; color:red; font-weight: bold;"></div>
-						    <br/>
+						
 						    <label for="passport3CertFile">Upload:</label>
 						    <#if user.hasPermission("UserAdmin")>
 			                <input id="passport3CertFile" name="passport3CertFile" value="" type="file" />
 			                </#if>
 			                <input name="passport3CertTags" value="passportVisa3 ${id}" type="hidden" />
+			                <br/>
+		                    
 			                <#if passport3Cert?exists>
 			                  <label for="passport3CertUploadLink"/>&nbsp;</label>
+			                  <br/>
 			                  <div id="passport3CertUploadLink"><a href='${request.contextPath}${passport3Cert.bookmark.url!}'>${passport3Cert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=personal&path=${passport3Cert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
 			                </#if>
 			             </div>

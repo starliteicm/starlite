@@ -35,9 +35,9 @@ def generate(manager, pageContext) {
 		reportRow["personal.firstName"] = cm.personal.firstName
 		//reportRow["personal.passportExpiryDate"] = cm.personal.passportExpiryDate	
 		//reportRow["personal.passportExpiryDate"] = cm.getLatestPassportDate()
-		reportRow["personal.passportExpiryDate1"] = cm.getPassportExpiryDate(1)
+		reportRow["personal.passportExpiryDate1"] = cm.getPassportExpiryDate(3)
 		reportRow["personal.passportExpiryDate2"] = cm.getPassportExpiryDate(2)
-		reportRow["personal.passportExpiryDate3"] = cm.getPassportExpiryDate(3)
+		reportRow["personal.passportExpiryDate3"] = cm.getPassportExpiryDate(1)
 		reportRow["role.r1.expiryDate"] = cm.role.r1.expiryDate
 		reportRow["role.expiryDate"] = cm.role.expiryDate									
 		reportRow["role.crm.expiryDate"] = cm.role.crm.expiryDate

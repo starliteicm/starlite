@@ -22,7 +22,7 @@ public class Money {
 	private Currency currency=null;
 	@Column(length=3)
 	private String currencyCode;
-	@Column(nullable=true, columnDefinition="long(10,4) default 0")
+	@Column(nullable=true, columnDefinition="bigint(10) default 0")
 	private Long amount;
 	
 	

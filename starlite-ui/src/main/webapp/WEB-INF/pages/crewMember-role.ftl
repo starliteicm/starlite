@@ -330,9 +330,11 @@ $("document").ready(function() {
 			    <#if user.hasPermission("UserAdmin")>
                 <input id="licenceFile" name="licenceFile" value="" type="file" />
                 </#if>
+                <br/>
                 <input name="licenceTags" value="licence" type="hidden" />
                 <#if licence?exists>
                   <label for="licenceUploadLink"/>&nbsp;</label>
+                  <br/>
                   <div id="licenceUploadLink"><a href='${request.contextPath}${licence.bookmark.url!}'>${licence.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${licence.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
@@ -420,9 +422,12 @@ $("document").ready(function() {
                 <#if user.hasPermission("UserAdmin")>
                 <input id="mediFile" name="mediFile" value="" type="file"/>
                 </#if>
+                <br/>
+              
                 <input name="mediTags" value="medical ${id} certificates" type="hidden"/>
                 <#if medical?exists>
                   <label for="medicalUploadedFile"/>&nbsp;</label>
+                  <br/>
                   <div id="medicalUploadedFile"><a href='${request.contextPath}${medical.bookmark.url!}'>${medical.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${medical.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div> 
@@ -436,9 +441,12 @@ $("document").ready(function() {
                 <#if user.hasPermission("UserAdmin")>
                 <input id="crmFile" name="crmFile" value="" type="file"/>
                 </#if>
+                <br/>
+             
                 <input name="crmTags" value="CRM ${id} certificates" type="hidden"/>
                 <#if crm?exists>
                   <label for="crmUploadedFile"/>&nbsp;</label>
+                  <br/>
                   <div id="crmUploadedFile"><a href='${request.contextPath}${crm.bookmark.url!}'>${crm.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${crm.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
@@ -452,9 +460,12 @@ $("document").ready(function() {
                 <#if user.hasPermission("UserAdmin")>
                 <input id="dgFile" name="dgFile" value="" type="file">
                 </#if>
+                <br/>
+               
                 <input name="dgTags" value="DG ${id} certificates" type="hidden">
                 <#if dg?exists>
                   <label for="dgUploadedFile"/>&nbsp;</label>
+                  <br/>
                   <div id="dgUploadedFile"><a href='${request.contextPath}${dg.bookmark.url!}'>${dg.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${dg.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if> 
 			</div>
@@ -468,9 +479,12 @@ $("document").ready(function() {
                 <#if user.hasPermission("UserAdmin")>
                 <input id="huetFile" name="huetFile" value="" type="file" />
                 </#if>
+                <br/>
+               
                 <input name="huetTags" value="HUET ${id} certificates" type="hidden" />
                 <#if huet?exists>
                   <label for="huetUploadedFile"/>&nbsp;</label>
+                  <br/>
                   <div id="huetUploadedFile"><a href='${request.contextPath}${huet.bookmark.url!}'>${huet.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${huet.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
@@ -484,9 +498,12 @@ $("document").ready(function() {
 			    <#if user.hasPermission("UserAdmin")>
                 <input id="hemsCertFile" name="hemsCertFile" value="" type="file" />
                 </#if>
+                <br/>
+              
                 <input name="hemsCertTags" value="HEMS ${id} certificates" type="hidden" />
                 <#if hemsCert?exists>
                   <label for="hemsCertUploadLink"/>&nbsp;</label>
+                  <br/>
                   <div id="hemsCertUploadLink"><a href='${request.contextPath}${hemsCert.bookmark.url!}'>${hemsCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${hemsCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
@@ -500,15 +517,15 @@ $("document").ready(function() {
                 </#if>
                 <input name="additionalCertTags" value="additionalCert ${id}" type="hidden" />
                 <#if additionalDocs?exists>
-                  <br />
-                  <br />
+                 
                   <label for="additionalCertUploadLink"/>&nbsp;</label>
-                  <div id="additionalCertUploadLink">
+                  <div id="additionalCertUploadLink" >
+                  <br/><br/>
                   <#list additionalDocs as item>
-                  <div class="fm-opt" style="padding-left:175px;">
+                  <div class="fm-opt" style="padding-left:1px;">
+                 
                    <a href='${request.contextPath}${item.url!}'>${item.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${item.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if>
                    </div>
-        
                   </#list>
                   </div>
                 </#if>
@@ -533,15 +550,15 @@ $("document").ready(function() {
                 </#if>
                 <input name="additionalCertTags" value="additionalCert ${id} certificates" type="hidden" />
                 <#if additionalDocs?exists>
-                  <br />
-                  <br />
+                <br/>
                   <label for="additionalCertUploadLink"/>&nbsp;</label>
                   <div id="additionalCertUploadLink">
                   <#list additionalDocs as item>
+                  <br/>
+                  <br/>
 	                  <div class="fm-opt" style="padding-left:175px;">
 	                   <a href='${request.contextPath}${item.url!}'>${item.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${item.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if>
 	                   </div>
-        
                   </#list>
                   </div>
                 </#if>
@@ -575,11 +592,14 @@ $("document").ready(function() {
                 </#if>
                 <input name="flighthoursTags" value="flighthours" type="hidden" />
                 <img class="tooltip" title="<b>Document Upload</b><br/><div style='text-align:left'>Click on the save button to upload the file.<br/> Under the documents tab, use the 'tag:flighthours' to search for uploaded documents.</div>" style="cursor:help;position:relative;float:right;" src="images/icons/info.png"/>
+                <br/>
               
                 <#if flighthours?exists>
                   <label for="flighthoursFile"/>&nbsp;</label>
+                    <br/>
                   <div id="flighthoursFile"><a href='${request.contextPath}${flighthours.bookmark.url!}'>${flighthours.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${flighthours.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[delete]</a></#if></div>
                   <#if bookmark??>
+                
                   <h3><a href='${request.contextPath}${bookmark.url!}'>${bookmark.name}</a><#if folder.canWrite(user)> <a href="documents!delete.action?path=${bookmark.bookmarkedId}">Delete</a></#if></h3>
                 </#if>
                 </#if>
@@ -611,9 +631,12 @@ $("document").ready(function() {
 				<#if user.hasPermission("UserAdmin")>
                 <input id="lpcCertFile" name="lpcCertFile" value="" type="file" />
                 </#if>
+                <br/>
+                <br/>
                 <input name="lpcCertTags" value="LPC ${id} proficiencyRecords" type="hidden" />
                 <#if lpcCert?exists>
                   <label for="lpcCertUploadLink"/>&nbsp;</label>
+                  <br/>
                   <div id="lpcCertUploadLink"><a href='${request.contextPath}${lpcCert.bookmark.url!}'>${lpcCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${lpcCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>
@@ -635,9 +658,12 @@ $("document").ready(function() {
 				<#if user.hasPermission("UserAdmin")>
                 <input id="opcCertFile" name="opcCertFile" value="" type="file" />
                 </#if>
+                <br/>
+                <br/>
                 <input name="opcCertTags" value="OPC ${id} proficiencyRecords" type="hidden" />
                 <#if opcCert?exists>
                   <label for="opcCertUploadLink"/>&nbsp;</label>
+                  <br/>
                   <div id="opcCertUploadLink"><a href='${request.contextPath}${opcCert.bookmark.url!}'>${opcCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${opcCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>  
@@ -657,6 +683,7 @@ $("document").ready(function() {
 				<label for="crewMember.role.base">Base: </label>
                 <input name="crewMember.role.base" type="text" value="${crewMember.role.base!}"/>
                 </div>   
+             <br/>
              <br/>
               </#if> 
             <label for=""><b><u>Quizzes:</u></b></label>
@@ -679,9 +706,12 @@ $("document").ready(function() {
 				<#if user.hasPermission("UserAdmin")>
                 <input id="operationsManualCertFile" name="operationsManualCertFile" value="" type="file" />
                 </#if>
+                <br/>
+                <br/>
                 <input name="operationsManualCertTags" value="opsManual ${id} proficiencyRecords" type="hidden" />
                 <#if operationsManualCert?exists>
                   <label for="operationsManualCertUploadLink"/>&nbsp;</label>
+                  <br/>
                   <div id="operationsManualCertUploadLink"><a href='${request.contextPath}${operationsManualCert.bookmark.url!}'>${operationsManualCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${operationsManualCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>  
@@ -705,9 +735,12 @@ $("document").ready(function() {
 				<#if user.hasPermission("UserAdmin")>
                 <input id="annualTechnicalManualCertFile" name="annualTechnicalManualCertFile" value="" type="file" />
                 </#if>
+                <br/>
+                <br/>
                 <input name="annualTechnicalManualCertTags" value="annualTechManual ${id} proficiencyRecords" type="hidden" />
                 <#if annualTechnicalManualCert?exists>
                   <label for="annualTechnicalManualCertUploadLink"/>&nbsp;</label>
+                  <br/>
                   <div id="annualTechnicalManualCertUploadLink"><a href='${request.contextPath}${annualTechnicalManualCert.bookmark.url!}'>${annualTechnicalManualCert.bookmark.name}</a><#if folder.canWrite(user)> <a onclick="return confirm('Are you sure you wish to delete this document?');" href="documents!delete.action?returnUrl=crewMember.action?id=${id}%26tab=role&path=${annualTechnicalManualCert.bookmark.bookmarkedId}">&nbsp;&nbsp;&nbsp;[Delete]</a></#if></div>
                 </#if>
             </div>  
