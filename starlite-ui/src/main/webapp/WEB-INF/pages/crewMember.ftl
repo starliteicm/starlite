@@ -492,7 +492,7 @@ $("document").ready(function()
 							<label for="passportCert1ExpiryDate">Passport 1 Visa Expiry Date:</label>
 							<input name="passportCert1ExpiryDate"  type="text" class="date-pick" id="passport1Cert" value="<#if pp.certificate.expiryDate??>${pp.certificate.expiryDate?string('dd/MM/yyyy')}<#else>${passportCert1ExpiryDate!}</#if>" />
 						    <div class="fm-opt" id="msg-passport1Cert" style="margin-left:90px; color:red; font-weight: bold;"></div>
-						   
+						    <br/>
 						    <label for="passport1CertFile">Upload:</label>
 						    <#if user.hasPermission("UserAdmin")>
 			                <input id="passport1CertFile" name="passport1CertFile" value="" type="file" />
@@ -512,7 +512,7 @@ $("document").ready(function()
 							<label for="passportCert2ExpiryDate">Passport 2 Visa Expiry Date:</label>
 							<input name="passportCert2ExpiryDate"  type="text" class="date-pick" id="passport2Cert" value="<#if pp.certificate.expiryDate??>${pp.certificate.expiryDate?string('dd/MM/yyyy')}<#else>${passportCert2ExpiryDate!}</#if>" />
 						    <div class="fm-opt" id="msg-passport2Cert" style="margin-left:90px; color:red; font-weight: bold;"></div>
-						    
+						    <br/>
 						    <label for="passport2CertFile">Upload:</label>
 						    <#if user.hasPermission("UserAdmin")>
 			                <input id="passport2CertFile" name="passport2CertFile" value="" type="file" />
@@ -533,7 +533,7 @@ $("document").ready(function()
 							<label for="passportCert3ExpiryDate">Passport 3 Visa Expiry Date:</label>
 							<input name="passportCert3ExpiryDate"  type="text" class="date-pick" id="passport3Cert" value="<#if pp.certificate.expiryDate??>${pp.certificate.expiryDate?string('dd/MM/yyyy')}<#else>${passportCert3ExpiryDate!}</#if>" />
 						    <div class="fm-opt" id="msg-passport3Cert" style="margin-left:90px; color:red; font-weight: bold;"></div>
-						
+						    <br/>
 						    <label for="passport3CertFile">Upload:</label>
 						    <#if user.hasPermission("UserAdmin")>
 			                <input id="passport3CertFile" name="passport3CertFile" value="" type="file" />
