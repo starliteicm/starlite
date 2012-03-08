@@ -283,6 +283,8 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	public int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 	
 	public List<String> pilots = new ArrayList<String>();
+	
+	public boolean monthlyPayRatebox = true;
 
 	/*------------------------------------------------------------*/
 	@Override
@@ -2156,6 +2158,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 						crewMember.getPayments().getBasePilotAllowance(),
 						crewMember.getPayments().getSafetyLevelAllowance()
 						
+						
 				);
 			
 			} else {
@@ -2166,8 +2169,9 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 				currentYear = cal.get(Calendar.YEAR);
 				//This needs to be reset so that if the user has unticked the box
 				//the correct value is saved.
-				if (actualsCompleted)
-					actuals.setPayMonthlyRate(false);
+				
+				if (actualsCompleted){}
+					//actuals.setPayMonthlyRate(false);
 			}
 		}
 	}
