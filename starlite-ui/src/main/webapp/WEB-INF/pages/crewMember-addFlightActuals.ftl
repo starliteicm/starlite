@@ -519,8 +519,11 @@
 				<input type="text" id="actuals.monthlyRate.amountAsDouble" name="actuals.monthlyRate.amountAsDouble" style="width:50px;" value="${actuals.monthlyRate.amountAsDouble}"/>
 			</div>
 			<div class="fm-opt">
-				<label for="actuals.payMonthlyRate">Pay Monthly Rate?</label>
-				<input type="checkbox" name="actuals.payMonthlyRate" value="true" style="width:15px;"<#if actuals.payMonthlyRate> checked='checked'</#if>/>
+			    <label for="actuals.payMonthlyRate">Pay Monthly Rate?</label>
+				<select name="actuals.payMonthlyRate">
+					<option value="true"<#if actuals.payMonthlyRate==true> selected</#if>>yes</option>
+					<option value="false"<#if actuals.payMonthlyRate==false> selected</#if>>no</option>
+				</select>
 			</div>
 		</fieldset>
 		<fieldset>
