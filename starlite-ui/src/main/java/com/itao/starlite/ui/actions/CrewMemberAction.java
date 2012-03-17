@@ -1412,20 +1412,23 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 								
 								try {
 									r = df.parse(this.datePaidPDW);
-								} catch (ParseException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								this.actuals.setPaidDate(r);
+									this.actuals.setPaidDate(r);
+								} catch (ParseException e) {}
+								
 							}	
 							manager.saveFlightAndDutyActuals(actuals);
 							notificationMessage = "Actuals saved";
 						}
 						this.actualsId = actuals.getId();
+						//PDW Date Paid	
 						Date r = null;
+						StringBuilder actualsDatePaid = null;
 						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-						StringBuilder actualsDatePaid = new StringBuilder( df.format( actuals.getPaidDate() ) );
+						try{
+						actualsDatePaid = new StringBuilder( df.format( actuals.getPaidDate() ) );
 						this.datePaidPDW = actualsDatePaid.toString();
+						}catch(Exception e) {this.datePaidPDW = "";}
+						
 						crewMember = manager.getCrewMemberByCode(crewMember.getCode());
 						
 					} catch (ExistingRecordException e) {
