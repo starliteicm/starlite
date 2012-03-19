@@ -700,8 +700,8 @@
 		<fieldset>
 			<legend>Payment</legend>
 			<div class="fm-opt">
-				<label for="actuals.paidDate">Date Paid</label>
-				<input name="actuals.paidDate" type="text" class="date-pick" value="<#if actuals.paidDate??>${actuals.paidDate?string('dd/MM/yyyy')}</#if>"/>
+				<label for="datePaidPDW">Date Paid</label>
+				<input name="datePaidPDW" type="text" class="date-pick" value="<#if actuals.paidDate??>${actuals.paidDate?string('dd/MM/yyyy')}<#else>${datePaidPDW!}</#if>"/>
 			</div>
 			<div class="fm-opt">
 				<label for="actuals.paidAmount.amountAsDouble">Amount</label>

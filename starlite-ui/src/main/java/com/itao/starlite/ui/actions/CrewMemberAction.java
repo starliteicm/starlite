@@ -258,6 +258,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
     public String passportCert1ExpiryDate;
     public String passportCert2ExpiryDate;
     public String passportCert3ExpiryDate;
+    public String datePaidPDW;
     
     public Double basePilotAllowance;
     public Double safetyLevel;
@@ -1379,16 +1380,57 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 					}
 
 					try {
-						if (actuals.getId() == null) {
+						if (actuals.getId() == null) 
+						{
+							//PDW Date Paid	
+							String empty = "";
+							Date r = null;
+							if ((this.datePaidPDW != null) && (empty.compareToIgnoreCase(this.datePaidPDW) != 0))
+							{
+								DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+								
+								try {
+									r = df.parse(this.datePaidPDW);
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								this.actuals.setPaidDate(r);
+							}		  
+							
 							manager.addCrewFlightAndDutyActuals(crewMember.getCode(), actuals);
 							notificationMessage = "Actuals added successfully";
 							
-						} else {
+						} else 
+						{
+							//PDW Date Paid	
+							String empty = "";
+							Date r = null;
+							if ((this.datePaidPDW != null) && (empty.compareToIgnoreCase(this.datePaidPDW) != 0))
+							{
+								DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+								
+								try {
+									r = df.parse(this.datePaidPDW);
+									this.actuals.setPaidDate(r);
+								} catch (ParseException e) {}
+								
+							}	
 							manager.saveFlightAndDutyActuals(actuals);
 							notificationMessage = "Actuals saved";
 						}
 						this.actualsId = actuals.getId();
+						//PDW Date Paid	
+						Date r = null;
+						StringBuilder actualsDatePaid = null;
+						SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+						try{
+						actualsDatePaid = new StringBuilder( df.format( actuals.getPaidDate() ) );
+						this.datePaidPDW = actualsDatePaid.toString();
+						}catch(Exception e) {this.datePaidPDW = "";}
+						
 						crewMember = manager.getCrewMemberByCode(crewMember.getCode());
+						
 					} catch (ExistingRecordException e) {
 						errorMessage = e.getMessage();
 					}
@@ -1706,7 +1748,7 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 			}
 			this.crewMember.getRole().getRoutCheck().setExpiryDate(r);
 		}				
-	    
+  
 //Passport 1 Certificate Expiry Date	
 		if ((this.passportCert1ExpiryDate != null) && (empty.compareToIgnoreCase(this.passportCert1ExpiryDate) != 0))
 		{
