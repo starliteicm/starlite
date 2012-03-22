@@ -22,7 +22,7 @@ public class Money {
 	private Currency currency=null;
 	@Column(length=3)
 	private String currencyCode;
-	@Column(nullable=true, columnDefinition="bigint(15) default 0")
+	@Column(nullable=true, columnDefinition="bigint(10) default 0")
 	private Long amount;
 	
 	
@@ -93,6 +93,7 @@ public class Money {
 	
 	public long getAmount() 
 	{
+		if (amount == null ){amount = 0L;}
 	return amount;
 	}
 	
@@ -118,7 +119,9 @@ public class Money {
 		return new Money(getCurrency(), getAmount()+other.getAmount());
 	}
 	
-	public Money subtract(Money other) {
+	public Money subtract(Money other) 
+	{
+		if (other == null) {other = new Money();}
 		checkSameCurrency(other);
 		return new Money(getCurrency(), getAmount()-other.getAmount());
 	}
