@@ -2089,7 +2089,9 @@ public class CrewMember implements Cloneable, Comparable {
 		public Date getPaidDate() {
 			return paidDate;
 		}
-		public Money getPaidAmount() {
+		public Money getPaidAmount() 
+		{
+			if (paidAmount == null) {paidAmount =  new Money();}
 			return paidAmount;
 		}
 		public Date getEmailDate() {

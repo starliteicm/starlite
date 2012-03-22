@@ -29,7 +29,9 @@ def generate(manager, pageContext) {
     def dueTotal = 0
     def paidTotal = 0
     def varTotal = 0
-	for (CrewMember cm in crew) {
+	for (CrewMember cm in crew) 
+	{
+	if (cm == null) {println 'null'}
     	def reportRow = [:];
         reportRow["lastName"] = cm.getPersonal().getLastName();
         reportRow["firstName"] = cm.getPersonal().getFirstName();
@@ -50,16 +52,22 @@ def generate(manager, pageContext) {
         def total = actuals.getTotal()
         reportRow["total"] = total
         def paidAmount = actuals.getPaidAmount()
-        if (paidAmount == null)
-        	paidAmount = new Money(total.getCurrency(), 0)
+        
+        if ( paidAmount == null)
+        {
+        	paidAmount = new Money(total.getCurrency(), 0) 
+        }
         else
+        {
         	paidAmount.setCurrencyCode(total.getCurrencyCode())
+    	}
+       
         reportRow["paid"] = paidAmount
         
-        def variance = paidAmount.subtract(total)
-        
+        def variance = paidAmount.subtract(total)    
+    
         reportRow["variance"] = variance
-        
+       
         reportRow["now"] = new Date()
         
         dueTotal += total.getAmount()
