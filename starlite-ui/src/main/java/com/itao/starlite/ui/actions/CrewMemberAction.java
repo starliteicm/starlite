@@ -454,14 +454,75 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        huet        = folder.getDocumentByTag("HUET");
 	        hemsCert    = folder.getDocumentByTag("HEMS");
 	        additionalCert = folder.getDocumentByTag("additionalCert");
-	        List<Bookmark> additionalDocsTempList = (List<Bookmark>) manager.findDocsByTag("additionalCert",id);
 	        
+	        opcCert= folder.getDocumentByTag("OPC");
+	        lpcCert= folder.getDocumentByTag("LPC");
+	        operationsManualCert= folder.getDocumentByTag("opsManual");
+	        annualTechnicalManualCert= folder.getDocumentByTag("annualTechManual");        	        
+	        flighthours = folder.getDocumentByTag("flighthours");
+	        
+	        List<Bookmark> additionalDocsTempList = (List<Bookmark>) manager.findDocsByTag("additionalCert",id);
+	        List<Bookmark> hemsDocsTempList = (List<Bookmark>) manager.findDocsByTag("HEMS",id);
+	        List<Bookmark> huetDocsTempList = (List<Bookmark>) manager.findDocsByTag("HUET",id);
+	        List<Bookmark> dgDocsTempList = (List<Bookmark>) manager.findDocsByTag("DG",id);
+	        List<Bookmark> crmDocsTempList = (List<Bookmark>) manager.findDocsByTag("CRM",id);
+	        List<Bookmark> medicalDocsTempList = (List<Bookmark>) manager.findDocsByTag("medical",id);
+	        List<Bookmark> licenseDocsTempList = (List<Bookmark>) manager.findDocsByTag("licence",id);
+	        List<Bookmark> opcCertDocsTempList = (List<Bookmark>) manager.findDocsByTag("OPC",id);
+	        List<Bookmark> lpcCertDocsTempList = (List<Bookmark>) manager.findDocsByTag("LPC",id);
+	        List<Bookmark> operationsManualCertDocsTempList = (List<Bookmark>) manager.findDocsByTag("opsManual",id);
+	        List<Bookmark> annualTechnicalManualCertDocsTempList = (List<Bookmark>) manager.findDocsByTag("annualTechManual",id);
+	        List<Bookmark> aflighthoursDocsTempList = (List<Bookmark>) manager.findDocsByTag("flighthours",id);
+
+	        //NEED to get the last uploaded document, so sort descending and then use first element in the templist
+	        hemsCert=getLastUploadedDocument(hemsDocsTempList);
+	        huet=getLastUploadedDocument(huetDocsTempList);
+	        dg=getLastUploadedDocument(dgDocsTempList);
+	        crm=getLastUploadedDocument(crmDocsTempList);
+	        medical=getLastUploadedDocument(medicalDocsTempList);
+	        licence=getLastUploadedDocument(licenseDocsTempList);
+	        opcCert=getLastUploadedDocument(opcCertDocsTempList);
+	        lpcCert=getLastUploadedDocument(lpcCertDocsTempList);
+	        operationsManualCert=getLastUploadedDocument(operationsManualCertDocsTempList);
+	        annualTechnicalManualCert=getLastUploadedDocument(annualTechnicalManualCertDocsTempList);
+	        flighthours=getLastUploadedDocument(aflighthoursDocsTempList);
+
+	      //NEED to display the last 5 docs
 	       
 	        if ((additionalDocsTempList == null)|| (additionalDocsTempList.isEmpty() == true))
 	        {
 	        	additionalDocsTempList = new ArrayList<Bookmark>();
 	        }
-	        Collections.reverse(additionalDocsTempList);
+	       // Collections.reverse(additionalDocsTempList);
+	       //Sort the list based on id
+	        if (additionalDocsTempList.size()>0)
+	        {
+	        	Bookmark one = new Bookmark();
+	        	Bookmark two = new Bookmark();
+	        	Boolean sorted = false;
+	        	if (additionalDocsTempList.size() == 1)
+	        	{//nothing to sort when there is only 1 element
+	        		sorted= true;
+	        	}
+	        	while (sorted == false)
+	        	{
+	        		sorted= true;	
+	        	for (int i =0; i< additionalDocsTempList.size()-1;i++)
+	        	{
+	        	  if (additionalDocsTempList.get(i).getId() < additionalDocsTempList.get(i+1).getId() )
+	        	  {
+	        		  //temp = crmDocsTempList.get(i);
+	        		  one = additionalDocsTempList.get(i);
+	        		  two= additionalDocsTempList.get(i+1);
+	        		  additionalDocsTempList.set(i, two);
+	        		  additionalDocsTempList.set(i+1, one);
+	        		  sorted = false;
+	        	  }
+	        	}
+	           }//while
+	        	//temp = folder.getDocumentByName(tempList.get(0).getName());
+	        }
+	        //Get the latest 5 docs or display what is there
 	        if (additionalDocsTempList.size() > 5)
 	        {
 	        	List<Bookmark> temp = additionalDocsTempList.subList(0, 5);
@@ -478,22 +539,48 @@ public class CrewMemberAction extends ActionSupport implements Preparable, UserA
 	        	this.additionalDocs.add(temp.get(i));
 	        	}
 	        }
-	        
-	        
-	        
-	        
-	        
-	        opcCert= folder.getDocumentByTag("OPC");
-	        lpcCert= folder.getDocumentByTag("LPC");
-	        operationsManualCert= folder.getDocumentByTag("opsManual");
-	        annualTechnicalManualCert= folder.getDocumentByTag("annualTechManual");
-	       
-	        	        
-	        flighthours = folder.getDocumentByTag("flighthours");
-		}
+	        }
 		
 		return tab;
 	}
+	/*------------------------------------------------------------*/
+    private Document getLastUploadedDocument(List<Bookmark> tempList)
+    {
+	   Document temp = null;
+	   
+        if ((tempList == null)|| (tempList.isEmpty() == true))
+        {
+        	tempList = new ArrayList<Bookmark>();
+        }
+        if (tempList.size()>0)
+        {
+        	Bookmark one = new Bookmark();
+        	Bookmark two = new Bookmark();
+        	Boolean sorted = false;
+        	if (tempList.size() == 1)
+        	{//nothing to sort when there is only 1 element
+        		sorted= true;
+        	}
+        	while (sorted == false)
+        	{
+        		sorted= true;	
+        	for (int i =0; i< tempList.size()-1;i++)
+        	{
+        	  if (tempList.get(i).getId() < tempList.get(i+1).getId() )
+        	  {
+        		  //temp = crmDocsTempList.get(i);
+        		  one = tempList.get(i);
+        		  two= tempList.get(i+1);
+        		  tempList.set(i, two);
+        		  tempList.set(i+1, one);
+        		  sorted = false;
+        	  }
+        	}
+           }//while
+        	temp = folder.getDocumentByName(tempList.get(0).getName());
+        }
+        return (temp);
+    }
 	/*------------------------------------------------------------*/
 	public String profile() throws Exception
 	/*------------------------------------------------------------*/
