@@ -203,6 +203,14 @@
           </#if>
           
           
+          <#if current?? && current=="Self Service">
+          <li class="account current">
+          <#else>
+          <li class="account">
+          </#if>
+          <a href="account.action">Self Service</a></li>
+         
+          
          
       
       <#else>
@@ -220,7 +228,6 @@
      </#if>
      
      <li style="float:right; margin-right:80px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
-      <li style="float:right; margin-right:10px;"><a href="${request.contextPath}/account.action">Self Service</a></li>           
      
     </ul>
   </div>
