@@ -210,7 +210,8 @@
           </#if>
           <a href="account.action">Self Service</a></li>
          
-          
+         <li style="float:right; margin-right:1px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
+     
          
       
       <#else>
@@ -227,7 +228,6 @@
       
      </#if>
      
-     <li style="float:right; margin-right:80px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
      
     </ul>
   </div>
