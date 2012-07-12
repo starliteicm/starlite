@@ -53,7 +53,7 @@ width: 35px;
 
 
 
-<#if user.hasPermission("AdminView")>
+<#if user.hasPermission("UserAdmin")>
 <div id="toolbar">
 	<a href="${request.contextPath}/aircraft!addAircraft.action"><img src="${request.contextPath}/images/icons/add.png"/>Add Aircraft</a>
 		
