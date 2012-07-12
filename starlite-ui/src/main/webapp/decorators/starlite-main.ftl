@@ -81,27 +81,19 @@
 <#else>
     <ul class="tabs jcarousel-skin-tango" id="mycarousel" >
 </#if>
-   
+
+      <li style="float:right; margin-right:1px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
+	  
+	   <#if current?? && current=="Self Service">
+          <li class="account current">
+          <#else>
+          <li class="account">
+          </#if>
+          <a href="account.action">Self Service</a></li>
+ 
       <#if isManager>
       	  
-      	  <#if user.hasRead("hanger")>
-      	  <#assign domain = "starlite">
-          <#if current?? && current=="Hanger">
-          <li class="charters current">
-          <#else>
-          <li class="charters">
-          </#if>
-          <a href="hanger.action">Hanger</a></li>
-          </#if>
-      	           
-      	  <#if user.hasRead("schedule")>
-      	  <#if current?? && current=="schedule">
-      		<li class="schedule current">
-      	  <#else>
-      		<li class="schedule">
-      	  </#if>
-      	  <a href="schedule.action">Schedule</a></li>
-      	  </#if>
+      	  
       	  
       	  <#if user.hasRead("aircraft")>
           <#if current?? && current=="aircraft">
@@ -201,9 +193,28 @@
           </#if>
           <a href="transaction.action">Transactions</a></li>
           </#if>
+		  
+		  <#if user.hasRead("hanger")>
+      	  <#assign domain = "starlite">
+          <#if current?? && current=="Hanger">
+          <li class="charters current">
+          <#else>
+          <li class="charters">
+          </#if>
+          <a href="hanger.action">Hanger</a></li>
+          </#if>
+      	           
+      	  <#if user.hasRead("schedule")>
+      	  <#if current?? && current=="schedule">
+      		<li class="schedule current">
+      	  <#else>
+      		<li class="schedule">
+      	  </#if>
+      	  <a href="schedule.action">Schedule</a></li>
+      	  </#if>
+		 
           
-  
-      <#else>
+      </#if>
       
       <#if user.hasRead("hanger")>
       <#assign domain = "starlite">
@@ -214,18 +225,7 @@
           </#if>
           <a href="hanger.action">Hanger</a></li>        
        </#if>
-      
-     </#if>
-     
-           <#if current?? && current=="Self Service">
-          <li class="account current">
-          <#else>
-          <li class="account">
-          </#if>
-          <a href="account.action">Self Service</a></li>
-
-        <li style="float:right; margin-right:1px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
-     
+        
     </ul>
   </div>
   <hr style="clear:left;display:none;"/>
