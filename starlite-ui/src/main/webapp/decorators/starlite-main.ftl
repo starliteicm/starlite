@@ -202,22 +202,7 @@
           <a href="transaction.action">Transactions</a></li>
           </#if>
           
-          
-          <#if current?? && current=="Self Service">
-          <li class="account current">
-          <#else>
-          <li class="account">
-          </#if>
-          <a href="account.action">Self Service</a></li>
-         
-         <#if current?? && current=="Log Out">
-          <li class="logout current">
-          <#else>
-          <li class="logout">
-          </#if>
-          <a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
-                 
-      
+  
       <#else>
       
       <#if user.hasRead("hanger")>
@@ -232,7 +217,21 @@
       
      </#if>
      
-     
+               <#if current?? && current=="Self Service">
+          <li class="account current">
+          <#else>
+          <li class="account">
+          </#if>
+          <a href="account.action">Self Service</a></li>
+         
+         <#if current?? && current=="Log Out">
+          <li class="logout current">
+          <#else>
+          <li class="logout">
+          </#if>
+          <a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
+                 
+      
     </ul>
   </div>
   <hr style="clear:left;display:none;"/>
