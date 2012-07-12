@@ -201,6 +201,9 @@
           </#if>
           <a href="transaction.action">Transactions</a></li>
           </#if>
+          
+          
+         
       
       <#else>
       
@@ -211,13 +214,14 @@
           <#else>
           <li class="charters">
           </#if>
-          <a href="hanger.action">Hanger</a></li>
-          
+          <a href="hanger.action">Hanger</a></li>        
        </#if>
+      
      </#if>
-           
-      <li style="float:right; margin-right:20px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
-      <li class="aircraft" style="float:right;"><a href="${request.contextPath}/account.action">Account</a></li>
+     
+     <li style="float:right; margin-right:80px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
+      <li style="float:right; margin-right:10px;"><a href="${request.contextPath}/account.action">Self Service</a></li>           
+     
     </ul>
   </div>
   <hr style="clear:left;display:none;"/>
