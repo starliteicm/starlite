@@ -217,21 +217,15 @@
       
      </#if>
      
-               <#if current?? && current=="Self Service">
+           <#if current?? && current=="Self Service">
           <li class="account current">
           <#else>
           <li class="account">
           </#if>
           <a href="account.action">Self Service</a></li>
-         
-         <#if current?? && current=="Log Out">
-          <li class="logout current">
-          <#else>
-          <li class="logout">
-          </#if>
-          <a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
-                 
-      
+
+        <li style="float:right; margin-right:1px;"><a href="${request.contextPath}/doLogin?logout=true">Log Out</a></li>
+     
     </ul>
   </div>
   <hr style="clear:left;display:none;"/>
