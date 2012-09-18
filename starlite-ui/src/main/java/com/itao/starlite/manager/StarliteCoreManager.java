@@ -324,7 +324,19 @@ public class StarliteCoreManager {
 	
 	@Transactional
 	public Aircraft saveAircraft(Aircraft a) {
-		return aircraftDao.makePersistent(a);
+		
+		Aircraft newAircraft = new Aircraft();
+		newAircraft = a;
+		
+		try{
+			aircraftDao.makePersistent(a);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Unable to create Aircraft: reason: " + e.toString());
+		}
+		
+		return newAircraft;
 	}
 	
 	@Transactional

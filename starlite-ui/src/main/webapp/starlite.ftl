@@ -57,7 +57,8 @@ ${mytableHtml?if_exists}
 	</div>
 	<hr class="clear"/>
 </#if>
-    
+
+   
 <form name="${id}Form" action="${request.requestURL}${params!}">
 <div id="${id}">
 ${tableHtml}
