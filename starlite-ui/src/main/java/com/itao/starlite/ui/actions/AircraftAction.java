@@ -295,6 +295,8 @@ public class AircraftAction extends ActionSupport implements UserAware {
 			try {
 				Aircraft a = new Aircraft();
 				a.setRef(aircraftReg);
+				a.setAMOResponsible("No");
+				a.setInvoicingTracked("No");
 				manager.saveAircraft(a);
 				createdAircraft = a;
 				return "added";
